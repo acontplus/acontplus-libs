@@ -195,14 +195,14 @@ export class AuthTokenRepositoryImpl implements AuthTokenRepository {
     for (const fieldName of fieldNames) {
       const value = decodedToken[fieldName];
       if (Array.isArray(value)) {
-        return value.map(v => v.toString());
+        return value.map((v) => v.toString());
       }
       if (typeof value === 'string') {
         // Handle comma-separated string values
         return value
           .split(',')
-          .map(v => v.trim())
-          .filter(v => v.length > 0);
+          .map((v) => v.trim())
+          .filter((v) => v.length > 0);
       }
     }
     return undefined;

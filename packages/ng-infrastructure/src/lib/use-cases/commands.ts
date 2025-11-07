@@ -18,13 +18,13 @@ export abstract class Command<TRequest, TResponse = void> extends BaseUseCase<TR
         status: 'error',
         code: 'VALIDATION_FAILED',
         message: 'Validation failed',
-        errors: errors.map(msg => ({ code: 'VALIDATION', message: msg })),
+        errors: errors.map((msg) => ({ code: 'VALIDATION', message: msg })),
         timestamp: new Date().toISOString(),
       }));
     }
 
     return this.executeInternal(request).pipe(
-      catchError(error => {
+      catchError((error) => {
         // Log the error for debugging
         const logger = inject(LoggingService);
         logger.error('An error occurred during command execution:', error);

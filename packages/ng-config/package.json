@@ -4,8 +4,8 @@
   "description": "Angular configuration management library providing environment tokens, application settings, dependency injection patterns, and runtime configuration services for enterprise applications.",
   "peerDependencies": {
     "@acontplus/core": "^1.1.0",
-    "@angular/common": "^20.3.2",
-    "@angular/core": "^20.3.2"
+    "@angular/common": "^20.3.9",
+    "@angular/core": "^20.3.9"
   },
   "sideEffects": false,
   "main": "fesm2022/acontplus-ng-config.mjs",

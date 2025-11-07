@@ -74,11 +74,11 @@ export class ApplicationComponent implements OnInit, AfterViewInit {
   isLoading = false;
 
   // Pagination
+  applicationPaginationConfig: Pagination = new Pagination(0, 10, 0, [5, 10, 25, 50]);
   pagination = new PaginationParams({
-    pageIndex: 1,
-    pageSize: 10,
+    pageIndex: this.applicationPaginationConfig.pageIndex + 1, // API uses 1-based indexing
+    pageSize: this.applicationPaginationConfig.pageSize,
   });
-  applicationPaginationConfig: Pagination = new Pagination(0, 10, 5, 0, [5, 10, 25, 50]);
 
   // Filters
   filters: Record<string, unknown> = {};

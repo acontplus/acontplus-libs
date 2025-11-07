@@ -73,9 +73,7 @@ The interceptor automatically standardizes ALL responses:
 
 ```typescript
 // BaseRepository receives the extracted data directly
-const user: User = await this.http
-  .post<User>('/api/users', userData)
-  .toPromise();
+const user: User = await this.http.post<User>('/api/users', userData).toPromise();
 // user = { id: 1, name: "John Doe", email: "john@example.com" }
 ```
 
@@ -127,9 +125,7 @@ const user: User = await this.http.get<User>('/api/users/1').toPromise();
 
 ```typescript
 // BaseRepository receives full ApiResponse when no data present
-const response: ApiResponse = await this.http
-  .delete('/api/users/1')
-  .toPromise();
+const response: ApiResponse = await this.http.delete('/api/users/1').toPromise();
 // response = { status: "success", code: "200", message: "User deleted successfully", ... }
 ```
 
@@ -245,14 +241,14 @@ export class CreateUserUseCase implements UseCase<CreateUserDto, User> {
     // BaseRepository handles the HTTP call and response transformation
     return this.userRepository.create(dto).pipe(
       // Additional business logic can be applied here
-      map(user => {
+      map((user) => {
         // Validate business rules
         if (!user.email.includes('@')) {
           throw new Error('Invalid email format');
         }
         return user;
       }),
-      catchError(error => {
+      catchError((error) => {
         // Handle business logic errors
         if (error.message.includes('duplicate')) {
           throw new Error('User with this email already exists');
@@ -447,7 +443,7 @@ export class SilentRepository {
 export class WrongRepository {
   create(user: CreateUserDto): Observable<User> {
     return this.post<ApiResponse<User>>('', user).pipe(
-      map(response => response.data), // Unnecessary - interceptor does this
+      map((response) => response.data), // Unnecessary - interceptor does this
     );
   }
 }

@@ -125,7 +125,7 @@ export class AuthStore implements OnDestroy {
         refreshToken,
       })
       .pipe(
-        tap(tokens => {
+        tap((tokens) => {
           this.setAuthenticated(tokens);
         }),
         catchError(() => {
@@ -216,7 +216,7 @@ export class AuthStore implements OnDestroy {
       const jsonPayload = decodeURIComponent(
         atob(base64)
           .split('')
-          .map(c => {
+          .map((c) => {
             return `%${`00${c.charCodeAt(0).toString(16)}`.slice(-2)}`;
           })
           .join(''),

@@ -42,7 +42,7 @@ describe('authRedirectInterceptor', () => {
     tokenRepository = TestBed.inject(AuthTokenRepositoryImpl);
   });
 
-  it('should pass through successful requests', done => {
+  it('should pass through successful requests', (done) => {
     const mockRequest = new HttpRequest('GET', '/api/data');
     const mockResponse = { status: 200, body: { data: 'test' } };
 
@@ -52,7 +52,7 @@ describe('authRedirectInterceptor', () => {
       const result = authRedirectInterceptor(mockRequest, mockHandler.handle);
 
       result.subscribe({
-        next: response => {
+        next: (response) => {
           expect(response).toEqual(mockResponse);
           expect(urlRedirectService.storeCurrentUrlIfAllowed).not.toHaveBeenCalled();
           expect(router.navigate).not.toHaveBeenCalled();
@@ -62,7 +62,7 @@ describe('authRedirectInterceptor', () => {
     });
   });
 
-  it('should handle 401 error when user is authenticated', done => {
+  it('should handle 401 error when user is authenticated', (done) => {
     const mockRequest = new HttpRequest('GET', '/api/protected');
     const mockError = new HttpErrorResponse({ status: 401, statusText: 'Unauthorized' });
 
@@ -73,7 +73,7 @@ describe('authRedirectInterceptor', () => {
       const result = authRedirectInterceptor(mockRequest, mockHandler.handle);
 
       result.subscribe({
-        error: error => {
+        error: (error) => {
           expect(error).toBe(mockError);
           expect(urlRedirectService.storeCurrentUrlIfAllowed).toHaveBeenCalled();
           expect(router.navigate).toHaveBeenCalledWith(['/login']);
@@ -83,7 +83,7 @@ describe('authRedirectInterceptor', () => {
     });
   });
 
-  it('should handle 401 error without redirect when user is not authenticated', done => {
+  it('should handle 401 error without redirect when user is not authenticated', (done) => {
     const mockRequest = new HttpRequest('GET', '/api/protected');
     const mockError = new HttpErrorResponse({ status: 401, statusText: 'Unauthorized' });
 
@@ -94,7 +94,7 @@ describe('authRedirectInterceptor', () => {
       const result = authRedirectInterceptor(mockRequest, mockHandler.handle);
 
       result.subscribe({
-        error: error => {
+        error: (error) => {
           expect(error).toBe(mockError);
           expect(urlRedirectService.storeCurrentUrlIfAllowed).not.toHaveBeenCalled();
           expect(router.navigate).not.toHaveBeenCalled();
@@ -104,7 +104,7 @@ describe('authRedirectInterceptor', () => {
     });
   });
 
-  it('should pass through non-401 errors without intervention', done => {
+  it('should pass through non-401 errors without intervention', (done) => {
     const mockRequest = new HttpRequest('GET', '/api/data');
     const mockError = new HttpErrorResponse({ status: 500, statusText: 'Internal Server Error' });
 
@@ -114,7 +114,7 @@ describe('authRedirectInterceptor', () => {
       const result = authRedirectInterceptor(mockRequest, mockHandler.handle);
 
       result.subscribe({
-        error: error => {
+        error: (error) => {
           expect(error).toBe(mockError);
           expect(urlRedirectService.storeCurrentUrlIfAllowed).not.toHaveBeenCalled();
           expect(router.navigate).not.toHaveBeenCalled();

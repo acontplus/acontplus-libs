@@ -22,7 +22,7 @@ describe('csrfInterceptor', () => {
     });
   });
 
-  it('should add CSRF token to POST requests to same origin', done => {
+  it('should add CSRF token to POST requests to same origin', (done) => {
     csrfService.getCsrfToken.mockResolvedValue('test-csrf-token');
     const mockRequest = new HttpRequest('POST', '/api/test', { data: 'test' });
 
@@ -40,7 +40,7 @@ describe('csrfInterceptor', () => {
     });
   });
 
-  it('should add CSRF token to PUT requests to same origin', done => {
+  it('should add CSRF token to PUT requests to same origin', (done) => {
     csrfService.getCsrfToken.mockResolvedValue('test-csrf-token');
     const mockRequest = new HttpRequest('PUT', '/api/test', { data: 'test' });
 
@@ -58,7 +58,7 @@ describe('csrfInterceptor', () => {
     });
   });
 
-  it('should add CSRF token to PATCH requests to same origin', done => {
+  it('should add CSRF token to PATCH requests to same origin', (done) => {
     csrfService.getCsrfToken.mockResolvedValue('test-csrf-token');
     const mockRequest = new HttpRequest('PATCH', '/api/test', { data: 'test' });
 
@@ -76,7 +76,7 @@ describe('csrfInterceptor', () => {
     });
   });
 
-  it('should add CSRF token to DELETE requests to same origin', done => {
+  it('should add CSRF token to DELETE requests to same origin', (done) => {
     csrfService.getCsrfToken.mockResolvedValue('test-csrf-token');
     const mockRequest = new HttpRequest('DELETE', '/api/test');
 

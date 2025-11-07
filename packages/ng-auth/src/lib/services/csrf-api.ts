@@ -22,7 +22,7 @@ export class CsrfApi {
       this.csrfToken = await firstValueFrom(
         this.http
           .get<{ csrfToken: string }>('csrf-token')
-          .pipe(map(response => response.csrfToken)),
+          .pipe(map((response) => response.csrfToken)),
       );
 
       return this.csrfToken || '';

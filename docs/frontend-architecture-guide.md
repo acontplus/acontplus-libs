@@ -107,7 +107,7 @@ export class CustomerService {
   }
 
   private updateState(partialState: Partial<CustomerState>): void {
-    this._state.update(state => ({ ...state, ...partialState }));
+    this._state.update((state) => ({ ...state, ...partialState }));
   }
 }
 ```
@@ -308,16 +308,12 @@ export class AngularHttpAdapter implements HttpAdapter {
 
   async get<T>(url: string, options?: HttpOptions): Promise<T> {
     const fullUrl = this.mergeUrl(this.baseURL, url);
-    return firstValueFrom(
-      this.http.get<T>(fullUrl, this.buildOptions(options)),
-    );
+    return firstValueFrom(this.http.get<T>(fullUrl, this.buildOptions(options)));
   }
 
   async post<T>(url: string, body: any, options?: HttpOptions): Promise<T> {
     const fullUrl = this.mergeUrl(this.baseURL, url);
-    return firstValueFrom(
-      this.http.post<T>(fullUrl, body, this.buildOptions(options)),
-    );
+    return firstValueFrom(this.http.post<T>(fullUrl, body, this.buildOptions(options)));
   }
 
   private buildOptions(options?: HttpOptions) {
@@ -352,8 +348,7 @@ export class ConfigService {
   }
 
   getToken(): string {
-    const token =
-      this.config()?.authToken ?? localStorage.getItem('auth_token');
+    const token = this.config()?.authToken ?? localStorage.getItem('auth_token');
     return token ?? '';
   }
 
@@ -634,8 +629,8 @@ export class TokenService {
         refresh_token: refreshToken,
       })
       .pipe(
-        tap(response => this.setToken(response.access_token)),
-        map(response => response.access_token),
+        tap((response) => this.setToken(response.access_token)),
+        map((response) => response.access_token),
       );
   }
 }
@@ -770,10 +765,7 @@ export class EmailValidator {
 
 // shared/validators/phone.validator.ts
 export class PhoneValidator {
-  static validate(
-    phone: string,
-    country: 'EC' | 'US' | 'ES' = 'EC',
-  ): ValidationResult {
+  static validate(phone: string, country: 'EC' | 'US' | 'ES' = 'EC'): ValidationResult {
     const patterns = {
       EC: /^(\+593|0)[0-9]{9}$/,
       US: /^(\+1)?[0-9]{10}$/,
@@ -804,9 +796,7 @@ export class IdValidator {
       return {
         isValid: false,
         message: 'La cédula debe tener 10 dígitos',
-        errors: [
-          { field: 'id', message: 'Longitud inválida', code: 'INVALID_LENGTH' },
-        ],
+        errors: [{ field: 'id', message: 'Longitud inválida', code: 'INVALID_LENGTH' }],
       };
     }
 
@@ -908,10 +898,7 @@ export class IdValidator {
 ```typescript
 // shared/utils/date.formatter.ts
 export class DateFormatter {
-  static formatDate(
-    date: Date | string,
-    format: 'short' | 'long' | 'iso' = 'short',
-  ): string {
+  static formatDate(date: Date | string, format: 'short' | 'long' | 'iso' = 'short'): string {
     const d = typeof date === 'string' ? new Date(date) : date;
 
     switch (format) {
@@ -951,10 +938,7 @@ export class DateFormatter {
     let age = today.getFullYear() - birthDate.getFullYear();
     const monthDiff = today.getMonth() - birthDate.getMonth();
 
-    if (
-      monthDiff < 0 ||
-      (monthDiff === 0 && today.getDate() < birthDate.getDate())
-    ) {
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
       age--;
     }
 
@@ -971,7 +955,7 @@ export class StringFormatter {
   static capitalizeWords(str: string): string {
     return str
       .split(' ')
-      .map(word => this.capitalize(word))
+      .map((word) => this.capitalize(word))
       .join(' ');
   }
 
@@ -994,8 +978,7 @@ export class StringFormatter {
   }
 
   static generateRandomString(length: number): string {
-    const chars =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let result = '';
     for (let i = 0; i < length; i++) {
       result += chars.charAt(Math.floor(Math.random() * chars.length));
@@ -1010,10 +993,7 @@ export class StringFormatter {
 
 // shared/utils/number.formatter.ts
 export class NumberFormatter {
-  static formatCurrency(
-    amount: number,
-    currency: 'USD' | 'EUR' = 'USD',
-  ): string {
+  static formatCurrency(amount: number, currency: 'USD' | 'EUR' = 'USD'): string {
     return new Intl.NumberFormat('es-EC', {
       style: 'currency',
       currency: currency,
@@ -1036,11 +1016,7 @@ export class NumberFormatter {
     return Number.isSafeInteger(Number(value));
   }
 
-  static toFixed(
-    num: number,
-    decimals: number,
-    fallback: string = 'N/A',
-  ): string {
+  static toFixed(num: number, decimals: number, fallback: string = 'N/A'): string {
     const numValue = Number(num);
     return isNaN(numValue) ? fallback : numValue.toFixed(decimals);
   }
@@ -1058,11 +1034,9 @@ export class NumberFormatter {
 
 // shared/utils/validation.utils.ts
 export class ValidationUtils {
-  static combineValidations(
-    ...validations: ValidationResult[]
-  ): ValidationResult {
-    const allErrors = validations.flatMap(v => v.errors || []);
-    const isValid = validations.every(v => v.isValid);
+  static combineValidations(...validations: ValidationResult[]): ValidationResult {
+    const allErrors = validations.flatMap((v) => v.errors || []);
+    const isValid = validations.every((v) => v.isValid);
 
     return {
       isValid,
@@ -1073,9 +1047,7 @@ export class ValidationUtils {
 
   static validateRequired(value: any, fieldName: string): ValidationResult {
     const isValid =
-      value !== null &&
-      value !== undefined &&
-      (typeof value !== 'string' || value.trim() !== '');
+      value !== null && value !== undefined && (typeof value !== 'string' || value.trim() !== '');
 
     return {
       isValid,
@@ -1092,18 +1064,12 @@ export class ValidationUtils {
     };
   }
 
-  static validateMinLength(
-    value: string,
-    minLength: number,
-    fieldName: string,
-  ): ValidationResult {
+  static validateMinLength(value: string, minLength: number, fieldName: string): ValidationResult {
     const isValid = value && value.length >= minLength;
 
     return {
       isValid,
-      message: isValid
-        ? ''
-        : `${fieldName} debe tener al menos ${minLength} caracteres`,
+      message: isValid ? '' : `${fieldName} debe tener al menos ${minLength} caracteres`,
       errors: isValid
         ? []
         : [
@@ -1116,18 +1082,12 @@ export class ValidationUtils {
     };
   }
 
-  static validateMaxLength(
-    value: string,
-    maxLength: number,
-    fieldName: string,
-  ): ValidationResult {
+  static validateMaxLength(value: string, maxLength: number, fieldName: string): ValidationResult {
     const isValid = !value || value.length <= maxLength;
 
     return {
       isValid,
-      message: isValid
-        ? ''
-        : `${fieldName} no puede tener más de ${maxLength} caracteres`,
+      message: isValid ? '' : `${fieldName} no puede tener más de ${maxLength} caracteres`,
       errors: isValid
         ? []
         : [
@@ -1207,7 +1167,7 @@ export class RoleGuard implements CanActivate {
       const payload = inject(JwtService).decodeToken(token);
       const userRoles = payload.roles || [];
 
-      const hasRole = requiredRoles.some(role => userRoles.includes(role));
+      const hasRole = requiredRoles.some((role) => userRoles.includes(role));
 
       if (!hasRole) {
         this.router.navigate(['/unauthorized']);
@@ -1225,10 +1185,7 @@ export class RoleGuard implements CanActivate {
 // shared/pipes/date.pipe.ts
 @Pipe({ name: 'acpDate', standalone: true })
 export class AcpDatePipe implements PipeTransform {
-  transform(
-    value: Date | string | null,
-    format: 'short' | 'long' | 'iso' = 'short',
-  ): string {
+  transform(value: Date | string | null, format: 'short' | 'long' | 'iso' = 'short'): string {
     if (!value) return '';
     return DateFormatter.formatDate(value, format);
   }
@@ -1246,11 +1203,7 @@ export class AcpCurrencyPipe implements PipeTransform {
 // shared/pipes/truncate.pipe.ts
 @Pipe({ name: 'acpTruncate', standalone: true })
 export class AcpTruncatePipe implements PipeTransform {
-  transform(
-    value: string | null,
-    length: number = 50,
-    suffix: string = '...',
-  ): string {
+  transform(value: string | null, length: number = 50, suffix: string = '...'): string {
     if (!value) return '';
     return StringFormatter.truncate(value, length, suffix);
   }
@@ -1446,9 +1399,7 @@ export * from './lib/value-objects';
   ],
 })
 export class AcontplusCoreModule {
-  static forRoot(
-    config: AppConfigModel,
-  ): ModuleWithProviders<AcontplusCoreModule> {
+  static forRoot(config: AppConfigModel): ModuleWithProviders<AcontplusCoreModule> {
     return {
       ngModule: AcontplusCoreModule,
       providers: [{ provide: 'APP_CONFIG', useValue: config }],
@@ -1512,16 +1463,8 @@ bootstrapApplication(AppComponent, {
           <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef>Acciones</th>
             <td mat-cell *matCellDef="let customer">
-              <button mat-button (click)="editCustomer(customer)">
-                Editar
-              </button>
-              <button
-                mat-button
-                color="warn"
-                (click)="deleteCustomer(customer)"
-              >
-                Eliminar
-              </button>
+              <button mat-button (click)="editCustomer(customer)">Editar</button>
+              <button mat-button color="warn" (click)="deleteCustomer(customer)">Eliminar</button>
             </td>
           </ng-container>
 
@@ -1532,9 +1475,7 @@ bootstrapApplication(AppComponent, {
         <div>No hay clientes</div>
       }
 
-      <button mat-raised-button color="primary" (click)="createCustomer()">
-        Nuevo Cliente
-      </button>
+      <button mat-raised-button color="primary" (click)="createCustomer()">Nuevo Cliente</button>
 
       <div class="summary">
         Total: {{ customerService.customersCount() }} | Activos:

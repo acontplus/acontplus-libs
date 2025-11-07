@@ -1,5 +1,5 @@
 import { EnvironmentProviders, makeEnvironmentProviders } from '@angular/core';
-import { provideToastr, GlobalConfig } from 'ngx-toastr';
+import { provideToastr, GlobalConfig, ToastNoAnimation } from 'ngx-toastr';
 import { NotificationService } from './services/notification-service';
 import { NOTIFICATION_CONFIG, NotificationProviderConfig } from './providers/notification-provider';
 import { ToastrProvider } from './providers/toastr-provider';
@@ -15,6 +15,7 @@ const DEFAULT_TOASTR_CONFIG: Partial<GlobalConfig> = {
   newestOnTop: true,
   preventDuplicates: true,
   progressBar: true,
+  toastComponent: ToastNoAnimation,
 };
 
 export function provideNotifications(

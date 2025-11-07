@@ -1,0 +1,23 @@
+# Node
+node_modules/
+
+# Development files
+*.spec.ts
+*.spec.js
+*.test.ts
+*.test.js
+__tests__/
+test/
+tests/
+
+# Configuration files
+tsconfig.spec.json
+jest.config.ts
+jest.config.js
+eslint.config.cjs
+.eslintrc.json
+ng-package.json
+
+# Build artifacts
+*.tsbuildinfo
+.nx/

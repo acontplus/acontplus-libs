@@ -144,7 +144,7 @@ export class Login implements OnInit {
         next: () => {
           this.isLoading.set(false);
         },
-        error: error => {
+        error: (error) => {
           this.isLoading.set(false);
           this.errorMessage.set('Error al iniciar sesión. Verifique sus credenciales.');
           this.loggingService.error('Login failed', { error });
@@ -164,7 +164,7 @@ export class Login implements OnInit {
           this.signupForm.reset();
           this.isLoginMode.set(true);
         },
-        error: error => {
+        error: (error) => {
           this.isLoading.set(false);
           this.errorMessage.set('Error al registrar usuario. Intente nuevamente.');
           this.loggingService.error('Register error', { error });

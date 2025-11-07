@@ -7,8 +7,8 @@
     "@acontplus/ng-config": "^1.1.0",
     "@acontplus/ng-notifications": "^1.1.0",
     "@acontplus/ng-components": "^1.3.0",
-    "@angular/common": "^20.3.2",
-    "@angular/core": "^20.3.2"
+    "@angular/common": "^20.3.9",
+    "@angular/core": "^20.3.9"
   },
   "sideEffects": false,
   "main": "fesm2022/acontplus-ng-infrastructure.mjs",

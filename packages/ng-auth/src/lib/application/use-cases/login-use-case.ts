@@ -20,7 +20,7 @@ export class LoginUseCase extends BaseUseCase<LoginRequest, AuthTokens> {
 
   execute(request: LoginRequest): Observable<AuthTokens> {
     return this.authRepository.login(request).pipe(
-      tap(tokens => {
+      tap((tokens) => {
         // Set authentication state with rememberMe preference
         this.authStore.setAuthenticated(tokens, request.rememberMe ?? false);
 

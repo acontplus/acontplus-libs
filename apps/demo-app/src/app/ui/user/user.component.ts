@@ -70,7 +70,7 @@ export class UserComponent implements OnInit, AfterViewInit {
     pageIndex: 1,
     pageSize: 10,
   });
-  userPaginationConfig: Pagination = new Pagination(0, 10, 5, 0, [5, 10, 25, 50]);
+  userPaginationConfig: Pagination = new Pagination(0, 10, 0, [5, 10, 25, 50]);
 
   // Filters
   filters: Record<string, any> = {};

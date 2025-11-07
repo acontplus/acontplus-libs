@@ -814,9 +814,7 @@
                   "externalDependencies": ["@playwright/test"]
                 }
               ],
-              "outputs": [
-                "{workspaceRoot}/dist/.playwright/apps/demo-app-e2e/playwright-report"
-              ],
+              "outputs": ["{workspaceRoot}/dist/.playwright/apps/demo-app-e2e/playwright-report"],
               "options": {
                 "config": "playwright.config.ts",
                 "expectedSuites": 1
@@ -831,11 +829,7 @@
           },
           "metadata": {
             "targetGroups": {
-              "E2E (CI)": [
-                "e2e-ci--src/example.spec.ts",
-                "e2e-ci",
-                "e2e-ci--merge-reports"
-              ]
+              "E2E (CI)": ["e2e-ci--src/example.spec.ts", "e2e-ci", "e2e-ci--merge-reports"]
             }
           },
           "name": "demo-app-e2e",
@@ -1311,13 +1305,7 @@
             }
           },
           "name": "utils",
-          "tags": [
-            "npm:public",
-            "npm:utilities",
-            "npm:typescript",
-            "npm:utils",
-            "npm:helpers"
-          ],
+          "tags": ["npm:public", "npm:utilities", "npm:typescript", "npm:utils", "npm:helpers"],
           "metadata": {
             "targetGroups": {
               "NPM Scripts": ["test"]

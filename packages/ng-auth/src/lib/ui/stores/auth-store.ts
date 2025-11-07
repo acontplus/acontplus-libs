@@ -126,7 +126,9 @@ export class AuthStore implements OnDestroy {
       })
       .pipe(
         tap((tokens) => {
-          this.setAuthenticated(tokens);
+          // Preserve the rememberMe preference from the current token storage
+          const rememberMe = this.tokenRepository.isRememberMeEnabled();
+          this.setAuthenticated(tokens, rememberMe);
         }),
         catchError(() => {
           this.logout();

@@ -44,8 +44,12 @@ export class AuthTokenRepositoryImpl implements AuthTokenRepository {
     }
     if (rememberMe) {
       localStorage.setItem(this.environment.tokenKey, token);
+      // Clear from sessionStorage to avoid conflicts
+      sessionStorage.removeItem(this.environment.tokenKey);
     } else {
       sessionStorage.setItem(this.environment.tokenKey, token);
+      // Clear from localStorage to avoid conflicts
+      localStorage.removeItem(this.environment.tokenKey);
     }
   }
 
@@ -55,8 +59,12 @@ export class AuthTokenRepositoryImpl implements AuthTokenRepository {
     }
     if (rememberMe) {
       localStorage.setItem(this.environment.refreshTokenKey, refreshToken);
+      // Clear from sessionStorage to avoid conflicts
+      sessionStorage.removeItem(this.environment.refreshTokenKey);
     } else {
       sessionStorage.setItem(this.environment.refreshTokenKey, refreshToken);
+      // Clear from localStorage to avoid conflicts
+      localStorage.removeItem(this.environment.refreshTokenKey);
     }
   }
 

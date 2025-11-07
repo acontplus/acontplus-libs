@@ -1,11 +1,11 @@
 {
   "name": "@acontplus/ng-auth",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Comprehensive Angular authentication module with JWT token management, route guards, CSRF protection, URL redirection, session handling, and clean architecture patterns. Includes login components, auth interceptors, and DDD-based repositories.",
   "peerDependencies": {
-    "@acontplus/core": "^1.1.0",
-    "@acontplus/ng-infrastructure": "^1.1.1",
-    "@acontplus/ng-config": "^1.1.0",
+    "@acontplus/core": "^1.1.1",
+    "@acontplus/ng-infrastructure": "^1.1.2",
+    "@acontplus/ng-config": "^1.1.1",
     "@angular/common": "^20.3.9",
     "@angular/core": "^20.3.9",
     "@angular/router": "^20.3.9",

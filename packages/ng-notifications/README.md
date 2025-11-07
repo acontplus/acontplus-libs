@@ -39,11 +39,7 @@ pnpm add @acontplus/ng-notifications
 interface NotificationProviderConfig {
   defaultProvider: 'sweetalert' | 'toastr' | 'snackbar';
   sweetalert?: {
-    defaultTheme?:
-      | 'auto'
-      | 'material-ui'
-      | 'material-ui-light'
-      | 'material-ui-dark';
+    defaultTheme?: 'auto' | 'material-ui' | 'material-ui-light' | 'material-ui-dark';
   };
   toastr?: ToastrConfig;
   snackbar?: SnackbarConfig;
@@ -259,7 +255,7 @@ this.notificationService.success({
   title: 'Success',
   message: 'Data saved',
   config: {
-    didOpen: popup => {
+    didOpen: (popup) => {
       console.log('Notification opened');
       popup.querySelector('.swal2-confirm')?.focus();
     },

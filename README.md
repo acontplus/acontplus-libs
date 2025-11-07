@@ -99,20 +99,42 @@ pnpm start
 ### Available Scripts
 
 - `pnpm start` - Start the demo application with SSL
-- `ppnpm run build` - Build the demo application
-- `ppnpm run watch` - Build demo app in watch mode
-- `ppnpm run test` - Run tests for all projects
-- `ppnpm run test:watch` - Run tests in watch mode
-- `ppnpm run test:coverage` - Run tests with coverag
-- `ppnpm run build:all` - Build all projects
-- `ppnpm run build:libs` - Build all library packages
-- `ppnpm run lint` - Lint all projects
-- `ppnpm run lint:fix` - Lint and auto-fix issues
-- `ppnpm run format` - Format all code with Prettie
-- `ppnpm run format:check` - Check code formatting
-- `ppnpm run clean` - Reset Nx cache
-- `ppnpm run local-registry` - Start local npm registry for development
-- `ppnpm run e2e` - Run end-to-end tests
+- `pnpm run build` - Build the demo application
+- `pnpm run watch` - Build demo app in watch mode
+- `pnpm run test` - Run tests for all projects
+- `pnpm run test:watch` - Run tests in watch mode
+- `pnpm run test:coverage` - Run tests with coverage
+- `pnpm run build:all` - Build all projects
+- `pnpm run build:libs` - Build all library packages
+- `pnpm run lint` - Lint all projects
+- `pnpm run lint:fix` - Lint and auto-fix issues
+- `pnpm run format` - Format all code with Prettier
+- `pnpm run format:check` - Check code formatting
+- `pnpm run clean` - Reset Nx cache
+- `pnpm run local-registry` - Start local npm registry for development
+- `pnpm run e2e` - Run end-to-end tests
+
+### Version Management
+
+Use the patch version script to bump package versions and update dependencies:
+
+```bash
+# Interactive mode - prompts for package selection
+.\scripts\patch-version.ps1
+
+# Direct mode - specify package name
+.\scripts\patch-version.ps1 -PackageName "@acontplus/utils"
+.\scripts\patch-version.ps1 -PackageName "core"
+```
+
+The script will:
+
+1. Show all available packages with current versions
+2. Prompt for package selection and confirmation
+3. Patch the version using `npm version patch` (e.g., 1.0.11 → 1.0.12)
+4. Automatically update all dependencies across the workspace
+5. Run `pnpm install` to update the lock file
+6. Display a summary of changes
 
 ### Nx Commands
 

@@ -125,8 +125,10 @@ export class AuthStore implements OnDestroy {
         refreshToken,
       })
       .pipe(
-        tap(tokens => {
-          this.setAuthenticated(tokens);
+        tap((tokens) => {
+          // Preserve the rememberMe preference from the current token storage
+          const rememberMe = this.tokenRepository.isRememberMeEnabled();
+          this.setAuthenticated(tokens, rememberMe);
         }),
         catchError(() => {
           this.logout();
@@ -216,7 +218,7 @@ export class AuthStore implements OnDestroy {
       const jsonPayload = decodeURIComponent(
         atob(base64)
           .split('')
-          .map(c => {
+          .map((c) => {
             return `%${`00${c.charCodeAt(0).toString(16)}`.slice(-2)}`;
           })
           .join(''),

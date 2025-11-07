@@ -44,11 +44,7 @@ import {
 export const appConfig: ApplicationConfig = {
   providers: [
     provideHttpClient(
-      withInterceptors([
-        apiInterceptor,
-        spinnerInterceptor,
-        httpContextInterceptor,
-      ]),
+      withInterceptors([apiInterceptor, spinnerInterceptor, httpContextInterceptor]),
     ),
   ],
 };
@@ -145,11 +141,7 @@ export class CustomerRepository extends GenericRepository<Customer, number> {
 
   // Custom business methods
   async findByEmail(email: string): Promise<Customer[]> {
-    return (
-      this.http
-        .get<Customer[]>(`${this.baseUrl}/search?email=${email}`)
-        .toPromise() || []
-    );
+    return this.http.get<Customer[]>(`${this.baseUrl}/search?email=${email}`).toPromise() || [];
   }
 }
 ```

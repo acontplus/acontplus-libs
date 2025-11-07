@@ -260,10 +260,7 @@ Animations should enhance the user experience without being distracting:
 // Example of a subtle animation
 animations: [
   trigger('fadeIn', [
-    transition(':enter', [
-      style({ opacity: 0 }),
-      animate('300ms ease-in', style({ opacity: 1 })),
-    ]),
+    transition(':enter', [style({ opacity: 0 }), animate('300ms ease-in', style({ opacity: 1 }))]),
   ]),
 ];
 ```

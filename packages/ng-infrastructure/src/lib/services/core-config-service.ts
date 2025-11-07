@@ -72,7 +72,7 @@ export class CoreConfigService {
    */
   shouldExcludeUrl(url: string): boolean {
     return this.config.excludeUrls.some(
-      excludePattern => url.includes(excludePattern) || new RegExp(excludePattern).test(url),
+      (excludePattern) => url.includes(excludePattern) || new RegExp(excludePattern).test(url),
     );
   }
 
@@ -81,7 +81,7 @@ export class CoreConfigService {
    */
   shouldExcludeMethod(method: string): boolean {
     return this.config.excludeMethods.some(
-      excludeMethod => excludeMethod.toLowerCase() === method.toLowerCase(),
+      (excludeMethod) => excludeMethod.toLowerCase() === method.toLowerCase(),
     );
   }
 

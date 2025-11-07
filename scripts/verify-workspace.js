@@ -15,7 +15,7 @@ console.log(`   - Workspaces: ${JSON.stringify(rootPkg.workspaces)}\n`);
 // Check workspace packages
 const workspaces = ['projects/acontplus-core', 'projects/acontplus-ui-components'];
 
-workspaces.forEach(workspace => {
+workspaces.forEach((workspace) => {
   const pkgPath = path.join(workspace, 'package.json');
   if (fs.existsSync(pkgPath)) {
     const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));

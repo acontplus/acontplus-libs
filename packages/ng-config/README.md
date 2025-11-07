@@ -264,15 +264,11 @@ export class UserRepository extends BaseRepository<User, number> {
   }
 
   async create(user: Omit<User, 'id'>): Promise<User> {
-    return this.http
-      .post<User>('/api/users', user)
-      .toPromise() as Promise<User>;
+    return this.http.post<User>('/api/users', user).toPromise() as Promise<User>;
   }
 
   async update(id: number, user: Partial<User>): Promise<User> {
-    return this.http
-      .put<User>(`/api/users/${id}`, user)
-      .toPromise() as Promise<User>;
+    return this.http.put<User>(`/api/users/${id}`, user).toPromise() as Promise<User>;
   }
 
   async delete(id: number): Promise<void> {

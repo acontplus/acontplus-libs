@@ -88,7 +88,7 @@ export class AuthUrlRedirect {
    * @returns True if the URL should be excluded
    */
   private isExcludedRoute(url: string): boolean {
-    return this.EXCLUDED_ROUTES.some(route => url.includes(route));
+    return this.EXCLUDED_ROUTES.some((route) => url.includes(route));
   }
 
   /**

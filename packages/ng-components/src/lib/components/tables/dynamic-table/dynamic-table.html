@@ -161,8 +161,10 @@
     [length]="paginationConfig.totalRecords"
     [pageSize]="paginationConfig.pageSize"
     [pageSizeOptions]="paginationConfig.pageSizeOptions || []"
-    [showFirstLastButtons]="true"
+    [showFirstLastButtons]="paginationConfig.showFirstLastButtons"
     [pageIndex]="paginationConfig.pageIndex"
+    [hidePageSize]="paginationConfig.hidePageSize"
+    [disabled]="paginationConfig.disabled"
     aria-label="Select page"
   />
   }

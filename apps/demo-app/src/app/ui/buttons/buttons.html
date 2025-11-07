@@ -69,6 +69,10 @@
       <acp-button matStyle="fab" variant="dark" icon="menu" />
       <acp-button matStyle="mini-fab" variant="dark" icon="menu" />
       <acp-button matStyle="extended-fab" variant="dark" icon="menu" />
+      <hr />
+      <acp-button [reportFormat]="ReportFormat.PDF" matStyle="filled" text="Ver Reporte" />
+      <acp-button [reportFormat]="ReportFormat.EXCEL" matStyle="filled" text="Descargar Reporte" />
+      <acp-button [reportFormat]="ReportFormat.IMAGE" matStyle="filled" text="Descargar Imagen" />
     </acp-dynamic-card>
   </div>
 </div>

@@ -105,7 +105,7 @@ export const httpContextInterceptor: HttpInterceptorFn = (req, next) => {
 
   // Check if URL should be excluded
   const shouldExclude = config.excludeUrls.some(
-    url => req.url.includes(url) || new RegExp(url).test(req.url),
+    (url) => req.url.includes(url) || new RegExp(url).test(req.url),
   );
 
   if (shouldExclude) {
@@ -203,13 +203,13 @@ export const httpContextInterceptor: HttpInterceptorFn = (req, next) => {
   // If request has auth header, handle with refresh logic
   if (headers['Authorization'] && config.refreshTokenCallback) {
     return next(enhancedReq).pipe(
-      catchError(error => {
+      catchError((error) => {
         // If 401 Unauthorized, try to refresh token
         if (error.status === 401) {
           const refreshToken = tokenProvider?.getRefreshToken?.();
           if (refreshToken && refreshToken.trim().length > 0) {
             return config.refreshTokenCallback()!.pipe(
-              switchMap(newTokens => {
+              switchMap((newTokens) => {
                 // Retry the original request with new token
                 const retryReq = req.clone({
                   url: finalUrl,
@@ -217,7 +217,7 @@ export const httpContextInterceptor: HttpInterceptorFn = (req, next) => {
                 });
                 return next(retryReq);
               }),
-              catchError(refreshError => {
+              catchError((refreshError) => {
                 // Refresh failed, logout user
                 config.logoutCallback?.();
                 return throwError(() => refreshError);

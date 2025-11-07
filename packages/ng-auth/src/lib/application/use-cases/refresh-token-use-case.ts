@@ -30,13 +30,13 @@ export class RefreshTokenUseCase extends BaseUseCase<void, AuthTokens> {
         refreshToken,
       })
       .pipe(
-        tap(tokens => {
+        tap((tokens) => {
           // Preserve the rememberMe preference from the current token storage
           const rememberMe = this.tokenRepository.isRememberMeEnabled();
           // Update authentication state
           this.authStore.setAuthenticated(tokens, rememberMe);
         }),
-        catchError(error => {
+        catchError((error) => {
           // Don't logout here, let the interceptor handle it
           return throwError(() => error);
         }),

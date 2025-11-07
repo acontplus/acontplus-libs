@@ -67,7 +67,7 @@ export class SweetalertProvider extends NotificationProviderBase {
     };
 
     return from(Swal.fire(swalConfig as any)).pipe(
-      map(result => ({
+      map((result) => ({
         isConfirmed: result.isConfirmed,
         isDenied: result.isDenied,
         isDismissed: result.isDismissed,
@@ -91,7 +91,7 @@ export class SweetalertProvider extends NotificationProviderBase {
     };
 
     return from(Swal.fire(swalConfig as any)).pipe(
-      map(result => ({
+      map((result) => ({
         isConfirmed: result.isConfirmed,
         isDenied: result.isDenied,
         isDismissed: result.isDismissed,

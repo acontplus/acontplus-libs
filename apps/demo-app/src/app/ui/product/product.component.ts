@@ -109,7 +109,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
   activeProducts = 0;
   totalValue = 0;
 
-  productPaginationConfig: Pagination = new Pagination(0, 10, 5, 0, [5, 10, 25, 50]);
+  productPaginationConfig: Pagination = new Pagination(0, 10, 0, [5, 10, 25, 50]);
 
   readonly actionsTemplate = viewChild.required<TemplateRef<any>>('actionsTemplate');
   readonly productImageTemplate = viewChild.required<TemplateRef<any>>('productImageTemplate');

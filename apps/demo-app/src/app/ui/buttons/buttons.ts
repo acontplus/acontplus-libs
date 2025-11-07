@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Button, DynamicCard } from '@acontplus/ng-components';
+import { Button, DynamicCard, REPORT_FORMAT } from '@acontplus/ng-components';
 
 @Component({
   selector: 'app-buttons',
@@ -7,4 +7,6 @@ import { Button, DynamicCard } from '@acontplus/ng-components';
   templateUrl: './buttons.html',
   styleUrl: './buttons.css',
 })
-export class Buttons {}
+export class Buttons {
+  ReportFormat = REPORT_FORMAT;
+}

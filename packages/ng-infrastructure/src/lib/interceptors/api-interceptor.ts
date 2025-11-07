@@ -163,7 +163,7 @@ function handleToastNotifications(
 
   // Handle warnings separately if needed
   if (response.status === 'warning' && response.warnings && response.warnings.length > 0) {
-    response.warnings.forEach(warning => {
+    response.warnings.forEach((warning) => {
       notificationService.show({
         type: 'warning',
         message: warning.message,
@@ -173,7 +173,7 @@ function handleToastNotifications(
 
   // Handle errors separately if needed
   if (response.status === 'error' && response.errors && response.errors.length > 0) {
-    response.errors.forEach(error => {
+    response.errors.forEach((error) => {
       notificationService.show({
         type: 'error',
         message: error.message,
@@ -248,7 +248,7 @@ function shouldShowSuccessToast(req: HttpRequest<unknown>): boolean {
     '/ping',
   ];
 
-  if (excludedPatterns.some(pattern => method === pattern || url.includes(pattern))) {
+  if (excludedPatterns.some((pattern) => method === pattern || url.includes(pattern))) {
     return false;
   }
 

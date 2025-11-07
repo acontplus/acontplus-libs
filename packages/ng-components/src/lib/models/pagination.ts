@@ -1,29 +1,44 @@
+import { PageEvent } from '@angular/material/paginator';
+
 export class Pagination {
-  pageIndex: number;
-  pageSize: number;
-  maxSize: number;
   totalRecords: number;
+  pageSize: number;
+  pageIndex: number;
   pageSizeOptions: number[];
 
+  hidePageSize: boolean;
+  showPageSizeOptions: boolean;
+  showFirstLastButtons: boolean;
+  disabled: boolean;
+
   /**
-   * @param pageIndex Current page index (0-based for MatPagination compatibility)
+   * @param pageIndex Current page index (0-based for MatPaginator compatibility)
    * @param pageSize Number of records per page
-   * @param maxSize Maximum number of pages displayed in the pagination control
    * @param totalRecords Total number of records
    * @param pageSizeOptions Available page size options
+   * @param hidePageSize Whether to hide the page size selector
+   * @param showPageSizeOptions Whether to show page size options
+   * @param showFirstLastButtons Whether to show first/last buttons
+   * @param disabled Whether the paginator is disabled
    */
   constructor(
-    pageIndex = 0, // MatPagination starts at 0
+    pageIndex = 0, // MatPaginator starts at 0
     pageSize = 25,
-    maxSize = 5,
     totalRecords = 0,
     pageSizeOptions: number[] = [25, 50, 75, 100],
+    hidePageSize = false,
+    showPageSizeOptions = true,
+    showFirstLastButtons = true,
+    disabled = false,
   ) {
     this.pageIndex = pageIndex;
     this.pageSize = pageSize;
-    this.maxSize = maxSize;
     this.totalRecords = totalRecords;
     this.pageSizeOptions = pageSizeOptions;
+    this.hidePageSize = hidePageSize;
+    this.showPageSizeOptions = showPageSizeOptions;
+    this.showFirstLastButtons = showFirstLastButtons;
+    this.disabled = disabled;
   }
 
   /**
@@ -34,24 +49,12 @@ export class Pagination {
   }
 
   /**
-   * Updates the page size and resets the page index to the first page.
-   * @param newPageSize The new page size
+   * Handles page event similar to Angular Material example.
+   * @param event MatPaginator PageEvent
    */
-  updatePageSize(newPageSize: number): void {
-    if (this.pageSizeOptions.includes(newPageSize)) {
-      this.pageSize = newPageSize;
-      this.pageIndex = 0; // Reset to first page
-    } else {
-      throw new Error(`Invalid page size: ${newPageSize}`);
-    }
-  }
-
-  /**
-   * Updates pagination data based on paginator event.
-   * @param event MatPaginator event
-   */
-  updateFromPaginatorEvent(event: any): void {
-    this.pageIndex = event.pageIndex;
+  handlePageEvent(event: PageEvent): void {
+    this.totalRecords = event.length;
     this.pageSize = event.pageSize;
+    this.pageIndex = event.pageIndex;
   }
 }

@@ -30,7 +30,7 @@ export const csrfInterceptor: HttpInterceptorFn = (req, next) => {
 
   if (isStateChangingMethod && isSameOrigin) {
     return from(csrfService.getCsrfToken()).pipe(
-      switchMap(csrfToken => {
+      switchMap((csrfToken) => {
         const modifiedReq = req.clone({
           setHeaders: {
             'X-CSRF-Token': csrfToken,

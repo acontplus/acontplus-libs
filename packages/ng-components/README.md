@@ -60,13 +60,14 @@ export class ProductComponent {}
 
 #### Button
 
-Flexible button component with multiple Material Design variants.
+Flexible button component with multiple Material Design variants and built-in report format support.
 
 ```typescript
-import { Button } from '@acontplus/ng-components';
+import { Button, REPORT_FORMAT } from '@acontplus/ng-components';
 
 @Component({
   template: `
+    <!-- Standard button -->
     <acp-button
       [variant]="'primary'"
       [text]="'Save'"
@@ -74,13 +75,106 @@ import { Button } from '@acontplus/ng-components';
       [matStyle]="'elevated'"
       [disabled]="false"
       (handleClick)="onSave()"
-    >
-    </acp-button>
+    />
+
+    <!-- Report button with automatic icon, color, and title -->
+    <acp-button
+      [reportFormat]="REPORT_FORMAT.PDF"
+      [text]="'Export Report'"
+      [title]="'Download'"
+      (handleClick)="exportReport($event)"
+    />
+    <!-- Automatically shows PDF icon, danger color, and title "Download - PDF" -->
+
+    <!-- Report button with format-only (no explicit text) -->
+    <acp-button [reportFormat]="REPORT_FORMAT.EXCEL" (handleClick)="exportExcel()" />
+    <!-- Shows Excel icon, success color, and "Excel" as title -->
   `,
   imports: [Button],
 })
-export class FormComponent {}
+export class FormComponent {
+  REPORT_FORMAT = REPORT_FORMAT;
+
+  exportReport() {
+    console.log('Exporting PDF report...');
+  }
+}
 ```
+
+#### Report Format Support
+
+The Button component includes optional built-in support for report/export buttons with automatic styling:
+
+**Available Report Formats:**
+
+- `REPORT_FORMAT.PDF` - Red/danger color, PDF icon
+- `REPORT_FORMAT.EXCEL` - Green/success color, table icon
+- `REPORT_FORMAT.WORD` - Blue/primary color, document icon
+- `REPORT_FORMAT.CSV` - Green/success color, grid icon
+- `REPORT_FORMAT.XML` - Orange/warning color, code icon
+- `REPORT_FORMAT.IMAGE` - Blue/info color, image icon
+- `REPORT_FORMAT.HTML` - Blue/info color, HTML icon
+- `REPORT_FORMAT.MHTML` - Gray/secondary color, web icon
+
+**Features:**
+
+- **Auto Icon**: Automatically sets the appropriate icon based on format
+- **Auto Color**: Automatically applies the correct color variant
+- **Auto Title**: Appends format name to tooltip (e.g., "Export - PDF")
+- **Optional**: All report features are completely optional
+- **Overridable**: Explicit `icon`, `variant`, or `title` inputs take precedence
+
+**Examples:**
+
+```typescript
+// Minimal report button
+<acp-button
+  [reportFormat]="REPORT_FORMAT.PDF"
+  [text]="'Export'"
+/>
+// Result: PDF icon, danger color, tooltip "PDF"
+
+// With custom title
+<acp-button
+  [reportFormat]="REPORT_FORMAT.EXCEL"
+  [text]="'Download'"
+  [title]="'Monthly Report'"
+/>
+// Result: Excel icon, success color, tooltip "Monthly Report - Excel"
+
+// Override icon but keep auto-color
+<acp-button
+  [reportFormat]="REPORT_FORMAT.WORD"
+  [icon]="'download'"
+  [text]="'Get Document'"
+/>
+// Result: Custom download icon, primary color (from Word format)
+
+// Override color but keep auto-icon
+<acp-button
+  [reportFormat]="REPORT_FORMAT.CSV"
+  [variant]="'secondary'"
+  [text]="'Export Data'"
+/>
+// Result: Grid icon (from CSV), secondary color (overridden)
+
+// Regular button (no report format)
+<acp-button
+  [text]="'Click me'"
+  [icon]="'add'"
+  [variant]="'primary'"
+/>
+// Result: Works as before, no report format logic applied
+```
+
+**Button Variants:**
+
+- `primary`, `secondary`, `success`, `danger`, `warning`, `info`
+
+**Material Styles:**
+
+- `filled` (default), `elevated`, `outlined`, `text`, `tonal`
+- `icon`, `fab`, `mini-fab`, `extended-fab`
 
 ### Dialog Wrapper
 

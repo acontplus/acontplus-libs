@@ -18,7 +18,7 @@ export class RegisterUseCase extends BaseUseCase<RegisterRequest, AuthTokens> {
 
   execute(request: RegisterRequest): Observable<AuthTokens> {
     return this.authRepository.register(request).pipe(
-      tap(tokens => {
+      tap((tokens) => {
         // Set authentication state
         this.authStore.setAuthenticated(tokens);
 

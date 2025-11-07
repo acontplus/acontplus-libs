@@ -275,9 +275,7 @@ support for custom fields and dynamic content.
 import { Login } from '@acontplus/ng-auth/ui/login';
 
 @Component({
-  template: `
-    <acp-login title="Welcome Back" [showRegisterButton]="true"> </acp-login>
-  `,
+  template: ` <acp-login title="Welcome Back" [showRegisterButton]="true"> </acp-login> `,
   imports: [Login],
 })
 export class AuthPageComponent {}
@@ -310,10 +308,7 @@ export class AuthPageComponent {
 ```
 
 ```html
-<acp-login
-  [additionalSigninControls]="signinExtras"
-  [additionalSignupControls]="signupExtras"
->
+<acp-login [additionalSigninControls]="signinExtras" [additionalSignupControls]="signupExtras">
 </acp-login>
 ```
 

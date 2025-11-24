@@ -26,6 +26,7 @@ export const appRoutes: Routes = [
       { path: '**', redirectTo: 'categories' },
     ],
   },
+  { path: 'categories', redirectTo: '/components/categories' },
   {
     path: 'modules',
     component: ModuleSidenav,

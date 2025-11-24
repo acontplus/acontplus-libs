@@ -5,7 +5,7 @@ import { HeaderLink } from './header-link';
   selector: 'app-doc-heading',
   template: `
     <h3 [id]="id">
-      <header-link [example]="text"></header-link>
+      <app-header-link [example]="text"></app-header-link>
       <span>{{ text }}</span>
     </h3>
   `,

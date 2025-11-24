@@ -7,3 +7,4 @@ export * from './spinner';
 export * from './tables';
 export * from './theme-toggle';
 export * from './autocomplete-wrapper';
+export * from './data-grid';

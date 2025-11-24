@@ -1,0 +1,13 @@
+<div class="docs-component-category-list-summary" id="category-summary" focusOnNavigation>
+  <div [innerHTML]="_categoryListSummary"></div>
+</div>
+<div class="docs-component-category-list">
+  @for (item of list; track item) {
+  <a class="docs-component-category-list-item" [routerLink]="['/components/' + item.id]">
+    <div class="docs-component-category-list-card">
+      <div class="docs-component-category-list-card-title">{{ item.name }}</div>
+      <div class="docs-component-category-list-card-summary">{{ item.summary }}</div>
+    </div>
+  </a>
+  }
+</div>

@@ -1,6 +1,6 @@
 import { Route, Routes } from '@angular/router';
 import { MenuItemList, menuItems } from './menu-items';
-import { AppLayoutComponent } from './app-layout.component';
+import { AppLayout } from './app-layout';
 
 const itemToRoute = (i: MenuItemList): Route => {
   const route = {} as Route;
@@ -17,7 +17,7 @@ const itemToRoute = (i: MenuItemList): Route => {
 export const routes: Routes = [
   {
     path: '',
-    component: AppLayoutComponent,
+    component: AppLayout,
     children: [
       {
         path: '',

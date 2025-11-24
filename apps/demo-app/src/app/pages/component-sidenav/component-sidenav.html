@@ -1,0 +1,27 @@
+<mat-sidenav-container class="docs-component-viewer-sidenav-container">
+  @if (isScreenSmall | async) {
+  <mat-sidenav
+    #sidenav
+    class="docs-component-viewer-sidenav"
+    role="navigation"
+    [opened]="(isScreenSmall | async) === false"
+    [mode]="(isScreenSmall | async) ? 'over' : 'side'"
+    [fixedInViewport]="isScreenSmall | async"
+    [fixedTopGap]="(isExtraScreenSmall | async) ? 92 : 56"
+  >
+    <app-component-nav [params]="params"></app-component-nav>
+  </mat-sidenav>
+  }
+
+  <div class="docs-component-sidenav-content">
+    <component-page-header (toggleSidenav)="toggleSidenav(sidenav)"></component-page-header>
+    <div class="docs-component-sidenav-inner-content">
+      <main class="docs-component-sidenav-body-content">
+        @if ((isScreenSmall | async) === false) {
+        <app-component-nav [params]="params" />
+        }
+        <router-outlet></router-outlet>
+      </main>
+    </div>
+  </div>
+</mat-sidenav-container>

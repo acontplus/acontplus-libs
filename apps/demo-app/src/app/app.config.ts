@@ -48,7 +48,7 @@ export const appConfig: ApplicationConfig = {
     ),
 
     // Authentication
-    ...authProviders,
+    //  ...authProviders,
 
     // Internationalization
     provideTransloco({

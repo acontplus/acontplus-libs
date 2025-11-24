@@ -1,11 +1,10 @@
-import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
+import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { map } from 'rxjs';
 
 @Component({
   selector: 'app-navbar',
@@ -19,7 +18,6 @@ import { map } from 'rxjs';
     MatIconModule,
     MatMenuModule,
     NgTemplateOutlet,
-    AsyncPipe,
   ],
 })
 export class Navbar {

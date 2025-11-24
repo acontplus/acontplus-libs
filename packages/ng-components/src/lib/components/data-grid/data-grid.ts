@@ -53,19 +53,20 @@ import { MatProgressBar } from '@angular/material/progress-bar';
 import { SelectionModel } from '@angular/cdk/collections';
 
 // Shared Imports
-import {
-  DataGridCellTemplate,
-  DataGridColumn,
-  DataGridDefaultOptions,
-  DataGridRowClassFormatter,
-  DataGridRowSelectionFormatter,
-} from '../../types/data-grid.types';
+
 import { AcpIsTemplateRefPipe } from '../../pipes/is-template-ref.pipe';
 import { AcpToObservablePipe } from '../../pipes/to-observable.pipe';
 import { DataGridSelectableCell } from '../../directives/selectable-cell';
 import { DataGridUtils } from '../../utils/data-grid.util';
 import { DataGridExpansionToggle } from '../../directives/data-grid-expansion-toggle';
 import { DataGridCell } from './data-grid-cell/data-grid-cell';
+import {
+  DataGridCellTemplate,
+  DataGridColumn,
+  DataGridDefaultOptions,
+  DataGridRowClassFormatter,
+  DataGridRowSelectionFormatter,
+} from '../../types';
 import { DataGridColClassPipe, DataGridRowClassPipe } from '../../pipes/data-grid.pipe';
 import { KeyboardNavigationService } from './keyboard-navigation';
 
@@ -526,11 +527,13 @@ export class DataGrid<T = any> implements AfterViewInit, OnDestroy, OnChanges {
   }
 
   toggleAllRows(): void {
-    this.isAllSelected()
-      ? this.rowSelection.clear()
-      : this.dataSource.data.forEach((row, index) => {
-          if (!this.rowSelectionFormatter().disabled?.(row, index)) this.rowSelection.select(row);
-        });
+    if (this.isAllSelected()) {
+      this.rowSelection.clear();
+    } else {
+      this.dataSource.data.forEach((row, index) => {
+        if (!this.rowSelectionFormatter().disabled?.(row, index)) this.rowSelection.select(row);
+      });
+    }
     this.rowSelectedChange.emit(this.rowSelection.selected);
   }
 

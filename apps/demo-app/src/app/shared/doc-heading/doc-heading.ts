@@ -2,7 +2,7 @@ import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { HeaderLink } from './header-link';
 
 @Component({
-  selector: 'doc-heading',
+  selector: 'app-doc-heading',
   template: `
     <h3 [id]="id">
       <header-link [example]="text"></header-link>

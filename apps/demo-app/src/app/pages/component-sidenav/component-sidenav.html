@@ -14,7 +14,7 @@
   }
 
   <div class="docs-component-sidenav-content">
-    <component-page-header (toggleSidenav)="toggleSidenav(sidenav)"></component-page-header>
+    <app-component-page-header (toggleSidenav)="toggleSidenav(sidenav)" />
     <div class="docs-component-sidenav-inner-content">
       <main class="docs-component-sidenav-body-content">
         @if ((isScreenSmall | async) === false) {

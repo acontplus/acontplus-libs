@@ -92,9 +92,9 @@ export class KeyboardNavigationService {
     fromEvent<KeyboardEvent>(element.element.nativeElement, 'keydown')
       .pipe(
         takeUntil(this.destroy$),
-        filter((event) => ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)),
+        filter(event => ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)),
       )
-      .subscribe((event) => {
+      .subscribe(event => {
         event.preventDefault(); // Prevenir el comportamiento por defecto del navegador (scroll, etc.)
         this.handleKeyNavigation(event.key);
       });
@@ -103,7 +103,7 @@ export class KeyboardNavigationService {
     fromEvent<FocusEvent>(element.element.nativeElement, 'focus')
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
-        const index = this.focusableElements.findIndex((e) => e.element === element.element);
+        const index = this.focusableElements.findIndex(e => e.element === element.element);
         this.currentFocusIndex.set(index);
 
         // Ejecutar el callback onFocus si está definido
@@ -118,7 +118,7 @@ export class KeyboardNavigationService {
    * @param element El ElementRef del elemento a desregistrar.
    */
   unregisterElement(element: ElementRef) {
-    const index = this.focusableElements.findIndex((e) => e.element === element);
+    const index = this.focusableElements.findIndex(e => e.element === element);
     if (index !== -1) {
       this.focusableElements.splice(index, 1);
 
@@ -135,7 +135,7 @@ export class KeyboardNavigationService {
    * @param index Opcional: el índice interno a enfocar (ej: el índice de una fila en una tabla).
    */
   focusElement(name: string, index?: number) {
-    const elementIndex = this.focusableElements.findIndex((e) => e.name === name);
+    const elementIndex = this.focusableElements.findIndex(e => e.name === name);
     if (elementIndex !== -1) {
       this.currentFocusIndex.set(elementIndex);
 

@@ -3,8 +3,6 @@ import { DataGridColumn } from '../types';
 
 @Injectable({ providedIn: 'root' })
 export class DataGridUtils {
-  constructor() {}
-
   /**
    * Get cell's value based on the data and column's field (e.g. `a.b.c`)
    * @param rowData Row data

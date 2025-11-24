@@ -29,7 +29,7 @@ export interface ExampleType {
 }
 
 @Component({
-  selector: 'example-viewer',
+  selector: 'app-example-viewer',
   // templateUrl: './example-viewer.html',
   templateUrl: './example-viewer.html',
   styleUrl: './example-viewer.scss',
@@ -68,5 +68,7 @@ export class ExampleViewer implements OnInit, OnDestroy {
     // } else {
     //   this.snackbar.open('Copy failed. Please try again!', '', { duration: 2500 });
     // }
+    console.log(content);
+    this.snackbar.open('Copy failed. Please try again!', '', { duration: 2500 });
   }
 }

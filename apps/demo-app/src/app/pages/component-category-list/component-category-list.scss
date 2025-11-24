@@ -29,7 +29,7 @@
 }
 
 .docs-component-category-list-card-title,
-.docs-component-category-list-card-summary  {
+.docs-component-category-list-card-summary {
   color: var(--mat-sys-on-surface-variant);
 }
 
@@ -54,7 +54,10 @@
     font-weight: 500;
   }
 
-  &, &:active, &:hover, &:focus {
+  &,
+  &:active,
+  &:hover,
+  &:focus {
     text-decoration: none;
   }
 }
@@ -80,7 +83,6 @@
   min-height: 2.4em;
   font-size: 16px;
 }
-
 
 .docs-component-category-list-card-image {
   width: 100%;

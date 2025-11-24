@@ -3,7 +3,7 @@ import { NavigationFocusService } from '../services/navigation-focus.service';
 
 let uid = 0;
 @Directive({
-  selector: '[focusOnNavigation]',
+  selector: '[appFocusOnNavigation]',
 })
 export class NavigationFocus implements OnDestroy {
   private el = inject(ElementRef);

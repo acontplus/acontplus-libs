@@ -103,7 +103,6 @@ import { NavigationFocus } from '../../shared/directives/navigation-focus';
         top: 35px;
         position: sticky;
 
-
         @media (max-width: constants.$small-breakpoint-width) {
           order: -1;
           position: inherit;

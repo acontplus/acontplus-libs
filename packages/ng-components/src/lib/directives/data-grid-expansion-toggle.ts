@@ -1,7 +1,7 @@
-import { Directive, Input, output, TemplateRef } from '@angular/core';
+import { Directive, Input, TemplateRef, output } from '@angular/core';
 
 @Directive({
-  selector: '[acp-data-grid-expansion-toggle]',
+  selector: '[acpDataGridExpansionToggle]',
   host: {
     '[class.expanded]': 'opened',
     '(click)': 'onClick($event)',
@@ -29,8 +29,8 @@ export class DataGridExpansionToggle {
     }
   }
 
-  @Input('expansionRowTpl')
-  set template(value: TemplateRef<any>) {
+  @Input()
+  set expansionRowTpl(value: TemplateRef<any>) {
     if (value !== this._tplRef) {
       this._tplRef = value;
     }

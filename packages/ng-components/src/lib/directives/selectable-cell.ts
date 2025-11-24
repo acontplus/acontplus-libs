@@ -1,7 +1,7 @@
 import { Directive, input, output } from '@angular/core';
 
 @Directive({
-  selector: '[acp-grid-selectable-cell]',
+  selector: '[acpGridSelectableCell]',
   host: {
     '[class.selected]': 'selected',
     '(click)': 'onClick($event)',

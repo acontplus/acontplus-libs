@@ -11,6 +11,12 @@ export class DataGridColClassPipe implements PipeTransform {
     rowChangeRecord?: KeyValueChangeRecord<string, any>,
     currentValue?: any,
   ) {
+    if (rowChangeRecord) {
+      console.log('');
+    }
+    if (currentValue) {
+      console.log('');
+    }
     if (typeof colDef.class === 'string') {
       return colDef.class;
     } else if (typeof colDef.class === 'function') {
@@ -49,6 +55,12 @@ export class DataGridCellActionsPipe implements PipeTransform {
     rowChangeRecord?: KeyValueChangeRecord<string, any>,
     currentValue?: any,
   ) {
+    if (rowChangeRecord) {
+      console.log('');
+    }
+    if (currentValue) {
+      console.log('');
+    }
     if (typeof btns === 'function') {
       return btns(rowData);
     } else if (Array.isArray(btns)) {
@@ -88,6 +100,12 @@ export class DataGridCellActionDisablePipe implements PipeTransform {
     rowChangeRecord?: KeyValueChangeRecord<string, any>,
     currentValue?: any,
   ) {
+    if (typeof rowChangeRecord === 'object') {
+      console.log('');
+    }
+    if (currentValue) {
+      console.log('');
+    }
     if (typeof btn.disabled === 'boolean') {
       return btn.disabled;
     } else if (typeof btn.disabled === 'function') {

@@ -3,7 +3,7 @@ import { Component, Input, OnInit, ViewEncapsulation, inject } from '@angular/co
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-  selector: 'header-link',
+  selector: 'app-header-link',
   template: `
     <a
       aria-label="Link to this heading"

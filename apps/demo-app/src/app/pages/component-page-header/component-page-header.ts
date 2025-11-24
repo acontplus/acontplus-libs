@@ -4,7 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { ComponentPageTitleService } from '../../shared/services/page-title';
 
 @Component({
-  selector: 'component-page-header',
+  selector: 'app-component-page-header',
   template: `<header class="docs-component-page-header">
     <button mat-button (click)="toggleSidenav.emit()">
       <mat-icon>menu</mat-icon>

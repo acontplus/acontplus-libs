@@ -28,7 +28,7 @@ export class ComponentCategoryList implements OnInit, OnDestroy {
       Object.assign,
     );
 
-    this.routeParamSubscription = this.params.subscribe(params => {
+    this.routeParamSubscription = this.params.subscribe(() => {
       this._componentPageTitle.title = 'components';
     });
   }

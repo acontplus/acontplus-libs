@@ -186,7 +186,8 @@ a.docs-link:hover {
       }
     }
 
-    &:hover, &:focus {
+    &:hover,
+    &:focus {
       img {
         transform: scale(1.1);
       }
@@ -249,7 +250,8 @@ a.docs-link:hover {
     margin: $margin-promotion-sections-small 0 0 0;
   }
 
-  .docs-homepage-row, .docs-homepage-carousel-row {
+  .docs-homepage-row,
+  .docs-homepage-carousel-row {
     margin: $margin-promotion-sections-small 0;
   }
 }

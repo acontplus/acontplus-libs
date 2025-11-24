@@ -8,7 +8,6 @@ import { Navbar } from './shared/navbar/navbar';
   template: `
     <app-navbar />
     <router-outlet />
-
   `,
   encapsulation: ViewEncapsulation.None,
   styleUrl: './app.scss',

@@ -213,7 +213,6 @@ const dataTs = `export const EXAMPLE_DATA: any[] = [
   },
 ];
 
-
 `;
 
 const gridBasicExampleConfig = {

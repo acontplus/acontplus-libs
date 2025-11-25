@@ -1,0 +1,16 @@
+.acp-svg-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+  }
+
+  // When icon is not found and no fallback, hide the container
+  &:empty {
+    display: none;
+  }
+}

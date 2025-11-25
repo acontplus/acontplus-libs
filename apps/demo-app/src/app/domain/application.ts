@@ -1,4 +1,4 @@
-import { BaseEntity } from '@acontplus/core';
+import type { BaseEntity } from '@acontplus/core';
 
 export interface Application extends BaseEntity {
   name: string;

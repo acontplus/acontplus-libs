@@ -1,37 +1,49 @@
 {
   "name": "@acontplus/ui-kit",
-  "version": "0.0.1",
+  "version": "1.0.1",
+  "description": "Framework-agnostic UI kit library providing reusable design assets, SVG icon definitions, button types, select options, and design system elements for consistent user interfaces across any JavaScript framework.",
   "type": "module",
-  "main": "./index.js",
-  "module": "./index.js",
-  "types": "./index.d.ts",
+  "main": "./src/index.js",
+  "module": "./src/index.js",
+  "types": "./src/index.d.ts",
   "exports": {
     ".": {
-      "import": "./index.js",
-      "types": "./index.d.ts"
+      "import": "./src/index.js",
+      "types": "./src/index.d.ts"
     },
     "./package.json": "./package.json"
   },
-  "description": "UI kit library for reusable design system components and patterns. Currently under development to provide standardized UI elements and design tokens for consistent user interfaces across applications.",
   "files": [
-    "index.js",
-    "index.d.ts",
-    "lib/**",
+    "src/**",
     "README.md"
   ],
+  "scripts": {
+    "build": "nx build ui-kit",
+    "test": "nx test ui-kit"
+  },
   "keywords": [
     "acontplus",
     "ui-kit",
     "design-system",
     "design-tokens",
+    "icons",
+    "svg-icons",
+    "icon-definitions",
+    "button-types",
+    "select-options",
+    "report-formats",
+    "framework-agnostic",
+    "material-design",
     "reusable-components",
     "ui-elements",
     "standardized-ui",
     "consistent-interfaces",
-    "component-library",
     "design-patterns",
     "typescript",
-    "under-development",
+    "react",
+    "vue",
+    "angular",
+    "svelte",
     "enterprise",
     "frontend"
   ],
@@ -49,5 +61,13 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
-  "dependencies": {}
+  "peerDependencies": {
+    "tslib": "^2.8.1",
+    "typescript": "^5.9.2"
+  },
+  "release": {
+    "branches": [
+      "main"
+    ]
+  }
 }

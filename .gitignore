@@ -55,3 +55,6 @@ projects/test-app/node_modules/.package-lock.json
 vite.config.*.timestamp*
 vitest.config.*.timestamp*
 .angular
+/packages/ng-auth/node_modules
+/packages/core/node_modules
+/packages/ng-components/node_modules

@@ -9,13 +9,12 @@ import { ToastrProvider } from '../providers/toastr-provider';
 import { SnackbarProvider } from '../providers/snackbar-provider';
 import { SweetalertProvider } from '../providers/sweetalert-provider';
 import {
-  NotificationCallProps,
-  NotificationResult,
-  SweetAlertConfig,
-  NotificationProvider,
-  NotificationType,
-} from '../types/notification.types';
-import { NOTIFICATION_MESSAGES } from '../constants/notification.constants';
+  NOTIFICATION_MESSAGES,
+  type NotificationProvider,
+  type NotificationResult,
+  type NotificationType,
+} from '@acontplus/ui-kit';
+import { NotificationCallProps, SweetAlertConfig } from '../types/notification.types';
 
 @Injectable({
   providedIn: 'root',

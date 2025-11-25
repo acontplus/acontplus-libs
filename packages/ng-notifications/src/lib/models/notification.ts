@@ -1,6 +1,6 @@
 import { SnackbarConfig } from '../config/snackbar-config';
 import { IndividualConfig } from 'ngx-toastr';
-import { NotificationType } from '../types/notification.types';
+import type { NotificationType } from '@acontplus/ui-kit';
 
 export interface ToastrCallProps {
   readonly message: string;

@@ -18,7 +18,7 @@ import {
   httpContextInterceptor,
   spinnerInterceptor,
 } from '@acontplus/ng-infrastructure';
-import { authProviders, csrfInterceptor } from '@acontplus/ng-auth';
+import { csrfInterceptor } from '@acontplus/ng-auth';
 import { provideNotifications } from '../../../../packages/ng-notifications/src/lib/providers';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 
@@ -48,7 +48,7 @@ export const appConfig: ApplicationConfig = {
     ),
 
     // Authentication
-    ...authProviders,
+    //  ...authProviders,
 
     // Internationalization
     provideTransloco({

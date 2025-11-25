@@ -1,0 +1,9 @@
+<p>
+  El <code>data-grid</code> es un potente componente de tabla basado en Material. Admite selección
+  de celdas, selección de filas, selección múltiple de filas, expansión de filas, ocultamiento de
+  columnas, movimiento de columnas y muchas otras funciones.
+</p>
+@if (route.data | async; as data) { @for (exampleData of data["examples"]; track exampleData) {
+<app-doc-heading [text]="exampleData.title"></app-doc-heading>
+<app-example-viewer [exampleData]="exampleData"></app-example-viewer>
+} }

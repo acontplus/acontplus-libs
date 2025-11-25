@@ -22,12 +22,7 @@
           }
         ],
         "styles": ["apps/demo-app/src/styles.scss"],
-        "allowedCommonJsDependencies": ["sweetalert2"],
-        "server": "apps/demo-app/src/main.server.ts",
-        "ssr": {
-          "entry": "apps/demo-app/src/server.ts"
-        },
-        "outputMode": "server"
+        "allowedCommonJsDependencies": ["sweetalert2"]
       },
       "configurations": {
         "production": {

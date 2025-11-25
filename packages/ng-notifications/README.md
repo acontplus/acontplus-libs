@@ -8,11 +8,13 @@ SweetAlert2.
 
 ```bash
 # Using npm
-npm install @acontplus/ng-notifications
+npm install @acontplus/ng-notifications @acontplus/ui-kit
 
 # Using pnpm
-pnpm add @acontplus/ng-notifications
+pnpm add @acontplus/ng-notifications @acontplus/ui-kit
 ```
+
+> **Note**: `@acontplus/ng-notifications` depends on `@acontplus/ui-kit` for notification constants (messages, durations, icons). Both packages must be installed.
 
 ## Features
 
@@ -284,8 +286,38 @@ this.notificationService.snackbar.info({ message: 'Information' });
 ### Quick Methods
 
 ```typescript
-// Predefined messages
+// Predefined messages (from @acontplus/ui-kit)
 this.notificationService.quickSave(); // "Data saved successfully"
 this.notificationService.quickDelete(); // "Item deleted"
 this.notificationService.networkError(); // "Network connection error"
 ```
+
+## Notification Constants
+
+This library re-exports notification constants from `@acontplus/ui-kit` for backward compatibility:
+
+```typescript
+import {
+  NOTIFICATION_MESSAGES,
+  NOTIFICATION_DURATIONS,
+  NOTIFICATION_ICONS,
+} from '@acontplus/ng-notifications';
+
+// Pre-defined messages
+NOTIFICATION_MESSAGES.SUCCESS.SAVE; // 'Data saved successfully'
+NOTIFICATION_MESSAGES.ERROR.NETWORK; // 'Network error occurred'
+NOTIFICATION_MESSAGES.WARNING.UNSAVED_CHANGES; // 'You have unsaved changes'
+
+// Standard durations
+NOTIFICATION_DURATIONS.SHORT; // 3000ms
+NOTIFICATION_DURATIONS.MEDIUM; // 5000ms
+NOTIFICATION_DURATIONS.LONG; // 8000ms
+
+// Icon mappings (Material icons)
+NOTIFICATION_ICONS.success; // 'check_circle'
+NOTIFICATION_ICONS.error; // 'error'
+NOTIFICATION_ICONS.warning; // 'warning'
+NOTIFICATION_ICONS.info; // 'info'
+```
+
+These constants are defined in `@acontplus/ui-kit` to ensure they're framework-agnostic and reusable across different notification implementations.

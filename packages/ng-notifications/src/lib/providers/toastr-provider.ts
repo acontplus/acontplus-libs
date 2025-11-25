@@ -3,11 +3,8 @@ import { IndividualConfig, ToastrService } from 'ngx-toastr';
 import { Observable, of } from 'rxjs';
 import { NotificationProviderBase } from './notification-provider';
 import { TOASTR_NOTIFICATION_CONFIG } from '../config/toastr-config';
-import {
-  NotificationCallProps,
-  NotificationResult,
-  SweetAlertConfig,
-} from '../types/notification.types';
+import type { NotificationResult } from '@acontplus/ui-kit';
+import { NotificationCallProps, SweetAlertConfig } from '../types/notification.types';
 
 export type ToastrType = 'success' | 'error' | 'warning' | 'info';
 

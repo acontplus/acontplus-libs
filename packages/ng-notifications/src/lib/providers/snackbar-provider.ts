@@ -3,11 +3,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable, of } from 'rxjs';
 import { NotificationProviderBase } from './notification-provider';
 import { SNACKBAR_CONFIG, SnackbarConfig } from '../config/snackbar-config';
-import {
-  NotificationCallProps,
-  NotificationResult,
-  SweetAlertConfig,
-} from '../types/notification.types';
+import type { NotificationResult } from '@acontplus/ui-kit';
+import { NotificationCallProps, SweetAlertConfig } from '../types/notification.types';
 import { SnackbarProps } from '../models/notification';
 
 @Injectable({

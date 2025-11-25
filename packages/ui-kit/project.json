@@ -12,6 +12,26 @@
   },
   "tags": [],
   "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/ui-kit",
+        "main": "packages/ui-kit/src/index.ts",
+        "tsConfig": "packages/ui-kit/tsconfig.lib.json",
+        "assets": ["packages/ui-kit/*.md"],
+        "clean": false,
+        "packageJson": "packages/ui-kit/package.json"
+      }
+    },
+    "publish": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npm publish --access=public",
+        "cwd": "dist/packages/ui-kit",
+        "parallel": false
+      }
+    },
     "nx-release-publish": {
       "options": {
         "packageRoot": "dist/{projectRoot}"

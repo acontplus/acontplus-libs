@@ -1,3 +1,7 @@
-<svg [attr.width]="width()" [attr.height]="height()" [style.color]="color()">
-  <use [attr.xlink:href]="'./svg-sprite.svg#' + id()"></use>
-</svg>
+<div
+  class="acp-svg-icon"
+  [style.width]="computedWidth()"
+  [style.height]="computedHeight()"
+  [style.color]="color()"
+  [innerHTML]="iconSvg()"
+></div>

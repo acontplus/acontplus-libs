@@ -33,17 +33,3 @@ export const NOTIFICATION_MESSAGES = {
     BACKUP_COMPLETE: 'Backup completed',
   },
 } as const;
-
-export const NOTIFICATION_DURATIONS = {
-  SHORT: 3000,
-  MEDIUM: 5000,
-  LONG: 8000,
-  PERSISTENT: 0,
-} as const;
-
-export const NOTIFICATION_ICONS = {
-  success: 'check_circle',
-  error: 'error',
-  warning: 'warning',
-  info: 'info',
-} as const;

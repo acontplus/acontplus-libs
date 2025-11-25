@@ -1,11 +1,7 @@
 import { Injectable, InjectionToken } from '@angular/core';
 import { Observable } from 'rxjs';
-import {
-  NotificationCallProps,
-  NotificationResult,
-  SweetAlertConfig,
-  NotificationProvider,
-} from '../types/notification.types';
+import type { NotificationProvider, NotificationResult } from '@acontplus/ui-kit';
+import { NotificationCallProps, SweetAlertConfig } from '../types/notification.types';
 
 export const NOTIFICATION_CONFIG = new InjectionToken<NotificationProviderConfig>(
   'NOTIFICATION_CONFIG',

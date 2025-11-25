@@ -7,12 +7,8 @@ import {
   NotificationProviderConfig,
   NOTIFICATION_CONFIG,
 } from './notification-provider';
-import {
-  NotificationCallProps,
-  NotificationResult,
-  NotificationType,
-  SweetAlertConfig,
-} from '../types/notification.types';
+import type { NotificationResult, NotificationType } from '@acontplus/ui-kit';
+import { NotificationCallProps, SweetAlertConfig } from '../types/notification.types';
 import { ThemeDetector } from '../services/theme-detector';
 
 @Injectable({

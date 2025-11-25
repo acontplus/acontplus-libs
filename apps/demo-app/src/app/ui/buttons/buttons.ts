@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { Button, DynamicCard, REPORT_FORMAT } from '@acontplus/ng-components';
+import { Button, DynamicCard } from '@acontplus/ng-components';
+import { REPORT_FORMAT } from '@acontplus/ui-kit';
 
 @Component({
   selector: 'app-buttons',

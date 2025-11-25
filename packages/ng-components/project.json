@@ -11,6 +11,7 @@
       "fallbackCurrentVersionResolver": "disk"
     }
   },
+  "implicitDependencies": ["ui-kit"],
   "tags": [],
   "targets": {
     "build": {

@@ -1,5 +1,6 @@
 export * from './cards';
 export * from './dialog-wrapper';
+export * from './dynamic-select';
 export * from './icons';
 export * from './input-chip';
 export * from './button';

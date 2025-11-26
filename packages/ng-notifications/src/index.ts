@@ -1,5 +1,4 @@
 export * from './lib/types/notification.types';
-export * from './lib/constants/notification.constants';
 export * from './lib/config/toastr-config';
 export * from './lib/config/snackbar-config';
 export * from './lib/models/notification';

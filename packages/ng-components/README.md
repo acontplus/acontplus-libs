@@ -186,6 +186,147 @@ import { DialogWrapper } from '@acontplus/ng-components';
 
 ### Icons
 
+#### SvgIcon
+
+Modern, type-safe SVG icon system with registry service, fallback support, and online icon loading.
+
+**Features:**
+
+- ✅ Type-safe with autocomplete for icon names
+- ✅ Tree-shakable - only bundled icons included
+- ✅ SSR-friendly - no runtime HTTP requests for registered icons
+- ✅ Signal-based reactive primitives
+- ✅ Fallback icon support for missing icons
+- ✅ Dynamic online icon loading from URLs
+- ✅ Customizable size, color, and dimensions
+
+```typescript
+import { SvgIcon, IconRegistryService } from '@acontplus/ng-components';
+
+@Component({
+  template: `
+    <!-- Basic usage -->
+    <acp-svg-icon name="home" />
+
+    <!-- Custom size and color -->
+    <acp-svg-icon name="user" size="32px" color="#FF5733" />
+
+    <!-- Custom width and height -->
+    <acp-svg-icon name="settings" width="20px" height="20px" />
+
+    <!-- Disable fallback for missing icons -->
+    <acp-svg-icon name="custom-icon" [useFallback]="false" />
+
+    <!-- Dynamic icon -->
+    <acp-svg-icon [name]="currentIcon" size="24px" />
+  `,
+  imports: [SvgIcon],
+})
+export class IconExampleComponent {
+  currentIcon = 'menu';
+}
+```
+
+**Available Default Icons:**
+`home`, `user`, `settings`, `search`, `close`, `check`, `arrow-right`, `arrow-left`, `menu`, `info`, `warning`, `error`
+
+**Configuring the Icon Registry:**
+
+```typescript
+import { ApplicationConfig } from '@angular/core';
+import { IconRegistryService } from '@acontplus/ng-components';
+import { provideHttpClient } from '@angular/common/http';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideHttpClient(), // Required for online icon loading
+    // ... other providers
+  ],
+};
+
+// In your app component or initialization
+export class AppComponent implements OnInit {
+  private iconRegistry = inject(IconRegistryService);
+
+  ngOnInit() {
+    // Configure with fallback icon
+    this.iconRegistry.configure({
+      fallbackIcon: `<svg>...</svg>`, // Fallback when icon not found
+      showWarnings: true, // Log warnings for missing icons
+      iconBaseUrl: 'https://cdn.example.com/icons', // Base URL for auto-loading
+    });
+
+    // Register custom icons
+    this.iconRegistry.registerIcon(
+      'custom-icon',
+      `
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M12 2L2 7v10l10 5 10-5V7z"/>
+      </svg>
+    `,
+    );
+
+    // Register multiple icons
+    this.iconRegistry.registerIcons([
+      { name: 'icon-one', data: '<svg>...</svg>' },
+      { name: 'icon-two', data: '<svg>...</svg>' },
+    ]);
+
+    // Load icons from URLs
+    await this.iconRegistry.loadIconFromUrl('github', 'https://example.com/github.svg');
+
+    // Load multiple icons from URLs
+    await this.iconRegistry.loadIconsFromUrls([
+      { name: 'twitter', url: 'https://example.com/twitter.svg' },
+      { name: 'linkedin', url: 'https://example.com/linkedin.svg' },
+    ]);
+  }
+}
+```
+
+**Icon Registry API:**
+
+| Method                        | Description                               |
+| ----------------------------- | ----------------------------------------- |
+| `configure(config)`           | Set fallback icon, warnings, and base URL |
+| `registerIcon(name, svgData)` | Register a single icon                    |
+| `registerIcons(icons[])`      | Register multiple icons                   |
+| `loadIconFromUrl(name, url)`  | Load icon from URL (requires HttpClient)  |
+| `loadIconsFromUrls(icons[])`  | Load multiple icons from URLs             |
+| `getIcon(name)`               | Get icon (returns fallback if not found)  |
+| `getIconAsync(name)`          | Get icon with auto-loading from base URL  |
+| `hasIcon(name)`               | Check if icon exists                      |
+| `getRegisteredIcons()`        | Get all registered icon names             |
+| `removeIcon(name)`            | Remove specific icon                      |
+| `clearRegistry()`             | Clear all icons                           |
+
+**Handling Missing Icons:**
+
+When an icon is not found:
+
+1. If `fallbackIcon` is configured, it displays the fallback
+2. If `useFallback` input is `false`, nothing is displayed
+3. Console warning is shown (if `showWarnings: true`)
+
+**Online Icon Loading:**
+
+```typescript
+// Manual loading
+await this.iconRegistry.loadIconFromUrl('brand-icon', 'https://cdn.example.com/brand.svg');
+
+// Auto-loading with base URL
+this.iconRegistry.configure({
+  iconBaseUrl: 'https://cdn.example.com/icons'
+});
+
+// Component automatically tries to load from:
+// https://cdn.example.com/icons/brand-icon.svg
+<acp-svg-icon name="brand-icon" />
+
+// Or use async method
+const icon = await this.iconRegistry.getIconAsync('brand-icon');
+```
+
 #### UserIcon & SvgIcon
 
 Icon components for consistent iconography.

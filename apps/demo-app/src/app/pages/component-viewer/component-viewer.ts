@@ -10,7 +10,6 @@ import {
 } from '@angular/router';
 import { Subject, startWith } from 'rxjs';
 import { ComponentPageTitleService } from '../../shared/services/page-title';
-import { NavigationFocus } from '../../shared/directives/navigation-focus';
 
 @Component({
   selector: 'app-component-viewer',
@@ -22,7 +21,6 @@ import { NavigationFocus } from '../../shared/directives/navigation-focus';
         class="docs-component-viewer-tabbed-content"
         aria-label="Documentation Sections"
         id="component-viewer"
-        focusOnNavigation
         [tabPanel]="panel"
       >
         @for (section of sections; track section) {
@@ -128,14 +126,14 @@ import { NavigationFocus } from '../../shared/directives/navigation-focus';
     }
   `,
   encapsulation: ViewEncapsulation.None,
-  imports: [MatTabsModule, NavigationFocus, RouterLinkActive, RouterLink, RouterOutlet],
+  imports: [MatTabsModule, RouterLinkActive, RouterLink, RouterOutlet],
 })
 export class ComponentViewer implements OnDestroy {
   private _router = inject(Router);
   private _route = inject(ActivatedRoute);
   private _componentPageTitle = inject(ComponentPageTitleService);
 
-  sections = new Set<string>(['overview', 'api']);
+  sections = new Set<string>(['overview', 'examples', 'api', 'styling']);
   private _destroyed = new Subject<void>();
 
   componentId = '';

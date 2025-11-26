@@ -2,8 +2,12 @@ import { Component, input, output, ViewEncapsulation } from '@angular/core';
 import { MatButton, MatFabButton, MatIconButton, MatMiniFabButton } from '@angular/material/button';
 import { NgClass, NgTemplateOutlet } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
-import { ButtonType, ButtonVariant, MaterialButtonStyle } from '../../types/button-type';
-import { REPORT_FORMAT } from '../../enums';
+import {
+  REPORT_FORMAT,
+  type ButtonType,
+  type ButtonVariant,
+  type MaterialButtonStyle,
+} from '@acontplus/ui-kit';
 
 @Component({
   selector: 'acp-button',

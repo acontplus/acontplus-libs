@@ -14,20 +14,27 @@ app-navbar {
   z-index: 2;
 }
 
-app-root > app-component-sidenav {
+// Agrupa componentes que actúan como contenedores
+app-component-sidenav,
+app-module-sidenav,
+app-module-nav {
   flex: 1;
 }
 
+// Reglas para el contenido después del router-outlet
 app-root > router-outlet + .main-content,
-app-root > router-outlet + app-component-sidenav {
+app-root > router-outlet + app-component-sidenav,
+app-root > router-outlet + app-module-sidenav {
   margin-top: 56px;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
 
+// Responsive
 @media (max-width: constants.$extra-small-breakpoint-width) {
   app-root > router-outlet + .main-content,
-  app-root > router-outlet + app-component-sidenav {
+  app-root > router-outlet + app-component-sidenav,
+  app-root > router-outlet + app-module-sidenav {
     margin-top: 92px;
     overflow-y: visible;
   }

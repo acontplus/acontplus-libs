@@ -1,12 +1,12 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ICustomerService } from '../interfaces/customer-service';
+import { ICompanyCustomerService } from '../interfaces/company-customer';
 
 @Injectable({
   providedIn: 'root',
 })
-export class CustomerService implements ICustomerService {
+export class CompanyCustomerService implements ICompanyCustomerService {
   private apiUrl = '/api/customers';
   private http = inject(HttpClient);
 

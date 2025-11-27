@@ -1,0 +1,5 @@
+<p>Company Customer Module</p>
+@if (route.data | async; as data) { @for (exampleData of data["examples"]; track exampleData) {
+<app-doc-heading [text]="exampleData.title"></app-doc-heading>
+<app-example-viewer [exampleData]="exampleData"></app-example-viewer>
+} }

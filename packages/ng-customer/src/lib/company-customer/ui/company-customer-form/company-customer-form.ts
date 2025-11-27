@@ -1,16 +1,34 @@
-import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewEncapsulation,
+  inject,
+  signal,
+} from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CUSTOMER_FORM_CONFIG, CUSTOMER_SERVICE } from '../../injection-tokens';
-import { MAIN_APP_CUSTOMER_CONFIG } from '../../customer-form.config';
-import { CustomerService } from '../../data-access/services/customer';
+import {
+  COMPANY_CUSTOMER_FORM_CONFIG,
+  COMPANY_CUSTOMER_SERVICE,
+} from '../../../tokens/injection-tokens';
+import { MAIN_APP_COMPANY_CUSTOMER_CONFIG } from '../../config/company-customer-form';
+import { CompanyCustomerService } from '../../data-access/services/company-customer';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
-  selector: 'acp-customer-form',
-  imports: [ReactiveFormsModule],
-  templateUrl: './customer-form.html',
-  styleUrls: ['./customer-form.scss'],
+  selector: 'acp-company-customer-form',
+  exportAs: 'acpCustomerForm',
+  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule],
+  encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './company-customer-form.html',
+  styleUrls: ['./company-customer-form.scss'],
 })
-export class CustomerFormComponent implements OnInit {
+export class CompanyCustomerFormComponent implements OnInit {
   @Input() customer?: any;
   @Input() mode: 'create' | 'edit' = 'create';
   @Output() submitted = new EventEmitter<any>();
@@ -18,12 +36,14 @@ export class CustomerFormComponent implements OnInit {
 
   private fb = inject(FormBuilder);
 
-  config = inject(CUSTOMER_FORM_CONFIG, { optional: true }) ?? MAIN_APP_CUSTOMER_CONFIG;
+  config =
+    inject(COMPANY_CUSTOMER_FORM_CONFIG, { optional: true }) ?? MAIN_APP_COMPANY_CUSTOMER_CONFIG;
 
-  private customerService = inject(CUSTOMER_SERVICE, { optional: true }) ?? inject(CustomerService);
+  private customerService =
+    inject(COMPANY_CUSTOMER_SERVICE, { optional: true }) ?? inject(CompanyCustomerService);
 
   form!: FormGroup;
-  isLoading = false;
+  isLoading = signal(false);
   errorMessage: string | null = null;
 
   ngOnInit(): void {
@@ -90,7 +110,7 @@ export class CustomerFormComponent implements OnInit {
       }
     }
 
-    this.isLoading = true;
+    this.isLoading.set(true);
     this.errorMessage = null;
 
     const operation$ =
@@ -100,11 +120,11 @@ export class CustomerFormComponent implements OnInit {
 
     operation$.subscribe({
       next: (savedCustomer: any) => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         this.submitted.emit(savedCustomer);
       },
       error: (error: any) => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         this.errorMessage = error.message || 'Error al guardar el cliente';
         console.error('Error saving customer:', error);
       },

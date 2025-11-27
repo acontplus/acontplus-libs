@@ -26,10 +26,15 @@
     Components
   </a>
 
-  <a mat-button [matMenuTriggerFor]="menu" class="docs-navbar-hide-small docs-button"> Módulos </a>
-  <mat-menu #menu="matMenu">
-    <a mat-menu-item href="user" target="_blank">User</a>
-  </mat-menu>
+  <a
+    mat-button
+    class="docs-navbar-hide-small docs-button"
+    routerLink="modules"
+    routerLinkActive="docs-navbar-header-item-selected"
+  >
+    Módulos
+  </a>
+
   <div class="flex-spacer"></div>
 
   <!-- <button mat-button>{{ version$ | async }}</button> -->

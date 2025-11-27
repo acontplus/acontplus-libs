@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 
-export interface ICustomerService {
+export interface ICompanyCustomerService {
   create(customer: any): Observable<any>;
   update(id: string, customer: any): Observable<any>;
   getById(id: string): Observable<any>;

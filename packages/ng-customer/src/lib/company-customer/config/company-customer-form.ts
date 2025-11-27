@@ -1,7 +1,7 @@
-import { CustomerFormConfig } from './domain/models/form-config.model';
-
 // Configuración COMPLETA para App Principal
-export const MAIN_APP_CUSTOMER_CONFIG: CustomerFormConfig = {
+import { CompanyCustomerFormConfig } from '../../shared/form-config.model';
+
+export const MAIN_APP_COMPANY_CUSTOMER_CONFIG: CompanyCustomerFormConfig = {
   fields: {
     idCard: {
       name: 'idCard',
@@ -68,5 +68,62 @@ export const MAIN_APP_CUSTOMER_CONFIG: CustomerFormConfig = {
     },
   },
   submitButtonText: 'Guardar Cliente',
+  cancelButtonText: 'Cancelar',
+};
+
+// Configuración MÍNIMA para POS
+export const POS_COMPANY_CUSTOMER_CONFIG: CompanyCustomerFormConfig = {
+  fields: {
+    idCard: {
+      name: 'idCard',
+      required: true,
+      visible: true,
+      label: 'Cédula',
+      placeholder: 'Cédula del cliente',
+    },
+    name: {
+      name: 'name',
+      required: true,
+      visible: true,
+      label: 'Nombre',
+      placeholder: 'Nombre del cliente',
+    },
+    lastName: {
+      name: 'lastName',
+      required: false,
+      visible: false, // Oculto en POS
+    },
+    email: {
+      name: 'email',
+      required: false,
+      visible: false, // Oculto en POS
+    },
+    phone: {
+      name: 'phone',
+      required: false,
+      visible: false, // Oculto en POS
+    },
+    address: {
+      name: 'address',
+      required: false,
+      visible: false, // Oculto en POS
+    },
+    city: {
+      name: 'city',
+      required: false,
+      visible: false, // Oculto en POS
+    },
+    dateOfBirth: {
+      name: 'dateOfBirth',
+      required: false,
+      visible: false, // Oculto en POS
+    },
+    notes: {
+      name: 'notes',
+      required: false,
+      visible: false, // Oculto en POS
+    },
+  },
+  submitButtonText: 'Agregar',
   cancelButtonText: 'Cancelar',
 };

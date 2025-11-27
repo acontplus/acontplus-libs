@@ -20,7 +20,7 @@ import {
 } from '@acontplus/ng-infrastructure';
 import { csrfInterceptor } from '@acontplus/ng-auth';
 import { provideNotifications } from '../../../../packages/ng-notifications/src/lib/providers';
-import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import { companyCustomerProvider } from './modules/company-customer/company-customer-provider';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -33,7 +33,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(appRoutes),
 
     // Enable hydration with timeout handling
-    provideClientHydration(withEventReplay()), // App initialization
+    //  provideClientHydration(withEventReplay()), // App initialization
     provideAppInitializer(initHttpFactory()),
 
     // HTTP configuration
@@ -49,6 +49,8 @@ export const appConfig: ApplicationConfig = {
 
     // Authentication
     //  ...authProviders,
+
+    ...companyCustomerProvider,
 
     // Internationalization
     provideTransloco({

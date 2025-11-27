@@ -1,193 +1,181 @@
-<!--<div class="customer-form-container">-->
-<!--  <h2>{{ mode === 'create' ? 'Nuevo Cliente' : 'Editar Cliente' }}</h2>-->
+<div class="customer-form-container">
+  <h2>{{ mode === 'create' ? 'Nuevo Cliente' : 'Editar Cliente' }}</h2>
 
-<!--  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="customer-form">-->
-<!--    @if (errorMessage) {-->
-<!--    <div class="alert alert-error">{{ errorMessage }}</div>-->
-<!--    }-->
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="customer-form">
+    @if (errorMessage) {
+    <div class="alert alert-error">{{ errorMessage }}</div>
+    }
 
-<!--   -->
-<!--    @if (isFieldVisible('idCard')) {-->
-<!--      <mat-form-field>-->
-<!--        <mat-label>{{ getFieldLabel('idCard') }}</mat-label>-->
-<!--        <input-->
-<!--          type="text"-->
-<!--          matInput-->
-<!--          formControlName="idCard"-->
-<!--          [placeholder]="getFieldPlaceholder('idCard')"-->
-<!--          class="form-control"-->
-<!--          [class.error]="form.get('idCard')?.invalid && form.get('idCard')?.touched"-->
-<!--        />-->
+    <!-- idCard -->
+    @if (isFieldVisible('idCard')) {
+    <mat-form-field appearance="outline">
+      <mat-label>{{ getFieldLabel('idCard') }}</mat-label>
 
-<!--        @if (form.get('idCard')?.invalid && form.get('idCard')?.touched) {-->
-<!--          <mat-error>{{ getErrorMessage('idCard') }}</mat-error>-->
-<!--        }-->
-<!--      </mat-form-field>-->
+      <input
+        matInput
+        type="text"
+        formControlName="idCard"
+        [placeholder]="getFieldPlaceholder('idCard')"
+      />
 
-<!--    }-->
-<!-- -->
-<!--    @if (isFieldVisible('name')) {-->
-<!--    <div class="form-field">-->
-<!--      <label [class.required]="isFieldRequired('name')"> {{ getFieldLabel('name') }} </label>-->
+      @if (form.get('idCard')?.invalid && form.get('idCard')?.touched) {
+      <mat-error>{{ getErrorMessage('idCard') }}</mat-error>
+      }
+    </mat-form-field>
+    }
 
-<!--      <input-->
-<!--        type="text"-->
-<!--        formControlName="name"-->
-<!--        [placeholder]="getFieldPlaceholder('name')"-->
-<!--        class="form-control"-->
-<!--        [class.error]="form.get('name')?.invalid && form.get('name')?.touched"-->
-<!--      />-->
+    <!-- name -->
+    @if (isFieldVisible('name')) {
+    <mat-form-field appearance="outline">
+      <mat-label>{{ getFieldLabel('name') }}</mat-label>
 
-<!--      @if (form.get('name')?.invalid && form.get('name')?.touched) {-->
-<!--      <span class="error-message"> {{ getErrorMessage('name') }} </span>-->
-<!--      }-->
-<!--    </div>-->
-<!--    }-->
+      <input
+        matInput
+        type="text"
+        formControlName="name"
+        [placeholder]="getFieldPlaceholder('name')"
+      />
 
-<!--   -->
-<!--    @if (isFieldVisible('lastName')) {-->
-<!--    <div class="form-field">-->
-<!--      <label [class.required]="isFieldRequired('lastName')">-->
-<!--        {{ getFieldLabel('lastName') }}-->
-<!--      </label>-->
+      @if (form.get('name')?.invalid && form.get('name')?.touched) {
+      <mat-error>{{ getErrorMessage('name') }}</mat-error>
+      }
+    </mat-form-field>
+    }
 
-<!--      <input-->
-<!--        type="text"-->
-<!--        formControlName="lastName"-->
-<!--        [placeholder]="getFieldPlaceholder('lastName')"-->
-<!--        class="form-control"-->
-<!--        [class.error]="form.get('lastName')?.invalid && form.get('lastName')?.touched"-->
-<!--      />-->
+    <!-- lastName -->
+    @if (isFieldVisible('lastName')) {
+    <mat-form-field appearance="outline">
+      <mat-label>{{ getFieldLabel('lastName') }}</mat-label>
 
-<!--      @if (form.get('lastName')?.invalid && form.get('lastName')?.touched) {-->
-<!--      <span class="error-message"> {{ getErrorMessage('lastName') }} </span>-->
-<!--      }-->
-<!--    </div>-->
-<!--    }-->
+      <input
+        matInput
+        type="text"
+        formControlName="lastName"
+        [placeholder]="getFieldPlaceholder('lastName')"
+      />
 
-<!-- -->
-<!--    @if (isFieldVisible('email')) {-->
-<!--    <div class="form-field">-->
-<!--      <label [class.required]="isFieldRequired('email')"> {{ getFieldLabel('email') }} </label>-->
+      @if (form.get('lastName')?.invalid && form.get('lastName')?.touched) {
+      <mat-error>{{ getErrorMessage('lastName') }}</mat-error>
+      }
+    </mat-form-field>
+    }
 
-<!--      <input-->
-<!--        type="email"-->
-<!--        formControlName="email"-->
-<!--        [placeholder]="getFieldPlaceholder('email')"-->
-<!--        class="form-control"-->
-<!--        [class.error]="form.get('email')?.invalid && form.get('email')?.touched"-->
-<!--      />-->
+    <!-- email -->
+    @if (isFieldVisible('email')) {
+    <mat-form-field appearance="outline">
+      <mat-label>{{ getFieldLabel('email') }}</mat-label>
 
-<!--      @if (form.get('email')?.invalid && form.get('email')?.touched) {-->
-<!--      <span class="error-message"> {{ getErrorMessage('email') }} </span>-->
-<!--      }-->
-<!--    </div>-->
-<!--    }-->
+      <input
+        matInput
+        type="email"
+        formControlName="email"
+        [placeholder]="getFieldPlaceholder('email')"
+      />
 
-<!-- -->
-<!--    @if (isFieldVisible('phone')) {-->
-<!--    <div class="form-field">-->
-<!--      <label [class.required]="isFieldRequired('phone')"> {{ getFieldLabel('phone') }} </label>-->
+      @if (form.get('email')?.invalid && form.get('email')?.touched) {
+      <mat-error>{{ getErrorMessage('email') }}</mat-error>
+      }
+    </mat-form-field>
+    }
 
-<!--      <input-->
-<!--        type="tel"-->
-<!--        formControlName="phone"-->
-<!--        [placeholder]="getFieldPlaceholder('phone')"-->
-<!--        class="form-control"-->
-<!--        [class.error]="form.get('phone')?.invalid && form.get('phone')?.touched"-->
-<!--      />-->
+    <!-- phone -->
+    @if (isFieldVisible('phone')) {
+    <mat-form-field appearance="outline">
+      <mat-label>{{ getFieldLabel('phone') }}</mat-label>
 
-<!--      @if (form.get('phone')?.invalid && form.get('phone')?.touched) {-->
-<!--      <span class="error-message"> {{ getErrorMessage('phone') }} </span>-->
-<!--      }-->
-<!--    </div>-->
-<!--    }-->
-<!-- -->
-<!--    @if (isFieldVisible('address')) {-->
-<!--    <div class="form-field">-->
-<!--      <label [class.required]="isFieldRequired('address')"> {{ getFieldLabel('address') }} </label>-->
+      <input
+        matInput
+        type="tel"
+        formControlName="phone"
+        [placeholder]="getFieldPlaceholder('phone')"
+      />
 
-<!--      <input-->
-<!--        type="text"-->
-<!--        formControlName="address"-->
-<!--        [placeholder]="getFieldPlaceholder('address')"-->
-<!--        class="form-control"-->
-<!--        [class.error]="form.get('address')?.invalid && form.get('address')?.touched"-->
-<!--      />-->
+      @if (form.get('phone')?.invalid && form.get('phone')?.touched) {
+      <mat-error>{{ getErrorMessage('phone') }}</mat-error>
+      }
+    </mat-form-field>
+    }
 
-<!--      @if (form.get('address')?.invalid && form.get('address')?.touched) {-->
-<!--      <span class="error-message"> {{ getErrorMessage('address') }} </span>-->
-<!--      }-->
-<!--    </div>-->
-<!--    }-->
-<!-- -->
-<!--    @if (isFieldVisible('city')) {-->
-<!--    <div class="form-field">-->
-<!--      <label [class.required]="isFieldRequired('city')"> {{ getFieldLabel('city') }} </label>-->
+    <!-- address -->
+    @if (isFieldVisible('address')) {
+    <mat-form-field appearance="outline">
+      <mat-label>{{ getFieldLabel('address') }}</mat-label>
 
-<!--      <input-->
-<!--        type="text"-->
-<!--        formControlName="city"-->
-<!--        [placeholder]="getFieldPlaceholder('city')"-->
-<!--        class="form-control"-->
-<!--        [class.error]="form.get('city')?.invalid && form.get('city')?.touched"-->
-<!--      />-->
+      <input
+        matInput
+        type="text"
+        formControlName="address"
+        [placeholder]="getFieldPlaceholder('address')"
+      />
 
-<!--      @if (form.get('city')?.invalid && form.get('city')?.touched) {-->
-<!--      <span class="error-message"> {{ getErrorMessage('city') }} </span>-->
-<!--      }-->
-<!--    </div>-->
-<!--    }-->
-<!-- -->
-<!--    @if (isFieldVisible('dateOfBirth')) {-->
-<!--    <div class="form-field">-->
-<!--      <label [class.required]="isFieldRequired('dateOfBirth')">-->
-<!--        {{ getFieldLabel('dateOfBirth') }}-->
-<!--      </label>-->
+      @if (form.get('address')?.invalid && form.get('address')?.touched) {
+      <mat-error>{{ getErrorMessage('address') }}</mat-error>
+      }
+    </mat-form-field>
+    }
 
-<!--      <input-->
-<!--        type="date"-->
-<!--        formControlName="dateOfBirth"-->
-<!--        class="form-control"-->
-<!--        [class.error]="form.get('dateOfBirth')?.invalid && form.get('dateOfBirth')?.touched"-->
-<!--      />-->
+    <!-- city -->
+    @if (isFieldVisible('city')) {
+    <mat-form-field appearance="outline">
+      <mat-label>{{ getFieldLabel('city') }}</mat-label>
 
-<!--      @if (form.get('dateOfBirth')?.invalid && form.get('dateOfBirth')?.touched) {-->
-<!--      <span class="error-message"> {{ getErrorMessage('dateOfBirth') }} </span>-->
-<!--      }-->
-<!--    </div>-->
-<!--    }-->
-<!-- -->
-<!--    @if (isFieldVisible('notes')) {-->
-<!--    <div class="form-field">-->
-<!--      <label [class.required]="isFieldRequired('notes')"> {{ getFieldLabel('notes') }} </label>-->
+      <input
+        matInput
+        type="text"
+        formControlName="city"
+        [placeholder]="getFieldPlaceholder('city')"
+      />
 
-<!--      <textarea-->
-<!--        formControlName="notes"-->
-<!--        [placeholder]="getFieldPlaceholder('notes')"-->
-<!--        class="form-control"-->
-<!--        rows="3"-->
-<!--        [class.error]="form.get('notes')?.invalid && form.get('notes')?.touched"-->
-<!--      ></textarea>-->
+      @if (form.get('city')?.invalid && form.get('city')?.touched) {
+      <mat-error>{{ getErrorMessage('city') }}</mat-error>
+      }
+    </mat-form-field>
+    }
 
-<!--      @if (form.get('notes')?.invalid && form.get('notes')?.touched) {-->
-<!--      <span class="error-message"> {{ getErrorMessage('notes') }} </span>-->
-<!--      }-->
-<!--    </div>-->
-<!--    }-->
-<!-- -->
-<!--    <div class="form-actions">-->
-<!--      <button type="button" class="btn btn-secondary" (click)="onCancel()" [disabled]="isLoading()">-->
-<!--        {{ config.cancelButtonText }}-->
-<!--      </button>-->
+    <!-- dateOfBirth -->
+    @if (isFieldVisible('dateOfBirth')) {
+    <mat-form-field appearance="outline">
+      <mat-label>{{ getFieldLabel('dateOfBirth') }}</mat-label>
 
-<!--      <button type="submit" class="btn btn-primary" [disabled]="isLoading() || form.invalid">-->
-<!--        @if (!isLoading()) {-->
-<!--        <span>{{ config.submitButtonText }}</span>-->
-<!--        } @else {-->
-<!--        <span>Guardando...</span>-->
-<!--        }-->
-<!--      </button>-->
-<!--    </div>-->
-<!--  </form>-->
-<!--</div>-->
+      <input matInput type="date" formControlName="dateOfBirth" />
+
+      @if (form.get('dateOfBirth')?.invalid && form.get('dateOfBirth')?.touched) {
+      <mat-error>{{ getErrorMessage('dateOfBirth') }}</mat-error>
+      }
+    </mat-form-field>
+    }
+
+    <!-- notes -->
+    @if (isFieldVisible('notes')) {
+    <mat-form-field appearance="outline">
+      <mat-label>{{ getFieldLabel('notes') }}</mat-label>
+
+      <textarea
+        matInput
+        formControlName="notes"
+        [placeholder]="getFieldPlaceholder('notes')"
+        rows="3"
+      ></textarea>
+
+      @if (form.get('notes')?.invalid && form.get('notes')?.touched) {
+      <mat-error>{{ getErrorMessage('notes') }}</mat-error>
+      }
+    </mat-form-field>
+    }
+
+    <!-- Buttons -->
+    <div class="form-actions">
+      <button type="button" class="btn btn-secondary" (click)="onCancel()" [disabled]="isLoading()">
+        {{ config.cancelButtonText }}
+      </button>
+
+      <button type="submit" class="btn btn-primary" [disabled]="isLoading() || form.invalid">
+        @if (!isLoading()) {
+        <span>{{ config.submitButtonText }}</span>
+        } @else {
+        <span>Guardando...</span>
+        }
+      </button>
+    </div>
+  </form>
+</div>

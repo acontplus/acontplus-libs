@@ -1,7 +1,12 @@
-<div class="page-container">
-  <acp-company-customer-form
-    mode="create"
-    (submitted)="onCustomerCreated($event)"
-    (cancelled)="onCancel()"
-  ></acp-company-customer-form>
-</div>
+<mat-dialog-content>
+  <div class="page-container">
+    <acp-company-customer-form
+      mode="create"
+      (submitted)="onCustomerCreated($event)"
+      (cancelled)="onCancel()"
+    ></acp-company-customer-form>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <acp-button [text]="'Guardar'" [variant]="'success'" [matStyle]="'filled'" />
+</mat-dialog-actions>

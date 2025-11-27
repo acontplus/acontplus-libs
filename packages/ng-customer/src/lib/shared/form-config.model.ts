@@ -7,7 +7,7 @@ export interface FieldConfig {
   placeholder?: string;
 }
 
-export interface CustomerFormConfig {
+export interface CompanyCustomerFormConfig {
   fields: {
     idCard: FieldConfig;
     name: FieldConfig;

@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { ICompanyCustomerService } from '@acontplus/ng-customer';
 
 @Injectable()
@@ -8,6 +8,12 @@ export class PosCustomerService implements ICompanyCustomerService {
   private apiUrl = '/api/pos/customers'; // Endpoint diferente para POS
 
   private http = inject(HttpClient);
+
+  list(params: any): Observable<any> {
+    console.log(params, 'params test customer service');
+    return of([]);
+  }
+
   create(customer: any): Observable<any> {
     console.log(customer, 'customer test customer service');
     // En POS, crear cliente simplificado

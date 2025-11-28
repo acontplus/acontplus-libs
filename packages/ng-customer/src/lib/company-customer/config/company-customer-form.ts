@@ -1,70 +1,229 @@
-// Configuración COMPLETA para App Principal
-import { CompanyCustomerFormConfig } from '../../shared/form-config.model';
+import { CompanyCustomerFormConfig } from '../../shared/models/form-config.model';
 
 export const MAIN_APP_COMPANY_CUSTOMER_CONFIG: CompanyCustomerFormConfig = {
   fields: {
-    idCard: {
-      name: 'idCard',
+    // IDs y referencias
+    idTipoIdentificacion: {
+      name: 'idTipoIdentificacion',
       required: true,
       visible: true,
-      label: 'Cédula/RUC',
-      placeholder: 'Ingrese cédula o RUC',
+      label: 'Tipo de Identificación',
+      placeholder: 'Seleccione tipo',
     },
-    name: {
-      name: 'name',
+    idFormaPagoSri: {
+      name: 'idFormaPagoSri',
+      required: false,
+      visible: true,
+      label: 'Forma de Pago SRI',
+      placeholder: 'Seleccione forma de pago',
+    },
+    idTipoClienteProveedor: {
+      name: 'idTipoClienteProveedor',
+      required: false,
+      visible: true,
+      label: 'Tipo de Cliente/Proveedor',
+      placeholder: 'Seleccione tipo',
+    },
+    idSubContribuyente: {
+      name: 'idSubContribuyente',
+      required: false,
+      visible: true,
+      label: 'Sub-Contribuyente',
+      placeholder: 'Seleccione',
+    },
+    idTiempoCredito: {
+      name: 'idTiempoCredito',
+      required: false,
+      visible: true,
+      label: 'Tiempo de Crédito',
+      placeholder: 'Días de crédito',
+    },
+    idCiudad: {
+      name: 'idCiudad',
+      required: false,
+      visible: true,
+      label: 'Ciudad',
+      placeholder: 'Seleccione ciudad',
+    },
+    idCargo: {
+      name: 'idCargo',
+      required: false,
+      visible: true,
+      label: 'Cargo',
+      placeholder: 'Seleccione cargo',
+    },
+    idEmpleado: {
+      name: 'idEmpleado',
+      required: false,
+      visible: true,
+      label: 'Empleado Responsable',
+      placeholder: 'Seleccione empleado',
+    },
+
+    // Datos principales
+    numeroIdentificacion: {
+      name: 'numeroIdentificacion',
       required: true,
       visible: true,
-      label: 'Nombres',
-      placeholder: 'Ingrese nombres completos',
+      label: 'RUC / Cédula',
+      placeholder: 'Ingrese número de identificación (13 dígitos para RUC)',
     },
-    lastName: {
-      name: 'lastName',
+    nombreFiscal: {
+      name: 'nombreFiscal',
       required: true,
       visible: true,
-      label: 'Apellidos',
-      placeholder: 'Ingrese apellidos completos',
+      label: 'Razón Social / Nombre Fiscal',
+      placeholder: 'Ingrese razón social completa',
     },
-    email: {
-      name: 'email',
-      required: true,
+    nombreComercial: {
+      name: 'nombreComercial',
+      required: false,
       visible: true,
-      label: 'Correo Electrónico',
-      placeholder: 'ejemplo@correo.com',
+      label: 'Nombre Comercial',
+      placeholder: 'Ingrese nombre comercial',
     },
-    phone: {
-      name: 'phone',
-      required: true,
-      visible: true,
-      label: 'Teléfono',
-      placeholder: '0999999999',
-    },
-    address: {
-      name: 'address',
+    direccion: {
+      name: 'direccion',
       required: true,
       visible: true,
       label: 'Dirección',
       placeholder: 'Calle principal y secundaria',
     },
-    city: {
-      name: 'city',
-      required: true,
+    correo: {
+      name: 'correo',
+      required: false,
       visible: true,
-      label: 'Ciudad',
-      placeholder: 'Seleccione ciudad',
+      label: 'Correo Electrónico',
+      placeholder: 'ejemplo@correo.com',
     },
-    dateOfBirth: {
-      name: 'dateOfBirth',
+    telefono: {
+      name: 'telefono',
+      required: false,
+      visible: true,
+      label: 'Teléfono',
+      placeholder: '0999999999',
+    },
+    placa: {
+      name: 'placa',
+      required: false,
+      visible: true,
+      label: 'Placa del Vehículo',
+      placeholder: 'ABC-1234',
+    },
+    nota: {
+      name: 'nota',
+      required: false,
+      visible: true,
+      label: 'Notas',
+      placeholder: 'Observaciones adicionales',
+    },
+    birthDate: {
+      name: 'birthDate',
       required: false,
       visible: true,
       label: 'Fecha de Nacimiento',
       placeholder: 'DD/MM/AAAA',
     },
-    notes: {
-      name: 'notes',
+
+    // Estados
+    estado: {
+      name: 'estado',
       required: false,
       visible: true,
-      label: 'Notas',
-      placeholder: 'Observaciones adicionales',
+      label: 'Activo',
+    },
+    validationSri: {
+      name: 'validationSri',
+      required: false,
+      visible: true,
+      label: 'Validado en SRI',
+    },
+    configValorBruto: {
+      name: 'configValorBruto',
+      required: false,
+      visible: true,
+      label: 'Configurar Valor Bruto',
+    },
+  },
+  // Información de crédito
+  showCreditInfo: true,
+  creditFields: {
+    maritalStatusId: {
+      name: 'maritalStatusId',
+      required: false,
+      visible: true,
+      label: 'Estado Civil',
+      placeholder: 'Seleccione',
+    },
+    conyugeNombre: {
+      name: 'conyugeNombre',
+      required: false,
+      visible: true,
+      label: 'Nombre del Cónyuge',
+      placeholder: 'Ingrese nombre',
+    },
+    conyugeTel: {
+      name: 'conyugeTel',
+      required: false,
+      visible: true,
+      label: 'Teléfono del Cónyuge',
+      placeholder: '0999999999',
+    },
+    refFamNombre: {
+      name: 'refFamNombre',
+      required: false,
+      visible: true,
+      label: 'Referencia Familiar',
+      placeholder: 'Nombre',
+    },
+    refFamTel: {
+      name: 'refFamTel',
+      required: false,
+      visible: true,
+      label: 'Teléfono Referencia',
+      placeholder: '0999999999',
+    },
+    housingTypeId: {
+      name: 'housingTypeId',
+      required: false,
+      visible: true,
+      label: 'Tipo de Vivienda',
+      placeholder: 'Seleccione',
+    },
+    dirVivienda: {
+      name: 'dirVivienda',
+      required: false,
+      visible: true,
+      label: 'Dirección de Vivienda',
+      placeholder: 'Dirección completa',
+    },
+    refDomicilio: {
+      name: 'refDomicilio',
+      required: false,
+      visible: true,
+      label: 'Referencia de Domicilio',
+      placeholder: 'Referencia',
+    },
+    sector: {
+      name: 'sector',
+      required: false,
+      visible: true,
+      label: 'Sector',
+      placeholder: 'Ingrese sector',
+    },
+    barrio: {
+      name: 'barrio',
+      required: false,
+      visible: true,
+      label: 'Barrio',
+      placeholder: 'Ingrese barrio',
+    },
+    calle: {
+      name: 'calle',
+      required: false,
+      visible: true,
+      label: 'Calle',
+      placeholder: 'Calle principal',
     },
   },
   submitButtonText: 'Guardar Cliente',
@@ -74,56 +233,69 @@ export const MAIN_APP_COMPANY_CUSTOMER_CONFIG: CompanyCustomerFormConfig = {
 // Configuración MÍNIMA para POS
 export const POS_COMPANY_CUSTOMER_CONFIG: CompanyCustomerFormConfig = {
   fields: {
-    idCard: {
-      name: 'idCard',
+    // Solo lo esencial
+    idTipoIdentificacion: {
+      name: 'idTipoIdentificacion',
       required: true,
       visible: true,
-      label: 'Cédula',
-      placeholder: 'Cédula del cliente',
+      label: 'Tipo ID',
+      placeholder: 'Tipo',
     },
-    name: {
-      name: 'name',
+    numeroIdentificacion: {
+      name: 'numeroIdentificacion',
+      required: true,
+      visible: true,
+      label: 'Cédula/RUC',
+      placeholder: 'Número de identificación',
+    },
+    nombreFiscal: {
+      name: 'nombreFiscal',
       required: true,
       visible: true,
       label: 'Nombre',
       placeholder: 'Nombre del cliente',
     },
-    lastName: {
-      name: 'lastName',
+    nombreComercial: {
+      name: 'nombreComercial',
       required: false,
-      visible: false, // Oculto en POS
+      visible: false,
     },
-    email: {
-      name: 'email',
+    direccion: {
+      name: 'direccion',
       required: false,
-      visible: false, // Oculto en POS
+      visible: true,
+      label: 'Dirección',
+      placeholder: 'Dirección',
     },
-    phone: {
-      name: 'phone',
+    correo: {
+      name: 'correo',
       required: false,
-      visible: false, // Oculto en POS
+      visible: false,
     },
-    address: {
-      name: 'address',
+    telefono: {
+      name: 'telefono',
       required: false,
-      visible: false, // Oculto en POS
+      visible: true,
+      label: 'Teléfono',
+      placeholder: 'Teléfono',
     },
-    city: {
-      name: 'city',
-      required: false,
-      visible: false, // Oculto en POS
-    },
-    dateOfBirth: {
-      name: 'dateOfBirth',
-      required: false,
-      visible: false, // Oculto en POS
-    },
-    notes: {
-      name: 'notes',
-      required: false,
-      visible: false, // Oculto en POS
-    },
+
+    // Resto oculto
+    idFormaPagoSri: { name: 'idFormaPagoSri', required: false, visible: false },
+    idTipoClienteProveedor: { name: 'idTipoClienteProveedor', required: false, visible: false },
+    idSubContribuyente: { name: 'idSubContribuyente', required: false, visible: false },
+    idTiempoCredito: { name: 'idTiempoCredito', required: false, visible: false },
+    idCiudad: { name: 'idCiudad', required: false, visible: false },
+    idCargo: { name: 'idCargo', required: false, visible: false },
+    idEmpleado: { name: 'idEmpleado', required: false, visible: false },
+    placa: { name: 'placa', required: false, visible: false },
+    nota: { name: 'nota', required: false, visible: false },
+    birthDate: { name: 'birthDate', required: false, visible: false },
+    estado: { name: 'estado', required: false, visible: false },
+    validationSri: { name: 'validationSri', required: false, visible: false },
+    configValorBruto: { name: 'configValorBruto', required: false, visible: false },
   },
+  showCreditInfo: false, // Sin info de crédito en POS
   submitButtonText: 'Agregar',
   cancelButtonText: 'Cancelar',
 };

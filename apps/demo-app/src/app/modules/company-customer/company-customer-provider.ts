@@ -13,6 +13,6 @@ export const companyCustomerProvider: Provider[] = [
   },
   {
     provide: COMPANY_CUSTOMER_SERVICE,
-    useClass: PosCustomerService, // Usa implementación específica de POS
+    useClass: PosCustomerService,
   },
 ];

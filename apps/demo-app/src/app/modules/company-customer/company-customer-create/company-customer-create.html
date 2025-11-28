@@ -1,12 +1,32 @@
 <mat-dialog-content>
   <div class="page-container">
     <acp-company-customer-form
+      [formId]="formId()"
+      #form
       mode="create"
       (submitted)="onCustomerCreated($event)"
       (cancelled)="onCancel()"
+      [showButtons]="false"
     ></acp-company-customer-form>
   </div>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <acp-button [text]="'Guardar'" [variant]="'success'" [matStyle]="'filled'" />
+  <div class="hstack gap-2">
+    <acp-button
+      type="submit"
+      icon="save"
+      [form]="formId()"
+      [text]="form.isLoading() ? 'Guardando...' : 'Guardar'"
+      [variant]="'success'"
+      [matStyle]="'filled'"
+      [disabled]="form.form.invalid || form.isLoading()"
+    />
+    <acp-button
+      type="button"
+      variant="dark"
+      text="Cerrar"
+      matStyle="filled"
+      (handleClick)="onCancel()"
+    />
+  </div>
 </mat-dialog-actions>

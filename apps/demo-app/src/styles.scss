@@ -4,6 +4,7 @@
 @use './styles/constants';
 @use './styles/reboot';
 @use 'highlight.js/styles/github-dark.css';
+@use 'node_modules/bootstrap/dist/css/bootstrap.min.css';
 
 $config: (
   color: (

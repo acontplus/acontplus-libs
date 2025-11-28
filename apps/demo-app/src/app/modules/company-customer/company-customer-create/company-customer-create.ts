@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CompanyCustomerFormComponent } from '@acontplus/ng-customer';
 import { MatDialogContent, MatDialogActions, MatDialogRef } from '@angular/material/dialog';
 import { Button } from '@acontplus/ng-components';
@@ -9,6 +9,7 @@ import { Button } from '@acontplus/ng-components';
   templateUrl: './company-customer-create.html',
 })
 export class CompanyCustomerCreate {
+  formId = signal('companyCustomerFormId');
   private dgRef = inject(MatDialogRef<CompanyCustomerCreate>);
   onCustomerCreated(customer: any): void {
     console.log('Cliente creado:', customer);
@@ -16,6 +17,6 @@ export class CompanyCustomerCreate {
   }
 
   onCancel(): void {
-    console.log('Cancelar');
+    this.dgRef.close();
   }
 }

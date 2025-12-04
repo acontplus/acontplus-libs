@@ -1,7 +1,13 @@
 /* tabulator-table.scss */
-
+// Default Tabulator theme
 // Note: Tabulator themes are imported globally in styles/index.scss
 // This component only contains custom styling enhancements
+
+.tabulator {
+  font-size: 12px;
+  border-collapse: collapse;
+  width: 100%;
+}
 
 .acp-tabulator-table {
   display: block;

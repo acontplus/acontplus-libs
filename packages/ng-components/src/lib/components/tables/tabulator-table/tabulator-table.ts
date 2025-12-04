@@ -10,10 +10,39 @@ import {
   output,
 } from '@angular/core';
 
-import { Tabulator, PageModule, ReactiveDataModule } from 'tabulator-tables';
+import {
+  Tabulator,
+  PageModule,
+  ReactiveDataModule,
+  FormatModule,
+  EditModule,
+  ValidateModule,
+  SortModule,
+  TooltipModule,
+  ColumnCalcsModule,
+  DataTreeModule,
+  MoveRowsModule,
+  SelectRowModule,
+  PopupModule,
+  InteractionModule,
+} from 'tabulator-tables';
 import { TabulatorTheme } from '../../../types';
 
-Tabulator.registerModule([PageModule, ReactiveDataModule]);
+Tabulator.registerModule([
+  PageModule,
+  ReactiveDataModule,
+  FormatModule,
+  EditModule,
+  ValidateModule,
+  ColumnCalcsModule,
+  SortModule,
+  TooltipModule,
+  DataTreeModule,
+  MoveRowsModule,
+  SelectRowModule,
+  PopupModule,
+  InteractionModule,
+]);
 
 @Component({
   selector: 'acp-tabulator-table',
@@ -43,6 +72,7 @@ export class TabulatorTable implements OnChanges, AfterViewInit, OnDestroy {
   readonly reactiveData = input(true);
   readonly placeholder = input('No data available');
   readonly autoResize = input(true);
+  readonly selectableRows = input(false);
 
   // Theme configuration
   readonly theme = input<TabulatorTheme>({ name: 'default' });
@@ -55,6 +85,7 @@ export class TabulatorTable implements OnChanges, AfterViewInit, OnDestroy {
   readonly options = input<Record<string, any>>({});
 
   // Events
+  readonly rowDeleted = output<any>();
   readonly cellEdited = output<any>();
   readonly rowClick = output<any>();
   readonly rowSelected = output<any>();
@@ -63,7 +94,7 @@ export class TabulatorTable implements OnChanges, AfterViewInit, OnDestroy {
   private _tabulator!: Tabulator;
 
   // Made public for template access
-  public containerId = `acp-tabulator-table-${Math.random().toString(36).substr(2, 9)}`;
+  public containerId = `acp-tabulator-table-${Math.random().toString(36).slice(2, 9)}`;
 
   ngAfterViewInit(): void {
     this.initializeTable();
@@ -122,6 +153,7 @@ export class TabulatorTable implements OnChanges, AfterViewInit, OnDestroy {
       renderVertical: 'virtual',
       renderVerticalBuffer: 300,
       rowFormatter: this.getRowFormatter(),
+      selectableRows: this.selectableRows() ?? true,
       ...this.options(),
     };
 
@@ -189,6 +221,10 @@ export class TabulatorTable implements OnChanges, AfterViewInit, OnDestroy {
 
     this._tabulator.on('rowSelected', row => {
       this.rowSelected.emit(row);
+    });
+
+    this._tabulator.on('rowDeleted', row => {
+      this.rowDeleted.emit(row);
     });
   }
 

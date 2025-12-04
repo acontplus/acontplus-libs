@@ -31,6 +31,14 @@ $config: (
   @return mat.private-deep-merge-all(mat.define-theme($config), $config);
 }
 
+$compact-theme: mat.define-theme(
+  (
+    density: (
+      scale: -4,
+    ),
+  )
+);
+
 html {
   color-scheme: light;
   background-color: var(--mat-sys-surface);
@@ -40,6 +48,7 @@ html {
 
   $light-theme: create-theme(light);
   @include mat.color-variants-backwards-compatibility($light-theme);
+  @include mat.form-field-density($compact-theme);
 }
 
 .docs-theme-dark {

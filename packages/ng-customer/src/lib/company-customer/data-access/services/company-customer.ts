@@ -1,7 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { map, Observable, of } from 'rxjs';
 import { ICompanyCustomerService } from '../interfaces/company-customer';
+import { COMPANY_CUSTOMER_MAPPER } from '../../../tokens';
+import { CompanyCustomerDefaultMapper } from '../mappers/company-customer-default-mapper';
 
 @Injectable({
   providedIn: 'root',
@@ -9,6 +11,8 @@ import { ICompanyCustomerService } from '../interfaces/company-customer';
 export class CompanyCustomerService implements ICompanyCustomerService {
   private apiUrl = '/api/customers';
   private http = inject(HttpClient);
+  private mapper =
+    inject(COMPANY_CUSTOMER_MAPPER, { optional: true }) ?? new CompanyCustomerDefaultMapper();
 
   list(params: any): Observable<any> {
     console.log(params, 'params test customer service');
@@ -45,7 +49,7 @@ export class CompanyCustomerService implements ICompanyCustomerService {
         city: 'Barcelona',
         date: '2020-04-04',
       },
-    ]);
+    ]).pipe(map(dtos => this.mapper.toModelList(dtos)));
   }
 
   create(customer: any): Observable<any> {

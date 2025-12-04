@@ -1,4 +1,4 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()" [id]="formId()">
+<form [formGroup]="form" (ngSubmit)="onSubmit()" [id]="formId()" class="mb-2">
   @if (errorMessage) {
   <div class="alert alert-error">{{ errorMessage }}</div>
   }
@@ -125,7 +125,7 @@
       <mat-action-row>
         <acp-button
           variant="info"
-          matStyle="outlined"
+          matStyle="filled"
           type="button"
           text="Siguiente"
           (handleClick)="nextStep()"
@@ -137,80 +137,81 @@
       <mat-expansion-panel-header>
         <mat-panel-title> Información Comercial </mat-panel-title>
       </mat-expansion-panel-header>
+      <div class="d-grid gap-2 mx-3">
+        <div
+          class="row row-cols-xxl-2 row-cols-xl-2 row-cols-lg-2 row-cols-md-2 row-cols-sm-2 row-cols-1 g-1"
+        >
+          <div class="col">
+            <mat-form-field class="w-100">
+              <mat-label>Forma de pago: </mat-label>
+              <mat-select formControlName="idFormaPagoSri">
+                <mat-option [value]="0">--Ninguno--</mat-option>
 
-      <div
-        class="row row-cols-xxl-2 row-cols-xl-2 row-cols-lg-2 row-cols-md-2 row-cols-sm-2 row-cols-1 g-1"
-      >
-        <div class="col">
-          <mat-form-field class="w-100">
-            <mat-label>Forma de pago: </mat-label>
-            <mat-select formControlName="idFormaPagoSri">
-              <mat-option [value]="0">--Ninguno--</mat-option>
+                @for (item of formasPagoSri(); track $index) {
+                <mat-option [value]="item.idFormaPagoSri"> {{ item.descripcion }} </mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col">
+            <mat-form-field class="w-100">
+              <mat-label>Tiempo Crédito: </mat-label>
+              <mat-select formControlName="idTiempoCredito">
+                @for (item of tiemposCredito(); track $index) {
+                <mat-option [value]="item.idTiempoCredito"> {{ item.descripcion }} </mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
 
-              @for (item of formasPagoSri(); track $index) {
-              <mat-option [value]="item.idFormaPagoSri"> {{ item.descripcion }} </mat-option>
-              }
-            </mat-select>
-          </mat-form-field>
+        <div
+          class="row row-cols-xxl-2 row-cols-xl-2 row-cols-lg-2 row-cols-md-2 row-cols-sm-2 row-cols-1 g-1"
+        >
+          <div class="col">
+            <mat-form-field class="w-100">
+              <mat-label>Tipo Cliente: </mat-label>
+              <mat-select formControlName="idTipoClienteProveedor">
+                <mat-option [value]="0">--Ninguno--</mat-option>
+                @for (item of tiposCliente(); track $index) {
+                <mat-option [value]="item.idTipoClienteProveedor">
+                  {{ item.descripcion }}
+                </mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col">
+            <mat-form-field class="w-100">
+              <mat-label>Empleado: </mat-label>
+              <mat-select formControlName="idEmpleado">
+                <mat-option [value]="0">--Ninguno--</mat-option>
+
+                @for (item of employees(); track $index) {
+                <mat-option [value]="item.idEmpleado"> {{ item.nombreCompleto }} </mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
         </div>
-        <div class="col">
-          <mat-form-field class="w-100">
-            <mat-label>Tiempo Crédito: </mat-label>
-            <mat-select formControlName="idTiempoCredito">
-              @for (item of tiemposCredito(); track $index) {
-              <mat-option [value]="item.idTiempoCredito"> {{ item.descripcion }} </mat-option>
-              }
-            </mat-select>
-          </mat-form-field>
-        </div>
+
+        <mat-form-field>
+          <mat-label>Country</mat-label>
+          <input matInput />
+        </mat-form-field>
       </div>
-
-      <div
-        class="row row-cols-xxl-2 row-cols-xl-2 row-cols-lg-2 row-cols-md-2 row-cols-sm-2 row-cols-1 g-2"
-      >
-        <div class="col">
-          <mat-form-field class="w-100">
-            <mat-label>Tipo Cliente: </mat-label>
-            <mat-select formControlName="idTipoClienteProveedor">
-              <mat-option [value]="0">--Ninguno--</mat-option>
-              @for (item of tiposCliente(); track $index) {
-              <mat-option [value]="item.idTipoClienteProveedor">
-                {{ item.descripcion }}
-              </mat-option>
-              }
-            </mat-select>
-          </mat-form-field>
-        </div>
-        <div class="col">
-          <mat-form-field class="w-100">
-            <mat-label>Empleado: </mat-label>
-            <mat-select formControlName="idEmpleado">
-              <mat-option [value]="0">--Ninguno--</mat-option>
-
-              @for (item of employees(); track $index) {
-              <mat-option [value]="item.idEmpleado"> {{ item.nombreCompleto }} </mat-option>
-              }
-            </mat-select>
-          </mat-form-field>
-        </div>
-      </div>
-
-      <mat-form-field>
-        <mat-label>Country</mat-label>
-        <input matInput />
-      </mat-form-field>
 
       <mat-action-row>
         <acp-button
           variant="info"
-          matStyle="outlined"
+          matStyle="filled"
           type="button"
           text="Atrás"
           (handleClick)="prevStep()"
         />
         <acp-button
           variant="info"
-          matStyle="outlined"
+          matStyle="filled"
           type="button"
           text="Siguiente"
           (handleClick)="nextStep()"
@@ -223,9 +224,9 @@
         <mat-panel-title> Información de Crédito </mat-panel-title>
       </mat-expansion-panel-header>
 
-      <section formGroupName="dataInfoCred">
+      <section class="d-grid gap-2 mx-2" formGroupName="dataInfoCred">
         <div
-          class="row row-cols-xxl-2 row-cols-xl-2 row-cols-lg-2 row-cols-md-2 row-cols-sm-1 row-cols-1 g-2 mt-2"
+          class="row row-cols-xxl-2 row-cols-xl-2 row-cols-lg-2 row-cols-md-2 row-cols-sm-1 row-cols-1 g-1"
         >
           <div class="col">
             <mat-form-field class="w-100">
@@ -254,7 +255,7 @@
         </div>
 
         <div
-          class="row row-cols-xxl-2 row-cols-xl-2 row-cols-lg-2 row-cols-md-2 row-cols-sm-1 row-cols-1 g-2 mt-2"
+          class="row row-cols-xxl-2 row-cols-xl-2 row-cols-lg-2 row-cols-md-2 row-cols-sm-1 row-cols-1 g-1"
         >
           <div class="col">
             <mat-form-field class="w-100">
@@ -271,7 +272,7 @@
         </div>
 
         <div
-          class="row row-cols-xxl-2 row-cols-xl-2 row-cols-lg-2 row-cols-md-2 row-cols-sm-1 row-cols-1 g-2 mt-2"
+          class="row row-cols-xxl-2 row-cols-xl-2 row-cols-lg-2 row-cols-md-2 row-cols-sm-1 row-cols-1 g-1"
         >
           <div class="col">
             <mat-form-field class="w-100">
@@ -297,7 +298,7 @@
         </mat-form-field>
 
         <div
-          class="row row-cols-xxl-3 row-cols-xl-3 row-cols-lg-3 row-cols-md-2 row-cols-sm-1 row-cols-1 g-2 mt-2"
+          class="row row-cols-xxl-3 row-cols-xl-3 row-cols-lg-3 row-cols-md-2 row-cols-sm-1 row-cols-1 g-1"
         >
           <div class="col">
             <mat-form-field class="w-100">
@@ -332,14 +333,14 @@
       <mat-action-row>
         <acp-button
           variant="info"
-          matStyle="outlined"
+          matStyle="filled"
           type="button"
           text="Atrás"
           (handleClick)="prevStep()"
         />
         <acp-button
           variant="info"
-          matStyle="outlined"
+          matStyle="filled"
           type="button"
           text="Siguiente"
           (handleClick)="nextStep()"
@@ -367,7 +368,7 @@
       <mat-action-row>
         <acp-button
           variant="info"
-          matStyle="outlined"
+          matStyle="filled"
           type="button"
           text="Atrás"
           (handleClick)="prevStep()"

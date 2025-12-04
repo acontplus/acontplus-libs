@@ -21,6 +21,7 @@ import {
 import { csrfInterceptor } from '@acontplus/ng-auth';
 import { provideNotifications } from '../../../../packages/ng-notifications/src/lib/providers';
 import { companyCustomerProvider } from './modules/company-customer/company-customer-provider';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -72,5 +73,10 @@ export const appConfig: ApplicationConfig = {
 
     // Environment
     { provide: ENVIRONMENT, useValue: environment },
+    {
+      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+
+      useValue: { appearance: 'outline', subscriptSizing: 'dynamic' },
+    },
   ],
 };

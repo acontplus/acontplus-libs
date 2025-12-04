@@ -1,17 +1,29 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { ICompanyCustomerService } from '@acontplus/ng-customer';
+import {
+  COMPANY_CUSTOMER_MAPPER,
+  CompanyCustomerDefaultMapper,
+  ICompanyCustomerService,
+} from '@acontplus/ng-customer';
+import { map } from 'rxjs/operators';
 
 @Injectable()
-export class PosCustomerService implements ICompanyCustomerService {
+export class PosCompanyCustomerService implements ICompanyCustomerService {
   private apiUrl = '/api/pos/customers'; // Endpoint diferente para POS
 
   private http = inject(HttpClient);
+  private mapper =
+    inject(COMPANY_CUSTOMER_MAPPER, { optional: true }) ?? new CompanyCustomerDefaultMapper();
 
   list(params: any): Observable<any> {
     console.log(params, 'params test customer service');
-    return of([]);
+    console.log(this.mapper, 'mapper test customer service');
+    return of([
+      {
+        name: 'soy custom test service',
+      },
+    ]).pipe(map(dto => this.mapper.toModelList(dto)));
   }
 
   create(customer: any): Observable<any> {

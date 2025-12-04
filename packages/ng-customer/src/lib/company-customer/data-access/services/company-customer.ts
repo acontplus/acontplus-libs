@@ -61,7 +61,7 @@ export class CompanyCustomerService implements ICompanyCustomerService {
         city: 'Barcelona',
         date: '2020-04-04',
       },
-    ]);
+    ]).pipe(map(dtos => this.mapper.toModelList(dtos)));
   }
 
   create(customer: any): Observable<any> {

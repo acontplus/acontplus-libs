@@ -1,7 +1,7 @@
 import { CompanyCustomerDefaultMapper } from '@acontplus/ng-customer';
 
 export class CompanyCustomerCustomMapper extends CompanyCustomerDefaultMapper {
-  override toModelList(dtos: any[]): any[] {
+  override toModelList(dtos: any[]): any {
     console.log(dtos);
     return dtos.map(dto => {
       return {

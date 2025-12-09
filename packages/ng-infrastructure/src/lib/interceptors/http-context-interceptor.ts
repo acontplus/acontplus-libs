@@ -78,6 +78,7 @@ export const HTTP_CONTEXT_CONFIG = new InjectionToken<HttpContextConfig>('HTTP_C
 
 export const httpContextInterceptor: HttpInterceptorFn = (req, next) => {
   const tokenProvider = inject(AUTH_TOKEN, { optional: true });
+  console.log(tokenProvider);
   const router = inject(Router);
   const tenantService = inject(TenantInfo);
   const correlationService = inject(CorrelationInfo);

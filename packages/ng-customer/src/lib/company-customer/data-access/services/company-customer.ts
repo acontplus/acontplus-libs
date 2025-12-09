@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map, Observable, of } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { ICompanyCustomerService } from '../interfaces/company-customer';
 import { COMPANY_CUSTOMER_MAPPER } from '../../../tokens';
 import { CompanyCustomerDefaultMapper } from '../mappers/company-customer-default-mapper';
@@ -9,47 +9,21 @@ import { CompanyCustomerDefaultMapper } from '../mappers/company-customer-defaul
   providedIn: 'root',
 })
 export class CompanyCustomerService implements ICompanyCustomerService {
-  private apiUrl = '/api/customers';
+  private apiUrl = '/FactElect/CompanyCustomer/';
   private http = inject(HttpClient);
   private mapper =
     inject(COMPANY_CUSTOMER_MAPPER, { optional: true }) ?? new CompanyCustomerDefaultMapper();
 
   list(params: any): Observable<any> {
-    console.log(params, 'params test customer service');
-    return of([
-      {
-        name: '<NAME>',
-        weight: 70,
-        gender: 'male',
-        mobile: '0123456789',
-        city: 'Madrid',
-        date: '2020-01-01',
-      },
-      {
-        name: '<NAME>',
-        weight: 65,
-        gender: 'female',
-        mobile: '0987654321',
-        city: 'Barcelona',
-        date: '2020-02-02',
-      },
-      {
-        name: '<NAME>',
-        weight: 80,
-        gender: 'male',
-        mobile: '0123456789',
-        city: 'Madrid',
-        date: '2020-03-03',
-      },
-      {
-        name: '<NAME>',
-        weight: 75,
-        gender: 'female',
-        mobile: '0987654321',
-        city: 'Barcelona',
-        date: '2020-04-04',
-      },
-    ]).pipe(map(dtos => this.mapper.toModelList(dtos)));
+    console.log(params);
+    const json = JSON.stringify({
+      pageIndex: params.pageIndex || 1,
+      pageSize: params.pageSize || 10,
+      tipo: 1,
+    });
+    return this.http
+      .get<any>(`${this.apiUrl}?json=${json}`)
+      .pipe(map(dtos => this.mapper.toModelList(dtos)));
   }
 
   create(customer: any): Observable<any> {

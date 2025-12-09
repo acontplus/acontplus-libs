@@ -48,8 +48,35 @@ export class CompanyCustomerDefaultMapper implements ICompanyCustomerMapper {
     };
   }
 
-  toModelList(dtos: any[]): any[] {
-    return dtos.map(dto => this.toModel(dto));
+  toModelList(response: any) {
+    const parsed = JSON.parse(response.payload as string);
+    const tempList = Array.isArray(parsed) ? parsed[0] : parsed.Table;
+    console.log(tempList);
+    const mapClient = (data: any): any => ({
+      clientId: data.idCliente,
+      identificationTypeId: data.idTipoIdentificacion,
+      identificationNumber: data.numeroIdentificacion,
+      tradeName: data.nombreComercial,
+      legalName: data.nombreFiscal,
+      address: data.direccion,
+      phone: data.telefono,
+      email: data.correo,
+      finalConsumer: data.consumidorFinal,
+      sriValidation: data.validationSri,
+      identificationType: data.tipoIdentificacion,
+      identificationTypeCode: data.codTipoIdentificacion,
+      status: data.estado,
+      totalResults: data.totalResults,
+    });
+    const list = tempList.map((item: any) => mapClient(item));
+    const totalRecords = response.totalRecords ?? (list[0]?.totalRecords || 0);
+
+    return {
+      data: list,
+      pagination: {
+        totalRecords,
+      },
+    };
   }
 
   toCreateDTO(customer: any): any {

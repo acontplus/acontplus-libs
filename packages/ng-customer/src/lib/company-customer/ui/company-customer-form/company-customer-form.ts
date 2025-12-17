@@ -27,8 +27,9 @@ import {
   CreditFieldsConfig,
   Customer,
   FieldConfig,
-} from '../../../shared';
+} from '../../models';
 import { MAIN_APP_COMPANY_CUSTOMER_CONFIG } from '../../config';
+import {  MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'acp-company-customer-form',
@@ -43,6 +44,7 @@ import { MAIN_APP_COMPANY_CUSTOMER_CONFIG } from '../../config';
     Button,
     ToUpperCase,
     InputChip,
+    MatButtonModule
   ],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -379,4 +381,12 @@ export class CompanyCustomerFormComponent implements OnInit {
   get dataInfoCredForm(): FormGroup {
     return this.form.get('dataInfoCred') as FormGroup;
   }
+
+
+
+  searchIdentificacion($event: MouseEvent){
+    $event.stopPropagation();
+    console.log('search');
+  }
+
 }

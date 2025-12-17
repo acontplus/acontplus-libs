@@ -1,4 +1,4 @@
-import { CompanyCustomerFormConfig } from '../../shared/models/form-config.model';
+import { CompanyCustomerFormConfig } from '../models/form-config.model';
 
 export const MAIN_APP_COMPANY_CUSTOMER_CONFIG: CompanyCustomerFormConfig = {
   fields: {

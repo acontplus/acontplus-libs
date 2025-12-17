@@ -49,6 +49,11 @@
               form.get('numeroIdentificacion')?.touched) {
               <mat-error> {{ getErrorMessage('numeroIdentificacion') }}</mat-error>
               }
+              <ng-container matSuffix>
+                <button type="button" mat-icon-button (click)="searchIdentificacion($event)">
+                  <mat-icon>search</mat-icon>
+                </button>
+              </ng-container>
             </mat-form-field>
             }
           </div>

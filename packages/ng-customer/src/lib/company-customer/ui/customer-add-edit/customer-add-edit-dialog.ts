@@ -34,9 +34,9 @@ import {
   isSuccessResponse,
 } from '@acontplus/core';
 import { CustomerUseCase } from '../../../application/use-cases/customer-use-case';
-import { CustomerExternalUseCase } from '../../../application/use-cases/customer-external-use-case';
+import { CUSTOMER_SRI_SERVICE } from '../../../tokens/injection-tokens';
+import { CustomerSriService } from '../../../customer-sri/data-access/customer-sri.service';
 import { CustomerHttpRepository } from '../../../infrastructure/repositories/customer-http-repository';
-import { CustomerExternalHttpRepository } from '../../../infrastructure/repositories/customer-external-http-repository';
 
 @Component({
   selector: 'acp-customer-add-edit',
@@ -68,8 +68,8 @@ import { CustomerExternalHttpRepository } from '../../../infrastructure/reposito
       useFactory: () => new CustomerUseCase(new CustomerHttpRepository()),
     },
     {
-      provide: CustomerExternalUseCase,
-      useFactory: () => new CustomerExternalUseCase(new CustomerExternalHttpRepository()),
+      provide: CUSTOMER_SRI_SERVICE,
+      useClass: CustomerSriService,
     },
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -77,7 +77,7 @@ import { CustomerExternalHttpRepository } from '../../../infrastructure/reposito
 export class CustomerAddEditComponent implements OnInit {
   private readonly dialogRef = inject(MatDialogRef<CustomerAddEditComponent>);
   private readonly customerUseCase = inject(CustomerUseCase);
-  private readonly customerExternalUseCase = inject(CustomerExternalUseCase);
+  private readonly customerSriService = inject(CUSTOMER_SRI_SERVICE);
   btnText = signal('Guardar');
 
   readonly paramsOptions = inject<{
@@ -189,7 +189,7 @@ export class CustomerAddEditComponent implements OnInit {
         });
         return;
       }
-      from(this.customerExternalUseCase.getById(id)).subscribe(secondResponse => {
+      this.customerSriService.getById(id).subscribe(secondResponse => {
         if (!isSuccessResponse(secondResponse) || !secondResponse.data) {
           this.notificationService.toastr.show({
             type: 'info',

@@ -1,4 +1,4 @@
-export interface CustomerExternal {
+export interface CustomerSri {
   phone: string;
   email: string;
   idCard: string;

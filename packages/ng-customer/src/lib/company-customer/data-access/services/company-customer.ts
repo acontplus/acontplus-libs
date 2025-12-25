@@ -26,44 +26,6 @@ export class CompanyCustomerService implements ICompanyCustomerService {
       .pipe(map(dtos => this.mapper.toModelList(dtos)));
   }
 
-  list(params: any): Observable<any> {
-    console.log(params, 'params test customer service');
-    return of([
-      {
-        name: '<NAME>',
-        weight: 70,
-        gender: 'male',
-        mobile: '0123456789',
-        city: 'Madrid',
-        date: '2020-01-01',
-      },
-      {
-        name: '<NAME>',
-        weight: 65,
-        gender: 'female',
-        mobile: '0987654321',
-        city: 'Barcelona',
-        date: '2020-02-02',
-      },
-      {
-        name: '<NAME>',
-        weight: 80,
-        gender: 'male',
-        mobile: '0123456789',
-        city: 'Madrid',
-        date: '2020-03-03',
-      },
-      {
-        name: '<NAME>',
-        weight: 75,
-        gender: 'female',
-        mobile: '0987654321',
-        city: 'Barcelona',
-        date: '2020-04-04',
-      },
-    ]).pipe(map(dtos => this.mapper.toModelList(dtos)));
-  }
-
   create(customer: any): Observable<any> {
     return this.http.post<any>(this.apiUrl, customer);
   }

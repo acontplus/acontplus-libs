@@ -48,8 +48,21 @@
   },
   "nxCloudId": "68d20e567c8b4045e00aa2b7",
   "release": {
+    "projectsRelationship": "independent",
+    "projects": ["packages/*"],
+    "releaseTagPattern": "{projectName}@{version}",
+    "changelog": {
+      "projectChangelogs": {
+        "createRelease": "github"
+      }
+    },
     "version": {
-      "preVersionCommand": "npx nx run-many -t build"
+      "conventionalCommits": true
+    },
+    "git": {
+      "commit": true,
+      "commitMessage": "chore(release): publish {version}",
+      "tag": true
     }
   },
   "plugins": [

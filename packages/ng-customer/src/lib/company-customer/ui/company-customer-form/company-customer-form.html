@@ -1,0 +1,402 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" [id]="formId()" class="mb-2">
+  @if (errorMessage) {
+  <div class="alert alert-error">{{ errorMessage }}</div>
+  }
+  <mat-accordion class="mb-2">
+    <mat-expansion-panel [expanded]="step() === 0" (opened)="setStep(0)" hideToggle>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>account_circle</mat-icon>
+          Datos Principales
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <div class="d-grid gap-2 mx-3 mt-2">
+        <div
+          class="row row-cols-xxl-2 row-cols-xl-2 row-cols-lg-2 row-cols-md-2 row-cols-sm-2 row-cols-1 g-1"
+        >
+          <div class="col">
+            @if (isFieldVisible('idTipoIdentificacion')) {
+            <mat-form-field class="w-100">
+              <mat-label> {{ getFieldLabel('idTipoIdentificacion') }} </mat-label>
+              <mat-select
+                formControlName="idTipoIdentificacion"
+                (selectionChange)="identificationTypeChange($event)"
+              >
+                @for (item of tiposIdentificacion(); track $index) {
+                <mat-option [value]="item.idTipoIdentificacion">{{ item.descripcion }}</mat-option>
+                }
+              </mat-select>
+              @if (form.get('idTipoIdentificacion')?.invalid &&
+              form.get('idTipoIdentificacion')?.touched) {
+              <mat-error> {{ getErrorMessage('idTipoIdentificacion') }}</mat-error>
+              }
+            </mat-form-field>
+            }
+          </div>
+
+          <div class="col">
+            <!-- Número de Identificación -->
+            @if (isFieldVisible('numeroIdentificacion')) {
+            <mat-form-field class="w-100">
+              <mat-label> {{ getFieldLabel('numeroIdentificacion') }} </mat-label>
+              <input
+                matInput
+                formControlName="numeroIdentificacion"
+                [placeholder]="getFieldPlaceholder('numeroIdentificacion')"
+              />
+              @if (form.get('numeroIdentificacion')?.invalid &&
+              form.get('numeroIdentificacion')?.touched) {
+              <mat-error> {{ getErrorMessage('numeroIdentificacion') }}</mat-error>
+              }
+              <ng-container matSuffix>
+                <button type="button" mat-icon-button (click)="searchIdentificacion($event)">
+                  <mat-icon>search</mat-icon>
+                </button>
+              </ng-container>
+            </mat-form-field>
+            }
+          </div>
+        </div>
+
+        <div
+          class="row row-cols-xxl-2 row-cols-xl-2 row-cols-lg-2 row-cols-md-2 row-cols-sm-2 row-cols-1 g-1"
+        >
+          @if (isFieldVisible('nombreFiscal')){
+          <div class="col">
+            <mat-form-field class="w-100">
+              <mat-label> {{ getFieldLabel('nombreFiscal') }} </mat-label>
+              <input
+                matInput
+                autocomplete="off"
+                formControlName="nombreFiscal"
+                [placeholder]="getFieldPlaceholder('nombreFiscal')"
+                acpToUpperCase
+              />
+              @if (form.get('nombreFiscal')?.invalid && form.get('nombreFiscal')?.touched) {
+              <mat-error> {{ getErrorMessage('nombreFiscal') }}</mat-error>
+              }
+            </mat-form-field>
+          </div>
+
+          } @if (isFieldVisible('nombreComercial')) {
+          <div class="col">
+            <mat-form-field class="w-100">
+              <mat-label> {{ getFieldLabel('nombreComercial') }} </mat-label>
+              <input
+                matInput
+                autocomplete="off"
+                formControlName="nombreComercial"
+                [placeholder]="getFieldPlaceholder('nombreComercial')"
+                acpToUpperCase
+                type="text"
+              />
+            </mat-form-field>
+          </div>
+
+          }
+        </div>
+
+        @if (isFieldVisible('direccion')) {
+
+        <mat-form-field class="w-100">
+          <mat-label> {{ getFieldLabel('direccion') }}:</mat-label>
+          <input
+            matInput
+            formControlName="direccion"
+            [placeholder]="getFieldPlaceholder('direccion')"
+            acpToUpperCase
+          />
+          @if (form.get('direccion')?.invalid && form.get('direccion')?.touched) {
+          <mat-error>{{ getErrorMessage('direccion') }}</mat-error>
+          }
+        </mat-form-field>
+        }
+
+        <div
+          class="row row-cols-xxl-2 row-cols-xl-2 row-cols-lg-2 row-cols-md-2 row-cols-sm-2 row-cols-1 g-1"
+        >
+          @if (isFieldVisible('correo')) {
+          <div class="col">
+            <acp-input-chip [chips]="emails" [labelText]="getFieldLabel('correo')" />
+          </div>
+          } @if (isFieldVisible('telefono')) {
+          <div class="col">
+            <acp-input-chip [chips]="telephones" [labelText]="getFieldLabel('telefono')" />
+          </div>
+          }
+        </div>
+      </div>
+      <mat-action-row>
+        <acp-button
+          variant="info"
+          matStyle="filled"
+          type="button"
+          text="Siguiente"
+          (handleClick)="nextStep()"
+        />
+      </mat-action-row>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel [expanded]="step() === 1" (opened)="setStep(1)" hideToggle>
+      <mat-expansion-panel-header>
+        <mat-panel-title> Información Comercial </mat-panel-title>
+      </mat-expansion-panel-header>
+      <div class="d-grid gap-2 mx-3">
+        <div
+          class="row row-cols-xxl-2 row-cols-xl-2 row-cols-lg-2 row-cols-md-2 row-cols-sm-2 row-cols-1 g-1"
+        >
+          <div class="col">
+            <mat-form-field class="w-100">
+              <mat-label>Forma de pago: </mat-label>
+              <mat-select formControlName="idFormaPagoSri">
+                <mat-option [value]="0">--Ninguno--</mat-option>
+
+                @for (item of formasPagoSri(); track $index) {
+                <mat-option [value]="item.idFormaPagoSri"> {{ item.descripcion }} </mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col">
+            <mat-form-field class="w-100">
+              <mat-label>Tiempo Crédito: </mat-label>
+              <mat-select formControlName="idTiempoCredito">
+                @for (item of tiemposCredito(); track $index) {
+                <mat-option [value]="item.idTiempoCredito"> {{ item.descripcion }} </mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div
+          class="row row-cols-xxl-2 row-cols-xl-2 row-cols-lg-2 row-cols-md-2 row-cols-sm-2 row-cols-1 g-1"
+        >
+          <div class="col">
+            <mat-form-field class="w-100">
+              <mat-label>Tipo Cliente: </mat-label>
+              <mat-select formControlName="idTipoClienteProveedor">
+                <mat-option [value]="0">--Ninguno--</mat-option>
+                @for (item of tiposCliente(); track $index) {
+                <mat-option [value]="item.idTipoClienteProveedor">
+                  {{ item.descripcion }}
+                </mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col">
+            <mat-form-field class="w-100">
+              <mat-label>Empleado: </mat-label>
+              <mat-select formControlName="idEmpleado">
+                <mat-option [value]="0">--Ninguno--</mat-option>
+
+                @for (item of employees(); track $index) {
+                <mat-option [value]="item.idEmpleado"> {{ item.nombreCompleto }} </mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <mat-form-field>
+          <mat-label>Country</mat-label>
+          <input matInput />
+        </mat-form-field>
+      </div>
+
+      <mat-action-row>
+        <acp-button
+          variant="info"
+          matStyle="filled"
+          type="button"
+          text="Atrás"
+          (handleClick)="prevStep()"
+        />
+        <acp-button
+          variant="info"
+          matStyle="filled"
+          type="button"
+          text="Siguiente"
+          (handleClick)="nextStep()"
+        />
+      </mat-action-row>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel [expanded]="step() === 2" (opened)="setStep(2)" hideToggle>
+      <mat-expansion-panel-header>
+        <mat-panel-title> Información de Crédito </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <section class="d-grid gap-2 mx-2" formGroupName="dataInfoCred">
+        <div
+          class="row row-cols-xxl-2 row-cols-xl-2 row-cols-lg-2 row-cols-md-2 row-cols-sm-1 row-cols-1 g-1"
+        >
+          <div class="col">
+            <mat-form-field class="w-100">
+              <mat-label>Estado Civil: </mat-label>
+              <mat-select formControlName="maritalStatusId">
+                <mat-option [value]="0">Seleccionar...</mat-option>
+
+                @for (item of maritalStatuses(); track $index) {
+                <mat-option [value]="item.id"> {{ item.name }} </mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col">
+            <mat-form-field class="w-100">
+              <mat-label>Tipo de Vivienda: </mat-label>
+              <mat-select formControlName="housingTypeId">
+                <mat-option [value]="0">Seleccionar...</mat-option>
+
+                @for (item of housingTypes(); track $index) {
+                <mat-option [value]="item.id"> {{ item.name }} </mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div
+          class="row row-cols-xxl-2 row-cols-xl-2 row-cols-lg-2 row-cols-md-2 row-cols-sm-1 row-cols-1 g-1"
+        >
+          <div class="col">
+            <mat-form-field class="w-100">
+              <mat-label>Nombre del Cónyuge:</mat-label>
+              <input matInput formControlName="conyugeNombre" placeholder="Nombre del cónyuge" />
+            </mat-form-field>
+          </div>
+          <div class="col">
+            <mat-form-field class="w-100">
+              <mat-label>Teléfono del Cónyuge:</mat-label>
+              <input matInput formControlName="conyugeTel" placeholder="09xxxxxxxx" />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div
+          class="row row-cols-xxl-2 row-cols-xl-2 row-cols-lg-2 row-cols-md-2 row-cols-sm-1 row-cols-1 g-1"
+        >
+          <div class="col">
+            <mat-form-field class="w-100">
+              <mat-label>Referencia Familiar:</mat-label>
+              <input matInput formControlName="refFamTel" placeholder="09xxxxxxxx" />
+            </mat-form-field>
+          </div>
+          <div class="col">
+            <mat-form-field class="w-100">
+              <mat-label>Teléfono Referencia:</mat-label>
+              <input matInput formControlName="refFamTel" placeholder="09xxxxxxxx" />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <mat-form-field class="w-100">
+          <mat-label>Dirección de Vivienda</mat-label>
+          <textarea
+            matInput
+            formControlName="dirVivienda"
+            placeholder="Dirección completa de la vivienda (Sector, Barrio y Calle)"
+          ></textarea>
+        </mat-form-field>
+
+        <div
+          class="row row-cols-xxl-3 row-cols-xl-3 row-cols-lg-3 row-cols-md-2 row-cols-sm-1 row-cols-1 g-1"
+        >
+          <div class="col">
+            <mat-form-field class="w-100">
+              <mat-label>Sector:</mat-label>
+              <input matInput formControlName="sector" placeholder="Nombre del sector" />
+            </mat-form-field>
+          </div>
+          <div class="col">
+            <mat-form-field class="w-100">
+              <mat-label>Barrio:</mat-label>
+              <input matInput formControlName="barrio" placeholder="Nombre del barrio" />
+            </mat-form-field>
+          </div>
+          <div class="col">
+            <mat-form-field class="w-100">
+              <mat-label>Calle:</mat-label>
+              <input matInput formControlName="calle" placeholder="Nombre de la calle" />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <mat-form-field class="w-100">
+          <mat-label>Referencia de Domicilio</mat-label>
+          <textarea
+            matInput
+            formControlName="refDomicilio"
+            placeholder="Descripción detallada del punto de referencia"
+          ></textarea>
+        </mat-form-field>
+      </section>
+
+      <mat-action-row>
+        <acp-button
+          variant="info"
+          matStyle="filled"
+          type="button"
+          text="Atrás"
+          (handleClick)="prevStep()"
+        />
+        <acp-button
+          variant="info"
+          matStyle="filled"
+          type="button"
+          text="Siguiente"
+          (handleClick)="nextStep()"
+        />
+      </mat-action-row>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel [expanded]="step() === 3" (opened)="setStep(3)" hideToggle>
+      <mat-expansion-panel-header>
+        <mat-panel-title> Notas</mat-panel-title>
+      </mat-expansion-panel-header>
+
+      @if (isFieldVisible('nota')) {
+
+      <mat-form-field class="w-100">
+        <mat-label> {{ getFieldLabel('nota') }} </mat-label>
+        <textarea
+          matInput
+          formControlName="nota"
+          [placeholder]="getFieldPlaceholder('nota')"
+          rows="3"
+        ></textarea>
+      </mat-form-field>
+      }
+      <mat-action-row>
+        <acp-button
+          variant="info"
+          matStyle="filled"
+          type="button"
+          text="Atrás"
+          (handleClick)="prevStep()"
+        />
+      </mat-action-row>
+    </mat-expansion-panel>
+  </mat-accordion>
+
+  <!-- Buttons -->
+  @if (showButtons()){
+  <div class="form-actions">
+    <button type="button" class="btn btn-secondary" (click)="onCancel()" [disabled]="isLoading()">
+      {{ config.cancelButtonText }}
+    </button>
+
+    <button type="submit" class="btn btn-primary" [disabled]="isLoading() || form.invalid">
+      @if (!isLoading()) {
+      <span>{{ config.submitButtonText }}</span>
+      } @else {
+      <span>Guardando...</span>
+      }
+    </button>
+  </div>
+
+  }
+</form>

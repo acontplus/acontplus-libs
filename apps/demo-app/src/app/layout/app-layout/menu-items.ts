@@ -1,5 +1,4 @@
 import { Type } from '@angular/core';
-import { CustomersComponent } from '../../ui/customers/customers.component';
 import { DashboardComponent } from '../../ui/dashboard/dashboard.component';
 import { AutocompleteComponent } from '../../ui/autocomplete/autocomplete.component';
 import { CardsComponent } from '../../ui/cards/cards.component';
@@ -26,7 +25,6 @@ export const menuItems: MenuItemList[] = [
   { icon: 'utils', label: 'Utils', route: 'utils', component: UtilsComponent },
   { icon: 'pricing', label: 'Pricing', route: 'pricing', component: PricingDemoComponent },
   { icon: 'products', label: 'Products', route: 'products', component: ProductComponent },
-  { icon: 'people', label: 'Customers', route: 'customers', component: CustomersComponent },
   { icon: 'list', label: 'Tables', route: 'table-demo', component: TableDemoComponent },
   { icon: 'card', label: 'Cards', route: 'cards', component: CardsComponent },
   {

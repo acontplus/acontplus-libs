@@ -12,7 +12,7 @@ import { initHttpFactory } from './init-http-factory';
 import { provideTransloco } from '@jsverse/transloco';
 import { TranslocoHttpLoader } from './providers';
 
-import { ENVIRONMENT } from '@acontplus/ng-config';
+import { AUTH_TOKEN, ENVIRONMENT } from '@acontplus/ng-config';
 import {
   apiInterceptor,
   httpContextInterceptor,
@@ -20,7 +20,9 @@ import {
 } from '@acontplus/ng-infrastructure';
 import { csrfInterceptor } from '@acontplus/ng-auth';
 import { provideNotifications } from '../../../../packages/ng-notifications/src/lib/providers';
-import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import { companyCustomerProvider } from './modules/company-customer/company-customer-provider';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
+import { TokenLocalStorageRepository } from './core/token-local-storage.repository';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -33,7 +35,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(appRoutes),
 
     // Enable hydration with timeout handling
-    provideClientHydration(withEventReplay()), // App initialization
+    //  provideClientHydration(withEventReplay()), // App initialization
     provideAppInitializer(initHttpFactory()),
 
     // HTTP configuration
@@ -49,6 +51,8 @@ export const appConfig: ApplicationConfig = {
 
     // Authentication
     //  ...authProviders,
+
+    ...companyCustomerProvider,
 
     // Internationalization
     provideTransloco({
@@ -70,5 +74,11 @@ export const appConfig: ApplicationConfig = {
 
     // Environment
     { provide: ENVIRONMENT, useValue: environment },
+    { provide: AUTH_TOKEN, useClass: TokenLocalStorageRepository },
+    {
+      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+
+      useValue: { appearance: 'outline', subscriptSizing: 'dynamic' },
+    },
   ],
 };

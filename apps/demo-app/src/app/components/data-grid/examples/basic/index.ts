@@ -61,15 +61,15 @@ const dataTs = `export const EXAMPLE_DATA: any[] = [
     city: 'Berlin',
     address: 'Bernauer Str.111,13355',
     date: '1423456765768',
-    website: 'www.matero.com',
-    company: 'Matero',
+    website: 'www.acontplus.com',
+    company: 'AcontPlus',
     email: 'boron@gmail.com',
     status: false,
     cost: 4,
   },
   {
     position: 2,
-    name: 'Helium',
+    name: 'AcontPlus',
     tag: [{ color: 'blue', value: [3, 4] }],
     weight: 8.0026,
     symbol: 'He',
@@ -79,9 +79,9 @@ const dataTs = `export const EXAMPLE_DATA: any[] = [
     city: 'Shanghai',
     address: '88 Songshan Road',
     date: '1423456765768',
-    website: 'www.matero.com',
-    company: 'Matero',
-    email: 'helium@gmail.com',
+    website: 'www.acontplus.com',
+    company: 'AcontPlus',
+    email: 'acontplus@gmail.com',
     status: true,
     cost: 5,
   },
@@ -97,8 +97,8 @@ const dataTs = `export const EXAMPLE_DATA: any[] = [
     city: 'Sydney',
     address: 'Circular Quay, Sydney NSW 2000',
     date: '1423456765768',
-    website: 'www.matero.com',
-    company: 'Matero',
+    website: 'www.acontplus.com',
+    company: 'AcontPlus',
     email: 'nitrogen@gmail.com',
     status: true,
     cost: 2,
@@ -212,6 +212,7 @@ const dataTs = `export const EXAMPLE_DATA: any[] = [
     cost: 5,
   },
 ];
+
 
 `;
 

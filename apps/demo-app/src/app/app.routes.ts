@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { ComponentSidenav } from './pages/component-sidenav/component-sidenav';
 import { ComponentCategoryList } from './pages/component-category-list/component-category-list';
+import { ModuleSidenav } from './pages/module-sidenav/module-sidenav';
 
 export const appRoutes: Routes = [
   {
@@ -23,6 +24,17 @@ export const appRoutes: Routes = [
         loadChildren: () => import('./components/components.routes').then(m => m.routes),
       },
       { path: '**', redirectTo: 'categories' },
+    ],
+  },
+  {
+    path: 'modules',
+    component: ModuleSidenav,
+    children: [
+      { path: '', redirectTo: 'modules', pathMatch: 'full' },
+      {
+        path: '',
+        loadChildren: () => import('./modules/modules.routes').then(m => m.routes),
+      },
     ],
   },
   { path: '**', redirectTo: '' },

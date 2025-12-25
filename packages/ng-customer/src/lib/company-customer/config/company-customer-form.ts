@@ -1,0 +1,301 @@
+import { CompanyCustomerFormConfig } from '../models/form-config.model';
+
+export const MAIN_APP_COMPANY_CUSTOMER_CONFIG: CompanyCustomerFormConfig = {
+  fields: {
+    // IDs y referencias
+    idTipoIdentificacion: {
+      name: 'idTipoIdentificacion',
+      required: true,
+      visible: true,
+      label: 'Tipo de Identificación',
+      placeholder: 'Seleccione tipo',
+    },
+    idFormaPagoSri: {
+      name: 'idFormaPagoSri',
+      required: false,
+      visible: true,
+      label: 'Forma de Pago SRI',
+      placeholder: 'Seleccione forma de pago',
+    },
+    idTipoClienteProveedor: {
+      name: 'idTipoClienteProveedor',
+      required: false,
+      visible: true,
+      label: 'Tipo de Cliente/Proveedor',
+      placeholder: 'Seleccione tipo',
+    },
+    idSubContribuyente: {
+      name: 'idSubContribuyente',
+      required: false,
+      visible: true,
+      label: 'Sub-Contribuyente',
+      placeholder: 'Seleccione',
+    },
+    idTiempoCredito: {
+      name: 'idTiempoCredito',
+      required: false,
+      visible: true,
+      label: 'Tiempo de Crédito',
+      placeholder: 'Días de crédito',
+    },
+    idCiudad: {
+      name: 'idCiudad',
+      required: false,
+      visible: true,
+      label: 'Ciudad',
+      placeholder: 'Seleccione ciudad',
+    },
+    idCargo: {
+      name: 'idCargo',
+      required: false,
+      visible: true,
+      label: 'Cargo',
+      placeholder: 'Seleccione cargo',
+    },
+    idEmpleado: {
+      name: 'idEmpleado',
+      required: false,
+      visible: true,
+      label: 'Empleado Responsable',
+      placeholder: 'Seleccione empleado',
+    },
+
+    // Datos principales
+    numeroIdentificacion: {
+      name: 'numeroIdentificacion',
+      required: true,
+      visible: true,
+      label: 'RUC / Cédula',
+      placeholder: 'Ingrese número de identificación (13 dígitos para RUC)',
+    },
+    nombreFiscal: {
+      name: 'nombreFiscal',
+      required: true,
+      visible: true,
+      label: 'Razón Social / Nombre Fiscal',
+      placeholder: 'Ingrese razón social completa',
+    },
+    nombreComercial: {
+      name: 'nombreComercial',
+      required: false,
+      visible: true,
+      label: 'Nombre Comercial',
+      placeholder: 'Ingrese nombre comercial',
+    },
+    direccion: {
+      name: 'direccion',
+      required: true,
+      visible: true,
+      label: 'Dirección',
+      placeholder: 'Calle principal y secundaria',
+    },
+    correo: {
+      name: 'correo',
+      required: false,
+      visible: true,
+      label: 'Correo Electrónico',
+      placeholder: 'ejemplo@correo.com',
+    },
+    telefono: {
+      name: 'telefono',
+      required: false,
+      visible: true,
+      label: 'Teléfono',
+      placeholder: '0999999999',
+    },
+    placa: {
+      name: 'placa',
+      required: false,
+      visible: true,
+      label: 'Placa del Vehículo',
+      placeholder: 'ABC-1234',
+    },
+    nota: {
+      name: 'nota',
+      required: false,
+      visible: true,
+      label: 'Notas',
+      placeholder: 'Observaciones adicionales',
+    },
+    birthDate: {
+      name: 'birthDate',
+      required: false,
+      visible: true,
+      label: 'Fecha de Nacimiento',
+      placeholder: 'DD/MM/AAAA',
+    },
+
+    // Estados
+    estado: {
+      name: 'estado',
+      required: false,
+      visible: true,
+      label: 'Activo',
+    },
+    validationSri: {
+      name: 'validationSri',
+      required: false,
+      visible: true,
+      label: 'Validado en SRI',
+    },
+    configValorBruto: {
+      name: 'configValorBruto',
+      required: false,
+      visible: true,
+      label: 'Configurar Valor Bruto',
+    },
+  },
+  // Información de crédito
+  showCreditInfo: true,
+  creditFields: {
+    maritalStatusId: {
+      name: 'maritalStatusId',
+      required: false,
+      visible: true,
+      label: 'Estado Civil',
+      placeholder: 'Seleccione',
+    },
+    conyugeNombre: {
+      name: 'conyugeNombre',
+      required: false,
+      visible: true,
+      label: 'Nombre del Cónyuge',
+      placeholder: 'Ingrese nombre',
+    },
+    conyugeTel: {
+      name: 'conyugeTel',
+      required: false,
+      visible: true,
+      label: 'Teléfono del Cónyuge',
+      placeholder: '0999999999',
+    },
+    refFamNombre: {
+      name: 'refFamNombre',
+      required: false,
+      visible: true,
+      label: 'Referencia Familiar',
+      placeholder: 'Nombre',
+    },
+    refFamTel: {
+      name: 'refFamTel',
+      required: false,
+      visible: true,
+      label: 'Teléfono Referencia',
+      placeholder: '0999999999',
+    },
+    housingTypeId: {
+      name: 'housingTypeId',
+      required: false,
+      visible: true,
+      label: 'Tipo de Vivienda',
+      placeholder: 'Seleccione',
+    },
+    dirVivienda: {
+      name: 'dirVivienda',
+      required: false,
+      visible: true,
+      label: 'Dirección de Vivienda',
+      placeholder: 'Dirección completa',
+    },
+    refDomicilio: {
+      name: 'refDomicilio',
+      required: false,
+      visible: true,
+      label: 'Referencia de Domicilio',
+      placeholder: 'Referencia',
+    },
+    sector: {
+      name: 'sector',
+      required: false,
+      visible: true,
+      label: 'Sector',
+      placeholder: 'Ingrese sector',
+    },
+    barrio: {
+      name: 'barrio',
+      required: false,
+      visible: true,
+      label: 'Barrio',
+      placeholder: 'Ingrese barrio',
+    },
+    calle: {
+      name: 'calle',
+      required: false,
+      visible: true,
+      label: 'Calle',
+      placeholder: 'Calle principal',
+    },
+  },
+  submitButtonText: 'Guardar Cliente',
+  cancelButtonText: 'Cancelar',
+};
+
+// Configuración MÍNIMA para POS
+export const POS_COMPANY_CUSTOMER_CONFIG: CompanyCustomerFormConfig = {
+  fields: {
+    // Solo lo esencial
+    idTipoIdentificacion: {
+      name: 'idTipoIdentificacion',
+      required: true,
+      visible: true,
+      label: 'Tipo ID',
+      placeholder: 'Tipo',
+    },
+    numeroIdentificacion: {
+      name: 'numeroIdentificacion',
+      required: true,
+      visible: true,
+      label: 'Cédula/RUC',
+      placeholder: 'Número de identificación',
+    },
+    nombreFiscal: {
+      name: 'nombreFiscal',
+      required: true,
+      visible: true,
+      label: 'Nombre',
+      placeholder: 'Nombre del cliente',
+    },
+    nombreComercial: {
+      name: 'nombreComercial',
+      required: false,
+      visible: false,
+    },
+    direccion: {
+      name: 'direccion',
+      required: false,
+      visible: true,
+      label: 'Dirección',
+      placeholder: 'Dirección',
+    },
+    correo: {
+      name: 'correo',
+      required: false,
+      visible: false,
+    },
+    telefono: {
+      name: 'telefono',
+      required: false,
+      visible: true,
+      label: 'Teléfono',
+      placeholder: 'Teléfono',
+    },
+
+    // Resto oculto
+    idFormaPagoSri: { name: 'idFormaPagoSri', required: false, visible: false },
+    idTipoClienteProveedor: { name: 'idTipoClienteProveedor', required: false, visible: false },
+    idSubContribuyente: { name: 'idSubContribuyente', required: false, visible: false },
+    idTiempoCredito: { name: 'idTiempoCredito', required: false, visible: false },
+    idCiudad: { name: 'idCiudad', required: false, visible: false },
+    idCargo: { name: 'idCargo', required: false, visible: false },
+    idEmpleado: { name: 'idEmpleado', required: false, visible: false },
+    placa: { name: 'placa', required: false, visible: false },
+    nota: { name: 'nota', required: false, visible: false },
+    birthDate: { name: 'birthDate', required: false, visible: false },
+    estado: { name: 'estado', required: false, visible: false },
+    validationSri: { name: 'validationSri', required: false, visible: false },
+    configValorBruto: { name: 'configValorBruto', required: false, visible: false },
+  },
+  showCreditInfo: false, // Sin info de crédito en POS
+  submitButtonText: 'Agregar',
+  cancelButtonText: 'Cancelar',
+};

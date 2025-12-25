@@ -1,0 +1,17 @@
+<acp-button
+  icon="add"
+  type="button"
+  variant="primary"
+  text="Agregar"
+  matStyle="filled"
+  (handleClick)="add()"
+/>
+
+<acp-data-grid
+  [data]="list"
+  [columns]="columns"
+  [trackBy]="trackByName"
+  [length]="totalRecords()"
+  [pageIndex]="page()"
+  [pageSize]="pageSize()"
+></acp-data-grid>

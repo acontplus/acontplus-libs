@@ -15,7 +15,7 @@ jobs:
       number-of-agents: 3
       pnpm-version: '10'
       init-commands: |
-        pnpm exec playwright install --with-deps
+        npx playwright install --with-deps
       parallel-commands: |
         pnpm nx-cloud record -- pnpm nx format:check
       parallel-commands-on-agents: |

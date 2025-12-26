@@ -56,6 +56,8 @@ jobs:
 
       - name: Print Nx environment info
         run: npx nx report
+        env:
+          NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
 
       - name: Configure git
         run: |
@@ -100,7 +102,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build packages
-        run: npx nx run-many --target=build --projects=packages/*
+        run: npx nx run-many --target=build --projects=packages/* --parallel=3
+        env:
+          NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
 
       - name: Publish to npm
         if: github.event_name != 'workflow_dispatch' || !inputs.dry-run

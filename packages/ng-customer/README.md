@@ -15,7 +15,7 @@ pnpm add @acontplus/ng-customer
 ## Features
 
 - **Clean Architecture**: Domain, Application, Infrastructure, and UI layers
-- **Customer Components**: Card display and add/edit form components
+- **Customer Components**: Company customer form and add/edit components
 - **SRI Integration**: External customer data validation and retrieval
 - **Use Cases**: Business logic for customer operations (CRUD)
 - **BaseRepository Pattern**: Data access abstractions with HTTP implementations
@@ -28,34 +28,29 @@ pnpm add @acontplus/ng-customer
 ### 1. Import Components
 
 ```typescript
-import { CustomerCard, CustomerAddEditComponent } from '@acontplus/ng-customer';
+import { CustomerAddEditComponent, CompanyCustomerFormComponent } from '@acontplus/ng-customer';
 
 @Component({
   selector: 'app-customers',
-  imports: [CustomerCard],
+  imports: [CompanyCustomerFormComponent],
   template: `
-    <acp-customer-card
-      [customer]="customer"
-      (editCustomer)="onEdit($event)"
-      (deleteCustomer)="onDelete($event)"
+    <acp-company-customer-form
+      [customerData]="customer"
+      (customerChange)="onCustomerChange($event)"
     >
-    </acp-customer-card>
+    </acp-company-customer-form>
   `,
 })
 export class CustomersComponent {
-  customer: CustomerListItemDto = {
-    idCliente: 1,
+  customer = {
+    identificacion: '1234567890',
     businessName: 'Acme Corp',
     email: 'contact@acme.com',
     phone: '123-456-7890',
   };
 
-  onEdit(customer: CustomerListItemDto) {
-    // Handle edit action
-  }
-
-  onDelete(customer: CustomerListItemDto) {
-    // Handle delete action
+  onCustomerChange(customer: any) {
+    console.log('Customer updated:', customer);
   }
 }
 ```

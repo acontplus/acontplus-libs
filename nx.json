@@ -54,6 +54,10 @@
     "changelog": {
       "projectChangelogs": {
         "createRelease": "github"
+      },
+      "git": {
+        "commit": true,
+        "commitMessage": "chore(release): update changelog {version}"
       }
     },
     "version": {
@@ -63,12 +67,6 @@
         "commit": true,
         "commitMessage": "chore(release): publish {version}",
         "tag": true
-      }
-    },
-    "changelog": {
-      "git": {
-        "commit": true,
-        "commitMessage": "chore(release): update changelog {version}"
       }
     }
   },

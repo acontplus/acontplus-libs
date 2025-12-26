@@ -71,7 +71,6 @@ jobs:
           fi
           npx nx release version --dry-run $extra
           npx nx release changelog --dry-run $extra
-          npx nx run-many --target=build --projects=packages/*
           npx nx release publish --dry-run $extra
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -101,7 +100,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build packages
-        if: github.event_name != 'workflow_dispatch' || !inputs.dry-run
         run: npx nx run-many --target=build --projects=packages/*
 
       - name: Publish to npm

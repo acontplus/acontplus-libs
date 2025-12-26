@@ -58,12 +58,18 @@
     },
     "version": {
       "conventionalCommits": true,
-      "preVersionCommand": "npx nx run-many --target=build --projects=packages/*"
+      "preVersionCommand": "npx nx run-many --target=build --projects=packages/*",
+      "git": {
+        "commit": true,
+        "commitMessage": "chore(release): publish {version}",
+        "tag": true
+      }
     },
-    "git": {
-      "commit": true,
-      "commitMessage": "chore(release): publish {version}",
-      "tag": true
+    "changelog": {
+      "git": {
+        "commit": true,
+        "commitMessage": "chore(release): update changelog {version}"
+      }
     }
   },
   "plugins": [

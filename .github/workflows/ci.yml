@@ -9,6 +9,7 @@ jobs:
   main:
     name: Nx Cloud - Main Job
     uses: nrwl/ci/.github/workflows/nx-cloud-main.yml@v0.15.0
+    secrets: inherit
     with:
       main-branch-name: main
       number-of-agents: 3

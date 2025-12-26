@@ -67,6 +67,9 @@
         "commitMessage": "chore(release): publish {version}",
         "tag": true
       }
+    },
+    "publish": {
+      "manifestRootsToPublish": ["dist/{projectRoot}"]
     }
   },
   "plugins": [

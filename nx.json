@@ -62,6 +62,10 @@
     },
     "version": {
       "conventionalCommits": true,
+      "generatorOptions": {
+        "fallbackCurrentVersionResolver": "disk",
+        "currentVersionResolver": "git-tag"
+      },
       "git": {
         "commit": true,
         "commitMessage": "chore(release): publish {version}",

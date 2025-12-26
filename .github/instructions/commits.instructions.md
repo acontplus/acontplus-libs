@@ -16,11 +16,11 @@ Generate ONLY a single-line commit message in Conventional Commits format:
 
 ## Rules
 
-- **Single line only** - no body, no bullet points, no additional paragraphs
-- Maximum 72 characters total length
+- **Single line only** for the subject - no bullet points in the subject line
+- Maximum 72 characters for subject line
 - **No emoji** - plain text only
-- **No line breaks** - everything on one line
 - Description should be between 1-50 characters after the type and scope
+- **Breaking changes**: Use `!` after type/scope OR add `BREAKING CHANGE:` footer in body
 
 ## Types
 
@@ -55,6 +55,20 @@ refactor(utils): simplify date converters
 chore: update dependencies to latest versions
 test(ng-customer): add unit tests for service
 perf(ng-infrastructure): optimize data loading
+feat!: remove deprecated authentication methods
+fix(api)!: change response structure
+```
+
+## Breaking Change Examples
+
+```
+feat!: remove support for Angular 18
+
+feat(auth): migrate to new token format
+
+BREAKING CHANGE: JWT tokens now use HS512 instead of HS256
+
+fix(api)!: standardize error responses
 ```
 
 ## Invalid Examples (DO NOT GENERATE)
@@ -67,6 +81,8 @@ perf(ng-infrastructure): optimize data loading
    - Updated logic
    - Fixed bug
 ❌ feat: this is a very long description that exceeds the character limit and will fail validation
+❌ feat!remove deprecated API (missing colon after !)
+❌ BREAKING CHANGE without proper commit type
 ```
 
 ## Remember

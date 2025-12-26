@@ -37,9 +37,11 @@
           <mat-form-field appearance="outline">
             <mat-label>Categoría *</mat-label>
             <mat-select formControlName="category">
-              <mat-option *ngFor="let category of categoryOptions" [value]="category">
-                {{ category }}
-              </mat-option>
+              @for (category of categoryOptions; track category) {
+                <mat-option [value]="category">
+                  {{ category }}
+                </mat-option>
+              }
             </mat-select>
             <mat-error>{{ getFieldError('category') }}</mat-error>
           </mat-form-field>
@@ -62,9 +64,11 @@
           <mat-form-field appearance="outline">
             <mat-label>Estado *</mat-label>
             <mat-select formControlName="status">
-              <mat-option *ngFor="let status of statusOptions" [value]="status">
-                {{ status | titlecase }}
-              </mat-option>
+              @for (status of statusOptions; track status) {
+                <mat-option [value]="status">
+                  {{ status | titlecase }}
+                </mat-option>
+              }
             </mat-select>
             <mat-error>{{ getFieldError('status') }}</mat-error>
           </mat-form-field>
@@ -72,9 +76,11 @@
           <mat-form-field appearance="outline">
             <mat-label>Entorno *</mat-label>
             <mat-select formControlName="environment">
-              <mat-option *ngFor="let env of environmentOptions" [value]="env">
-                {{ env | titlecase }}
-              </mat-option>
+              @for (env of environmentOptions; track env) {
+                <mat-option [value]="env">
+                  {{ env | titlecase }}
+                </mat-option>
+              }
             </mat-select>
             <mat-error>{{ getFieldError('environment') }}</mat-error>
           </mat-form-field>

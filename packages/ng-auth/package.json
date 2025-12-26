@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "description": "Comprehensive Angular authentication module with JWT token management, route guards, CSRF protection, URL redirection, session handling, and clean architecture patterns. Includes login components, auth interceptors, and DDD-based repositories.",
   "peerDependencies": {
-    "@acontplus/core": "^1.1.1",
+    "@acontplus/core": "^2.0.0",
     "@acontplus/ng-infrastructure": "^2.0.0",
     "@acontplus/ng-config": "^2.0.0",
     "@angular/common": "^21.0.6",

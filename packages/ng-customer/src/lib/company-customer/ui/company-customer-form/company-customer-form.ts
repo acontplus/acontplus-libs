@@ -1,13 +1,13 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  Input,
-  OnInit,
-  ViewEncapsulation,
   inject,
-  signal,
+  Input,
   input,
+  OnInit,
   output,
+  signal,
+  ViewEncapsulation,
 } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
@@ -22,14 +22,9 @@ import { MatIcon } from '@angular/material/icon';
 import { Button, InputChip, ToUpperCase } from '@acontplus/ng-components';
 import { MatSelectModule } from '@angular/material/select';
 import { CustomerValidators } from '../../../shared/utils/customer.validators';
-import {
-  CompanyCustomerFormConfig,
-  CreditFieldsConfig,
-  Customer,
-  FieldConfig,
-} from '../../models';
+import { CompanyCustomerFormConfig, CreditFieldsConfig, Customer, FieldConfig } from '../../models';
 import { MAIN_APP_COMPANY_CUSTOMER_CONFIG } from '../../config';
-import {  MatButtonModule } from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'acp-company-customer-form',
@@ -44,7 +39,7 @@ import {  MatButtonModule } from '@angular/material/button';
     Button,
     ToUpperCase,
     InputChip,
-    MatButtonModule
+    MatButtonModule,
   ],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -382,11 +377,8 @@ export class CompanyCustomerFormComponent implements OnInit {
     return this.form.get('dataInfoCred') as FormGroup;
   }
 
-
-
-  searchIdentificacion($event: MouseEvent){
+  searchIdentificacion($event: MouseEvent) {
     $event.stopPropagation();
     console.log('search');
   }
-
 }

@@ -307,7 +307,7 @@ importers:
   packages/ng-auth:
     dependencies:
       '@acontplus/core':
-        specifier: ^2.0.0
+        specifier: ^1.1.1
         version: link:../core
       '@acontplus/ng-config':
         specifier: ^2.0.0
@@ -343,7 +343,7 @@ importers:
   packages/ng-components:
     dependencies:
       '@acontplus/ui-kit':
-        specifier: ^2.0.0
+        specifier: ^1.0.1
         version: link:../ui-kit
       '@angular/cdk':
         specifier: ^21.0.5
@@ -364,7 +364,7 @@ importers:
   packages/ng-config:
     dependencies:
       '@acontplus/core':
-        specifier: ^2.0.0
+        specifier: ^1.1.1
         version: link:../core
       '@angular/common':
         specifier: ^21.0.6
@@ -391,7 +391,7 @@ importers:
   packages/ng-infrastructure:
     dependencies:
       '@acontplus/core':
-        specifier: ^2.0.0
+        specifier: ^1.1.1
         version: link:../core
       '@acontplus/ng-components':
         specifier: ^2.0.0

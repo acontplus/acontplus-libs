@@ -3,3 +3,15 @@ pnpm run lint
 
 # Run formatting check
 pnpm run format:check
+# Auto-create tags for changed packages
+for pkg in packages/*/package.json; do
+  if git diff --cached --quiet "$pkg"; then
+    continue
+  fi
+  name=$(node -p "require('./$pkg').name")
+  version=$(node -p "require('./$pkg').version")
+  tag="$name@$version"
+  if ! git rev-parse "$tag" >/dev/null 2>&1; then
+    git tag "$tag" 2>/dev/null && echo "Created tag: $tag"
+  fi
+done

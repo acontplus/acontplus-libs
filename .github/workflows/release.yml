@@ -93,6 +93,14 @@ jobs:
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.first-release }}" = "true" ]; then
             extra="--first-release"
           fi
+          # Only analyze commits from the last successful release
+          if [ -z "$extra" ]; then
+            # Get the last release commit
+            last_release=$(git log --grep="chore(release): publish" --format="%H" -n 1 || echo "")
+            if [ -n "$last_release" ]; then
+              extra="--from=$last_release"
+            fi
+          fi
           npx nx release version $extra --git-push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

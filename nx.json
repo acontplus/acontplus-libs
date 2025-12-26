@@ -49,7 +49,6 @@
   "nxCloudId": "68d20e567c8b4045e00aa2b7",
   "release": {
     "projectsRelationship": "independent",
-    "projects": ["packages/*"],
     "releaseTagPattern": "{projectName}@{version}",
     "changelog": {
       "projectChangelogs": {
@@ -74,6 +73,14 @@
     },
     "publish": {
       "manifestRootsToPublish": ["dist/{projectRoot}"]
+    },
+    "groups": {
+      "agnostic": {
+        "projects": ["packages/core", "packages/utils", "packages/ui-kit"]
+      },
+      "angular": {
+        "projects": ["packages/ng-*"]
+      }
     }
   },
   "plugins": [

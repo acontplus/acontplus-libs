@@ -72,7 +72,10 @@
       }
     },
     "publish": {
-      "manifestRootsToPublish": ["dist/{projectRoot}"]
+      "manifestRootsToPublish": ["dist/{projectRoot}"],
+      "generatorOptions": {
+        "currentVersionResolver": "registry"
+      }
     },
     "groups": {
       "agnostic": {

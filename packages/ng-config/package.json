@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "description": "Angular configuration management library providing environment tokens, application settings, dependency injection patterns, and runtime configuration services for enterprise applications.",
   "peerDependencies": {
-    "@acontplus/core": "^1.1.1",
+    "@acontplus/core": "^2.0.0",
     "@angular/common": "^21.0.6",
     "@angular/core": "^21.0.6"
   },

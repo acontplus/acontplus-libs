@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "description": "Angular infrastructure library implementing clean architecture patterns with HTTP interceptors, repository implementations, adapters, dependency injection providers, and core infrastructure services for enterprise applications.",
   "peerDependencies": {
-    "@acontplus/core": "^1.1.1",
+    "@acontplus/core": "^2.0.0",
     "@acontplus/ng-config": "^2.0.0",
     "@acontplus/ng-notifications": "^2.0.0",
     "@acontplus/ng-components": "^2.0.0",

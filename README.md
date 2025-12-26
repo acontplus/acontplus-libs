@@ -143,6 +143,48 @@ Workflow: [release.yml](.github/workflows/release.yml)
   - Uses `GITHUB_TOKEN` (built-in) for GitHub Releases
   - Requires the `NPM_TOKEN` repository secret for npm publishing
 
+### Release Groups
+
+The monorepo uses Nx Release groups to manage independent versioning:
+
+- **agnostic**: Core framework-agnostic packages (`core`, `utils`, `ui-kit`)
+- **angular**: Angular-specific packages (`ng-*`)
+
+**Manual releases targeting specific groups**:
+
+```bash
+# Release only Angular packages
+npx nx release --groups=angular --first-release --dry-run
+
+# Release only agnostic packages
+npx nx release --groups=agnostic --first-release --dry-run
+
+# Release all packages
+npx nx release --first-release --dry-run
+```
+
+### Publishing with 2FA/Security Keys
+
+If you use security keys (Windows Hello, hardware keys) instead of TOTP for npm
+2FA, use the web authentication flow:
+
+```bash
+# Build packages first
+npx nx run-many --target=build --projects=packages/*
+
+# Publish with web authentication (opens browser)
+cd dist/packages/<package-name>
+npm publish --access=public
+```
+
+**For automation/CI**:
+
+1. Create an automation token at
+   [npmjs.com/settings/tokens](https://www.npmjs.com/settings/tokens)
+2. Select **Automation** type
+3. Set token in GitHub secrets as `NPM_TOKEN`
+4. Automation tokens bypass 2FA requirements
+
 ### Manual Publish (fallback)
 
 Workflow: [publish.yml](.github/workflows/publish.yml)

@@ -1,8 +1,13 @@
-name: Publish Packages to npm
+name: Publish Packages (manual)
 
 on:
-  release:
-    types: [published]
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        description: 'Run in dry-run mode (no actual publishing)'
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   publish:
@@ -14,6 +19,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v3
@@ -30,10 +37,15 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build all packages
-        run: npx nx run-many --target=build --all
-
       - name: Publish packages
-        run: pnpm publish --filter "./packages/*" --access public
+        run: |
+          if [ "${{ inputs.dry-run }}" = "true" ]; then
+            npx nx release publish --dry-run
+          else
+            npx nx release publish
+          fi
+        shell: bash
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true
+

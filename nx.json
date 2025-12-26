@@ -57,7 +57,8 @@
       }
     },
     "version": {
-      "conventionalCommits": true
+      "conventionalCommits": true,
+      "preVersionCommand": "npx nx run-many --target=build --projects=packages/*"
     },
     "git": {
       "commit": true,

@@ -114,6 +114,44 @@ pnpm start
 - `pnpm run local-registry` - Start local npm registry for development
 - `pnpm run e2e` - Run end-to-end tests
 
+## 🔁 CI/CD
+
+This repo uses GitHub Actions for validation and publishing.
+
+### PR Validation (CI)
+
+Workflow: [ci.yml](.github/workflows/ci.yml)
+
+- **Triggers**: Pull Requests targeting `main`
+- **What it does**: Runs format checks plus Nx affected lint/test/build/e2e via
+  the Nx Cloud CI workflow.
+- **Publishing**: Does not publish anything.
+
+### Automatic Release (Nx Release)
+
+Workflow: [release.yml](.github/workflows/release.yml)
+
+- **Triggers**: Push to `main` (and manual `workflow_dispatch`)
+- **First run**: If the repo has no prior release tags yet, run the workflow
+  manually with `first-release=true`.
+- **What it does**:
+  - Builds `packages/*` before versioning (configured via Nx Release)
+  - Versions changed packages using Conventional Commits
+  - Creates git tags and GitHub Releases per project
+  - Publishes packages to npm via `nx release publish`
+- **Auth**:
+  - Uses `GITHUB_TOKEN` (built-in) for GitHub Releases
+  - Requires the `NPM_TOKEN` repository secret for npm publishing
+
+### Manual Publish (fallback)
+
+Workflow: [publish.yml](.github/workflows/publish.yml)
+
+- **Triggers**: Manual `workflow_dispatch`
+- **What it does**: Runs `nx release publish` (useful to re-run publishing if a
+  transient npm error happens)
+- **Auth**: Requires the `NPM_TOKEN` repository secret
+
 ### Version Management
 
 Use the patch version script to bump package versions and update dependencies:

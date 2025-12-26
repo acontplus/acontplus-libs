@@ -1,6 +1,7 @@
 {
   "name": "acontplus-libs",
   "version": "1.0.0",
+  "packageManager": "pnpm@10.19.0",
   "scripts": {
     "start": "nx serve demo-app --ssl true --hmr",
     "build": "nx build demo-app",

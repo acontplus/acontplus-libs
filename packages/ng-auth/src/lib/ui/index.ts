@@ -1,3 +1,3 @@
-// src/lib/presentation/index.ts
-export * from './stores';
+// src/lib/ui/index.ts
 export * from './login';
+export * from './oauth-callback';

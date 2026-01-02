@@ -87,18 +87,7 @@ participating in this project.
    git commit -m "docs: update documentation" # for documentation changes
    git commit -m "refactor: improve code structure" # for code refactoring
    git commit -m "test: add tests for component" # for adding tests
-   git commit -m "feat!: remove deprecated API" # for breaking changes (use !)
    ```
-
-   **Breaking Changes**: For changes that break backward compatibility, use one of:
-   - Add `!` after type/scope: `feat!: remove old API` or `fix(auth)!: change token format`
-   - Add `BREAKING CHANGE:` footer in commit body:
-
-     ```bash
-     git commit -m "feat(api): update authentication
-
-     BREAKING CHANGE: JWT tokens now require refresh token rotation"
-     ```
 
 8. **Push your branch** to your fork:
 
@@ -168,13 +157,6 @@ We use [Semantic Versioning](https://semver.org/) for this project:
 - MAJOR version for incompatible API changes (X.y.z)
 - MINOR version for adding functionality in a backward-compatible manner (x.Y.z)
 - PATCH version for backward-compatible bug fixes (x.y.Z)
-
-**Automatic Versioning**: Version bumps are determined from commit messages using Conventional Commits:
-
-- `feat:` → MINOR bump (new feature)
-- `fix:` → PATCH bump (bug fix)
-- `feat!:` or `BREAKING CHANGE:` → MAJOR bump (breaking change)
-- Other types (`docs:`, `chore:`, etc.) → no version bump
 
 ---
 

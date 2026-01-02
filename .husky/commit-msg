@@ -9,37 +9,18 @@ if ! grep -qE "$commit_regex" "$1"; then
     echo "❌ Invalid commit message format!"
     echo ""
     echo "Commit message must follow the Conventional Commits specification:"
-    echo "  <type>[optional scope][!]: <description>"
+    echo "  <type>[optional scope]: <description>"
     echo ""
     echo "Types: build, chore, ci, docs, feat, fix, perf, refactor, revert, style, test"
-    echo ""
-    echo "Breaking Changes (use either method):"
-    echo "  1. Add '!' after type/scope: feat!: breaking change"
-    echo "  2. Add footer in body: BREAKING CHANGE: description"
     echo ""
     echo "Examples:"
     echo "  feat: add user authentication"
     echo "  fix(auth): resolve login issue"
     echo "  docs: update README"
-    echo "  feat!: remove deprecated API"
-    echo "  feat(api): add new endpoint"
-    echo ""
-    echo "  BREAKING CHANGE: remove support for Node 16"
+    echo "  feat!: breaking change to API"
     echo ""
     echo "Your commit message:"
     echo "  $(cat $1)"
     echo ""
     exit 1
-fi
-
-# Check for BREAKING CHANGE footer format
-if grep -q "^BREAKING CHANGE:" "$1"; then
-    if ! grep -qE "^BREAKING CHANGE: .+" "$1"; then
-        echo "❌ Invalid BREAKING CHANGE format!"
-        echo ""
-        echo "BREAKING CHANGE footer must have description:"
-        echo "  BREAKING CHANGE: description of breaking change"
-        echo ""
-        exit 1
-    fi
 fi

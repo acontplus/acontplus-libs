@@ -1,5 +1,4 @@
 import { Component, computed, effect, inject, input, ViewEncapsulation } from '@angular/core';
-import { SafeHtml } from '@angular/platform-browser';
 import { IconRegistryService } from '../icon-registry.service';
 import { DEFAULT_ICONS, FALLBACK_ICON } from '@acontplus/ui-kit';
 
@@ -56,7 +55,7 @@ export class SvgIcon {
   /**
    * Get the icon SVG from the registry
    */
-  protected iconSvg = computed<SafeHtml | null>(() => {
+  protected iconSvg = computed(() => {
     const svg = this.iconRegistry.getIcon(this.name());
 
     // If icon not found and fallback disabled, return empty

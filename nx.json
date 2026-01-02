@@ -48,42 +48,8 @@
   },
   "nxCloudId": "68d20e567c8b4045e00aa2b7",
   "release": {
-    "projectsRelationship": "independent",
-    "releaseTagPattern": "{projectName}@{version}",
-    "changelog": {
-      "projectChangelogs": {
-        "createRelease": "github"
-      },
-      "git": {
-        "commit": true,
-        "commitMessage": "chore(release): update changelog {version}"
-      }
-    },
     "version": {
-      "conventionalCommits": true,
-      "generatorOptions": {
-        "fallbackCurrentVersionResolver": "disk",
-        "currentVersionResolver": "git-tag"
-      },
-      "git": {
-        "commit": true,
-        "commitMessage": "chore(release): publish {version}",
-        "tag": true
-      }
-    },
-    "publish": {
-      "manifestRootsToPublish": ["dist/{projectRoot}"],
-      "generatorOptions": {
-        "currentVersionResolver": "registry"
-      }
-    },
-    "groups": {
-      "agnostic": {
-        "projects": ["packages/core", "packages/utils", "packages/ui-kit"]
-      },
-      "angular": {
-        "projects": ["packages/ng-*"]
-      }
+      "preVersionCommand": "npx nx run-many -t build"
     }
   },
   "plugins": [

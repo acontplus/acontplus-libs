@@ -1,13 +1,13 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  Input,
-  OnInit,
-  ViewEncapsulation,
   inject,
-  signal,
+  Input,
   input,
+  OnInit,
   output,
+  signal,
+  ViewEncapsulation,
 } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import {

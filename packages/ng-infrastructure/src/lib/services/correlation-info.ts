@@ -1,5 +1,4 @@
 import { Injectable, signal, computed } from '@angular/core';
-import { v4 as uuidv4 } from 'uuid';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +13,7 @@ export class CorrelationInfo {
   getOrCreateCorrelationId(): string {
     if (!this.correlationId()) {
       // Try to get from sessionStorage first (for page refreshes)
-      const id = sessionStorage.getItem(this.CORRELATION_KEY) || uuidv4();
+      const id = sessionStorage.getItem(this.CORRELATION_KEY) || crypto.randomUUID();
       this.correlationId.set(id);
       sessionStorage.setItem(this.CORRELATION_KEY, id);
     }

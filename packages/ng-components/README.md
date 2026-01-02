@@ -482,11 +482,48 @@ Row colors automatically adapt to light/dark themes using Material Design tokens
 
 ### Theme Toggle
 
-Dark/light mode toggle component for theme switching.
+Dark/light mode toggle component for theme switching. Provides accessible theme switching with customizable icons and labels.
+
+**Features:**
+
+- ✅ Accessible - ARIA labels and pressed state
+- ✅ Customizable icons and labels
+- ✅ Signal-based reactive state
+- ✅ Automatic theme persistence to localStorage
+- ✅ System theme preference detection
+- ✅ OnPush change detection for performance
 
 ```typescript
 import { ThemeToggle } from '@acontplus/ng-components';
+
+@Component({
+  template: `
+    <!-- Basic usage -->
+    <acp-theme-toggle />
+
+    <!-- With custom labels (i18n ready) -->
+    <acp-theme-toggle lightModeLabel="Cambiar a modo claro" darkModeLabel="Cambiar a modo oscuro" />
+
+    <!-- With custom icons -->
+    <acp-theme-toggle lightModeIcon="wb_sunny" darkModeIcon="nightlight" />
+
+    <!-- With test ID for automated testing -->
+    <acp-theme-toggle testId="header-theme-toggle" />
+  `,
+  imports: [ThemeToggle],
+})
+export class HeaderComponent {}
 ```
+
+**Theme Toggle API:**
+
+| Input            | Type     | Default                  | Description                                   |
+| ---------------- | -------- | ------------------------ | --------------------------------------------- |
+| `lightModeIcon`  | `string` | `'light_mode'`           | Icon shown when in dark mode (Material icon)  |
+| `darkModeIcon`   | `string` | `'dark_mode'`            | Icon shown when in light mode (Material icon) |
+| `lightModeLabel` | `string` | `'Switch to light mode'` | Accessible label when in dark mode            |
+| `darkModeLabel`  | `string` | `'Switch to dark mode'`  | Accessible label when in light mode           |
+| `testId`         | `string` | `''`                     | data-testid attribute for testing             |
 
 ### Autocomplete Wrapper
 

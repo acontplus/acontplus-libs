@@ -54,15 +54,6 @@ export interface MatCustomDialogConfig<T = unknown> {
  *
  * @interface DialogWrapperConfig
  * @template T The type of data to pass to the content component
- *
- * @example
- * const config: DialogWrapperConfig = {
- *   component: YourDialogContentComponent,
- *   title: 'Dialog Title',
- *   icon: 'info',
- *   data: { message: 'This is some data passed to the dialog content component' },
- *   hideHeader: false
- * };
  */
 export interface DialogWrapperConfig<T = unknown> {
   /**

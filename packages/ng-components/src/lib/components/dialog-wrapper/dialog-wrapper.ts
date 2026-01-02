@@ -21,15 +21,6 @@ import { Button } from '../button';
  * including a draggable header and the ability to dynamically create components inside the dialog.
  *
  * This component is typically used with the AdvancedDialogService's openInWrapper method.
- *
- * @example
- * // In your service or component:
- * this.dialogService.openInWrapper({
- *   component: YourDialogContentComponent,
- *   title: 'Dialog Title',
- *   icon: 'info',
- *   data: { message: 'This is some data passed to the dialog content component' }
- * });
  */
 @Component({
   selector: 'acp-dialog-wrapper',

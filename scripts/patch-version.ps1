@@ -1,20 +1,36 @@
 #!/usr/bin/env pwsh
 <#
 .SYNOPSIS
-    Patch version for a package and update all dependencies in the workspace.
+    Bump version for a package and update all dependencies in the workspace.
 
 .DESCRIPTION
     This script prompts the user to select a package from the workspace,
-    patches its version using npm version patch, and then updates all
+    bumps its version using npm version (patch/minor/major), and then updates all
     dependencies across other packages in the workspace.
+
+.PARAMETER PackageName
+    The name of the package to bump. If not provided, a selection menu is shown.
+
+.PARAMETER VersionType
+    The type of version bump: patch, minor, or major. Default is 'patch'.
 
 .EXAMPLE
     .\scripts\patch-version.ps1
+
+.EXAMPLE
+    .\scripts\patch-version.ps1 -VersionType minor
+
+.EXAMPLE
+    .\scripts\patch-version.ps1 -PackageName core -VersionType major
 #>
 
 param(
     [Parameter()]
-    [string]$PackageName
+    [string]$PackageName,
+
+    [Parameter()]
+    [ValidateSet('patch', 'minor', 'major')]
+    [string]$VersionType = 'patch'
 )
 
 $ErrorActionPreference = "Stop"
@@ -99,7 +115,7 @@ function Update-PackageDependencies {
 }
 
 # Main script
-Write-Host "`n=== Package Version Patcher ===" -ForegroundColor Cyan
+Write-Host "`n=== Package Version Bumper ($VersionType) ===" -ForegroundColor Cyan
 Write-Host ""
 
 # Get all packages
@@ -145,24 +161,24 @@ Write-Host "Selected package: $($selectedPackage.Name) (v$($selectedPackage.Vers
 Write-Host ""
 
 # Confirm before proceeding
-$confirm = Read-Host "Do you want to patch this package version? (y/N)"
+$confirm = Read-Host "Do you want to bump this package version ($VersionType)? (y/N)"
 if ($confirm -notmatch '^[Yy]') {
     Write-Host "Cancelled." -ForegroundColor Yellow
     exit 0
 }
 
 Write-Host ""
-Write-Host "Step 1: Patching version..." -ForegroundColor Green
+Write-Host "Step 1: Bumping version ($VersionType)..." -ForegroundColor Green
 
-# Run pnpm command to patch version
+# Run pnpm command to bump version
 $filterArg = $selectedPackage.Name
 try {
-    Write-Host "Running: pnpm --filter $filterArg exec npm version patch" -ForegroundColor Gray
-    $output = pnpm --filter $filterArg exec npm version patch 2>&1
+    Write-Host "Running: pnpm --filter $filterArg exec npm version $VersionType" -ForegroundColor Gray
+    $output = pnpm --filter $filterArg exec npm version $VersionType 2>&1
     Write-Host $output
 
     if ($LASTEXITCODE -ne 0) {
-        Write-Host "Error patching version!" -ForegroundColor Red
+        Write-Host "Error bumping version!" -ForegroundColor Red
         exit 1
     }
 } catch {

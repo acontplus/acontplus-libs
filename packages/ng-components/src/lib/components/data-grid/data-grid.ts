@@ -192,6 +192,10 @@ export class DataGrid<T = any> implements AfterViewInit, OnDestroy, OnChanges {
   keyboardNavigation = input<boolean>(false);
 
   focusedRowIndex = computed(() => this._keyboardNavService.focusedRowIndex()); // Vinculado al servicio
+
+  // Row Highlighting
+  highlightedRowIndex = input<number>(-1);
+
   // Sorting
   sortOnFront = input<boolean>(true);
   sortActive = input<string>('');

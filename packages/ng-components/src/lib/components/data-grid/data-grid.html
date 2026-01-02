@@ -283,6 +283,7 @@
           [class]="row | rowClass: index : dataIndex : rowClassFormatter()"
           [class.selected]="rowSelection.isSelected(row)"
           [class.focused]="keyboardNavigation() && focusedRowIndex() === dataIndex"
+          [class.highlighted]="highlightedRowIndex() === dataIndex"
           (click)="selectRow($event, row, getIndex(index, dataIndex))"
           (contextmenu)="contextmenu($event, row, getIndex(index, dataIndex))"
         ></tr>

@@ -4,6 +4,10 @@ import { ActivatedRoute, Routes } from '@angular/router';
 import { DocHeading } from '../../shared/doc-heading/doc-heading';
 import { ExampleViewer } from '../../shared/example-viewer/example-viewver';
 import { gridBasicExampleConfig } from './examples/basic';
+import { DataGridExamples } from './examples/data-grid-examples';
+import { DataGridApi } from './data-grid-api';
+import { DataGridStyling } from './data-grid-styling';
+
 @Component({
   selector: 'app-data-grid-overview',
   templateUrl: './data-grid-overview.html',
@@ -25,6 +29,17 @@ export const routes: Routes = [
       examples: [gridBasicExampleConfig],
     },
   },
-
+  {
+    path: 'examples',
+    component: DataGridExamples,
+  },
+  {
+    path: 'api',
+    component: DataGridApi,
+  },
+  {
+    path: 'styling',
+    component: DataGridStyling,
+  },
   { path: '**', redirectTo: 'overview' },
 ];

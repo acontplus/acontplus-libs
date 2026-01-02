@@ -9,9 +9,7 @@ export interface BaseRepository<TEntity = any, TId = number> {
   remove?(id: TId): Observable<void>;
 }
 
-export interface SearchableRepository<TEntity = any, TId = number> extends BaseRepository<
-  TEntity,
-  TId
-> {
+export interface SearchableRepository<TEntity = any, TId = number>
+  extends BaseRepository<TEntity, TId> {
   search?(query: string, pagination: PaginationParams): Observable<PagedResult<TEntity>>;
 }

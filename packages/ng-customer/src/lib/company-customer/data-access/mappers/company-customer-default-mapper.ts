@@ -1,4 +1,4 @@
-import { ICompanyCustomerMapper } from '@acontplus/ng-customer';
+import { ICompanyCustomerMapper } from '../interfaces/company-customer-mapper';
 
 export class CompanyCustomerDefaultMapper implements ICompanyCustomerMapper {
   toModel(dto: any): any {

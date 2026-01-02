@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-button-examples',
-  imports: [CommonModule],
+  imports: [],
   template: `
     <div class="docs-component-viewer-content">
       <h1>Button Examples</h1>

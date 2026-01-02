@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MatCardModule } from '@angular/material/card';
 import { DocHeading } from '../../shared/doc-heading/doc-heading';
 import { CodeExample } from '../../shared/code-example/code-example';
 
 @Component({
   selector: 'app-autocomplete-overview',
-  imports: [CommonModule, MatCardModule, DocHeading, CodeExample],
+  imports: [MatCardModule, DocHeading, CodeExample],
   template: `
     <div class="docs-component-viewer-content">
       <app-doc-heading>Autocomplete</app-doc-heading>

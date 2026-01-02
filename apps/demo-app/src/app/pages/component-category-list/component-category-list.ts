@@ -3,7 +3,6 @@ import { ActivatedRoute, Params, RouterLink } from '@angular/router';
 import { Observable, Subscription, combineLatest } from 'rxjs';
 import { COMPONENTS_MENU, ComponentCategory } from '../component-nav/component-nav';
 import { ComponentPageTitleService } from '../../shared/services/page-title';
-import { CommonModule } from '@angular/common';
 
 interface ComponentGroup {
   category: string;
@@ -14,7 +13,7 @@ interface ComponentGroup {
   selector: 'app-component-category-list',
   templateUrl: './component-category-list.html',
   styleUrl: './component-category-list.scss',
-  imports: [RouterLink, CommonModule],
+  imports: [RouterLink],
 })
 export class ComponentCategoryList implements OnInit, OnDestroy {
   _componentPageTitle = inject(ComponentPageTitleService);

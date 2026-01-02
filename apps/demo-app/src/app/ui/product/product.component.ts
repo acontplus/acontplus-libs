@@ -22,7 +22,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ColumnDefinition, DynamicTable, Pagination, Button } from '@acontplus/ng-components';
+import { DataGrid, DataGridColumn, Button } from '@acontplus/ng-components';
 import { ProductRepository } from '../../data';
 import { Product } from '../../domain';
 import { PaginationParams, PagedResult } from '@acontplus/core';
@@ -58,7 +58,7 @@ interface ProductFilters {
     MatChipsModule,
     MatTooltipModule,
     MatProgressSpinnerModule,
-    DynamicTable,
+    DataGrid,
     CurrencyPipe,
     DatePipe,
     Button,
@@ -72,7 +72,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
   private cdr = inject(ChangeDetectorRef);
 
   products: Product[] = [];
-  productColumns: ColumnDefinition<Product>[] = [];
+  productColumns: DataGridColumn<Product>[] = [];
   selectedProducts: Product[] = [];
   categories: string[] = [];
 
@@ -109,7 +109,11 @@ export class ProductComponent implements OnInit, AfterViewInit {
   activeProducts = 0;
   totalValue = 0;
 
-  productPaginationConfig: Pagination = new Pagination(0, 10, 0, [5, 10, 25, 50]);
+  // Pagination config for DataGrid
+  paginationLength = 0;
+  pageIndex = 0;
+  pageSize = 10;
+  pageSizeOptions = [5, 10, 25, 50];
 
   readonly actionsTemplate = viewChild.required<TemplateRef<any>>('actionsTemplate');
   readonly productImageTemplate = viewChild.required<TemplateRef<any>>('productImageTemplate');
@@ -192,12 +196,16 @@ export class ProductComponent implements OnInit, AfterViewInit {
         this.totalProducts = result.totalCount;
 
         // Update pagination config to match the result
-        this.productPaginationConfig.totalRecords = result.totalCount;
-        this.productPaginationConfig.pageIndex = result.pageIndex - 1; // Convert to 0-based index
-        this.productPaginationConfig.pageSize = result.pageSize;
+        this.paginationLength = result.totalCount;
+        this.pageIndex = result.pageIndex - 1; // Convert to 0-based index
+        this.pageSize = result.pageSize;
 
         console.log('Updated products array:', this.products);
-        console.log('Updated pagination config:', this.productPaginationConfig);
+        console.log('Updated pagination:', {
+          length: this.paginationLength,
+          pageIndex: this.pageIndex,
+          pageSize: this.pageSize,
+        });
 
         this.isLoading = false;
         this.cdr.markForCheck();
@@ -234,15 +242,15 @@ export class ProductComponent implements OnInit, AfterViewInit {
     this.pagination.pageIndex = event.pageIndex + 1; // Convert from 0-based to 1-based
     this.pagination.pageSize = event.pageSize;
 
-    this.productPaginationConfig.pageIndex = event.pageIndex;
-    this.productPaginationConfig.pageSize = event.pageSize;
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
 
     this.loadProducts();
   }
 
   onFilterChange(): void {
     this.pagination.pageIndex = 1; // Reset to first page
-    this.productPaginationConfig.pageIndex = 0; // Reset to first page (0-based)
+    this.pageIndex = 0; // Reset to first page (0-based)
     this.loadProducts();
   }
 
@@ -465,71 +473,61 @@ export class ProductComponent implements OnInit, AfterViewInit {
   private initializeColumns(): void {
     // Create basic column definitions without template references
     this.productColumns = [
-      new ColumnDefinition<Product>({
-        key: 'id',
-        label: 'ID',
+      {
+        field: 'id',
+        header: 'ID',
         type: 'number',
         width: '80px',
-        order: 1,
-      }),
-      new ColumnDefinition<Product>({
-        key: 'imageUrl',
-        label: 'Image',
-        type: 'template',
+        sortable: true,
+      },
+      {
+        field: 'imageUrl',
+        header: 'Image',
         width: '60px',
-        order: 2,
-      }),
-      new ColumnDefinition<Product>({
-        key: 'name',
-        label: 'Product Name',
-        type: 'string',
-        isDefaultSearchField: true,
-        required: true,
-        order: 3,
+      },
+      {
+        field: 'name',
+        header: 'Product Name',
         width: '200px',
-      }),
-      new ColumnDefinition<Product>({
-        key: 'category',
-        label: 'Category',
-        type: 'string',
-        order: 4,
-      }),
-      new ColumnDefinition<Product>({
-        key: 'price',
-        label: 'Price',
+        sortable: true,
+      },
+      {
+        field: 'category',
+        header: 'Category',
+        sortable: true,
+      },
+      {
+        field: 'price',
+        header: 'Price',
+        type: 'currency',
+        typeParameter: { currencyCode: 'USD' },
+        sortable: true,
+      },
+      {
+        field: 'stock',
+        header: 'Stock',
         type: 'number',
-        format: { style: 'currency', currency: 'USD' },
-        hasFooter: true,
-        order: 5,
-      }),
-      new ColumnDefinition<Product>({
-        key: 'stock',
-        label: 'Stock',
-        type: 'number',
-        hasFooter: true,
-        order: 6,
-      }),
-      new ColumnDefinition<Product>({
-        key: 'availableDate',
-        label: 'Available On',
+        sortable: true,
+      },
+      {
+        field: 'availableDate',
+        header: 'Available On',
         type: 'date',
-        order: 7,
-      }),
-      new ColumnDefinition<Product>({
-        key: 'isActive',
-        label: 'Status',
-        type: 'string',
-        order: 8,
+        typeParameter: { format: 'yyyy-MM-dd' },
+        sortable: true,
+      },
+      {
+        field: 'isActive',
+        header: 'Status',
+        type: 'boolean',
         width: '100px',
-      }),
-      new ColumnDefinition<Product>({
-        key: 'op',
-        label: 'Actions',
-        columnType: 'template',
-        order: 9,
+      },
+      {
+        field: 'actions',
+        header: 'Actions',
         width: '120px',
-      }),
-    ].sort((a, b) => (a.order || 0) - (b.order || 0));
+      },
+    ];
 
     console.log('Column definitions initialized:', this.productColumns);
   }
@@ -540,15 +538,15 @@ export class ProductComponent implements OnInit, AfterViewInit {
     const productImageTemplate = this.productImageTemplate();
     if (actionsTemplate && productImageTemplate) {
       // Update image column with template
-      const imageColumn = this.productColumns.find(col => col.key === 'imageUrl');
+      const imageColumn = this.productColumns.find(col => col.field === 'imageUrl');
       if (imageColumn) {
-        imageColumn.templateOutlet = productImageTemplate;
+        imageColumn.cellTemplate = productImageTemplate;
       }
 
       // Update actions column with template
-      const actionsColumn = this.productColumns.find(col => col.key === 'op');
+      const actionsColumn = this.productColumns.find(col => col.field === 'actions');
       if (actionsColumn) {
-        actionsColumn.templateOutlet = actionsTemplate;
+        actionsColumn.cellTemplate = actionsTemplate;
       }
 
       console.log('Columns updated with templates:', this.productColumns);

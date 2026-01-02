@@ -22,7 +22,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ColumnDefinition, DynamicTable, Pagination, Button } from '@acontplus/ng-components';
+import { DataGrid, DataGridColumn, Button } from '@acontplus/ng-components';
 import { UserRepository } from '../../data';
 import { User } from '../../domain';
 import { PaginationParams, PagedResult } from '@acontplus/core';
@@ -45,7 +45,7 @@ import { PaginationParams, PagedResult } from '@acontplus/core';
     MatChipsModule,
     MatTooltipModule,
     MatProgressSpinnerModule,
-    DynamicTable,
+    DataGrid,
     Button,
   ],
   templateUrl: './user.component.html',
@@ -70,7 +70,10 @@ export class UserComponent implements OnInit, AfterViewInit {
     pageIndex: 1,
     pageSize: 10,
   });
-  userPaginationConfig: Pagination = new Pagination(0, 10, 0, [5, 10, 25, 50]);
+  paginationLength = 0;
+  pageIndex = 0;
+  pageSize = 10;
+  pageSizeOptions = [5, 10, 25, 50];
 
   // Filters
   filters: Record<string, any> = {};
@@ -87,7 +90,7 @@ export class UserComponent implements OnInit, AfterViewInit {
   readonly statusTemplate = viewChild.required<TemplateRef<any>>('statusTemplate');
 
   // Column definitions
-  userColumns: ColumnDefinition<User>[] = [];
+  userColumns: DataGridColumn<User>[] = [];
 
   ngOnInit() {
     this.initializeColumns();
@@ -100,51 +103,41 @@ export class UserComponent implements OnInit, AfterViewInit {
 
   private initializeColumns(): void {
     this.userColumns = [
-      new ColumnDefinition<User>({
-        key: 'id',
-        label: 'ID',
+      {
+        field: 'id',
+        header: 'ID',
         type: 'number',
         width: '80px',
-        order: 1,
-      }),
-      new ColumnDefinition<User>({
-        key: 'name',
-        label: 'Name',
-        type: 'string',
-        isDefaultSearchField: true,
-        required: true,
-        order: 2,
+        sortable: true,
+      },
+      {
+        field: 'name',
+        header: 'Name',
         width: '200px',
-      }),
-      new ColumnDefinition<User>({
-        key: 'email',
-        label: 'Email',
-        type: 'string',
-        order: 3,
+        sortable: true,
+      },
+      {
+        field: 'email',
+        header: 'Email',
         width: '250px',
-      }),
-      new ColumnDefinition<User>({
-        key: 'role',
-        label: 'Role',
-        type: 'template',
-        order: 4,
+        sortable: true,
+      },
+      {
+        field: 'role',
+        header: 'Role',
         width: '120px',
-      }),
-      new ColumnDefinition<User>({
-        key: 'isActive',
-        label: 'Status',
-        type: 'template',
-        order: 5,
+      },
+      {
+        field: 'isActive',
+        header: 'Status',
         width: '120px',
-      }),
-      new ColumnDefinition<User>({
-        key: 'op',
-        label: 'Actions',
-        columnType: 'template',
-        order: 6,
+      },
+      {
+        field: 'actions',
+        header: 'Actions',
         width: '200px',
-      }),
-    ].sort((a, b) => (a.order || 0) - (b.order || 0));
+      },
+    ];
   }
 
   private updateColumnsWithTemplates(): void {
@@ -153,21 +146,21 @@ export class UserComponent implements OnInit, AfterViewInit {
     const statusTemplate = this.statusTemplate();
     if (actionsTemplate && roleTemplate && statusTemplate) {
       // Update role column with template
-      const roleColumn = this.userColumns.find(col => col.key === 'role');
+      const roleColumn = this.userColumns.find(col => col.field === 'role');
       if (roleColumn) {
-        roleColumn.templateOutlet = roleTemplate;
+        roleColumn.cellTemplate = roleTemplate;
       }
 
       // Update status column with template
-      const statusColumn = this.userColumns.find(col => col.key === 'isActive');
+      const statusColumn = this.userColumns.find(col => col.field === 'isActive');
       if (statusColumn) {
-        statusColumn.templateOutlet = statusTemplate;
+        statusColumn.cellTemplate = statusTemplate;
       }
 
       // Update actions column with template
-      const actionsColumn = this.userColumns.find(col => col.key === 'op');
+      const actionsColumn = this.userColumns.find(col => col.field === 'actions');
       if (actionsColumn) {
-        actionsColumn.templateOutlet = actionsTemplate;
+        actionsColumn.cellTemplate = actionsTemplate;
       }
     }
   }
@@ -177,9 +170,9 @@ export class UserComponent implements OnInit, AfterViewInit {
     this.userRepository.getAll(this.pagination).subscribe({
       next: (result: PagedResult<User>) => {
         this.users = result.items;
-        this.userPaginationConfig.totalRecords = result.totalCount;
-        this.userPaginationConfig.pageIndex = result.pageIndex - 1;
-        this.userPaginationConfig.pageSize = result.pageSize;
+        this.paginationLength = result.totalCount;
+        this.pageIndex = result.pageIndex - 1;
+        this.pageSize = result.pageSize;
         this.isLoading = false;
         this.cdr.markForCheck();
       },
@@ -195,8 +188,8 @@ export class UserComponent implements OnInit, AfterViewInit {
   onPageChange(event: PageEvent): void {
     this.pagination.pageIndex = event.pageIndex + 1;
     this.pagination.pageSize = event.pageSize;
-    this.userPaginationConfig.pageIndex = event.pageIndex;
-    this.userPaginationConfig.pageSize = event.pageSize;
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
     this.loadUsers();
   }
 

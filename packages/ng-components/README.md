@@ -353,53 +353,90 @@ import { Spinner } from '@acontplus/ng-components';
 
 ### Tables
 
-- **DynamicTable**: Angular Material-based dynamic table with advanced features
+- **DataGrid**: Advanced data grid with Material table integration, signals, and modern Angular patterns
 - **TabulatorTable**: Advanced table with Tabulator.js integration
 
 ```typescript
-import { DynamicTable, TabulatorTable } from '@acontplus/ng-components';
+import { DataGrid, DataGridColumn, TabulatorTable } from '@acontplus/ng-components';
 ```
 
-#### Dynamic Table Features
+#### Data Grid Features
 
-- **Row Selection**: Single/multiple selection with disabled rows support
-- **Row Styling**: Theme-aware dynamic row colors based on data properties
-- **Expandable Rows**: Collapsible detail views
-- **Pagination**: Built-in pagination support
-- **Column Templates**: Custom column rendering
-- **Sorting & Filtering**: Material table sorting capabilities
+The DataGrid is the primary table component, built with modern Angular 21+ patterns:
+
+- **Signals Architecture**: Uses `signal()`, `computed()`, `effect()` for reactive state
+- **Modern APIs**: Uses `input()` and `output()` functions
+- **Row Selection**: Single/multiple selection with formatter support
+- **Row Highlighting**: Visual highlighting with `highlightedRowIndex`
+- **Keyboard Navigation**: Full accessibility with arrow keys, Home/End
+- **Column Pinning**: Sticky left/right columns
+- **Infinite Scroll**: Load more data on scroll
+- **Server-side Support**: `pageOnFront`/`sortOnFront` toggles for backend pagination
+- **Custom Templates**: Cell, header, and expansion templates
+- **Sorting & Pagination**: Full Material integration
 
 ```typescript
-// Row styling example
-interface TableRow {
-  rowStyle?: {
-    backgroundColor?: string;
-    color?: string;
-    [key: string]: any;
-  };
-  disableSelection?: boolean;
+// Basic usage
+@Component({
+  imports: [DataGrid],
+  template: `
+    <acp-data-grid
+      [data]="items"
+      [columns]="columns"
+      [rowSelectable]="true"
+      [multiSelectable]="true"
+      [showPaginator]="true"
+      [pageOnFront]="false"
+      [length]="totalCount"
+      [pageIndex]="currentPage"
+      [pageSize]="pageSize"
+      [loading]="isLoading"
+      (rowSelectedChange)="onSelect($event)"
+      (page)="onPageChange($event)"
+    />
+  `,
+})
+export class MyComponent {
+  columns: DataGridColumn[] = [
+    { field: 'id', header: 'ID', type: 'number', sortable: true },
+    { field: 'name', header: 'Name', sortable: true },
+    { field: 'status', header: 'Status', cellTemplate: statusTemplate },
+    { field: 'actions', header: 'Actions', cellTemplate: actionsTemplate },
+  ];
 }
+```
 
-// Usage with theme-aware colors
-const data = [
+#### Row Selection Formatting
+
+```typescript
+// Disable selection for specific rows
+<acp-data-grid
+  [rowSelectable]="true"
+  [rowSelectionFormatter]="{
+    disabled: (row, index) => row.status === 'locked',
+    hideCheckbox: (row, index) => row.isSystem
+  }"
+/>
+```
+
+#### Column Configuration
+
+```typescript
+const columns: DataGridColumn[] = [
   {
-    id: 1,
-    name: 'Item 1',
-    status: 'active',
-    rowStyle: {
-      backgroundColor: 'var(--mat-sys-primary-container)',
-      color: 'var(--mat-sys-on-primary-container)',
-    },
+    field: 'price',
+    header: 'Price',
+    type: 'currency',
+    typeParameter: { currencyCode: 'USD' },
+    sortable: true,
+    pinned: 'left',
+    width: '120px',
   },
   {
-    id: 2,
-    name: 'Item 2',
-    status: 'processing',
-    disableSelection: true,
-    rowStyle: {
-      backgroundColor: '#e3f2fd',
-      color: '#1565c0',
-    },
+    field: 'date',
+    header: 'Created',
+    type: 'date',
+    typeParameter: { format: 'yyyy-MM-dd' },
   },
 ];
 ```
@@ -445,11 +482,48 @@ Row colors automatically adapt to light/dark themes using Material Design tokens
 
 ### Theme Toggle
 
-Dark/light mode toggle component for theme switching.
+Dark/light mode toggle component for theme switching. Provides accessible theme switching with customizable icons and labels.
+
+**Features:**
+
+- ✅ Accessible - ARIA labels and pressed state
+- ✅ Customizable icons and labels
+- ✅ Signal-based reactive state
+- ✅ Automatic theme persistence to localStorage
+- ✅ System theme preference detection
+- ✅ OnPush change detection for performance
 
 ```typescript
 import { ThemeToggle } from '@acontplus/ng-components';
+
+@Component({
+  template: `
+    <!-- Basic usage -->
+    <acp-theme-toggle />
+
+    <!-- With custom labels (i18n ready) -->
+    <acp-theme-toggle lightModeLabel="Cambiar a modo claro" darkModeLabel="Cambiar a modo oscuro" />
+
+    <!-- With custom icons -->
+    <acp-theme-toggle lightModeIcon="wb_sunny" darkModeIcon="nightlight" />
+
+    <!-- With test ID for automated testing -->
+    <acp-theme-toggle testId="header-theme-toggle" />
+  `,
+  imports: [ThemeToggle],
+})
+export class HeaderComponent {}
 ```
+
+**Theme Toggle API:**
+
+| Input            | Type     | Default                  | Description                                   |
+| ---------------- | -------- | ------------------------ | --------------------------------------------- |
+| `lightModeIcon`  | `string` | `'light_mode'`           | Icon shown when in dark mode (Material icon)  |
+| `darkModeIcon`   | `string` | `'dark_mode'`            | Icon shown when in light mode (Material icon) |
+| `lightModeLabel` | `string` | `'Switch to light mode'` | Accessible label when in dark mode            |
+| `darkModeLabel`  | `string` | `'Switch to dark mode'`  | Accessible label when in light mode           |
+| `testId`         | `string` | `''`                     | data-testid attribute for testing             |
 
 ### Autocomplete Wrapper
 

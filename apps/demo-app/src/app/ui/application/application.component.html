@@ -71,16 +71,20 @@
   <mat-card class="table-card">
     <mat-card-content>
       <div class="table-container">
-        <acp-dynamic-table
-          [tableData]="applications"
-          [columnDefinitions]="applicationColumns"
-          [showSelectBox]="true"
-          [showFooter]="true"
-          [enablePagination]="true"
-          [paginationConfig]="applicationPaginationConfig"
-          [isLoadingData]="isLoading"
-          (rowSelected)="onRowSelected($event)"
-          (pageEvent)="onPageChange($event)"
+        <acp-data-grid
+          [data]="applications"
+          [columns]="applicationColumns"
+          [rowSelectable]="true"
+          [multiSelectable]="true"
+          [showPaginator]="true"
+          [pageOnFront]="false"
+          [length]="paginationLength"
+          [pageIndex]="pageIndex"
+          [pageSize]="pageSize"
+          [pageSizeOptions]="pageSizeOptions"
+          [loading]="isLoading"
+          (rowSelectedChange)="onRowSelected($event)"
+          (page)="onPageChange($event)"
         />
 
         @if (!isLoading && applications.length === 0) {
@@ -94,35 +98,35 @@
   </mat-card>
 
   <!-- Template for Status Column -->
-  <ng-template #statusTemplate let-element="$implicit">
-    <mat-chip [color]="getStatusColor(element.status)" selected>
-      {{ element.status | titlecase }}
+  <ng-template #statusTemplate let-rowData="rowData">
+    <mat-chip [color]="getStatusColor(rowData.status)" selected>
+      {{ rowData.status | titlecase }}
     </mat-chip>
   </ng-template>
 
   <!-- Template for Environment Column -->
-  <ng-template #environmentTemplate let-element="$implicit">
-    <mat-chip [color]="getEnvironmentColor(element.environment)" selected>
-      {{ element.environment | titlecase }}
+  <ng-template #environmentTemplate let-rowData="rowData">
+    <mat-chip [color]="getEnvironmentColor(rowData.environment)" selected>
+      {{ rowData.environment | titlecase }}
     </mat-chip>
   </ng-template>
 
   <!-- Template for Actions Column -->
-  <ng-template #actionsTemplate let-element="$implicit">
+  <ng-template #actionsTemplate let-rowData="rowData">
     <div class="action-buttons">
       <acp-button
         matStyle="icon"
         variant="primary"
         icon="edit"
         title="Edit Application"
-        (handleClick)="startEdit(element)"
+        (handleClick)="startEdit(rowData)"
       />
       <acp-button
         matStyle="icon"
         variant="danger"
         icon="delete"
         title="Delete Application"
-        (handleClick)="deleteApplication(element.id)"
+        (handleClick)="deleteApplication(rowData.id)"
       />
     </div>
   </ng-template>

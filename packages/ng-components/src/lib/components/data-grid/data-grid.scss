@@ -88,6 +88,11 @@
     // background-color: token-utils.slot(grid-table-footer-background-color, $fallbacks);
   }
 
+  // Estilo para la fila resaltada (highlighted)
+  .mat-mdc-row.highlighted {
+    background-color: var(--mat-sys-surface-container-highest, #e6e1e5);
+  }
+
   // Estilos para la fila de expansión
   .mat-mdc-row.data-grid-expansion {
     height: 0;

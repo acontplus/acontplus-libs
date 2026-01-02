@@ -1,6 +1,6 @@
 // apps/demo-app/src/app/pages/dashboard/dashboard.page.ts
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Router, RouterLink } from '@angular/router';
 import { AuthState } from '@acontplus/ng-auth';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,7 +9,7 @@ import { MatCardModule } from '@angular/material/card';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatButtonModule, MatCardModule],
+  imports: [RouterLink, MatButtonModule, MatCardModule],
   template: `
     <div class="dashboard-page">
       <mat-card>

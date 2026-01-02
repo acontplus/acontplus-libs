@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Spinner } from '@acontplus/ng-components';
 import { MatCardModule } from '@angular/material/card';
 import { Button } from '@acontplus/ng-components';
@@ -8,7 +8,7 @@ import { CodeExample } from '../../shared/code-example/code-example';
 
 @Component({
   selector: 'app-spinner-overview',
-  imports: [CommonModule, Spinner, MatCardModule, Button, DocHeading, CodeExample],
+  imports: [Spinner, MatCardModule, Button, DocHeading, CodeExample],
   template: `
     <div class="docs-component-viewer-content">
       <app-doc-heading>Spinner</app-doc-heading>

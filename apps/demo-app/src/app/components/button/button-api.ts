@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MatTableModule } from '@angular/material/table';
 import { DocHeading } from '../../shared/doc-heading/doc-heading';
 
@@ -12,7 +12,7 @@ interface ApiProperty {
 
 @Component({
   selector: 'app-button-api',
-  imports: [CommonModule, MatTableModule, DocHeading],
+  imports: [MatTableModule, DocHeading],
   template: `
     <div class="docs-component-viewer-content">
       <app-doc-heading>Button API</app-doc-heading>

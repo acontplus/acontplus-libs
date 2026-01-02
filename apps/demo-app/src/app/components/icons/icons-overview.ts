@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { SvgIcon, IconRegistryService } from '@acontplus/ng-components';
 import { MatCardModule } from '@angular/material/card';
 import { DocHeading } from '../../shared/doc-heading/doc-heading';
@@ -7,7 +7,7 @@ import { CodeExample } from '../../shared/code-example/code-example';
 
 @Component({
   selector: 'app-icons-overview',
-  imports: [CommonModule, SvgIcon, MatCardModule, DocHeading, CodeExample],
+  imports: [SvgIcon, MatCardModule, DocHeading, CodeExample],
   template: `
     <div class="docs-component-viewer-content">
       <app-doc-heading>Icons</app-doc-heading>

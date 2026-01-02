@@ -27,13 +27,15 @@ import {
 } from '@angular/material/card';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { MatIcon } from '@angular/material/icon';
+import { MatIcon, MatIconRegistry } from '@angular/material/icon';
 import { MatAnchor, MatButton } from '@angular/material/button';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatDivider } from '@angular/material/divider';
+import { DomSanitizer } from '@angular/platform-browser';
 import { AuthState } from '../../services/auth-state';
 import { LoggingService } from '@acontplus/ng-infrastructure';
 import { DomainDiscoveryResponse, SocialProvider } from '../../domain/models/auth';
+import { DEFAULT_ICONS } from '@acontplus/ui-kit';
 
 @Component({
   selector: 'acp-login',
@@ -83,6 +85,8 @@ export class Login implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly authState = inject(AuthState);
   private readonly loggingService = inject(LoggingService);
+  private readonly iconRegistry = inject(MatIconRegistry);
+  private readonly sanitizer = inject(DomSanitizer);
 
   // Angular 20+ signals
   isLoginMode = signal(true);
@@ -95,6 +99,9 @@ export class Login implements OnInit {
   signupForm: FormGroup;
 
   constructor() {
+    // Register social login icons
+    this.registerSocialIcons();
+
     this.signinForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
@@ -105,6 +112,19 @@ export class Login implements OnInit {
       displayName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
+    });
+  }
+
+  private registerSocialIcons(): void {
+    const socialIconNames = ['google', 'microsoft', 'github', 'facebook', 'apple', 'linkedin'];
+    socialIconNames.forEach((name) => {
+      const icon = DEFAULT_ICONS.find((i) => i.name === name);
+      if (icon) {
+        this.iconRegistry.addSvgIconLiteral(
+          name,
+          this.sanitizer.bypassSecurityTrustHtml(icon.data),
+        );
+      }
     });
   }
 

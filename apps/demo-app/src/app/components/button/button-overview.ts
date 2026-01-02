@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Button } from '@acontplus/ng-components';
 import { REPORT_FORMAT } from '@acontplus/ui-kit';
 import { MatCardModule } from '@angular/material/card';
@@ -9,7 +9,7 @@ import { CodeExample } from '../../shared/code-example/code-example';
 
 @Component({
   selector: 'app-button-overview',
-  imports: [CommonModule, Button, MatCardModule, MatTabsModule, DocHeading, CodeExample],
+  imports: [Button, MatCardModule, MatTabsModule, DocHeading, CodeExample],
   template: `
     <div class="docs-component-viewer-content">
       <app-doc-heading>Button</app-doc-heading>

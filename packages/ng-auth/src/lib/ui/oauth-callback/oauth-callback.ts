@@ -1,7 +1,7 @@
 // src/lib/ui/oauth-callback/oauth-callback.ts
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
+
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthState } from '../../services/auth-state';
 import { SocialProvider } from '../../domain/models/auth';
@@ -39,7 +39,7 @@ import { SocialProvider } from '../../domain/models/auth';
 @Component({
   selector: 'acp-oauth-callback',
   standalone: true,
-  imports: [CommonModule, MatProgressSpinnerModule],
+  imports: [MatProgressSpinnerModule],
   template: `
     <div class="oauth-callback-container">
       @if (loading) {

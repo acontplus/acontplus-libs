@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MatCardModule } from '@angular/material/card';
 import { DynamicTable, TabulatorTable, ColumnDefinition } from '@acontplus/ng-components';
 
@@ -14,7 +14,7 @@ interface DemoData {
 @Component({
   selector: 'app-table-demo',
   standalone: true,
-  imports: [CommonModule, MatCardModule, DynamicTable, TabulatorTable],
+  imports: [MatCardModule, DynamicTable, TabulatorTable],
   template: `
     <div class="demo-container">
       <mat-card>

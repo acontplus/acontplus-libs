@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from 'uuid';
 import { BaseVo } from './base.vo';
 
 export class EntityIdVo extends BaseVo<string> {
@@ -7,7 +6,7 @@ export class EntityIdVo extends BaseVo<string> {
   }
 
   static generate(): EntityIdVo {
-    return new EntityIdVo(uuidv4());
+    return new EntityIdVo(crypto.randomUUID());
   }
 
   protected validate(value: string): void {

@@ -10,42 +10,126 @@
           <input matInput type="text" placeholder="Ingrese su usuario" formControlName="email" />
         </mat-form-field>
 
-        <mat-form-field class="w-100">
-          <mat-label>Contraseña</mat-label>
-          <input
-            matInput
-            type="password"
-            placeholder="Ingrese su contraseña"
-            formControlName="password"
-            autocomplete="current-password"
-          />
-        </mat-form-field>
-
-        <!-- Remember Me checkbox - conditional -->
-        @if (showRememberMe()) {
-          <div class="d-flex align-items-center mt-2">
-            <mat-checkbox formControlName="rememberMe"> Recordarme </mat-checkbox>
+        <!-- Show discovery message if OAuth is required -->
+        @if (enableDomainDiscovery() && discoveryResult() && discoveryResult()!.requiresOAuth) {
+          <div class="discovery-message">
+            @if (discoveryResult()!.provider) {
+              <p>
+                <mat-icon>info</mat-icon>
+                Su organización utiliza {{ discoveryResult()!.provider }} para la autenticación
+              </p>
+              @if (!discoveryResult()!.allowPasswordLogin) {
+                <p class="warning">Por favor, use el botón de inicio de sesión corporativo</p>
+              }
+            }
           </div>
         }
 
-        <!-- Additional signin fields -->
-        <ng-container *ngTemplateOutlet="additionalSigninFields()"></ng-container>
+        <!-- Password field - only show if allowed -->
+        @if (showPasswordLogin()) {
+          <mat-form-field class="w-100">
+            <mat-label>Contraseña</mat-label>
+            <input
+              matInput
+              type="password"
+              placeholder="Ingrese su contraseña"
+              formControlName="password"
+              autocomplete="current-password"
+            />
+          </mat-form-field>
 
-        <div class="d-flex justify-content-center mt-3">
-          <button
-            mat-raised-button
-            color="primary"
-            [disabled]="!signinForm.valid || isLoading()"
-            type="submit"
-            class="w-100"
-          >
-            @if (isLoading()) {
-              Ingresando...
-            } @else {
-              <ng-container>Ingresar <mat-icon>login</mat-icon></ng-container>
-            }
-          </button>
-        </div>
+          <!-- Remember Me checkbox - conditional -->
+          @if (showRememberMe()) {
+            <div class="d-flex align-items-center mt-2">
+              <mat-checkbox formControlName="rememberMe"> Recordarme </mat-checkbox>
+            </div>
+          }
+
+          <!-- Additional signin fields -->
+          <ng-container *ngTemplateOutlet="additionalSigninFields()"></ng-container>
+
+          <div class="d-flex justify-content-center mt-3">
+            <button
+              mat-raised-button
+              color="primary"
+              [disabled]="!signinForm.valid || isLoading()"
+              type="submit"
+              class="w-100"
+            >
+              @if (isLoading()) {
+                Ingresando...
+              } @else {
+                <ng-container>Ingresar <mat-icon>login</mat-icon></ng-container>
+              }
+            </button>
+          </div>
+        }
+
+        <!-- OAuth/SSO Login Buttons -->
+        @if (
+          enableDomainDiscovery() &&
+          discoveryResult() &&
+          discoveryResult()!.requiresOAuth &&
+          discoveryResult()!.provider
+        ) {
+          <div class="d-flex justify-content-center mt-3">
+            <button
+              mat-raised-button
+              color="accent"
+              type="button"
+              (click)="loginWithProvider()"
+              class="w-100 oauth-button"
+              [disabled]="isLoading()"
+            >
+              <mat-icon>business</mat-icon>
+              Iniciar sesión con {{ discoveryResult()!.provider }}
+            </button>
+          </div>
+        }
+
+        <!-- Social Login Divider -->
+        @if (showSocialLogin() && showPasswordLogin()) {
+          <mat-divider class="my-3"></mat-divider>
+          <p class="text-center text-muted">O continuar con</p>
+        }
+
+        <!-- Social Login Buttons -->
+        @if (showSocialLogin() && !discoveryResult()?.requiresOAuth) {
+          <div class="social-login-buttons">
+            <button
+              mat-stroked-button
+              type="button"
+              (click)="socialLogin('google')"
+              class="w-100 social-button"
+              [disabled]="isLoading()"
+            >
+              <mat-icon svgIcon="google"></mat-icon>
+              Google
+            </button>
+
+            <button
+              mat-stroked-button
+              type="button"
+              (click)="socialLogin('microsoft')"
+              class="w-100 social-button"
+              [disabled]="isLoading()"
+            >
+              <mat-icon svgIcon="microsoft"></mat-icon>
+              Microsoft
+            </button>
+
+            <button
+              mat-stroked-button
+              type="button"
+              (click)="socialLogin('github')"
+              class="w-100 social-button"
+              [disabled]="isLoading()"
+            >
+              <mat-icon svgIcon="github"></mat-icon>
+              GitHub
+            </button>
+          </div>
+        }
 
         <div class="text-center mt-2">
           @if (showRegisterButton()) {

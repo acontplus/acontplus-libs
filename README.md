@@ -114,85 +114,54 @@ pnpm start
 - `pnpm run local-registry` - Start local npm registry for development
 - `pnpm run e2e` - Run end-to-end tests
 
-## 🔁 CI/CD
+## � Publishing to npm
 
-This repo uses GitHub Actions for validation and publishing.
+This project uses **manual publishing** due to npm's enhanced security requirements (2FA, security keys).
 
-### PR Validation (CI)
+### Publishing Workflow
 
-Workflow: [ci.yml](.github/workflows/ci.yml)
+1. **Bump version** using the patch-version script:
 
-- **Triggers**: Pull Requests targeting `main`
-- **What it does**: Runs format checks plus Nx affected lint/test/build/e2e via
-  the Nx Cloud CI workflow.
-- **Publishing**: Does not publish anything.
+   ```bash
+   # For patch version (bug fixes)
+   .\scripts\patch-version.ps1 <package-name>
 
-### Automatic Release (Nx Release)
+   # For minor version (new features)
+   pnpm --filter @acontplus/<package-name> exec npm version minor
 
-Workflow: [release.yml](.github/workflows/release.yml)
+   # For major version (breaking changes)
+   pnpm --filter @acontplus/<package-name> exec npm version major
+   ```
 
-- **Triggers**: Push to `main` (and manual `workflow_dispatch`)
-- **First run**: If the repo has no prior release tags yet, run the workflow
-  manually with `first-release=true`.
-- **What it does**:
-  - Builds `packages/*` before versioning (configured via Nx Release)
-  - Versions changed packages using Conventional Commits
-  - Creates git tags and GitHub Releases per project
-  - Publishes packages to npm via `nx release publish`
-- **Auth**:
-  - Uses `GITHUB_TOKEN` (built-in) for GitHub Releases
-  - Requires the `NPM_TOKEN` repository secret for npm publishing
+2. **Build the package**:
 
-### Release Groups
+   ```bash
+   pnpm nx build <package-name> --configuration=production
+   ```
 
-The monorepo uses Nx Release groups to manage independent versioning:
+3. **Publish with web authentication**:
 
-- **agnostic**: Core framework-agnostic packages (`core`, `utils`, `ui-kit`)
-- **angular**: Angular-specific packages (`ng-*`)
+   ```bash
+   cd dist/packages/<package-name>
+   npm publish --access=public
+   ```
 
-**Manual releases targeting specific groups**:
+   This opens your browser for authentication with security keys (Windows Hello, hardware keys, or TOTP).
+
+### Example: Publishing ng-auth
 
 ```bash
-# Release only Angular packages
-npx nx release --groups=angular --first-release --dry-run
+# 1. Bump version (minor for new features)
+pnpm --filter @acontplus/ng-auth exec npm version minor
 
-# Release only agnostic packages
-npx nx release --groups=agnostic --first-release --dry-run
+# 2. Build for production
+pnpm nx build ng-auth --configuration=production
 
-# Release all packages
-npx nx release --first-release --dry-run
-```
-
-### Publishing with 2FA/Security Keys
-
-If you use security keys (Windows Hello, hardware keys) instead of TOTP for npm
-2FA, use the web authentication flow:
-
-```bash
-# Build packages first
-npx nx run-many --target=build --projects=packages/*
-
-# Publish with web authentication (opens browser)
-cd dist/packages/<package-name>
+# 3. Publish to npm
+cd dist/packages/ng-auth
 npm publish --access=public
+cd ../../..
 ```
-
-**For automation/CI**:
-
-1. Create an automation token at
-   [npmjs.com/settings/tokens](https://www.npmjs.com/settings/tokens)
-2. Select **Automation** type
-3. Set token in GitHub secrets as `NPM_TOKEN`
-4. Automation tokens bypass 2FA requirements
-
-### Manual Publish (fallback)
-
-Workflow: [publish.yml](.github/workflows/publish.yml)
-
-- **Triggers**: Manual `workflow_dispatch`
-- **What it does**: Runs `nx release publish` (useful to re-run publishing if a
-  transient npm error happens)
-- **Auth**: Requires the `NPM_TOKEN` repository secret
 
 ### Version Management
 

@@ -13,7 +13,7 @@
     "@angular/platform-browser": "^21.0.6",
     "@angular/material": "^21.0.5",
     "jwt-decode": "^4.0.0",
-    "rxjs": "^7.8.2"
+    "rxjs": "^7.8.1"
   },
   "sideEffects": false,
   "main": "fesm2022/acontplus-ng-auth.mjs",

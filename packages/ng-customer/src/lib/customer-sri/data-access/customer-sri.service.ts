@@ -5,7 +5,6 @@ import { map } from 'rxjs/operators';
 import { ApiResponse, IdentificationNumberVo } from '@acontplus/core';
 import { CustomerSri } from '../models/customer-sri.model';
 import { CUSTOMER_API } from '../../infrastructure/constants/customer.constants'; // Adjust path if needed
-
 import { ICustomerSriService } from './interfaces/customer-sri.interface';
 
 @Injectable({

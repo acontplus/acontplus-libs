@@ -304,13 +304,13 @@ importers:
   packages/ng-auth:
     dependencies:
       '@acontplus/core':
-        specifier: ^1.1.2
+        specifier: ^1.1.3
         version: link:../core
       '@acontplus/ng-config':
-        specifier: ^2.0.1
+        specifier: ^2.0.2
         version: link:../ng-config
       '@acontplus/ng-infrastructure':
-        specifier: ^2.0.5
+        specifier: ^2.0.6
         version: link:../ng-infrastructure
       '@acontplus/ui-kit':
         specifier: ^1.0.2
@@ -364,7 +364,7 @@ importers:
   packages/ng-config:
     dependencies:
       '@acontplus/core':
-        specifier: ^1.1.2
+        specifier: ^1.1.3
         version: link:../core
       '@angular/common':
         specifier: ^21.0.0
@@ -391,13 +391,13 @@ importers:
   packages/ng-infrastructure:
     dependencies:
       '@acontplus/core':
-        specifier: ^1.1.2
+        specifier: ^1.1.3
         version: link:../core
       '@acontplus/ng-components':
         specifier: ^2.1.0
         version: link:../ng-components
       '@acontplus/ng-config':
-        specifier: ^2.0.1
+        specifier: ^2.0.2
         version: link:../ng-config
       '@acontplus/ng-notifications':
         specifier: ^2.0.2

@@ -54,6 +54,7 @@
     "@angular/platform-server": "20.3.9",
     "@angular/router": "20.3.9",
     "@angular/ssr": "20.3.9",
+    "@formkit/tempo": "^0.1.2",
     "@jsverse/transloco": "^8.1.0",
     "@ng-select/ng-select": "21.0.0",
     "bootstrap": "^5.3.8",

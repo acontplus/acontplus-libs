@@ -8,7 +8,8 @@
     "@angular/common": "^20.3.9",
     "@angular/core": "^20.3.9",
     "@angular/material": "^20.2.12",
-    "tabulator-tables": "^6.3.1"
+    "tabulator-tables": "^6.3.1",
+    "@formkit/tempo": "^0.1.2"
   },
   "sideEffects": true,
   "main": "fesm2022/acontplus-ng-components.mjs",

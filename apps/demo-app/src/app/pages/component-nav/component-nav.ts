@@ -30,6 +30,12 @@ export const COMPONENTS_MENU: ComponentCategory[] = [
     summary: 'Dynamic select dropdown components.',
     category: 'Form Controls',
   },
+  {
+    id: 'date-range-picker',
+    name: 'Date Range Picker',
+    summary: 'Modern TypeScript date range picker with @formkit/tempo integration.',
+    category: 'Form Controls',
+  },
 
   // Buttons & Indicators
   {

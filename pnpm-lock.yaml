@@ -78,6 +78,9 @@ importers:
       '@angular/ssr':
         specifier: 20.3.9
         version: 20.3.9(d09d257ed61ab7509769a185ece3cbdc)
+      '@formkit/tempo':
+        specifier: ^0.1.2
+        version: 0.1.2
       '@jsverse/transloco':
         specifier: ^8.1.0
         version: 8.1.0(@angular/core@20.3.9(@angular/compiler@20.3.9)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2)(typescript@5.9.3)
@@ -367,6 +370,9 @@ importers:
       '@angular/material':
         specifier: 20.2.12
         version: 20.2.12(2f55fbd266833300e3b9f9bd3b7ae502)
+      '@formkit/tempo':
+        specifier: ^0.1.2
+        version: 0.1.2
       tabulator-tables:
         specifier: ^6.3.1
         version: 6.3.1
@@ -1892,6 +1898,9 @@ packages:
   '@eslint/plugin-kit@0.4.1':
     resolution: {integrity: sha512-43/qtrDUokr7LJqoF2c3+RInu/t4zfrpYdoSDfYyhg52rwLV6TnOvdG4fXm7IkSB3wErkcmJS9iEhjVtOSEjjA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@formkit/tempo@0.1.2':
+    resolution: {integrity: sha512-jNPPbjL8oj7hK3eHX++CwbR6X4GKQt+x00/q4yeXkwynXHGKL27dylYhpEgwrmediPP4y7s0XtN1if/M/JYujg==}
 
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
@@ -11386,6 +11395,8 @@ snapshots:
     dependencies:
       '@eslint/core': 0.17.0
       levn: 0.4.1
+
+  '@formkit/tempo@0.1.2': {}
 
   '@humanfs/core@0.19.1': {}
 

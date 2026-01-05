@@ -1,0 +1,73 @@
+<mat-card class="example-card">
+  <mat-card-header>
+    <mat-card-title>No Dropdowns Picker</mat-card-title>
+    <mat-card-subtitle>Navegación solo con flechas, sin selectores de mes/año</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="example-container">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Navegación con flechas</mat-label>
+        <input
+          matInput
+          id="no-dropdowns-input"
+          placeholder="Solo navegación con flechas"
+          readonly
+        />
+        <mat-icon matSuffix>keyboard_arrow_left</mat-icon>
+        <mat-hint>Usa las flechas ← → para navegar entre meses</mat-hint>
+      </mat-form-field>
+
+      <div class="result-display">
+        <h4>Navegación simplificada:</h4>
+        <div class="navigation-info">
+          <div class="info-item">
+            <mat-icon>touch_app</mat-icon>
+            <div class="info-content">
+              <strong>Navegación:</strong>
+              <span>Solo flechas ← → para cambiar mes/año</span>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <mat-icon>event</mat-icon>
+            <div class="info-content">
+              <strong>Selección:</strong>
+              <span
+                >{{ selectedStartDate | date:'dd/MM/yyyy' }} - {{ selectedEndDate |
+                date:'dd/MM/yyyy' }}</span
+              >
+            </div>
+          </div>
+
+          <div class="info-item" *ngIf="selectedLabel">
+            <mat-icon>label</mat-icon>
+            <div class="info-content">
+              <strong>Etiqueta:</strong>
+              <span>{{ selectedLabel }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+
+  <mat-card-actions>
+    <div class="config-info">
+      <h4>Configuración:</h4>
+      <pre><code>{{'{'}}{{'{'}}
+  showDropdowns: false,
+  autoApply: false,
+  linkedCalendars: true,
+  alwaysShowCalendars: true,
+  theme: BOOTSTRAP_THEME,
+  ranges: {{'{'}}{{'{'}}
+    'Hoy': [today, today],
+    'Ayer': [yesterday, yesterday],
+    'Últimos 7 días': [last7Days, today],
+    'Este mes': [thisMonthStart, today]
+  {{'}'}}{{'}'}}
+{{'}'}}{{'}'}}</code></pre>
+    </div>
+  </mat-card-actions>
+</mat-card>

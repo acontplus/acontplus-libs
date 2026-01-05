@@ -12,7 +12,7 @@ import { gridBasicExampleConfig } from './examples/basic';
 export class GridOverview {
   route = inject(ActivatedRoute);
 
-  examples: any[] = [];
+  examples = [];
 }
 
 export const routes: Routes = [

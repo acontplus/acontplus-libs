@@ -1,0 +1,55 @@
+<mat-card class="example-card">
+  <mat-card-header>
+    <mat-card-title>DateRangePicker Básico</mat-card-title>
+    <mat-card-subtitle>Configuración estándar con rangos predefinidos</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="example-container">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Seleccionar rango de fechas</mat-label>
+        <input matInput id="daterange-input" placeholder="Selecciona un rango de fechas" readonly />
+        <mat-hint>Configuración básica con botones Aplicar/Cancelar</mat-hint>
+      </mat-form-field>
+
+      <div class="result-display">
+        <h4>Resultado:</h4>
+        <div class="result-grid">
+          <div class="result-item">
+            <strong>Fecha inicio:</strong>
+            <span>{{ selectedStartDate | date:'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="result-item">
+            <strong>Fecha fin:</strong>
+            <span>{{ selectedEndDate | date:'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="result-item">
+            <strong>Etiqueta:</strong>
+            <span>{{ selectedLabel || 'Personalizado' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+
+  <mat-card-actions>
+    <div class="config-info">
+      <h4>Configuración:</h4>
+      <pre><code>{{'{'}}{{'{'}}
+  locale: SPANISH_LOCALE,
+  showDropdowns: true,
+  autoApply: false,
+  linkedCalendars: true,
+  alwaysShowCalendars: true,
+  theme: DEFAULT_THEME,
+  ranges: {{'{'}}{{'{'}}
+    'Hoy': [today, today],
+    'Ayer': [yesterday, yesterday],
+    'Últimos 7 días': [last7Days, today],
+    'Últimos 30 días': [last30Days, today],
+    'Este mes': [thisMonthStart, thisMonthEnd]
+  {{'}'}}{{'}'}}
+{{'}'}}{{'}'}}</code></pre>
+    </div>
+  </mat-card-actions>
+</mat-card>

@@ -9,7 +9,6 @@ export const appRoutes: Routes = [
     pathMatch: 'full',
     loadComponent: () => import('./layout/app-layout/app-layout').then(m => m.AppLayout),
   },
-  { path: 'categories', redirectTo: '/components/categories' },
   {
     path: 'components',
     component: ComponentSidenav,

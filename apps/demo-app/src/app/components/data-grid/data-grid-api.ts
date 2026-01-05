@@ -424,7 +424,7 @@ export class DataGridApi {
       name: 'noResultText',
       type: 'string',
       description: 'Empty state message',
-      default: "'No se encontraron registros'",
+      default: "'No records found'",
     },
   ];
 

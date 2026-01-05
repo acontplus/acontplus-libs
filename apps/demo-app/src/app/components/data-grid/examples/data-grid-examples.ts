@@ -284,30 +284,30 @@ interface DemoData {
       }
 
       .status-pending {
-        background-color: #fff3e0 !important;
-        color: #e65100 !important;
+        background-color: var(--mat-sys-warning-container) !important;
+        color: var(--mat-sys-on-warning-container) !important;
       }
       .status-processing {
-        background-color: #e3f2fd !important;
-        color: #1565c0 !important;
+        background-color: var(--mat-sys-primary-container) !important;
+        color: var(--mat-sys-on-primary-container) !important;
       }
       .status-completed {
-        background-color: #e8f5e9 !important;
-        color: #2e7d32 !important;
+        background-color: var(--mat-sys-tertiary-container) !important;
+        color: var(--mat-sys-on-tertiary-container) !important;
       }
       .status-failed {
-        background-color: #ffebee !important;
-        color: #c62828 !important;
+        background-color: var(--mat-sys-error-container) !important;
+        color: var(--mat-sys-on-error-container) !important;
       }
 
       ::ng-deep .row-completed {
-        background-color: #e8f5e9;
+        background-color: var(--mat-sys-tertiary-container);
       }
       ::ng-deep .row-pending {
-        background-color: #fff3e0;
+        background-color: var(--mat-sys-warning-container);
       }
       ::ng-deep .row-failed {
-        background-color: #ffebee;
+        background-color: var(--mat-sys-error-container);
       }
     `,
   ],

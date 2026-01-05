@@ -119,11 +119,13 @@ export class Login implements OnInit {
     const socialIconNames = ['google', 'microsoft', 'github', 'facebook', 'apple', 'linkedin'];
     socialIconNames.forEach((name) => {
       const icon = DEFAULT_ICONS.find((i) => i.name === name);
-      if (icon) {
+      if (icon?.data) {
         this.iconRegistry.addSvgIconLiteral(
           name,
           this.sanitizer.bypassSecurityTrustHtml(icon.data),
         );
+      } else {
+        console.warn(`Icon '${name}' not found in DEFAULT_ICONS`);
       }
     });
   }

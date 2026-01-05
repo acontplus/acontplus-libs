@@ -10,7 +10,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthState, DomainDiscoveryResponse, SocialProvider } from '@acontplus/ng-auth';
+import { environment } from '../../../environments/environment';
 
 /**
  * OAuth Multi-Tenant Demo Page
@@ -38,6 +40,7 @@ import { AuthState, DomainDiscoveryResponse, SocialProvider } from '@acontplus/n
     MatProgressSpinnerModule,
     MatDividerModule,
     MatChipsModule,
+    MatSnackBarModule,
   ],
   template: `
     <div class="oauth-demo-container">
@@ -455,6 +458,7 @@ import { AuthState, DomainDiscoveryResponse, SocialProvider } from '@acontplus/n
 })
 export class OAuthDemoPage {
   private authState = inject(AuthState);
+  private snackBar = inject(MatSnackBar);
 
   email = '';
   password = '';
@@ -474,17 +478,31 @@ export class OAuthDemoPage {
 
     this.isChecking.set(true);
 
-    // Simulate domain discovery
-    // In real app, this calls: this.authState.discoverDomain(this.email)
+    // In production, use actual domain discovery service
+    if (environment.isProduction) {
+      this.authState.discoverDomain(this.email).subscribe({
+        next: result => {
+          this.discovery.set(result);
+          this.isChecking.set(false);
+        },
+        error: () => {
+          this.discovery.set({ requiresOAuth: false, allowPasswordLogin: true });
+          this.isChecking.set(false);
+        },
+      });
+      return;
+    }
+
+    // Demo mock responses - DEVELOPMENT ONLY
     setTimeout(() => {
       const domain = this.email.split('@')[1];
       let result: DomainDiscoveryResponse;
 
-      // Mock responses for demo
+      // Mock responses for demo purposes only
       if (domain === 'acme.com') {
         result = {
           provider: 'google',
-          tenantId: 'acme-123',
+          tenantId: 'acme-demo',
           domain: 'acme.com',
           requiresOAuth: true,
           allowPasswordLogin: false,
@@ -492,7 +510,7 @@ export class OAuthDemoPage {
       } else if (domain === 'techcorp.com') {
         result = {
           provider: 'microsoft',
-          tenantId: 'techcorp-456',
+          tenantId: 'techcorp-demo',
           domain: 'techcorp.com',
           requiresOAuth: true,
           allowPasswordLogin: false,
@@ -500,10 +518,10 @@ export class OAuthDemoPage {
       } else if (domain === 'startup.io') {
         result = {
           provider: 'google',
-          tenantId: 'startup-789',
+          tenantId: 'startup-demo',
           domain: 'startup.io',
           requiresOAuth: true,
-          allowPasswordLogin: true, // Hybrid
+          allowPasswordLogin: true,
         };
       } else {
         result = {
@@ -524,21 +542,36 @@ export class OAuthDemoPage {
     console.log('Starting OAuth flow:', disc);
 
     // In real app: this.authState.startOAuthFlow({ ... })
-    alert(`Would redirect to ${disc.provider} OAuth for tenant: ${disc.tenantId}`);
+    this.showDemoMessage(
+      `OAuth flow would redirect to ${disc.provider} for tenant: ${disc.tenantId}`,
+    );
   }
 
   loginWithPassword() {
     console.log('Password login for:', this.email);
 
     // In real app: this.authState.login({ email, password })
-    alert(`Would login with password for: ${this.email}`);
+    this.showDemoMessage(`Would login with password for: ${this.email}`);
   }
 
   loginWithProvider(provider: SocialProvider) {
     console.log('Social login with:', provider);
 
     // In real app: this.authState.startOAuthFlow({ provider })
-    alert(`Would login with ${provider}`);
+    this.showDemoMessage(`Would login with ${provider}`);
+  }
+
+  /**
+   * Shows demo messages using proper UI notification instead of alert()
+   * to prevent accidental information disclosure in production
+   */
+  private showDemoMessage(message: string) {
+    console.info('Demo:', message);
+    this.snackBar.open(message, 'Close', {
+      duration: 5000,
+      horizontalPosition: 'center',
+      verticalPosition: 'bottom',
+    });
   }
 
   getResultClass(): string {

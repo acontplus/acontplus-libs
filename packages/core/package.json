@@ -1,6 +1,6 @@
 {
   "name": "@acontplus/core",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Enterprise-grade core library implementing Domain-Driven Design (DDD) and Clean Architecture patterns. Provides value objects, use cases, entities, HTTP adapters, pricing calculations, API response handling, and foundational utilities for Angular applications.",
   "peerDependencies": {
     "@acontplus/utils": "^1.0.11",

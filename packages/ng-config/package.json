@@ -1,11 +1,11 @@
 {
   "name": "@acontplus/ng-config",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Angular configuration management library providing environment tokens, application settings, dependency injection patterns, and runtime configuration services for enterprise applications.",
   "peerDependencies": {
-    "@acontplus/core": "^1.1.1",
-    "@angular/common": "^21.0.6",
-    "@angular/core": "^21.0.6"
+    "@acontplus/core": "^1.1.2",
+    "@angular/common": "^21.0.0",
+    "@angular/core": "^21.0.0"
   },
   "sideEffects": false,
   "main": "fesm2022/acontplus-ng-config.mjs",

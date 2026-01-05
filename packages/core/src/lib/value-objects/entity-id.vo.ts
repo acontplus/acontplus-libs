@@ -1,19 +1,35 @@
 import { BaseVo } from './base.vo';
 
 /**
- * Generates a UUID v4 with fallback for environments where crypto.randomUUID() is not available.
- * Uses crypto.randomUUID() when available, falls back to manual UUID generation.
+ * Generates a UUID v4 using cryptographically secure methods.
+ * 1. crypto.randomUUID() (Node.js 19+, modern browsers)
+ * 2. crypto.getRandomValues() (Node.js 15+, all modern browsers)
  */
 function generateUUID(): string {
+  // Modern browsers and Node.js 19+
   if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
     return crypto.randomUUID();
   }
-  // Fallback for older environments (Node.js < 19, older browsers)
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-    const r = (Math.random() * 16) | 0;
-    const v = c === 'x' ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  });
+
+  // Modern browsers and Node.js 15+
+  const cryptoObj =
+    typeof crypto !== 'undefined'
+      ? crypto
+      : (typeof globalThis !== 'undefined' && globalThis.crypto) ||
+        (typeof window !== 'undefined' && window.crypto) ||
+        null;
+
+  if (cryptoObj && typeof cryptoObj.getRandomValues === 'function') {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+      const array = new Uint8Array(1);
+      cryptoObj.getRandomValues(array);
+      const r = array[0] % 16;
+      const v = c === 'x' ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
+  }
+
+  throw new Error('Crypto API not available - modern environment required');
 }
 
 export class EntityIdVo extends BaseVo<string> {

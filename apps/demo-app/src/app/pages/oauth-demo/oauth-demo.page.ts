@@ -495,7 +495,15 @@ export class OAuthDemoPage {
 
     // Demo mock responses - DEVELOPMENT ONLY
     setTimeout(() => {
-      const domain = this.email.split('@')[1];
+      const emailParts = this.email.split('@');
+      if (emailParts.length !== 2) {
+        // Invalid email format - fallback to standard auth
+        this.discovery.set({ requiresOAuth: false, allowPasswordLogin: true });
+        this.isChecking.set(false);
+        return;
+      }
+
+      const domain = emailParts[1];
       let result: DomainDiscoveryResponse;
 
       // Mock responses for demo purposes only

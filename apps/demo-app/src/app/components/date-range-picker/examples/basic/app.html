@@ -8,7 +8,7 @@
     <div class="example-container">
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Seleccionar rango de fechas</mat-label>
-        <input matInput id="daterange-input" placeholder="Selecciona un rango de fechas" readonly />
+        <input matInput #daterangeInput placeholder="Selecciona un rango de fechas" readonly />
         <mat-hint>Configuración básica con botones Aplicar/Cancelar</mat-hint>
       </mat-form-field>
 
@@ -33,6 +33,31 @@
   </mat-card-content>
 
   <mat-card-actions>
+    <div class="theme-switcher">
+      <h4>Cambiar Tema:</h4>
+      <button
+        mat-raised-button
+        [color]="currentTheme === 'MATERIAL' ? 'primary' : ''"
+        (click)="switchTheme('MATERIAL')"
+      >
+        Material
+      </button>
+      <button
+        mat-raised-button
+        [color]="currentTheme === 'BOOTSTRAP' ? 'primary' : ''"
+        (click)="switchTheme('BOOTSTRAP')"
+      >
+        Bootstrap
+      </button>
+      <button
+        mat-raised-button
+        [color]="currentTheme === 'DEFAULT' ? 'primary' : ''"
+        (click)="switchTheme('DEFAULT')"
+      >
+        Default
+      </button>
+    </div>
+
     <div class="config-info">
       <h4>Configuración:</h4>
       <pre><code>{{'{'}}{{'{'}}
@@ -41,7 +66,7 @@
   autoApply: false,
   linkedCalendars: true,
   alwaysShowCalendars: true,
-  theme: DEFAULT_THEME,
+  theme: MATERIAL_THEME,
   ranges: {{'{'}}{{'{'}}
     'Hoy': [today, today],
     'Ayer': [yesterday, yesterday],

@@ -53,7 +53,7 @@ export class DateTimeApp implements AfterViewInit, OnDestroy {
           locale: SPANISH_LOCALE_WITH_TIME, // Formato con tiempo
           timePicker: true, // Habilitar selector de tiempo
           timePicker24Hour: true, // Formato 24 horas
-          timePickerIncrement: 15, // Incrementos de 15 minutos
+          timePickerIncrement: 1, // Incrementos de 15 minutos
           autoApply: false, // Mostrar botones
           showDropdowns: true,
           linkedCalendars: true,

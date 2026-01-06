@@ -39,14 +39,16 @@
               >
             </div>
           </div>
+          @if (selectedLabel) {
 
-          <div class="info-item" *ngIf="selectedLabel">
+          <div class="info-item">
             <mat-icon>label</mat-icon>
             <div class="info-content">
               <strong>Etiqueta:</strong>
               <span>{{ selectedLabel }}</span>
             </div>
           </div>
+          }
         </div>
       </div>
     </div>

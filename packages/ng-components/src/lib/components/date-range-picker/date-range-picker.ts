@@ -110,6 +110,9 @@ export interface DateRangePickerOptions {
   endDate?: Date;
   minDate?: Date | null;
   maxDate?: Date | null;
+  minYear?: number;
+  maxYear?: number;
+  maxSpan?: { days?: number } | null;
   autoApply?: boolean;
   singleDatePicker?: boolean;
   showDropdowns?: boolean;
@@ -148,7 +151,7 @@ export const SPANISH_LOCALE: DateRangePickerLocale = {
   applyLabel: 'Aplicar',
   cancelLabel: 'Cancelar',
   customRangeLabel: 'Rango Personalizado',
-  daysOfWeek: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
+  daysOfWeek: ['Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa', 'Do'],
   monthNames: [
     'Enero',
     'Febrero',
@@ -172,7 +175,7 @@ export const SPANISH_LOCALE_WITH_TIME: DateRangePickerLocale = {
   applyLabel: 'Aplicar',
   cancelLabel: 'Cancelar',
   customRangeLabel: 'Rango Personalizado',
-  daysOfWeek: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa'],
+  daysOfWeek: ['Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa', 'Do'],
   monthNames: [
     'Enero',
     'Febrero',
@@ -206,6 +209,7 @@ interface PickerState {
   leftCalendar: CalendarState;
   rightCalendar: CalendarState;
   chosenLabel: string | null;
+  hoverDate: Date | null;
 }
 
 export class DateRangePicker {
@@ -220,6 +224,7 @@ export class DateRangePicker {
   // Event handlers
   private boundHandlers = new Map<string, EventListener>();
   private resizeHandler?: EventListener;
+  private scrollHandler?: EventListener;
   private documentClickHandler?: EventListener;
   private documentFocusHandler?: EventListener;
 
@@ -240,7 +245,7 @@ export class DateRangePicker {
 
     // Initialize locale and theme
     this.locale = this.options.locale;
-    this.theme = this.options.theme || DEFAULT_THEME;
+    this.theme = { ...this.options.theme }; // Usar el tema de las opciones directamente
 
     // Initialize callback
     this.callback =
@@ -252,43 +257,65 @@ export class DateRangePicker {
     // Initialize state
     const today = new Date();
     this.state = {
-      startDate: this.options.startDate,
-      endDate: this.options.endDate,
-      oldStartDate: this.options.startDate,
-      oldEndDate: this.options.endDate,
+      startDate: this.options.timePicker
+        ? this.options.startDate
+        : dayStart(this.options.startDate),
+      endDate: this.options.timePicker ? this.options.endDate : dayEnd(this.options.endDate),
+      oldStartDate: this.options.timePicker
+        ? this.options.startDate
+        : dayStart(this.options.startDate),
+      oldEndDate: this.options.timePicker ? this.options.endDate : dayEnd(this.options.endDate),
       isShowing: false,
       leftCalendar: { month: today, calendar: [] },
       rightCalendar: { month: addMonth(today, 1), calendar: [] },
       chosenLabel: null,
+      hoverDate: null,
     };
 
     this.createContainer();
-    this.applyTheme();
     this.setupEventListeners();
     this.updateElement();
+
+    // Calculate and set initial chosen label
+    this.calculateChosenLabel();
+
+    // Apply initial theme to ensure it's ready
+    this.applyTheme();
   }
 
   private applyTheme(): void {
-    if (!this.container) return;
-
-    // Create a style element for dynamic theming
-    const styleId = 'daterangepicker-theme-' + Math.random().toString(36).substr(2, 9);
-    const existingStyle = document.getElementById(styleId);
-    if (existingStyle) {
-      existingStyle.remove();
+    if (!this.container) {
+      return;
     }
 
+    // Remove existing theme styles for this instance
+    const existingStyleId = this.container.dataset['themeStyleId'];
+    if (existingStyleId) {
+      const existingStyle = document.getElementById(existingStyleId);
+      if (existingStyle) {
+        existingStyle.remove();
+      }
+    }
+
+    // Create a new style element for dynamic theming
+    const styleId = 'daterangepicker-theme-' + Math.random().toString(36).slice(2, 9);
     const style = document.createElement('style');
     style.id = styleId;
     style.textContent = this.generateThemeCSS();
+
+    // Ensure the style is added to head immediately
     document.head.appendChild(style);
 
     // Store style ID for cleanup
     this.container.dataset['themeStyleId'] = styleId;
+
+    // Force a reflow to ensure styles are applied
+    void this.container.offsetHeight;
   }
 
   private generateThemeCSS(): string {
     const t = this.theme;
+
     return `
       .daterangepicker {
         background-color: ${t.backgroundColor} !important;
@@ -300,6 +327,7 @@ export class DateRangePicker {
         line-height: 1em !important;
         width: 278px !important;
         z-index: 999999 !important;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
       }
 
       /* IMPORTANTE: Permitir interacción con selectores */
@@ -450,15 +478,25 @@ export class DateRangePicker {
         font-size: 12px !important;
         padding: 8px 12px !important;
         cursor: pointer !important;
+        color: ${t.textColor} !important;
+        border-radius: ${t.borderRadius} !important;
+        margin: 2px 0 !important;
       }
 
       .daterangepicker .ranges li:hover {
-        background-color: ${t.hoverColor} !important;
+        background-color: ${t.rangeColor} !important;
+        color: ${t.textColor} !important;
       }
 
       .daterangepicker .ranges li.active {
-        background-color: #08c !important;
+        background-color: ${t.selectedColor} !important;
         color: #fff !important;
+      }
+
+      .daterangepicker .ranges li.active:hover {
+        background-color: ${t.selectedColor} !important;
+        color: #fff !important;
+        opacity: 0.9 !important;
       }
 
       .daterangepicker.show-calendar .drp-buttons {
@@ -561,11 +599,21 @@ export class DateRangePicker {
       .daterangepicker select.ampmselect {
         width: 50px !important;
         margin: 0 auto !important;
-        background: #eee !important;
-        border: 1px solid #eee !important;
+        background: ${t.backgroundColor} !important;
+        border: 1px solid ${t.borderColor} !important;
+        color: ${t.textColor} !important;
         padding: 2px !important;
         outline: 0 !important;
         font-size: 12px !important;
+        pointer-events: auto !important;
+        user-select: auto !important;
+        -webkit-user-select: auto !important;
+        -moz-user-select: auto !important;
+        appearance: auto !important;
+        -webkit-appearance: menulist !important;
+        -moz-appearance: menulist !important;
+        border-radius: ${t.borderRadius} !important;
+        opacity: 1 !important;
       }
 
       .daterangepicker .calendar-time {
@@ -573,11 +621,32 @@ export class DateRangePicker {
         margin: 4px auto 0 auto !important;
         line-height: 30px !important;
         position: relative !important;
+        display: block !important;
+        background: ${t.backgroundColor} !important;
+        padding: 8px !important;
+        border-top: 1px solid ${t.borderColor} !important;
       }
 
       .daterangepicker .calendar-time select.disabled {
         color: ${t.secondaryColor} !important;
         cursor: not-allowed !important;
+        background: ${t.hoverColor} !important;
+        opacity: 0.6 !important;
+      }
+
+      .daterangepicker select option {
+        background: ${t.backgroundColor} !important;
+        color: ${t.textColor} !important;
+      }
+
+      .daterangepicker select option:disabled {
+        background: ${t.hoverColor} !important;
+        color: ${t.disabledColor} !important;
+      }
+
+      .daterangepicker select option:hover {
+        background: ${t.selectedColor} !important;
+        color: #fff !important;
       }
 
       /* Media queries para responsive - exactamente como el CSS original */
@@ -641,6 +710,16 @@ export class DateRangePicker {
     this.applyTheme();
   }
 
+  // Public method to force theme reapplication
+  refreshTheme(): void {
+    this.applyTheme();
+  }
+
+  // Debug method to check current theme
+  getCurrentTheme(): DateRangePickerTheme {
+    return this.theme;
+  }
+
   // Debug method to test dropdowns
   testDropdowns(): void {
     const selects = this.container.querySelectorAll('select');
@@ -659,11 +738,14 @@ export class DateRangePicker {
   private mergeOptions(options: DateRangePickerOptions): Required<DateRangePickerOptions> {
     const today = new Date();
 
-    return {
+    const merged = {
       startDate: options.startDate || today,
       endDate: options.endDate || today,
       minDate: options.minDate ?? null,
       maxDate: options.maxDate ?? null,
+      minYear: options.minYear ?? today.getFullYear() - 100,
+      maxYear: options.maxYear ?? today.getFullYear() + 100,
+      maxSpan: options.maxSpan ?? null,
       autoApply: options.autoApply ?? false,
       singleDatePicker: options.singleDatePicker ?? false,
       showDropdowns: options.showDropdowns ?? true,
@@ -676,14 +758,21 @@ export class DateRangePicker {
       timePickerIncrement: options.timePickerIncrement ?? 1,
       timePickerSeconds: options.timePickerSeconds ?? false,
       ranges: options.ranges || {},
-      opens: options.opens || 'right',
-      drops: options.drops || 'down',
+      opens: options.opens || 'center',
+      drops: options.drops || 'auto',
       locale: options.locale || SPANISH_LOCALE,
       buttonClasses: options.buttonClasses || 'btn btn-sm',
       applyButtonClasses: options.applyButtonClasses || 'btn-success',
       cancelButtonClasses: options.cancelButtonClasses || 'btn-danger',
       theme: options.theme || DEFAULT_THEME,
     };
+
+    // Can't be used together for now
+    if (merged.timePicker && merged.autoApply) {
+      merged.autoApply = false;
+    }
+
+    return merged;
   }
   private createContainer(): void {
     const template = `
@@ -691,9 +780,11 @@ export class DateRangePicker {
         <div class="ranges"></div>
         <div class="drp-calendar left">
           <div class="calendar-table"></div>
+          <div class="calendar-time"></div>
         </div>
         <div class="drp-calendar right">
           <div class="calendar-table"></div>
+          <div class="calendar-time"></div>
         </div>
         <div class="drp-buttons">
           <span class="drp-selected"></span>
@@ -714,6 +805,8 @@ export class DateRangePicker {
     // Add to DOM
     document.body.appendChild(this.container);
 
+    // Note: Theme will be applied when show() is called
+
     // Setup initial classes
     this.container.classList.add(`opens${this.options.opens}`);
     if (this.options.singleDatePicker) {
@@ -733,6 +826,14 @@ export class DateRangePicker {
     // Always show buttons unless autoApply is true
     if (!this.options.autoApply) {
       this.container.classList.add('show-calendar');
+    }
+
+    // Hide time containers if time picker is not enabled
+    if (!this.options.timePicker) {
+      const timeContainers = this.container.querySelectorAll('.calendar-time');
+      timeContainers.forEach(container => {
+        (container as HTMLElement).style.display = 'none';
+      });
     }
 
     // Initially hidden
@@ -768,6 +869,8 @@ export class DateRangePicker {
 
     // Container events - Usar event delegation para evitar problemas de foco
     this.addEventHandler(this.container, 'click', this.containerClick.bind(this));
+    this.addEventHandler(this.container, 'mouseover', this.containerMouseOver.bind(this));
+    this.addEventHandler(this.container, 'mouseleave', this.containerMouseLeave.bind(this));
     // REMOVIDO: mousedown preventBlur que interfiere con los selectores
     this.addEventHandler(this.container, 'change', this.containerChange.bind(this));
 
@@ -797,6 +900,24 @@ export class DateRangePicker {
     if (target.matches('select.monthselect, select.yearselect')) {
       this.monthOrYearChanged(event);
       return;
+    }
+  }
+
+  private containerMouseOver(event: Event): void {
+    const target = event.target as HTMLElement;
+
+    // Handle date hover
+    if (target.matches('td.available')) {
+      this.hoverDate(event);
+      return;
+    }
+  }
+
+  private containerMouseLeave(): void {
+    // Limpiar hover state cuando el mouse sale del calendario
+    if (this.state.hoverDate) {
+      this.state.hoverDate = null;
+      this.updateDateClasses();
     }
   }
 
@@ -863,6 +984,9 @@ export class DateRangePicker {
     this.state.oldStartDate = new Date(this.state.startDate);
     this.state.oldEndDate = this.state.endDate ? new Date(this.state.endDate) : null;
 
+    // Apply theme just before showing to ensure it's applied correctly
+    this.applyTheme();
+
     // Setup document event listeners with proper handling
     this.documentClickHandler = this.outsideClick.bind(this);
     this.documentFocusHandler = this.outsideFocus.bind(this);
@@ -871,13 +995,19 @@ export class DateRangePicker {
     document.addEventListener('mousedown', this.documentClickHandler, true);
     document.addEventListener('focusin', this.documentFocusHandler, true);
 
-    // Add window resize listener
+    // Add window resize and scroll listeners
     this.resizeHandler = this.move.bind(this);
+    this.scrollHandler = this.move.bind(this);
     window.addEventListener('resize', this.resizeHandler);
+    window.addEventListener('scroll', this.scrollHandler, true); // Use capture to catch all scroll events
 
     this.updateView();
     this.container.style.display = 'block';
-    this.move();
+
+    // Usar setTimeout para asegurar que el DOM esté completamente renderizado
+    setTimeout(() => {
+      this.move();
+    }, 0);
 
     this.dispatchEvent('show.daterangepicker');
     this.state.isShowing = true;
@@ -928,6 +1058,11 @@ export class DateRangePicker {
     if (this.resizeHandler) {
       window.removeEventListener('resize', this.resizeHandler);
       this.resizeHandler = undefined;
+    }
+
+    if (this.scrollHandler) {
+      window.removeEventListener('scroll', this.scrollHandler, true);
+      this.scrollHandler = undefined;
     }
   }
 
@@ -987,10 +1122,29 @@ export class DateRangePicker {
   }
 
   private updateView(): void {
+    if (this.options.timePicker) {
+      this.renderTimePicker('left');
+      this.renderTimePicker('right');
+      const selectElList = this.container.querySelectorAll('.right .calendar-time select');
+      if (!this.state.endDate) {
+        selectElList.forEach(select => {
+          (select as HTMLSelectElement).disabled = true;
+          select.classList.add('disabled');
+        });
+      } else {
+        selectElList.forEach(select => {
+          (select as HTMLSelectElement).disabled = false;
+          select.classList.remove('disabled');
+        });
+      }
+    }
     this.updateMonthsInView();
     this.updateCalendars();
     this.updateFormInputs();
     this.updateSelectedDisplay();
+
+    // Update chosen label and active range
+    this.calculateChosenLabel();
   }
 
   private updateMonthsInView(): void {
@@ -1020,9 +1174,14 @@ export class DateRangePicker {
   }
 
   private getStartOfWeek(date: Date, firstDay = 1): Date {
-    const day = date.getDay();
-    const diff = (day < firstDay ? 7 : 0) + day - firstDay;
-    return addDay(date, -diff);
+    const day = date.getDay(); // 0=Dom, 1=Lun, 2=Mar, 3=Mie, 4=Jue, 5=Vie, 6=Sab
+
+    // Calcular cuántos días retroceder para llegar al primer día de la semana
+    const daysBack = (day - firstDay + 7) % 7;
+
+    const result = new Date(date);
+    result.setDate(date.getDate() - daysBack);
+    return result;
   }
 
   private updateCalendars(): void {
@@ -1059,15 +1218,18 @@ export class DateRangePicker {
 
     const calendarDays: Date[][] = [];
     let currentWeek: Date[] = [];
-    let currentDate = new Date(startCalendar);
+    const startDate = new Date(startCalendar);
 
     for (let i = 0; i < 42; i++) {
       if (i > 0 && i % 7 === 0) {
         calendarDays.push(currentWeek);
         currentWeek = [];
       }
-      currentWeek.push(new Date(currentDate));
-      currentDate = addDay(currentDate, 1);
+
+      // Crear fecha para el día actual
+      const currentDate = new Date(startDate);
+      currentDate.setDate(startDate.getDate() + i);
+      currentWeek.push(currentDate);
     }
     if (currentWeek.length > 0) {
       calendarDays.push(currentWeek);
@@ -1137,16 +1299,45 @@ export class DateRangePicker {
     html += '</table>';
 
     calendarContainer.innerHTML = html;
+
+    // Render time picker if enabled
+    if (this.options.timePicker) {
+      this.renderTimePicker(side);
+    }
   }
 
   private renderDropdowns(monthIndex: number, year: number, _side: 'left' | 'right'): string {
-    const minYear = this.options.minDate ? this.options.minDate.getFullYear() : year - 100;
-    const maxYear = this.options.maxDate ? this.options.maxDate.getFullYear() : year + 100;
+    // Calcular años mínimo y máximo basado en minDate/maxDate y minYear/maxYear
+    let minYear = this.options.minYear;
+    let maxYear = this.options.maxYear;
+
+    // Ajustar según minDate y maxDate si existen
+    if (this.options.minDate) {
+      minYear = Math.max(minYear, this.options.minDate.getFullYear());
+    }
+    if (this.options.maxDate) {
+      maxYear = Math.min(maxYear, this.options.maxDate.getFullYear());
+    }
+
+    const currentYear = year;
+    const inMinYear = currentYear === minYear;
+    const inMaxYear = currentYear === maxYear;
 
     let monthHtml = `<select class="monthselect">`;
     for (let m = 0; m < 12; m++) {
+      let disabled = false;
+
+      // Deshabilitar meses fuera del rango permitido
+      if (inMinYear && this.options.minDate && m < this.options.minDate.getMonth()) {
+        disabled = true;
+      }
+      if (inMaxYear && this.options.maxDate && m > this.options.maxDate.getMonth()) {
+        disabled = true;
+      }
+
       const selected = m === monthIndex ? ' selected="selected"' : '';
-      monthHtml += `<option value="${m}"${selected}>${this.locale.monthNames[m]}</option>`;
+      const disabledAttr = disabled ? ' disabled="disabled"' : '';
+      monthHtml += `<option value="${m}"${selected}${disabledAttr}>${this.locale.monthNames[m]}</option>`;
     }
     monthHtml += '</select>';
 
@@ -1162,9 +1353,10 @@ export class DateRangePicker {
 
   private getDayClasses(day: Date, currentMonth: Date): string[] {
     const classes: string[] = [];
+    const today = new Date();
 
     // Today
-    if (isSame(day, new Date(), 'day')) {
+    if (isSame(day, today, 'day')) {
       classes.push('today');
     }
 
@@ -1230,6 +1422,250 @@ export class DateRangePicker {
     selectedSpan.textContent = text;
   }
 
+  private renderTimePicker(side: 'left' | 'right'): void {
+    // Don't bother updating the time picker if it's currently disabled
+    // because an end date hasn't been clicked yet
+    if (side === 'right' && !this.state.endDate) return;
+
+    const calendarContainer = this.container.querySelector(`.drp-calendar.${side}`)!;
+    const timeContainer = calendarContainer.querySelector('.calendar-time');
+
+    if (!timeContainer) {
+      // Create time container if it doesn't exist
+      const timeDiv = document.createElement('div');
+      timeDiv.className = 'calendar-time';
+      calendarContainer.appendChild(timeDiv);
+    }
+
+    let selected: Date;
+    let minDate: Date | null = null;
+    let maxDate: Date | null = this.options.maxDate;
+
+    if (
+      this.options.maxSpan &&
+      (!this.options.maxDate ||
+        isAfter(addDay(this.state.startDate, this.options.maxSpan.days || 0), this.options.maxDate))
+    ) {
+      maxDate = addDay(this.state.startDate, this.options.maxSpan.days || 0);
+    }
+
+    if (side === 'left') {
+      selected = new Date(this.state.startDate);
+      minDate = this.options.minDate;
+    } else {
+      selected = this.state.endDate ? new Date(this.state.endDate) : new Date(this.state.startDate);
+      minDate = this.state.startDate;
+
+      // Preserve the time already selected
+      const timeSelector = this.container.querySelector('.drp-calendar.right .calendar-time');
+      if (timeSelector && timeSelector.innerHTML !== '') {
+        const hourSelect = timeSelector.querySelector('.hourselect') as HTMLSelectElement;
+        const minuteSelect = timeSelector.querySelector('.minuteselect') as HTMLSelectElement;
+        const secondSelect = timeSelector.querySelector('.secondselect') as HTMLSelectElement;
+        const ampmSelect = timeSelector.querySelector('.ampmselect') as HTMLSelectElement;
+
+        if (hourSelect && hourSelect.value) {
+          let hour = parseInt(hourSelect.value, 10);
+          if (!this.options.timePicker24Hour && ampmSelect) {
+            const ampm = ampmSelect.value;
+            if (ampm === 'PM' && hour < 12) hour += 12;
+            if (ampm === 'AM' && hour === 12) hour = 0;
+          }
+          selected.setHours(hour);
+        }
+
+        if (minuteSelect && minuteSelect.value) {
+          selected.setMinutes(parseInt(minuteSelect.value, 10));
+        }
+
+        if (secondSelect && secondSelect.value) {
+          selected.setSeconds(parseInt(secondSelect.value, 10));
+        }
+      }
+
+      if (isBefore(selected, this.state.startDate)) {
+        selected = new Date(this.state.startDate);
+      }
+
+      if (maxDate && isAfter(selected, maxDate)) {
+        selected = new Date(maxDate);
+      }
+    }
+
+    // Hours
+    let html = '<select class="hourselect">';
+    const start = this.options.timePicker24Hour ? 0 : 1;
+    const end = this.options.timePicker24Hour ? 23 : 12;
+
+    for (let i = start; i <= end; i++) {
+      let i_in_24 = i;
+      if (!this.options.timePicker24Hour) {
+        i_in_24 = selected.getHours() >= 12 ? (i === 12 ? 12 : i + 12) : i === 12 ? 0 : i;
+      }
+
+      const testTime = new Date(selected);
+      testTime.setHours(i_in_24);
+      testTime.setMinutes(59);
+
+      let disabled = false;
+      if (minDate && isBefore(testTime, minDate)) disabled = true;
+
+      testTime.setMinutes(0);
+      if (maxDate && isAfter(testTime, maxDate)) disabled = true;
+
+      if (i_in_24 === selected.getHours() && !disabled) {
+        html += `<option value="${i}" selected="selected">${i}</option>`;
+      } else if (disabled) {
+        html += `<option value="${i}" disabled="disabled" class="disabled">${i}</option>`;
+      } else {
+        html += `<option value="${i}">${i}</option>`;
+      }
+    }
+    html += '</select> ';
+
+    // Minutes
+    html += ': <select class="minuteselect">';
+    for (let i = 0; i < 60; i += this.options.timePickerIncrement) {
+      const padded = i < 10 ? '0' + i : i.toString();
+      const testTime = new Date(selected);
+      testTime.setMinutes(i);
+      testTime.setSeconds(59);
+
+      let disabled = false;
+      if (minDate && isBefore(testTime, minDate)) disabled = true;
+
+      testTime.setSeconds(0);
+      if (maxDate && isAfter(testTime, maxDate)) disabled = true;
+
+      if (selected.getMinutes() === i && !disabled) {
+        html += `<option value="${i}" selected="selected">${padded}</option>`;
+      } else if (disabled) {
+        html += `<option value="${i}" disabled="disabled" class="disabled">${padded}</option>`;
+      } else {
+        html += `<option value="${i}">${padded}</option>`;
+      }
+    }
+    html += '</select> ';
+
+    // Seconds
+    if (this.options.timePickerSeconds) {
+      html += ': <select class="secondselect">';
+      for (let i = 0; i < 60; i++) {
+        const padded = i < 10 ? '0' + i : i.toString();
+        const testTime = new Date(selected);
+        testTime.setSeconds(i);
+
+        let disabled = false;
+        if (minDate && isBefore(testTime, minDate)) disabled = true;
+        if (maxDate && isAfter(testTime, maxDate)) disabled = true;
+
+        if (selected.getSeconds() === i && !disabled) {
+          html += `<option value="${i}" selected="selected">${padded}</option>`;
+        } else if (disabled) {
+          html += `<option value="${i}" disabled="disabled" class="disabled">${padded}</option>`;
+        } else {
+          html += `<option value="${i}">${padded}</option>`;
+        }
+      }
+      html += '</select> ';
+    }
+
+    // AM/PM
+    if (!this.options.timePicker24Hour) {
+      html += '<select class="ampmselect">';
+
+      const testAM = new Date(selected);
+      testAM.setHours(12, 0, 0);
+      const testPM = new Date(selected);
+      testPM.setHours(0, 0, 0);
+
+      let amDisabled = '';
+      let pmDisabled = '';
+
+      if (minDate && isBefore(testAM, minDate)) {
+        amDisabled = ' disabled="disabled" class="disabled"';
+      }
+
+      if (maxDate && isAfter(testPM, maxDate)) {
+        pmDisabled = ' disabled="disabled" class="disabled"';
+      }
+
+      if (selected.getHours() >= 12) {
+        html += `<option value="AM"${amDisabled}>AM</option><option value="PM" selected="selected"${pmDisabled}>PM</option>`;
+      } else {
+        html += `<option value="AM" selected="selected"${amDisabled}>AM</option><option value="PM"${pmDisabled}>PM</option>`;
+      }
+
+      html += '</select>';
+    }
+
+    const timeContainer2 = calendarContainer.querySelector('.calendar-time')!;
+    timeContainer2.innerHTML = html;
+
+    // Add event listeners for time changes
+    const timeSelects = timeContainer2.querySelectorAll('select');
+    timeSelects.forEach(select => {
+      select.addEventListener('change', this.timeChanged.bind(this));
+    });
+  }
+
+  private timeChanged(event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    const calendar = target.closest('.drp-calendar');
+    if (!calendar) return;
+
+    const isLeft = calendar.classList.contains('left');
+    const cal = calendar as HTMLElement;
+
+    const hourSelect = cal.querySelector('.hourselect') as HTMLSelectElement;
+    const minuteSelect = cal.querySelector('.minuteselect') as HTMLSelectElement;
+    const secondSelect = cal.querySelector('.secondselect') as HTMLSelectElement;
+    const ampmSelect = cal.querySelector('.ampmselect') as HTMLSelectElement;
+
+    let hour = parseInt(hourSelect.value, 10);
+    let minute = parseInt(minuteSelect.value, 10);
+    if (isNaN(minute)) {
+      const lastOption = minuteSelect.options[minuteSelect.options.length - 1];
+      minute = parseInt(lastOption.value, 10);
+    }
+    const second =
+      this.options.timePickerSeconds && secondSelect ? parseInt(secondSelect.value, 10) : 0;
+
+    if (!this.options.timePicker24Hour && ampmSelect) {
+      const ampm = ampmSelect.value;
+      if (ampm === 'PM' && hour < 12) hour += 12;
+      if (ampm === 'AM' && hour === 12) hour = 0;
+    }
+
+    if (isLeft) {
+      const start = new Date(this.state.startDate);
+      start.setHours(hour, minute, second);
+      this.setStartDate(start);
+
+      if (this.options.singleDatePicker) {
+        this.state.endDate = new Date(start);
+      } else if (
+        this.state.endDate &&
+        format(this.state.endDate, 'YYYY-MM-DD') === format(start, 'YYYY-MM-DD') &&
+        isBefore(this.state.endDate, start)
+      ) {
+        this.setEndDate(new Date(start));
+      }
+    } else if (this.state.endDate) {
+      const end = new Date(this.state.endDate);
+      end.setHours(hour, minute, second);
+      this.setEndDate(end);
+    }
+
+    // Update the calendars and form inputs
+    this.updateCalendars();
+    this.updateFormInputs();
+
+    // Re-render the time pickers because changing one selection can affect what's enabled in another
+    this.renderTimePicker('left');
+    this.renderTimePicker('right');
+  }
+
   private updateElement(): void {
     if (this.element.tagName === 'INPUT' && this.options.autoUpdateInput) {
       const input = this.element as HTMLInputElement;
@@ -1247,33 +1683,77 @@ export class DateRangePicker {
   }
 
   private move(): void {
+    if (!this.state.isShowing || !this.container) return;
+
+    // Basado en la lógica del vanilla JS para mejor posicionamiento
     const elementRect = this.element.getBoundingClientRect();
-    const containerRect = this.container.getBoundingClientRect();
+    let containerTop: number;
+    let drops = this.options.drops;
 
-    let top = elementRect.bottom + window.scrollY + 5; // Add small gap
-    let left = elementRect.left + window.scrollX;
+    // Force the container to its actual width
+    this.container.style.top = '0';
+    this.container.style.left = '0';
+    this.container.style.right = 'auto';
+    this.container.style.position = 'fixed';
 
-    // Adjust for drops
-    if (this.options.drops === 'up') {
-      top = elementRect.top + window.scrollY - containerRect.height - 5;
+    const containerWidth = this.container.offsetWidth;
+    const containerHeight = this.container.offsetHeight;
+
+    // Calculate vertical position
+    switch (drops) {
+      case 'auto':
+        containerTop = elementRect.bottom + 5;
+        if (containerTop + containerHeight >= window.innerHeight) {
+          containerTop = elementRect.top - containerHeight - 5;
+          drops = 'up';
+        }
+        break;
+      case 'up':
+        containerTop = elementRect.top - containerHeight - 5;
+        break;
+      default: // 'down'
+        containerTop = elementRect.bottom + 5;
+        break;
     }
 
-    // Adjust for opens
+    // Add/remove drop-up class
+    if (drops === 'up') {
+      this.container.classList.add('drop-up');
+    } else {
+      this.container.classList.remove('drop-up');
+    }
+
+    // Calculate horizontal position
+    let containerLeft: number;
+
     if (this.options.opens === 'left') {
-      left = elementRect.right + window.scrollX - containerRect.width;
+      containerLeft = elementRect.right - containerWidth;
+      if (containerLeft < 9) {
+        containerLeft = 9;
+      }
     } else if (this.options.opens === 'center') {
-      left = elementRect.left + window.scrollX + elementRect.width / 2 - containerRect.width / 2;
+      containerLeft = elementRect.left + elementRect.width / 2 - containerWidth / 2;
+      if (containerLeft < 9) {
+        containerLeft = 9;
+      } else if (containerLeft + containerWidth > window.innerWidth - 9) {
+        containerLeft = window.innerWidth - containerWidth - 9;
+      }
+    } else {
+      // 'right'
+      containerLeft = elementRect.left;
+      if (containerLeft + containerWidth > window.innerWidth - 9) {
+        containerLeft = window.innerWidth - containerWidth - 9;
+      }
     }
 
-    // Keep within viewport
-    if (left < 10) left = 10;
-    if (left + containerRect.width > window.innerWidth - 10) {
-      left = window.innerWidth - containerRect.width - 10;
-    }
+    // Ensure minimum margins
+    if (containerLeft < 9) containerLeft = 9;
+    if (containerTop < 9) containerTop = 9;
 
-    this.container.style.position = 'absolute';
-    this.container.style.top = `${top}px`;
-    this.container.style.left = `${left}px`;
+    // Apply final position
+    this.container.style.top = `${containerTop}px`;
+    this.container.style.left = `${containerLeft}px`;
+    this.container.style.right = 'auto';
     this.container.style.zIndex = '99999';
   }
 
@@ -1358,12 +1838,48 @@ export class DateRangePicker {
     const clickedDate = parse(dateStr, 'YYYY-MM-DD');
     if (!isValid(clickedDate)) return;
 
+    // If time picker is enabled, apply the hour/minute/second from the select boxes to the clicked date
+    if (this.options.timePicker) {
+      const calendar = target.closest('.drp-calendar');
+      if (calendar) {
+        const hourSelect = calendar.querySelector('.hourselect') as HTMLSelectElement;
+        const minuteSelect = calendar.querySelector('.minuteselect') as HTMLSelectElement;
+        const secondSelect = calendar.querySelector('.secondselect') as HTMLSelectElement;
+        const ampmSelect = calendar.querySelector('.ampmselect') as HTMLSelectElement;
+
+        if (hourSelect) {
+          let hour = parseInt(hourSelect.value, 10);
+          if (!this.options.timePicker24Hour && ampmSelect) {
+            const ampm = ampmSelect.value;
+            if (ampm === 'PM' && hour < 12) hour += 12;
+            if (ampm === 'AM' && hour === 12) hour = 0;
+          }
+          clickedDate.setHours(hour);
+        }
+
+        if (minuteSelect) {
+          let minute = parseInt(minuteSelect.value, 10);
+          if (isNaN(minute)) {
+            const lastOption = minuteSelect.options[minuteSelect.options.length - 1];
+            minute = parseInt(lastOption.value, 10);
+          }
+          clickedDate.setMinutes(minute);
+        }
+
+        if (this.options.timePickerSeconds && secondSelect) {
+          clickedDate.setSeconds(parseInt(secondSelect.value, 10));
+        }
+      }
+    }
+
     if (this.state.endDate || isBefore(clickedDate, this.state.startDate)) {
       // Selecting start date
       this.state.endDate = null;
+      this.state.hoverDate = null;
       this.setStartDate(clickedDate);
     } else {
       // Selecting end date
+      this.state.hoverDate = null;
       this.setEndDate(clickedDate);
       if (this.options.autoApply) {
         this.calculateChosenLabel();
@@ -1379,6 +1895,73 @@ export class DateRangePicker {
     }
 
     this.updateView();
+  }
+
+  private hoverDate(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (!target.classList.contains('available')) return;
+
+    const dateStr = target.dataset['date'];
+    if (!dateStr) return;
+
+    const hoverDate = parse(dateStr, 'YYYY-MM-DD');
+    if (!isValid(hoverDate)) return;
+
+    // Only show hover effects when selecting end date
+    if (!this.state.endDate && !isBefore(hoverDate, this.state.startDate)) {
+      this.state.hoverDate = hoverDate;
+      // Solo actualizar las clases CSS, no regenerar todo el calendario
+      this.updateDateClasses();
+    }
+  }
+
+  private updateDateClasses(): void {
+    const allDates = this.container.querySelectorAll('td[data-date]');
+    allDates.forEach(td => {
+      const dateStr = (td as HTMLElement).dataset['date'];
+      if (!dateStr) return;
+
+      const date = parse(dateStr, 'YYYY-MM-DD');
+      if (!isValid(date)) return;
+
+      // Remover clases de hover anteriores
+      td.classList.remove('in-range', 'end-date');
+
+      // Aplicar clases basadas en el estado actual
+      const isInRange =
+        this.state.hoverDate &&
+        !this.state.endDate &&
+        isAfter(date, this.state.startDate) &&
+        isBefore(date, this.state.hoverDate);
+
+      const isHoverEnd = this.state.hoverDate && isSame(date, this.state.hoverDate, 'day');
+
+      if (isInRange) {
+        td.classList.add('in-range');
+      }
+
+      if (isHoverEnd) {
+        td.classList.add('end-date');
+      }
+
+      // Mantener clases existentes para fechas seleccionadas
+      if (isSame(date, this.state.startDate, 'day')) {
+        td.classList.add('active', 'start-date');
+      }
+
+      if (this.state.endDate && isSame(date, this.state.endDate, 'day')) {
+        td.classList.add('active', 'end-date');
+      }
+
+      // Rango real seleccionado
+      if (
+        this.state.endDate &&
+        isAfter(date, this.state.startDate) &&
+        isBefore(date, this.state.endDate)
+      ) {
+        td.classList.add('in-range');
+      }
+    });
   }
 
   private clickApply(_event: Event): void {
@@ -1480,24 +2063,44 @@ export class DateRangePicker {
 
   private calculateChosenLabel(): void {
     let customRange = true;
+    let bestMatch: { label: string; days: number } | null = null;
 
     for (const [label, [rangeStart, rangeEnd]] of Object.entries(this.options.ranges)) {
-      if (
-        isSame(this.state.startDate, rangeStart, 'day') &&
-        this.state.endDate &&
-        isSame(this.state.endDate, rangeEnd, 'day')
-      ) {
-        customRange = false;
-        this.state.chosenLabel = label;
+      const startMatches = isSame(this.state.startDate, rangeStart, 'day');
+      let endMatches = false;
 
-        // Highlight the range in UI
-        const rangeItems = this.container.querySelectorAll('.ranges li');
-        rangeItems.forEach(item => item.classList.remove('active'));
-        const activeItem = this.container.querySelector(`[data-range-key="${label}"]`);
-        if (activeItem) {
-          activeItem.classList.add('active');
+      if (this.state.endDate) {
+        // We have both start and end dates
+        endMatches = isSame(this.state.endDate, rangeEnd, 'day');
+      } else {
+        // Only start date selected - check if it matches a single-day range
+        endMatches = isSame(this.state.startDate, rangeEnd, 'day');
+      }
+
+      if (startMatches && endMatches) {
+        // Calculate the number of days in this range
+        const rangeDays =
+          Math.abs(rangeEnd.getTime() - rangeStart.getTime()) / (1000 * 60 * 60 * 24) + 1;
+
+        // Prefer longer ranges over shorter ones (Esta semana over Hoy)
+        if (!bestMatch || rangeDays > bestMatch.days) {
+          bestMatch = { label, days: rangeDays };
         }
-        break;
+      }
+    }
+
+    // Always clear all active ranges first
+    const rangeItems = this.container.querySelectorAll('.ranges li');
+    rangeItems.forEach(item => item.classList.remove('active'));
+
+    if (bestMatch) {
+      customRange = false;
+      this.state.chosenLabel = bestMatch.label;
+
+      // Highlight the matched range in UI
+      const activeItem = this.container.querySelector(`[data-range-key="${bestMatch.label}"]`);
+      if (activeItem) {
+        activeItem.classList.add('active');
       }
     }
 
@@ -1519,12 +2122,32 @@ export class DateRangePicker {
 
   // Public API
   setStartDate(date: Date): void {
-    this.state.startDate = dayStart(date);
+    if (!this.options.timePicker) {
+      this.state.startDate = dayStart(date);
+    } else {
+      this.state.startDate = new Date(date);
+      if (this.options.timePickerIncrement) {
+        const minutes =
+          Math.round(this.state.startDate.getMinutes() / this.options.timePickerIncrement) *
+          this.options.timePickerIncrement;
+        this.state.startDate.setMinutes(minutes);
+      }
+    }
     this.updateView();
   }
 
   setEndDate(date: Date): void {
-    this.state.endDate = dayEnd(date);
+    if (!this.options.timePicker) {
+      this.state.endDate = dayEnd(date);
+    } else {
+      this.state.endDate = new Date(date);
+      if (this.options.timePickerIncrement) {
+        const minutes =
+          Math.round(this.state.endDate.getMinutes() / this.options.timePickerIncrement) *
+          this.options.timePickerIncrement;
+        this.state.endDate.setMinutes(minutes);
+      }
+    }
     this.updateView();
   }
 
@@ -1558,6 +2181,57 @@ export class DateRangePicker {
     if (this.container && this.container.parentNode) {
       this.container.parentNode.removeChild(this.container);
     }
+  }
+
+  updateRanges(newRanges: Record<string, [Date, Date]>): void {
+    if (typeof newRanges !== 'object') return;
+
+    this.options.ranges = {};
+
+    for (const [label, range] of Object.entries(newRanges)) {
+      let start: Date, end: Date;
+
+      if (typeof range[0] === 'string') {
+        start = parse(range[0], this.locale.format);
+      } else {
+        start = new Date(range[0]);
+      }
+
+      if (typeof range[1] === 'string') {
+        end = parse(range[1], this.locale.format);
+      } else {
+        end = new Date(range[1]);
+      }
+
+      // Adjust dates according to minDate and maxSpan constraints
+      if (this.options.minDate && isBefore(start, this.options.minDate)) {
+        start = new Date(this.options.minDate);
+      }
+
+      let maxDate = this.options.maxDate;
+      if (this.options.maxSpan && maxDate) {
+        const maxSpanDate = addDay(start, this.options.maxSpan.days || 0);
+        if (isAfter(maxSpanDate, maxDate)) {
+          maxDate = maxSpanDate;
+        }
+      }
+      if (maxDate && isAfter(end, maxDate)) {
+        end = new Date(maxDate);
+      }
+
+      // Skip ranges that are completely outside allowed dates
+      if (
+        (this.options.minDate && isBefore(end, this.options.minDate)) ||
+        (maxDate && isAfter(start, maxDate))
+      ) {
+        continue;
+      }
+
+      this.options.ranges[label] = [start, end];
+    }
+
+    // Re-render ranges
+    this.renderRanges();
   }
 
   private dispatchEvent(eventName: string): void {

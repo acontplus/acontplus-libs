@@ -1,5 +1,5 @@
 import { AdvancedDialogService, Button, DataGrid, DataGridColumn } from '@acontplus/ng-components';
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { CompanyCustomerCreate } from '../company-customer-create/company-customer-create';
 import { COMPANY_CUSTOMER_SERVICE } from '@acontplus/ng-customer';
 
@@ -9,7 +9,7 @@ import { COMPANY_CUSTOMER_SERVICE } from '@acontplus/ng-customer';
   styleUrl: './app.scss',
   imports: [DataGrid, Button],
 })
-export class App {
+export class App implements OnInit {
   dgSvc = inject(AdvancedDialogService);
   ccSvc = inject(COMPANY_CUSTOMER_SERVICE);
 
@@ -65,9 +65,8 @@ export class App {
   page = signal(0);
   pageSize = signal(25);
 
-  trackByName(index: number, item: any) {
-    console.log(index);
-    return item.name;
+  trackByName(index: number) {
+    return `${index}-`;
   }
 
   ngOnInit() {

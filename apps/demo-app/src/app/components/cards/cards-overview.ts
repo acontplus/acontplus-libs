@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { DynamicCard } from '@acontplus/ng-components';
 import { MatCardModule } from '@angular/material/card';
 import { DocHeading } from '../../shared/doc-heading/doc-heading';
@@ -7,7 +7,7 @@ import { CodeExample } from '../../shared/code-example/code-example';
 
 @Component({
   selector: 'app-cards-overview',
-  imports: [CommonModule, DynamicCard, MatCardModule, DocHeading, CodeExample],
+  imports: [DynamicCard, MatCardModule, DocHeading, CodeExample],
   template: `
     <div class="docs-component-viewer-content">
       <app-doc-heading>Cards</app-doc-heading>

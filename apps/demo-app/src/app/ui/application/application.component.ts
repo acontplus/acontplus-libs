@@ -21,14 +21,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import {
-  ColumnDefinition,
-  DynamicTable,
-  Pagination,
-  AdvancedDialogService,
-  TableContext,
-  Button,
-} from '@acontplus/ng-components';
+import { DataGrid, DataGridColumn, AdvancedDialogService, Button } from '@acontplus/ng-components';
 import { NotificationService } from '@acontplus/ng-notifications';
 import { ApplicationRepository } from '../../data';
 import { Application } from '../../domain/application';
@@ -54,7 +47,7 @@ import { ApplicationAddEditComponent } from './application-add-edit/application-
     MatChipsModule,
     MatTooltipModule,
     MatProgressSpinnerModule,
-    DynamicTable,
+    DataGrid,
     Button,
   ],
   templateUrl: './application.component.html',
@@ -74,10 +67,13 @@ export class ApplicationComponent implements OnInit, AfterViewInit {
   isLoading = false;
 
   // Pagination
-  applicationPaginationConfig: Pagination = new Pagination(0, 10, 0, [5, 10, 25, 50]);
+  paginationLength = 0;
+  pageIndex = 0;
+  pageSize = 10;
+  pageSizeOptions = [5, 10, 25, 50];
   pagination = new PaginationParams({
-    pageIndex: this.applicationPaginationConfig.pageIndex + 1, // API uses 1-based indexing
-    pageSize: this.applicationPaginationConfig.pageSize,
+    pageIndex: 1,
+    pageSize: 10,
   });
 
   // Filters
@@ -85,15 +81,12 @@ export class ApplicationComponent implements OnInit, AfterViewInit {
   searchQuery = '';
 
   // Template references
-  readonly actionsTemplate =
-    viewChild.required<TemplateRef<TableContext<Application>>>('actionsTemplate');
-  readonly statusTemplate =
-    viewChild.required<TemplateRef<TableContext<Application>>>('statusTemplate');
-  readonly environmentTemplate =
-    viewChild.required<TemplateRef<TableContext<Application>>>('environmentTemplate');
+  readonly actionsTemplate = viewChild.required<TemplateRef<any>>('actionsTemplate');
+  readonly statusTemplate = viewChild.required<TemplateRef<any>>('statusTemplate');
+  readonly environmentTemplate = viewChild.required<TemplateRef<any>>('environmentTemplate');
 
   // Column definitions
-  applicationColumns: ColumnDefinition<Application>[] = [];
+  applicationColumns: DataGridColumn<Application>[] = [];
 
   // Status options
   statusOptions: Application['status'][] = [
@@ -124,65 +117,50 @@ export class ApplicationComponent implements OnInit, AfterViewInit {
 
   private initializeColumns(): void {
     this.applicationColumns = [
-      new ColumnDefinition<Application>({
-        key: 'id',
-        label: 'ID',
+      {
+        field: 'id',
+        header: 'ID',
         type: 'number',
         width: '80px',
-        order: 1,
-      }),
-      new ColumnDefinition<Application>({
-        key: 'name',
-        label: 'Name',
-        type: 'string',
-        isDefaultSearchField: true,
-        required: true,
-        order: 2,
+        sortable: true,
+      },
+      {
+        field: 'name',
+        header: 'Name',
         width: '200px',
-      }),
-      new ColumnDefinition<Application>({
-        key: 'version',
-        label: 'Version',
-        type: 'string',
-        order: 3,
+        sortable: true,
+      },
+      {
+        field: 'version',
+        header: 'Version',
         width: '120px',
-      }),
-      new ColumnDefinition<Application>({
-        key: 'status',
-        label: 'Status',
-        type: 'template',
-        order: 4,
+      },
+      {
+        field: 'status',
+        header: 'Status',
         width: '120px',
-      }),
-      new ColumnDefinition<Application>({
-        key: 'environment',
-        label: 'Environment',
-        type: 'template',
-        order: 5,
+      },
+      {
+        field: 'environment',
+        header: 'Environment',
         width: '140px',
-      }),
-      new ColumnDefinition<Application>({
-        key: 'category',
-        label: 'Category',
-        type: 'string',
-        order: 6,
+      },
+      {
+        field: 'category',
+        header: 'Category',
         width: '150px',
-      }),
-      new ColumnDefinition<Application>({
-        key: 'owner',
-        label: 'Owner',
-        type: 'string',
-        order: 7,
+      },
+      {
+        field: 'owner',
+        header: 'Owner',
         width: '150px',
-      }),
-      new ColumnDefinition<Application>({
-        key: 'op',
-        label: 'Actions',
-        type: 'template',
-        order: 8,
+      },
+      {
+        field: 'actions',
+        header: 'Actions',
         width: '200px',
-      }),
-    ].sort((a, b) => (a.order || 0) - (b.order || 0));
+      },
+    ];
   }
 
   private updateColumnsWithTemplates(): void {
@@ -191,21 +169,21 @@ export class ApplicationComponent implements OnInit, AfterViewInit {
     const environmentTemplate = this.environmentTemplate();
     if (actionsTemplate && statusTemplate && environmentTemplate) {
       // Update status column with template
-      const statusColumn = this.applicationColumns.find(col => col.key === 'status');
+      const statusColumn = this.applicationColumns.find(col => col.field === 'status');
       if (statusColumn) {
-        statusColumn.templateOutlet = statusTemplate;
+        statusColumn.cellTemplate = statusTemplate;
       }
 
       // Update environment column with template
-      const environmentColumn = this.applicationColumns.find(col => col.key === 'environment');
+      const environmentColumn = this.applicationColumns.find(col => col.field === 'environment');
       if (environmentColumn) {
-        environmentColumn.templateOutlet = environmentTemplate;
+        environmentColumn.cellTemplate = environmentTemplate;
       }
 
       // Update actions column with template
-      const actionsColumn = this.applicationColumns.find(col => col.key === 'op');
+      const actionsColumn = this.applicationColumns.find(col => col.field === 'actions');
       if (actionsColumn) {
-        actionsColumn.templateOutlet = actionsTemplate;
+        actionsColumn.cellTemplate = actionsTemplate;
       }
     }
   }
@@ -219,9 +197,9 @@ export class ApplicationComponent implements OnInit, AfterViewInit {
           rowStyle: this.getRowStyleForStatus(app.status),
           disableSelection: app.status === 'processing' || app.status === 'maintenance',
         }));
-        this.applicationPaginationConfig.totalRecords = result.totalCount;
-        this.applicationPaginationConfig.pageIndex = result.pageIndex - 1;
-        this.applicationPaginationConfig.pageSize = result.pageSize;
+        this.paginationLength = result.totalCount;
+        this.pageIndex = result.pageIndex - 1;
+        this.pageSize = result.pageSize;
         this.isLoading = false;
         this.cdr.markForCheck();
       },
@@ -269,8 +247,8 @@ export class ApplicationComponent implements OnInit, AfterViewInit {
   onPageChange(event: PageEvent): void {
     this.pagination.pageIndex = event.pageIndex + 1;
     this.pagination.pageSize = event.pageSize;
-    this.applicationPaginationConfig.pageIndex = event.pageIndex;
-    this.applicationPaginationConfig.pageSize = event.pageSize;
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
     this.loadApplications();
   }
 

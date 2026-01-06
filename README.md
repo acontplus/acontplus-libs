@@ -114,6 +114,55 @@ pnpm start
 - `pnpm run local-registry` - Start local npm registry for development
 - `pnpm run e2e` - Run end-to-end tests
 
+## � Publishing to npm
+
+This project uses **manual publishing** due to npm's enhanced security requirements (2FA, security keys).
+
+### Publishing Workflow
+
+1. **Bump version** using the patch-version script:
+
+   ```bash
+   # For patch version (bug fixes)
+   .\scripts\patch-version.ps1 <package-name>
+
+   # For minor version (new features)
+   pnpm --filter @acontplus/<package-name> exec npm version minor
+
+   # For major version (breaking changes)
+   pnpm --filter @acontplus/<package-name> exec npm version major
+   ```
+
+2. **Build the package**:
+
+   ```bash
+   pnpm nx build <package-name> --configuration=production
+   ```
+
+3. **Publish with web authentication**:
+
+   ```bash
+   cd dist/packages/<package-name>
+   npm publish --access=public
+   ```
+
+   This opens your browser for authentication with security keys (Windows Hello, hardware keys, or TOTP).
+
+### Example: Publishing ng-auth
+
+```bash
+# 1. Bump version (minor for new features)
+pnpm --filter @acontplus/ng-auth exec npm version minor
+
+# 2. Build for production
+pnpm nx build ng-auth --configuration=production
+
+# 3. Publish to npm
+cd dist/packages/ng-auth
+npm publish --access=public
+cd ../../..
+```
+
 ### Version Management
 
 Use the patch version script to bump package versions and update dependencies:

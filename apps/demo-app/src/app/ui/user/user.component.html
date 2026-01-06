@@ -87,16 +87,20 @@
   <mat-card class="table-card">
     <mat-card-content>
       <div class="table-container">
-        <acp-dynamic-table
-          [tableData]="users"
-          [columnDefinitions]="userColumns"
-          [showSelectBox]="true"
-          [showFooter]="true"
-          [enablePagination]="true"
-          [paginationConfig]="userPaginationConfig"
-          [isLoadingData]="isLoading"
-          (rowSelected)="onRowSelected($event)"
-          (pageEvent)="onPageChange($event)"
+        <acp-data-grid
+          [data]="users"
+          [columns]="userColumns"
+          [rowSelectable]="true"
+          [multiSelectable]="true"
+          [showPaginator]="true"
+          [pageOnFront]="false"
+          [length]="paginationLength"
+          [pageIndex]="pageIndex"
+          [pageSize]="pageSize"
+          [pageSizeOptions]="pageSizeOptions"
+          [loading]="isLoading"
+          (rowSelectedChange)="onRowSelected($event)"
+          (page)="onPageChange($event)"
         />
 
         @if (!isLoading && users.length === 0) {
@@ -109,20 +113,20 @@
     </mat-card-content>
   </mat-card>
 
-  <ng-template #roleTemplate let-element="$implicit">
-    <mat-chip [color]="getRoleColor(element.role)" selected>
-      {{ element.role }}
+  <ng-template #roleTemplate let-rowData="rowData">
+    <mat-chip [color]="getRoleColor(rowData.role)" selected>
+      {{ rowData.role }}
     </mat-chip>
   </ng-template>
   <!-- Template for Status Column -->
-  <ng-template #statusTemplate let-element="$implicit">
-    <mat-chip [color]="element.isActive ? 'accent' : 'warn'" selected>
-      {{ element.isActive ? 'Active' : 'Inactive' }}
+  <ng-template #statusTemplate let-rowData="rowData">
+    <mat-chip [color]="rowData.isActive ? 'accent' : 'warn'" selected>
+      {{ rowData.isActive ? 'Active' : 'Inactive' }}
     </mat-chip>
   </ng-template>
-  <ng-template #actionsTemplate let-element="$implicit">
+  <ng-template #actionsTemplate let-rowData="rowData">
     <div class="action-buttons">
-      @if (editUserId === element.id) {
+      @if (editUserId === rowData.id) {
         <mat-form-field appearance="outline" class="inline-edit">
           <mat-label>Name</mat-label>
           <input matInput [(ngModel)]="editUser.name" />
@@ -153,14 +157,14 @@
           variant="primary"
           icon="edit"
           title="Edit User"
-          (handleClick)="startEdit(element)"
+          (handleClick)="startEdit(rowData)"
         />
         <acp-button
           matStyle="icon"
           variant="danger"
           icon="delete"
           title="Delete User"
-          (handleClick)="deleteUser(element.id)"
+          (handleClick)="deleteUser(rowData.id)"
         />
       }
     </div>

@@ -75,13 +75,8 @@ export const COMPONENTS_MENU: ComponentCategory[] = [
   {
     id: 'data-grid',
     name: 'Data Grid',
-    summary: 'Advanced data grid with Material table integration.',
-    category: 'Data Tables',
-  },
-  {
-    id: 'dynamic-table',
-    name: 'Dynamic Table',
-    summary: 'Angular Material-based dynamic table with row selection and styling.',
+    summary:
+      'Advanced data grid with Material table integration, signals, and modern Angular patterns.',
     category: 'Data Tables',
   },
   {

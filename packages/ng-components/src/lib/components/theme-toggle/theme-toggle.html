@@ -1,7 +1,11 @@
 <button
   mat-icon-button
+  type="button"
   (click)="toggleDarkMode()"
-  title="{{ (darkMode$ | async) ? 'Modo Día' : 'Modo Noche' }}"
+  [attr.aria-label]="currentLabel()"
+  [attr.aria-pressed]="isDarkMode()"
+  [matTooltip]="currentLabel()"
+  [attr.data-testid]="testId() || null"
 >
-  <mat-icon>{{ (darkMode$ | async) ? 'light_mode' : 'dark_mode' }}</mat-icon>
+  <mat-icon>{{ currentIcon() }}</mat-icon>
 </button>

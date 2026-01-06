@@ -3,13 +3,12 @@
   "version": "2.1.0",
   "description": "Comprehensive Angular Material UI component library featuring dynamic Tabulator tables, theme toggle with dark mode, dialog wrappers, autocomplete components, cards, buttons, icons, input chips, spinners, directives, pipes, and SCSS styling utilities.",
   "peerDependencies": {
-    "@acontplus/ui-kit": "^1.0.1",
-    "@angular/cdk": "^20.2.12",
-    "@angular/common": "^20.3.9",
-    "@angular/core": "^20.3.9",
-    "@angular/material": "^20.2.12",
-    "tabulator-tables": "^6.3.1",
-    "@formkit/tempo": "^0.1.2"
+    "@acontplus/ui-kit": "^1.0.2",
+    "@angular/cdk": "^21.0.0",
+    "@angular/common": "^21.0.0",
+    "@angular/core": "^21.0.0",
+    "@angular/material": "^21.0.0",
+    "tabulator-tables": "^6.3.1"
   },
   "sideEffects": true,
   "main": "fesm2022/acontplus-ng-components.mjs",

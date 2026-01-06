@@ -1,12 +1,12 @@
 {
   "name": "@acontplus/ng-customer",
-  "version": "1.1.1",
+  "version": "2.0.3",
   "description": "Angular customer management module following clean architecture principles. Provides customer UI components, business logic, and integrates with notification systems for comprehensive customer relationship management.",
   "peerDependencies": {
-    "@acontplus/ng-components": "^1.3.3",
-    "@acontplus/ng-notifications": "^1.1.2",
-    "@angular/common": "^20.3.9",
-    "@angular/core": "^20.3.9"
+    "@acontplus/ng-components": "^2.1.0",
+    "@acontplus/ng-notifications": "^2.0.2",
+    "@angular/common": "^21.0.0",
+    "@angular/core": "^21.0.0"
   },
   "sideEffects": false,
   "main": "fesm2022/acontplus-ng-customer.mjs",

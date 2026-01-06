@@ -1,6 +1,5 @@
 export type { AuthTokenRepository } from '@acontplus/ng-config';
 export { AUTH_TOKEN } from '@acontplus/ng-config';
-export * from './lib/application';
 export * from './lib/data';
 export * from './lib/domain';
 export * from './lib/guards';

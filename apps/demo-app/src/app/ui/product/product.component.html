@@ -198,18 +198,22 @@
 
       <!-- Products Table -->
       <div class="table-section">
-        <acp-dynamic-table
-          [tableData]="products"
-          [columnDefinitions]="productColumns"
-          [showSelectBox]="true"
-          [showFooter]="true"
-          [enablePagination]="true"
-          [paginationConfig]="productPaginationConfig"
-          [showExpand]="true"
-          [expandedDetail]="expandedProductDetail"
-          [rowTemplate]="actionsTemplate"
-          (rowSelected)="onRowSelected($event)"
-          (pageEvent)="onPageChange($event)"
+        <acp-data-grid
+          [data]="products"
+          [columns]="productColumns"
+          [rowSelectable]="true"
+          [multiSelectable]="true"
+          [showPaginator]="true"
+          [pageOnFront]="false"
+          [length]="paginationLength"
+          [pageIndex]="pageIndex"
+          [pageSize]="pageSize"
+          [pageSizeOptions]="pageSizeOptions"
+          [expandable]="true"
+          [expansionTemplate]="expandedProductDetail"
+          [loading]="isLoading"
+          (rowSelectedChange)="onRowSelected($event)"
+          (page)="onPageChange($event)"
         />
       </div>
 

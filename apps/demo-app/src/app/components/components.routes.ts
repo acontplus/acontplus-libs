@@ -53,10 +53,6 @@ export const routes = [
         loadChildren: () => import('./data-grid/data-grid').then(m => m.routes),
       },
       {
-        path: 'dynamic-table',
-        loadChildren: () => import('./dynamic-table/dynamic-table.routes').then(m => m.routes),
-      },
-      {
         path: 'tabulator-table',
         loadChildren: () => import('./tabulator-table/tabulator-table.routes').then(m => m.routes),
       },

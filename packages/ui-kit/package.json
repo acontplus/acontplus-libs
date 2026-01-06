@@ -1,6 +1,6 @@
 {
   "name": "@acontplus/ui-kit",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Framework-agnostic UI kit library providing reusable design assets, SVG icon definitions, button types, select options, and design system elements for consistent user interfaces across any JavaScript framework.",
   "type": "module",
   "main": "./src/index.js",

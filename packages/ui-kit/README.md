@@ -95,6 +95,31 @@ The library provides a collection of SVG icons as pure data that can be used wit
 
 - `settings` - Settings gear icon
 
+**Social Platforms:**
+
+- `google` - Google logo (brand colors)
+- `microsoft` - Microsoft logo (4-color squares)
+- `github` - GitHub Octocat logo
+- `facebook` - Facebook F logo (blue)
+- `apple` - Apple logo
+- `linkedin` - LinkedIn logo (blue)
+- `twitter` - Twitter bird logo (blue)
+- `x` - X (Twitter rebrand) logo
+- `instagram` - Instagram logo (gradient)
+- `youtube` - YouTube play button (red)
+- `discord` - Discord logo (purple)
+- `slack` - Slack logo (multi-color)
+- `tiktok` - TikTok logo
+- `whatsapp` - WhatsApp logo (green)
+- `telegram` - Telegram logo (blue)
+- `reddit` - Reddit alien logo (orange)
+- `pinterest` - Pinterest P logo (red)
+- `snapchat` - Snapchat ghost logo (yellow)
+- `twitch` - Twitch logo (purple)
+- `spotify` - Spotify logo (green)
+- `dribbble` - Dribbble logo (pink)
+- `behance` - Behance logo (blue)
+
 ### Usage
 
 ```typescript

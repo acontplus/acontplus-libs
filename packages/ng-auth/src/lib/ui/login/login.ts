@@ -27,13 +27,15 @@ import {
 } from '@angular/material/card';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { MatIcon } from '@angular/material/icon';
+import { MatIcon, MatIconRegistry } from '@angular/material/icon';
 import { MatAnchor, MatButton } from '@angular/material/button';
 import { MatCheckbox } from '@angular/material/checkbox';
-import { AuthStore } from '../stores/auth-store';
-import { LoginUseCase } from '../../application/use-cases/login-use-case';
-import { RegisterUseCase } from '../../application/use-cases/register-use-case';
+import { MatDivider } from '@angular/material/divider';
+import { DomSanitizer } from '@angular/platform-browser';
+import { AuthState } from '../../services/auth-state';
 import { LoggingService } from '@acontplus/ng-infrastructure';
+import { DomainDiscoveryResponse, SocialProvider } from '../../domain/models/auth';
+import { DEFAULT_ICONS } from '@acontplus/ui-kit';
 
 @Component({
   selector: 'acp-login',
@@ -52,6 +54,7 @@ import { LoggingService } from '@acontplus/ng-infrastructure';
     MatCardFooter,
     MatAnchor,
     MatCheckbox,
+    MatDivider,
   ],
   templateUrl: './login.html',
   styleUrls: ['./login.scss'],
@@ -62,6 +65,8 @@ export class Login implements OnInit {
   title = input<string>('Login');
   showRegisterButton = input<boolean>(true);
   showRememberMe = input<boolean>(true);
+  enableDomainDiscovery = input<boolean>(false); // Enable multi-tenant domain discovery
+  showSocialLogin = input<boolean>(true); // Show social login buttons
 
   // Additional form controls that can be passed from parent components
   additionalSigninControls = input<Record<string, AbstractControl>>({});
@@ -78,20 +83,25 @@ export class Login implements OnInit {
   hasFooterContent = computed(() => this.footerContent() !== null);
 
   private readonly fb = inject(FormBuilder);
-  private readonly authStore = inject(AuthStore);
-  private readonly loginUseCase = inject(LoginUseCase);
-  private readonly registerUseCase = inject(RegisterUseCase);
+  private readonly authState = inject(AuthState);
   private readonly loggingService = inject(LoggingService);
+  private readonly iconRegistry = inject(MatIconRegistry);
+  private readonly sanitizer = inject(DomSanitizer);
 
   // Angular 20+ signals
   isLoginMode = signal(true);
   isLoading = signal(false);
   errorMessage = signal<string | null>(null);
+  discoveryResult = signal<DomainDiscoveryResponse | null>(null);
+  showPasswordLogin = signal(true);
 
   signinForm: FormGroup;
   signupForm: FormGroup;
 
   constructor() {
+    // Register social login icons
+    this.registerSocialIcons();
+
     this.signinForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
@@ -102,6 +112,21 @@ export class Login implements OnInit {
       displayName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
+    });
+  }
+
+  private registerSocialIcons(): void {
+    const socialIconNames = ['google', 'microsoft', 'github', 'facebook', 'apple', 'linkedin'];
+    socialIconNames.forEach((name) => {
+      const icon = DEFAULT_ICONS.find((i) => i.name === name);
+      if (icon?.data) {
+        this.iconRegistry.addSvgIconLiteral(
+          name,
+          this.sanitizer.bypassSecurityTrustHtml(icon.data),
+        );
+      } else {
+        console.warn(`Icon '${name}' not found in DEFAULT_ICONS`);
+      }
     });
   }
 
@@ -120,6 +145,42 @@ export class Login implements OnInit {
     // Add additional controls to signup form
     Object.entries(this.additionalSignupControls()).forEach(([key, control]) => {
       this.signupForm.addControl(key, control);
+    });
+
+    // Set up domain discovery on email change if enabled
+    if (this.enableDomainDiscovery()) {
+      this.signinForm.get('email')?.valueChanges.subscribe((email: string) => {
+        if (email && this.isValidEmail(email)) {
+          this.checkDomain(email);
+        }
+      });
+    }
+  }
+
+  private isValidEmail(email: string): boolean {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailPattern.test(email);
+  }
+
+  private checkDomain(email: string): void {
+    this.authState.discoverDomain(email).subscribe({
+      next: (result) => {
+        this.discoveryResult.set(result);
+        this.showPasswordLogin.set(result.allowPasswordLogin);
+
+        // If domain requires OAuth and doesn't allow password login, hide password field
+        if (result.requiresOAuth && !result.allowPasswordLogin) {
+          this.signinForm.get('password')?.disable();
+        } else {
+          this.signinForm.get('password')?.enable();
+        }
+      },
+      error: (err) => {
+        // Silently handle discovery errors - fallback to standard login
+        this.loggingService.warn('Domain discovery failed', { error: err });
+        this.discoveryResult.set(null);
+        this.showPasswordLogin.set(true);
+      },
     });
   }
 
@@ -140,7 +201,7 @@ export class Login implements OnInit {
         rememberMe: this.showRememberMe() ? (this.signinForm.value.rememberMe ?? false) : false,
       };
 
-      this.loginUseCase.execute(loginRequest).subscribe({
+      this.authState.login(loginRequest).subscribe({
         next: () => {
           this.isLoading.set(false);
         },
@@ -158,7 +219,7 @@ export class Login implements OnInit {
       this.isLoading.set(true);
       this.errorMessage.set(null);
 
-      this.registerUseCase.execute(this.signupForm.value).subscribe({
+      this.authState.register(this.signupForm.value).subscribe({
         next: () => {
           this.isLoading.set(false);
           this.signupForm.reset();
@@ -171,5 +232,34 @@ export class Login implements OnInit {
         },
       });
     }
+  }
+
+  /**
+   * Start OAuth flow for discovered provider or specified provider
+   */
+  loginWithProvider(provider?: SocialProvider): void {
+    const discovery = this.discoveryResult();
+    const finalProvider = provider || discovery?.provider;
+
+    if (!finalProvider) {
+      this.errorMessage.set('No authentication provider configured');
+      return;
+    }
+
+    this.isLoading.set(true);
+    this.errorMessage.set(null);
+
+    this.authState.startOAuthFlow({
+      provider: finalProvider,
+      tenantId: discovery?.tenantId,
+      domain: discovery?.domain,
+    });
+  }
+
+  /**
+   * Handle direct social login button clicks
+   */
+  socialLogin(provider: SocialProvider): void {
+    this.loginWithProvider(provider);
   }
 }

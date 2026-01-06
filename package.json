@@ -19,7 +19,9 @@
     "clean": "nx reset",
     "local-registry": "nx run acontplus-libs:local-registry",
     "e2e": "nx run demo-app-e2e:e2e",
-    "prepare": "husky"
+    "prepare": "husky",
+    "publish:ng-components": "nx build ng-components && nx publish ng-components",
+    "release:ng-components": "npm version patch -w packages/ng-components && npm run publish:ng-components"
   },
   "prettier": {
     "printWidth": 100,

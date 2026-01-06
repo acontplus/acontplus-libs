@@ -1,5 +1,5 @@
 // Main exports
-export { DateRangePicker } from './date-range-picker.js';
+export { DateRangePicker } from './date-range-picker';
 
 // Types
 export type {
@@ -7,7 +7,7 @@ export type {
   DateRangePickerLocale,
   DateRangePickerCallback,
   DateRangePickerTheme,
-} from './date-range-picker.js';
+} from './date-range-picker';
 
 // Constants
 export {
@@ -16,4 +16,4 @@ export {
   DEFAULT_THEME,
   BOOTSTRAP_THEME,
   MATERIAL_THEME,
-} from './date-range-picker.js';
+} from './date-range-picker';

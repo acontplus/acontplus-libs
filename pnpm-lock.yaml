@@ -243,9 +243,6 @@ importers:
       jsonc-eslint-parser:
         specifier: ^2.4.2
         version: 2.4.2
-      jsonc-eslint-parser:
-        specifier: ^2.4.1
-        version: 2.4.1
       lint-staged:
         specifier: 16.2.3
         version: 16.2.3

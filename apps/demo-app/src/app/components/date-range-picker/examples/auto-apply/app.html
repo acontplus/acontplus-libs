@@ -1,16 +1,21 @@
 <mat-card class="example-card">
   <mat-card-header>
     <mat-card-title>Auto-Apply DateRangePicker</mat-card-title>
-    <mat-card-subtitle>Selección automática sin botones Aplicar/Cancelar</mat-card-subtitle>
+    <mat-card-subtitle
+      >Selección automática sin botones Aplicar/Cancelar usando el componente
+      Angular</mat-card-subtitle
+    >
   </mat-card-header>
 
   <mat-card-content>
     <div class="example-container">
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Seleccionar rango de fechas</mat-label>
-        <input matInput id="auto-apply-input" placeholder="Haz clic para seleccionar" readonly />
-        <mat-hint>La selección se aplica automáticamente</mat-hint>
-      </mat-form-field>
+      <acp-date-range-picker
+        [formControl]="dateRangeControl"
+        [options]="autoApplyOptions"
+        placeholderText="Haz clic para seleccionar"
+        (dateRangeSelected)="onDateRangeSelected($event)"
+      >
+      </acp-date-range-picker>
 
       <div class="result-display">
         <h4>Resultado:</h4>
@@ -29,25 +34,22 @@
           </div>
         </div>
       </div>
+
+      <div class="form-values">
+        <h4>Valor del FormControl:</h4>
+        <pre>{{ dateRangeControl.value | json }}</pre>
+      </div>
     </div>
   </mat-card-content>
 
   <mat-card-actions>
     <div class="config-info">
-      <h4>Configuración:</h4>
-      <pre><code>{{'{'}}{{'{'}}
-  autoApply: true,
-  showDropdowns: true,
-  alwaysShowCalendars: false,
-  theme: BOOTSTRAP_THEME,
-  ranges: {{'{'}}{{'{'}}
-    'Hoy': [today, today],
-    'Ayer': [yesterday, yesterday],
-    'Últimos 7 días': [last7Days, today],
-    'Últimos 30 días': [last30Days, today],
-    'Este mes': [thisMonthStart, thisMonthEnd]
-  {{'}'}}{{'}'}}
-{{'}'}}{{'}'}}</code></pre>
+      <h4>Configuración del Componente:</h4>
+      <pre><code>&lt;acp-date-range-picker
+  [options]="autoApplyOptions"
+  placeholderText="Haz clic para seleccionar"
+  (dateRangeSelected)="onDateRangeSelected($event)"&gt;
+&lt;/acp-date-range-picker&gt;</code></pre>
     </div>
   </mat-card-actions>
 </mat-card>

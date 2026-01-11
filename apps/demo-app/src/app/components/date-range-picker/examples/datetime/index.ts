@@ -161,17 +161,17 @@ const dateRangePickerDateTimeExampleConfig = {
     {
       file: 'app.html',
       content: hljs.highlightAuto(appHtml).value,
-      filecontent: appHtml,
+      filecontent: { default: appHtml },
     },
     {
       file: 'app.ts',
       content: hljs.highlightAuto(appTs).value,
-      filecontent: appTs,
+      filecontent: { default: appTs },
     },
     {
       file: 'app.scss',
       content: hljs.highlightAuto(appScss).value,
-      filecontent: appScss,
+      filecontent: { default: appScss },
     },
   ],
 };

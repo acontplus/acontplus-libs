@@ -1,19 +1,19 @@
-// Main exports
+// Angular component
 export { DateRangePicker } from './date-range-picker';
+export type { DateRangePickerOptions, DateRangeValue } from './date-range-picker';
 
-// Types
-export type {
-  DateRangePickerOptions,
-  DateRangePickerLocale,
-  DateRangePickerCallback,
-  DateRangePickerTheme,
-} from './date-range-picker';
-
-// Constants
+// Re-exports from datex-ui
 export {
+  Datex,
   SPANISH_LOCALE,
   SPANISH_LOCALE_WITH_TIME,
   DEFAULT_THEME,
   BOOTSTRAP_THEME,
   MATERIAL_THEME,
-} from './date-range-picker';
+} from 'datex-ui';
+
+// Type re-exports from datex-ui
+export type { DatexOptions } from 'datex-ui';
+export type { DatexLocale } from 'datex-ui';
+export type { DatexCallback } from 'datex-ui';
+export type { DatexTheme } from 'datex-ui';

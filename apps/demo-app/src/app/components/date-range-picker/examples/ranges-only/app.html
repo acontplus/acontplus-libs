@@ -6,11 +6,12 @@
 
   <mat-card-content>
     <div class="example-container">
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Seleccionar rango predefinido</mat-label>
-        <input matInput id="ranges-only-input" placeholder="Elige un rango predefinido" readonly />
-        <mat-hint>Muestra solo rangos, calendario opcional</mat-hint>
-      </mat-form-field>
+      <!-- Componente DateRangePicker -->
+      <acp-date-range-picker
+        [options]="rangesOnlyOptions"
+        placeholderText="Elige un rango predefinido"
+        (dateRangeSelected)="onDateRangeSelected($event)"
+      ></acp-date-range-picker>
 
       <div class="result-display">
         <h4>Rango seleccionado:</h4>

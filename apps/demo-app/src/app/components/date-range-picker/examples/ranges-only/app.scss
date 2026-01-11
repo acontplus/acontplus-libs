@@ -5,7 +5,8 @@
   .example-container {
     padding: 16px 0;
 
-    .full-width {
+    acp-date-range-picker {
+      display: block;
       width: 100%;
       margin-bottom: 20px;
     }

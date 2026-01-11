@@ -1,13 +1,14 @@
 .example-card {
-  max-width: 600px;
+  max-width: 800px;
   margin: 20px auto;
 
   .example-container {
     padding: 16px 0;
 
-    .full-width {
+    acp-date-range-picker {
+      display: block;
       width: 100%;
-      margin-bottom: 20px;
+      margin-bottom: 30px;
     }
 
     .result-display {
@@ -47,6 +48,50 @@
             color: #333;
             font-weight: 600;
           }
+        }
+      }
+    }
+
+    .theme-controls {
+      margin-top: 30px;
+      padding: 20px;
+      background-color: #fff3e0;
+      border-radius: 8px;
+
+      h4 {
+        margin-bottom: 16px;
+        color: #ef6c00;
+      }
+
+      .theme-buttons {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+
+        button {
+          min-width: 100px;
+        }
+      }
+    }
+
+    .checkbox-controls {
+      margin-top: 20px;
+      padding: 20px;
+      background-color: #e8f5e8;
+      border-radius: 8px;
+
+      h4 {
+        margin-bottom: 16px;
+        color: #2e7d32;
+      }
+
+      .checkbox-buttons {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+
+        button {
+          min-width: 140px;
         }
       }
     }

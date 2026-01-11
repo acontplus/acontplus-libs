@@ -10,16 +10,17 @@ const appHtml = `<mat-card class="example-card">
 
   <mat-card-content>
     <div class="example-container">
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Seleccionar rango predefinido</mat-label>
-        <input
-          matInput
-          id="ranges-only-input"
-          placeholder="Elige un rango predefinido"
-          readonly
-        />
-        <mat-hint>Muestra solo rangos, calendario opcional</mat-hint>
-      </mat-form-field>
+      <!-- Componente DateRangePicker -->
+      <acp-date-range-picker
+        [autoApply]="true"
+        [alwaysShowCalendars]="false"
+        [showCustomRangeLabel]="true"
+        [theme]="MATERIAL_THEME"
+        [ranges]="ranges"
+        [locale]="SPANISH_LOCALE"
+        placeholderText="Elige un rango predefinido"
+        (dateRangeSelected)="onDateRangeSelected($event)"
+      ></acp-date-range-picker>
 
       <div class="result-display">
         <h4>Rango seleccionado:</h4>
@@ -43,78 +44,90 @@ const appHtml = `<mat-card class="example-card">
       </div>
     </div>
   </mat-card-content>
+
+  <mat-card-actions>
+    <div class="config-info">
+      <h4>Configuración:</h4>
+      <pre><code>{{'{'}}{{'{'}}
+  autoApply: true,
+  alwaysShowCalendars: false,
+  showCustomRangeLabel: true,
+  theme: MATERIAL_THEME,
+  ranges: {{'{'}}{{'{'}}
+    'Hoy': [today, today],
+    'Ayer': [yesterday, yesterday],
+    'Últimos 3 días': [last3Days, today],
+    'Últimos 7 días': [last7Days, today],
+    'Últimos 15 días': [last15Days, today],
+    'Este mes': [thisMonthStart, today]
+  {{'}'}}{{'}'}}
+{{'}'}}{{'}'}}</code></pre>
+    </div>
+  </mat-card-actions>
 </mat-card>`;
 
-const appTs = `import { Component, OnDestroy, AfterViewInit, NgZone } from '@angular/core';
+const appTs = `import { Component, AfterViewInit } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
-import {
-  DateRangePicker,
-  SPANISH_LOCALE,
-  MATERIAL_THEME,
-} from '@acontplus/ng-components';
+import { DateRangePicker, SPANISH_LOCALE, MATERIAL_THEME } from '@acontplus/ng-components';
 import { addDay } from '@formkit/tempo';
 
 @Component({
   selector: 'app-date-range-picker-ranges-only-example',
   templateUrl: './app.html',
   styleUrl: './app.scss',
-  imports: [DatePipe, MatInputModule, MatFormFieldModule, MatCardModule, MatChipsModule],
+  imports: [
+    DatePipe,
+    MatInputModule,
+    MatFormFieldModule,
+    MatCardModule,
+    MatChipsModule,
+    DateRangePicker,
+  ],
 })
-export class RangesOnlyApp implements AfterViewInit, OnDestroy {
-  private dateRangePicker!: DateRangePicker;
-
+export class RangesOnlyApp implements AfterViewInit {
   selectedStartDate: Date = new Date();
   selectedEndDate: Date = new Date();
   selectedLabel: string | null = null;
 
-  constructor(private ngZone: NgZone) {}
+  // Expose constants for template
+  SPANISH_LOCALE = SPANISH_LOCALE;
+  MATERIAL_THEME = MATERIAL_THEME;
 
   ngAfterViewInit() {
-    setTimeout(() => {
-      this.initializeDateRangePicker();
-    }, 0);
-  }
-
-  ngOnDestroy() {
-    if (this.dateRangePicker) {
-      this.dateRangePicker.remove();
-    }
-  }
-
-  private initializeDateRangePicker() {
-    const input = document.getElementById('ranges-only-input') as HTMLInputElement;
-    if (!input) return;
-
+    // No longer needed - Angular component handles initialization
     const today = new Date();
+    this.selectedStartDate = today;
+    this.selectedEndDate = today;
+    this.selectedLabel = 'Hoy';
+  }
 
-    this.dateRangePicker = new DateRangePicker(
-      input,
-      {
-        startDate: today,
-        endDate: today,
-        locale: SPANISH_LOCALE,
-        autoApply: true,
-        alwaysShowCalendars: false, // Solo rangos
-        showCustomRangeLabel: true,
-        theme: MATERIAL_THEME,
-        ranges: {
-          Hoy: [today, today],
-          Ayer: [addDay(today, -1), addDay(today, -1)],
-          'Últimos 7 días': [addDay(today, -7), today],
-        },
-      },
-      (startDate: Date, endDate: Date, label?: string) => {
-        this.ngZone.run(() => {
-          this.selectedStartDate = startDate;
-          this.selectedEndDate = endDate;
-          this.selectedLabel = label || null;
-        });
-      },
-    );
+  onDateRangeSelected(event: { startDate: Date; endDate: Date; label?: string }) {
+    this.selectedStartDate = event.startDate;
+    this.selectedEndDate = event.endDate;
+    this.selectedLabel = event.label || null;
+  }
+
+  // Configuration for the Angular component
+  get ranges(): Record<string, [Date, Date]> {
+    const today = new Date();
+    const yesterday = addDay(today, -1);
+    const last3Days = addDay(today, -3);
+    const last7Days = addDay(today, -7);
+    const last15Days = addDay(today, -15);
+    const thisMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+
+    return {
+      'Hoy': [today, today] as [Date, Date],
+      'Ayer': [yesterday, yesterday] as [Date, Date],
+      'Últimos 3 días': [last3Days, today] as [Date, Date],
+      'Últimos 7 días': [last7Days, today] as [Date, Date],
+      'Últimos 15 días': [last15Days, today] as [Date, Date],
+      'Este mes': [thisMonthStart, today] as [Date, Date],
+    };
   }
 }`;
 
@@ -158,17 +171,17 @@ const dateRangePickerRangesOnlyExampleConfig = {
     {
       file: 'app.html',
       content: hljs.highlightAuto(appHtml).value,
-      filecontent: appHtml,
+      filecontent: { default: appHtml },
     },
     {
       file: 'app.ts',
       content: hljs.highlightAuto(appTs).value,
-      filecontent: appTs,
+      filecontent: { default: appTs },
     },
     {
       file: 'app.scss',
       content: hljs.highlightAuto(appScss).value,
-      filecontent: appScss,
+      filecontent: { default: appScss },
     },
   ],
 };

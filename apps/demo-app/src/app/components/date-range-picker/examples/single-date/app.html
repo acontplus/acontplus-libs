@@ -1,16 +1,18 @@
 <mat-card class="example-card">
   <mat-card-header>
     <mat-card-title>Single Date Picker</mat-card-title>
-    <mat-card-subtitle>Selector de fecha única con Material Design</mat-card-subtitle>
+    <mat-card-subtitle>Selector de fecha única usando el componente Angular</mat-card-subtitle>
   </mat-card-header>
 
   <mat-card-content>
     <div class="example-container">
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Seleccionar fecha</mat-label>
-        <input matInput id="single-date-input" placeholder="Selecciona una fecha" readonly />
-        <mat-hint>Solo se puede seleccionar una fecha</mat-hint>
-      </mat-form-field>
+      <acp-date-range-picker
+        [formControl]="singleDateControl"
+        [options]="singleDateOptions"
+        placeholderText="Selecciona una fecha"
+        (dateRangeSelected)="onDateRangeSelected($event)"
+      >
+      </acp-date-range-picker>
 
       <div class="result-display">
         <h4>Fecha seleccionada:</h4>
@@ -19,19 +21,22 @@
           <span class="date-format">{{ selectedDate | date:'dd/MM/yyyy' }}</span>
         </div>
       </div>
+
+      <div class="form-values">
+        <h4>Valor del FormControl:</h4>
+        <pre>{{ singleDateControl.value | json }}</pre>
+      </div>
     </div>
   </mat-card-content>
 
   <mat-card-actions>
     <div class="config-info">
-      <h4>Configuración:</h4>
-      <pre><code>{{'{'}}{{'{'}}
-  singleDatePicker: true,
-  autoApply: true,
-  showDropdowns: true,
-  theme: MATERIAL_THEME,
-  locale: SPANISH_LOCALE
-{{'}'}}{{'}'}}</code></pre>
+      <h4>Configuración del Componente:</h4>
+      <pre><code>&lt;acp-date-range-picker
+  [options]="singleDateOptions"
+  placeholderText="Selecciona una fecha"
+  (dateRangeSelected)="onDateRangeSelected($event)"&gt;
+&lt;/acp-date-range-picker&gt;</code></pre>
     </div>
   </mat-card-actions>
 </mat-card>

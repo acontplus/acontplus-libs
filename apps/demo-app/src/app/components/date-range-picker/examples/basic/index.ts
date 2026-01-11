@@ -2,207 +2,231 @@ import { App } from './app';
 import hljs from 'highlight.js';
 hljs.highlightAll();
 
-const appHtml = `<div class="date-range-picker-demo">
-  <h3>Selector de Rango de Fechas Básico</h3>
+const appHtml = `<mat-card class="example-card">
+  <mat-card-header>
+    <mat-card-title>DateRangePicker Básico</mat-card-title>
+    <mat-card-subtitle>Ejemplo básico usando el componente Angular</mat-card-subtitle>
+  </mat-card-header>
 
-  <div class="demo-section">
-    <label for="daterange-input">Seleccionar rango de fechas:</label>
-    <input type="text" id="daterange-input" class="form-control" placeholder="Selecciona un rango de fechas" />
-  </div>
+  <mat-card-content>
+    <div class="example-container">
+      <!-- Componente DateRangePicker -->
+      <acp-date-range-picker
+        [ranges]="ranges"
+        [presetTheme]="currentTheme"
+        [autoApply]="false"
+        [showDropdowns]="true"
+        [linkedCalendars]="true"
+        [showCustomRangeLabel]="true"
+        placeholderText="Selecciona un rango de fechas"
+        (dateRangeSelected)="onDateRangeSelected($event)"
+      ></acp-date-range-picker>
 
-  <div class="demo-section">
-    <h4>Configuración actual:</h4>
-    <div class="config-display">
-      <p><strong>Fecha inicio:</strong> {{ selectedStartDate | date:'dd/MM/yyyy' }}</p>
-      <p><strong>Fecha fin:</strong> {{ selectedEndDate | date:'dd/MM/yyyy' }}</p>
-      <p><strong>Etiqueta:</strong> {{ selectedLabel || 'Personalizado' }}</p>
+      <!-- Resultado de la selección -->
+      <div class="result-display">
+        <h4>Resultado de la selección:</h4>
+        <div class="result-grid">
+          <div class="result-item">
+            <strong>Fecha inicio:</strong>
+            <span>{{ selectedStartDate | date:'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="result-item">
+            <strong>Fecha fin:</strong>
+            <span>{{ selectedEndDate | date:'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="result-item">
+            <strong>Etiqueta:</strong>
+            <span>{{ selectedLabel || 'Personalizado' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controles de tema -->
+      <div class="theme-controls">
+        <h4>Cambiar tema:</h4>
+        <div class="theme-buttons">
+          <button
+            mat-raised-button
+            [color]="currentTheme === 'default' ? 'primary' : ''"
+            (click)="switchTheme('default')"
+          >
+            Default
+          </button>
+          <button
+            mat-raised-button
+            [color]="currentTheme === 'bootstrap' ? 'primary' : ''"
+            (click)="switchTheme('bootstrap')"
+          >
+            Bootstrap
+          </button>
+          <button
+            mat-raised-button
+            [color]="currentTheme === 'material' ? 'primary' : ''"
+            (click)="switchTheme('material')"
+          >
+            Material
+          </button>
+        </div>
+      </div>
     </div>
-  </div>
+  </mat-card-content>
+</mat-card>`;
 
-  <div class="demo-section">
-    <h4>Opciones disponibles:</h4>
-    <ul>
-      <li>Rangos predefinidos (Hoy, Ayer, Últimos 7 días, etc.)</li>
-      <li>Selector de tiempo opcional</li>
-      <li>Localización en español</li>
-      <li>Validación de fechas mínimas y máximas</li>
-      <li>Aplicación automática o manual</li>
-    </ul>
-  </div>
-</div>`;
-
-const appTs = `import { Component, OnDestroy, AfterViewInit } from '@angular/core';
+const appTs = `import { Component } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { DateRangePicker, SPANISH_LOCALE } from '@acontplus/ng-components';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { DateRangePicker } from '@acontplus/ng-components';
 
 @Component({
   selector: 'app-date-range-picker-basic-example',
   templateUrl: './app.html',
   styleUrl: './app.scss',
-  imports: [DatePipe],
+  imports: [
+    DatePipe,
+    MatInputModule,
+    MatFormFieldModule,
+    MatCardModule,
+    MatButtonModule,
+    DateRangePicker,
+  ],
 })
-export class App implements AfterViewInit, OnDestroy {
-  private dateRangePicker!: DateRangePicker;
-
+export class App {
+  // Propiedades para mostrar los valores seleccionados
   selectedStartDate: Date = new Date();
   selectedEndDate: Date = new Date();
   selectedLabel: string | null = null;
+  currentTheme: 'default' | 'bootstrap' | 'material' = 'material';
 
-  ngAfterViewInit() {
-    // Use setTimeout to ensure the DOM is fully rendered
-    setTimeout(() => {
-      this.initializeDateRangePicker();
-    }, 0);
+  // Rangos predefinidos
+  ranges = {
+    'Hoy': [new Date(), new Date()] as [Date, Date],
+    'Ayer': [new Date(Date.now() - 24 * 60 * 60 * 1000), new Date(Date.now() - 24 * 60 * 60 * 1000)] as [Date, Date],
+    'Últimos 7 días': [new Date(Date.now() - 6 * 24 * 60 * 60 * 1000), new Date()] as [Date, Date],
+    'Últimos 30 días': [new Date(Date.now() - 29 * 24 * 60 * 60 * 1000), new Date()] as [Date, Date],
+    'Este mes': [
+      new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+      new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
+    ] as [Date, Date],
+  } as Record<string, [Date, Date]>;
+
+  // Manejador de eventos cuando se selecciona un rango
+  onDateRangeSelected(event: { startDate: Date; endDate: Date; label?: string }) {
+    this.selectedStartDate = event.startDate;
+    this.selectedEndDate = event.endDate;
+    this.selectedLabel = event.label || null;
   }
 
-  ngOnDestroy() {
-    if (this.dateRangePicker) {
-      this.dateRangePicker.remove();
-    }
-  }
-
-  private initializeDateRangePicker() {
-    const input = document.getElementById('daterange-input') as HTMLInputElement;
-
-    if (!input) {
-      console.error('Input element with id "daterange-input" not found');
-      return;
-    }
-
-    const today = new Date();
-    const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000);
-    const lastWeek = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-    const lastMonth = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-
-    this.dateRangePicker = new DateRangePicker(
-      input,
-      {
-        startDate: today,
-        endDate: today,
-        locale: SPANISH_LOCALE,
-        showDropdowns: true,
-        showWeekNumbers: false,
-        autoApply: false,
-        linkedCalendars: true,
-        showCustomRangeLabel: true,
-        alwaysShowCalendars: false,
-        ranges: {
-          'Hoy': [today, today],
-          'Ayer': [yesterday, yesterday],
-          'Últimos 7 días': [lastWeek, today],
-          'Últimos 30 días': [lastMonth, today],
-          'Este mes': [
-            new Date(today.getFullYear(), today.getMonth(), 1),
-            new Date(today.getFullYear(), today.getMonth() + 1, 0)
-          ],
-          'Mes pasado': [
-            new Date(today.getFullYear(), today.getMonth() - 1, 1),
-            new Date(today.getFullYear(), today.getMonth(), 0)
-          ]
-        },
-        opens: 'right',
-        drops: 'down',
-        buttonClasses: 'btn btn-sm',
-        applyButtonClasses: 'btn-success',
-        cancelButtonClasses: 'btn-danger',
-      },
-      (startDate: Date, endDate: Date, label?: string) => {
-        this.selectedStartDate = startDate;
-        this.selectedEndDate = endDate;
-        this.selectedLabel = label || null;
-
-        console.log('Rango seleccionado:', {
-          startDate,
-          endDate,
-          label
-        });
-      }
-    );
-
-    // Set initial values
-    this.selectedStartDate = today;
-    this.selectedEndDate = today;
+  // Cambiar tema
+  switchTheme(themeName: 'default' | 'bootstrap' | 'material') {
+    this.currentTheme = themeName;
   }
 }`;
 
-const appScss = `.date-range-picker-demo {
-  padding: 20px;
+const appScss = `.example-card {
   max-width: 800px;
-  margin: 0 auto;
+  margin: 20px auto;
 
-  h3 {
-    color: #333;
-    margin-bottom: 20px;
-    border-bottom: 2px solid #3b82f6;
-    padding-bottom: 10px;
-  }
+  .example-container {
+    padding: 16px 0;
 
-  .demo-section {
-    margin-bottom: 30px;
-    padding: 20px;
-    border: 1px solid #e1e5e9;
-    border-radius: 8px;
-    background-color: #f9fafb;
-
-    label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 600;
-      color: #374151;
-    }
-
-    .form-control {
+    .full-width {
       width: 100%;
-      padding: 10px 12px;
-      border: 1px solid #d1d5db;
-      border-radius: 6px;
-      font-size: 14px;
-      transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+      margin-bottom: 20px;
+    }
 
-      &:focus {
-        outline: none;
-        border-color: #3b82f6;
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    .form-section {
+      margin: 30px 0;
+      padding: 20px;
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      border: 1px solid #e9ecef;
+
+      h4 {
+        margin-bottom: 16px;
+        color: #495057;
       }
-    }
 
-    h4 {
-      color: #374151;
-      margin-bottom: 15px;
-      font-size: 16px;
-    }
+      .form-value {
+        margin-top: 16px;
 
-    .config-display {
-      background-color: #fff;
-      padding: 15px;
-      border-radius: 6px;
-      border: 1px solid #e5e7eb;
+        h5 {
+          margin-bottom: 8px;
+          color: #6c757d;
+        }
 
-      p {
-        margin: 8px 0;
-        font-size: 14px;
-
-        strong {
-          color: #1f2937;
+        pre {
+          background-color: #fff;
+          padding: 12px;
+          border-radius: 4px;
+          border: 1px solid #dee2e6;
+          font-size: 12px;
+          overflow-x: auto;
         }
       }
     }
 
-    ul {
-      margin: 0;
-      padding-left: 20px;
+    .result-display {
+      margin: 30px 0;
+      padding: 20px;
+      background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+      border-radius: 12px;
 
-      li {
-        margin-bottom: 8px;
-        color: #6b7280;
-        font-size: 14px;
+      h4 {
+        margin-bottom: 16px;
+        color: #1976d2;
+      }
+
+      .result-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 12px;
+
+        .result-item {
+          padding: 12px;
+          background-color: rgba(255, 255, 255, 0.9);
+          border-radius: 8px;
+          border-left: 4px solid #1976d2;
+
+          strong {
+            display: block;
+            color: #1565c0;
+            margin-bottom: 4px;
+          }
+
+          span {
+            color: #424242;
+            font-size: 14px;
+          }
+        }
+      }
+    }
+
+    .theme-controls {
+      margin-top: 30px;
+      padding: 20px;
+      background-color: #fff3e0;
+      border-radius: 8px;
+
+      h4 {
+        margin-bottom: 16px;
+        color: #ef6c00;
+      }
+
+      .theme-buttons {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+
+        button {
+          min-width: 100px;
+        }
       }
     }
   }
-}
-
-// Importar los estilos completos del date-range-picker
-@import '../../../../../../packages/ng-components/src/lib/components/date-range-picker/styles/date-range-picker.scss';`;
+}`;
 
 const dateRangePickerBasicExampleConfig = {
   title: 'Básico',
@@ -211,17 +235,17 @@ const dateRangePickerBasicExampleConfig = {
     {
       file: 'app.html',
       content: hljs.highlightAuto(appHtml).value,
-      filecontent: appHtml,
+      filecontent: { default: appHtml },
     },
     {
       file: 'app.ts',
       content: hljs.highlightAuto(appTs).value,
-      filecontent: appTs,
+      filecontent: { default: appTs },
     },
     {
       file: 'app.scss',
       content: hljs.highlightAuto(appScss).value,
-      filecontent: appScss,
+      filecontent: { default: appScss },
     },
   ],
 };

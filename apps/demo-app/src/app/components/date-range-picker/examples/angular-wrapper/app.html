@@ -1,0 +1,103 @@
+<div class="angular-wrapper-demo">
+  <h3>Componente Angular para DateRangePicker</h3>
+  <p>
+    Este ejemplo muestra cómo usar el componente Angular <code>DateRangePicker</code> que envuelve
+    la librería <code>datex-ui</code>.
+  </p>
+
+  <!-- Form Integration Example -->
+  <div class="example-section">
+    <h4>Integración con Angular Forms</h4>
+    <form [formGroup]="dateForm" class="form-example">
+      <div class="form-group">
+        <label for="dateRange">Rango de Fechas:</label>
+        <acp-date-range-picker
+          formControlName="dateRange"
+          [options]="basicOptions"
+          placeholderText="Seleccionar rango básico"
+          (dateRangeSelected)="onDateRangeSelected($event)"
+          (pickerShow)="onPickerShow()"
+          (pickerHide)="onPickerHide()"
+          (pickerApply)="onPickerApply()"
+          (pickerCancel)="onPickerCancel()"
+        >
+        </acp-date-range-picker>
+      </div>
+
+      <div class="form-group">
+        <label for="singleDate">Fecha Única:</label>
+        <acp-date-range-picker
+          formControlName="singleDate"
+          [options]="singleDateOptions"
+          placeholderText="Selector de fecha única"
+          (dateRangeSelected)="onDateRangeSelected($event)"
+        >
+        </acp-date-range-picker>
+      </div>
+    </form>
+
+    <div class="form-values">
+      <h5>Valores del Formulario:</h5>
+      <pre>{{ formValue }}</pre>
+    </div>
+  </div>
+
+  <!-- Theme Examples -->
+  <div class="example-section">
+    <h4>Diferentes Temas</h4>
+
+    <div class="theme-examples">
+      <div class="theme-example">
+        <acp-date-range-picker
+          [options]="bootstrapOptions"
+          placeholderText="Rango con tema Bootstrap"
+        >
+        </acp-date-range-picker>
+      </div>
+
+      <div class="theme-example">
+        <acp-date-range-picker
+          [options]="materialOptions"
+          placeholderText="Rango con tema Material"
+        >
+        </acp-date-range-picker>
+      </div>
+    </div>
+  </div>
+
+  <!-- Time Picker Example -->
+  <div class="example-section">
+    <h4>Con Selector de Tiempo</h4>
+    <acp-date-range-picker
+      [options]="timePickerOptions"
+      placeholderText="Rango con selector de tiempo"
+    >
+    </acp-date-range-picker>
+  </div>
+
+  <!-- Configuration Options -->
+  <div class="example-section">
+    <h4>Opciones de Configuración</h4>
+    <div class="config-info">
+      <h5>Propiedades Principales:</h5>
+      <ul>
+        <li><code>[singleDatePicker]</code> - Modo de fecha única</li>
+        <li><code>[autoApply]</code> - Aplicar automáticamente la selección</li>
+        <li><code>[timePicker]</code> - Habilitar selector de tiempo</li>
+        <li><code>[ranges]</code> - Rangos predefinidos</li>
+        <li><code>[presetTheme]</code> - Tema predefinido ('default', 'bootstrap', 'material')</li>
+        <li><code>[minDate]</code> / <code>[maxDate]</code> - Fechas límite</li>
+        <li><code>[locale]</code> - Configuración de idioma</li>
+      </ul>
+
+      <h5>Eventos:</h5>
+      <ul>
+        <li><code>(dateRangeSelected)</code> - Cuando se selecciona un rango</li>
+        <li><code>(pickerShow)</code> - Cuando se muestra el picker</li>
+        <li><code>(pickerHide)</code> - Cuando se oculta el picker</li>
+        <li><code>(pickerApply)</code> - Cuando se aplica la selección</li>
+        <li><code>(pickerCancel)</code> - Cuando se cancela la selección</li>
+      </ul>
+    </div>
+  </div>
+</div>

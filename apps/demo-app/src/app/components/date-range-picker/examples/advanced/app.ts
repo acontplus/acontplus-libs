@@ -1,285 +1,203 @@
-import { Component, OnDestroy, AfterViewInit } from '@angular/core';
-import { DatePipe, TitleCasePipe } from '@angular/common';
-import {
-  DateRangePicker,
-  SPANISH_LOCALE,
-  SPANISH_LOCALE_WITH_TIME,
-  DEFAULT_THEME,
-  BOOTSTRAP_THEME,
-  MATERIAL_THEME,
-  DateRangePickerTheme,
-  DateRangePickerOptions,
-} from '@acontplus/ng-components';
-import { addDay } from '@formkit/tempo';
+import { Component, signal, computed } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { DateRangePicker, DateRangePickerOptions } from '@acontplus/ng-components';
 
 @Component({
   selector: 'app-date-range-picker-advanced-example',
   templateUrl: './app.html',
   styleUrl: './app.scss',
-  imports: [DatePipe, TitleCasePipe],
+  imports: [
+    DatePipe,
+    FormsModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatCheckboxModule,
+    DateRangePicker,
+  ],
 })
-export class AdvancedApp implements AfterViewInit, OnDestroy {
-  private dateRangePickers: DateRangePicker[] = [];
-
+export class AdvancedApp {
+  // Resultado de la selección
   selectedStartDate: Date = new Date();
   selectedEndDate: Date = new Date();
   selectedLabel: string | null = null;
-  currentTheme: string = 'default';
+  isSelected: boolean = false;
 
-  // Configuraciones avanzadas
-  configurations = {
-    basic: {
-      title: '1. Configuración Básica',
-      options: {
-        locale: SPANISH_LOCALE,
-        showDropdowns: true,
-        autoApply: false,
-        linkedCalendars: true,
-        alwaysShowCalendars: true,
-        theme: DEFAULT_THEME,
-      } as DateRangePickerOptions,
-    },
-    autoApply: {
-      title: '2. Auto-Apply (Sin Botones)',
-      options: {
-        locale: SPANISH_LOCALE,
-        autoApply: true,
-        showDropdowns: true,
-        theme: BOOTSTRAP_THEME,
-        ranges: {
-          Hoy: [new Date(), new Date()],
-          Ayer: [addDay(new Date(), -1), addDay(new Date(), -1)],
-          'Últimos 7 días': [addDay(new Date(), -7), new Date()],
-        },
-      } as DateRangePickerOptions,
-    },
-    singleDate: {
-      title: '3. Selector de Fecha Única',
-      options: {
-        locale: SPANISH_LOCALE,
-        singleDatePicker: true,
-        autoApply: true,
-        showDropdowns: true,
-        theme: MATERIAL_THEME,
-      } as DateRangePickerOptions,
-    },
-    rangesOnly: {
-      title: '4. Solo Rangos Predefinidos',
-      options: {
-        locale: SPANISH_LOCALE,
-        autoApply: true,
-        alwaysShowCalendars: false,
-        showCustomRangeLabel: true,
-        theme: this.createCustomTheme(),
-        ranges: {
-          Hoy: [new Date(), new Date()],
-          Ayer: [addDay(new Date(), -1), addDay(new Date(), -1)],
-          'Últimos 3 días': [addDay(new Date(), -3), new Date()],
-          'Últimos 7 días': [addDay(new Date(), -7), new Date()],
-          'Últimos 15 días': [addDay(new Date(), -15), new Date()],
-          'Este mes': [new Date(new Date().getFullYear(), new Date().getMonth(), 1), new Date()],
-        },
-      } as DateRangePickerOptions,
-    },
-    datetime24h: {
-      title: '5. DateTime 24h',
-      options: {
-        locale: SPANISH_LOCALE_WITH_TIME,
-        timePicker: true,
-        timePicker24Hour: true,
-        timePickerIncrement: 15,
-        autoApply: false,
-        showDropdowns: true,
-        theme: DEFAULT_THEME,
-      } as DateRangePickerOptions,
-    },
-    datetime12h: {
-      title: '6. DateTime 12h con Segundos',
-      options: {
-        locale: {
-          ...SPANISH_LOCALE_WITH_TIME,
-          format: 'DD/MM/YYYY hh:mm:ss A',
-        },
-        timePicker: true,
-        timePicker24Hour: false,
-        timePickerSeconds: true,
-        timePickerIncrement: 5,
-        autoApply: false,
-        showDropdowns: true,
-        theme: BOOTSTRAP_THEME,
-      } as DateRangePickerOptions,
-    },
-    noDropdowns: {
-      title: '7. Sin Dropdowns (Solo Flechas)',
-      options: {
-        locale: SPANISH_LOCALE,
-        showDropdowns: false,
-        autoApply: false,
-        linkedCalendars: true,
-        theme: MATERIAL_THEME,
-        ranges: {
-          Hoy: [new Date(), new Date()],
-          'Últimos 7 días': [addDay(new Date(), -7), new Date()],
-          'Este mes': [new Date(new Date().getFullYear(), new Date().getMonth(), 1), new Date()],
-        },
-      } as DateRangePickerOptions,
-    },
-    customLimits: {
-      title: '8. Con Límites de Fecha',
-      options: {
-        locale: SPANISH_LOCALE,
-        minDate: addDay(new Date(), -30), // Máximo 30 días atrás
-        maxDate: addDay(new Date(), 30), // Máximo 30 días adelante
-        showDropdowns: true,
-        autoApply: false,
-        theme: this.createCustomTheme(),
-      } as DateRangePickerOptions,
-    },
-  };
+  // Configuración de fechas usando signals
+  startDateValue = signal(this.formatDateForInput(new Date()));
+  endDateValue = signal(this.formatDateForInput(new Date()));
+  minDateValue = signal('');
+  maxDateValue = signal('');
 
-  // Temas disponibles
-  themes = {
-    default: DEFAULT_THEME,
-    bootstrap: BOOTSTRAP_THEME,
-    material: MATERIAL_THEME,
-    custom: this.createCustomTheme(),
-  };
+  // Opciones de UI usando signals
+  showDropdowns = signal(true);
+  showWeekNumbers = signal(false);
+  showISOWeekNumbers = signal(false);
+  singleDatePicker = signal(false);
+  timePicker = signal(false);
+  timePicker24Hour = signal(true);
+  timePickerSeconds = signal(false);
+  autoApply = signal(false);
+  ranges = signal(true);
+  alwaysShowCalendars = signal(false);
+  showCustomRangeLabel = signal(true);
+  linkedCalendars = signal(true);
+  autoUpdateInput = signal(true);
 
-  ngAfterViewInit() {
-    setTimeout(() => {
-      this.initializeAllExamples();
-    }, 0);
+  // Configuración de tiempo usando signals
+  timePickerIncrement = signal(1);
+
+  // Posicionamiento usando signals
+  opens = signal<'left' | 'right' | 'center'>('right');
+  drops = signal<'up' | 'down' | 'auto'>('down');
+  checkboxPosition = signal<'prefix' | 'suffix'>('suffix');
+
+  // Clases CSS usando signals
+  buttonClasses = signal('btn btn-sm');
+  applyButtonClasses = signal('btn-primary');
+  cancelButtonClasses = signal('btn-default');
+
+  // Eventos
+  onDateRangeSelected(event: { startDate: Date; endDate: Date; label?: string }) {
+    this.selectedStartDate = event.startDate;
+    this.selectedEndDate = event.endDate;
+    this.selectedLabel = event.label || null;
   }
 
-  ngOnDestroy() {
-    this.dateRangePickers.forEach(picker => picker.remove());
-    this.dateRangePickers = [];
+  onCheckboxChange(checked: boolean) {
+    this.isSelected = checked;
   }
 
-  private createCustomTheme(): DateRangePickerTheme {
+  // Métodos auxiliares
+  private formatDateForInput(date: Date): string {
+    return date.toISOString().split('T')[0];
+  }
+
+  getStartDate(): Date | undefined {
+    return this.startDateValue() ? new Date(this.startDateValue()) : undefined;
+  }
+
+  getEndDate(): Date | undefined {
+    return this.endDateValue() ? new Date(this.endDateValue()) : undefined;
+  }
+
+  getMinDate(): Date | null {
+    return this.minDateValue() ? new Date(this.minDateValue()) : null;
+  }
+
+  getMaxDate(): Date | null {
+    return this.maxDateValue() ? new Date(this.maxDateValue()) : null;
+  }
+
+  // Configuración usando un objeto options
+  // Configuración usando computed para evitar recrear el objeto
+  pickerOptions = computed((): DateRangePickerOptions => {
     return {
-      primaryColor: '#8b5cf6',
-      secondaryColor: '#6b7280',
-      backgroundColor: '#ffffff',
-      borderColor: '#e5e7eb',
-      textColor: '#111827',
-      hoverColor: '#f3f4f6',
-      selectedColor: '#8b5cf6',
-      rangeColor: '#ede9fe',
-      todayColor: '#8b5cf6',
-      disabledColor: '#d1d5db',
-      applyButtonColor: '#059669',
-      cancelButtonColor: '#dc2626',
-      borderRadius: '12px',
-      fontSize: '14px',
-      fontFamily: 'Inter, system-ui, sans-serif',
+      startDate: this.getStartDate(),
+      endDate: this.getEndDate(),
+      minDate: this.getMinDate(),
+      maxDate: this.getMaxDate(),
+      showDropdowns: this.showDropdowns(),
+      singleDatePicker: this.singleDatePicker(),
+      timePicker: this.timePicker(),
+      timePicker24Hour: this.timePicker24Hour(),
+      timePickerSeconds: this.timePickerSeconds(),
+      timePickerIncrement: this.timePickerIncrement(),
+      autoApply: this.autoApply(),
+      ranges: this.getRanges(),
+      alwaysShowCalendars: this.alwaysShowCalendars(),
+      showCustomRangeLabel: this.showCustomRangeLabel(),
+      linkedCalendars: this.linkedCalendars(),
+      autoUpdateInput: this.autoUpdateInput(),
+      opens: this.opens(),
+      drops: this.drops(),
+      buttonClasses: this.buttonClasses(),
+      applyButtonClasses: this.applyButtonClasses(),
+      cancelButtonClasses: this.cancelButtonClasses(),
+      presetTheme: 'material',
     };
+  });
+
+  getConfigurationCode(): string {
+    const config = {
+      startDate: this.startDateValue() || undefined,
+      endDate: this.endDateValue() || undefined,
+      minDate: this.minDateValue() || undefined,
+      maxDate: this.maxDateValue() || undefined,
+      showDropdowns: this.showDropdowns(),
+      singleDatePicker: this.singleDatePicker(),
+      timePicker: this.timePicker(),
+      timePicker24Hour: this.timePicker24Hour(),
+      timePickerSeconds: this.timePickerSeconds(),
+      timePickerIncrement: this.timePickerIncrement(),
+      autoApply: this.autoApply(),
+      ranges: this.ranges() ? 'predefinedRanges' : undefined,
+      alwaysShowCalendars: this.alwaysShowCalendars(),
+      showCustomRangeLabel: this.showCustomRangeLabel(),
+      linkedCalendars: this.linkedCalendars(),
+      autoUpdateInput: this.autoUpdateInput(),
+      opens: this.opens(),
+      drops: this.drops(),
+      buttonClasses: this.buttonClasses(),
+      applyButtonClasses: this.applyButtonClasses(),
+      cancelButtonClasses: this.cancelButtonClasses(),
+    };
+
+    // Filtrar propiedades undefined
+    const filteredConfig = Object.entries(config)
+      .filter(([_, value]) => value !== undefined && value !== false && value !== '')
+      .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
+
+    const attributes = Object.entries(filteredConfig)
+      .map(([key, value]) => {
+        if (typeof value === 'boolean') {
+          return `[${key}]="${value}"`;
+        } else if (typeof value === 'string') {
+          return `${key}="${value}"`;
+        } else if (typeof value === 'number') {
+          return `[${key}]="${value}"`;
+        } else {
+          return `[${key}]="${key}"`;
+        }
+      })
+      .join('\n  ');
+
+    return `<acp-date-range-picker
+  ${attributes}
+  [showCheckbox]="true"
+  [checkboxChecked]="isSelected"
+  [showCalendarButton]="true"
+  [inputReadonly]="false"
+  label="Seleccionar rango de fechas"
+  hint="Configuración personalizada"
+  placeholderText="Selecciona fechas"
+  (dateRangeSelected)="onDateRangeSelected($event)"
+  (checkboxChange)="onCheckboxChange($event)"
+></acp-date-range-picker>`;
   }
 
-  private initializeAllExamples() {
-    Object.entries(this.configurations).forEach(([key, config]) => {
-      const input = document.getElementById(`${key}-input`) as HTMLInputElement;
-      if (input) {
-        const picker = new DateRangePicker(
-          input,
-          {
-            ...config.options,
-            startDate: new Date(),
-            endDate: new Date(),
-          },
-          () => {},
-        );
-
-        this.dateRangePickers.push(picker);
-      }
-    });
-
-    // Inicializar el picker principal con todas las características
-    this.initializeMainPicker();
-  }
-
-  private initializeMainPicker() {
-    const input = document.getElementById('main-daterange-input') as HTMLInputElement;
-    if (!input) return;
+  getRanges(): Record<string, [Date, Date]> | undefined {
+    if (!this.ranges()) return undefined;
 
     const today = new Date();
-    const yesterday = addDay(today, -1);
-    const last7Days = addDay(today, -7);
-    const last30Days = addDay(today, -30);
+    const yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000);
+    const lastWeek = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const lastMonth = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
     const thisMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
-    const thisMonthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-    const lastMonthStart = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-    const lastMonthEnd = new Date(today.getFullYear(), today.getMonth(), 0);
 
-    const mainPicker = new DateRangePicker(
-      input,
-      {
-        startDate: today,
-        endDate: today,
-        locale: SPANISH_LOCALE_WITH_TIME,
-        showDropdowns: true,
-        autoApply: false,
-        linkedCalendars: true,
-        alwaysShowCalendars: true,
-        autoUpdateInput: true,
-        showCustomRangeLabel: true,
-        timePicker: true,
-        timePicker24Hour: true,
-        timePickerIncrement: 15,
-        ranges: {
-          Hoy: [today, today],
-          Ayer: [yesterday, yesterday],
-          'Últimos 7 días': [last7Days, today],
-          'Últimos 30 días': [last30Days, today],
-          'Este mes': [thisMonthStart, thisMonthEnd],
-          'Mes pasado': [lastMonthStart, lastMonthEnd],
-        },
-        opens: 'right',
-        drops: 'down',
-        buttonClasses: 'btn btn-sm',
-        applyButtonClasses: 'btn-success',
-        cancelButtonClasses: 'btn-danger',
-        theme: this.themes.default,
-      },
-      () => {},
-    );
-
-    this.dateRangePickers.push(mainPicker);
-
-    // Configurar valores iniciales
-    this.selectedStartDate = today;
-    this.selectedEndDate = today;
-    this.selectedLabel = 'Hoy';
-  }
-
-  // Método para cambiar tema dinámicamente
-  changeTheme(themeName: string) {
-    this.currentTheme = themeName;
-    const theme = this.themes[themeName as keyof typeof this.themes];
-    if (theme) {
-      this.dateRangePickers.forEach(picker => {
-        picker.setTheme(theme);
-      });
-    }
-  }
-
-  // Método para testear dropdowns
-  testDropdowns() {}
-
-  // Método para obtener las claves de configuración
-  getConfigKeys(): string[] {
-    return Object.keys(this.configurations);
-  }
-
-  // Método para obtener configuración por clave
-  getConfig(key: string) {
-    return this.configurations[key as keyof typeof this.configurations];
-  }
-
-  // Método para obtener string de configuración formateado
-  getConfigOptionsString(key: string): string {
-    const config = this.getConfig(key);
-    if (!config) return '';
-    return '';
+    return {
+      Hoy: [today, today] as [Date, Date],
+      Ayer: [yesterday, yesterday] as [Date, Date],
+      'Últimos 7 días': [lastWeek, today] as [Date, Date],
+      'Últimos 30 días': [lastMonth, today] as [Date, Date],
+      'Este mes': [thisMonthStart, today] as [Date, Date],
+    };
   }
 }

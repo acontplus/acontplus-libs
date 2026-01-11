@@ -9,6 +9,8 @@ import { dateRangePickerSingleDateExampleConfig } from './examples/single-date';
 import { dateRangePickerDateTimeExampleConfig } from './examples/datetime';
 import { dateRangePickerRangesOnlyExampleConfig } from './examples/ranges-only';
 import { dateRangePickerNoDropdownsExampleConfig } from './examples/no-dropdowns';
+import { dateRangePickerAngularWrapperExampleConfig } from './examples/angular-wrapper';
+import { dateRangePickerAdvancedExampleConfig } from './examples/advanced';
 
 @Component({
   selector: 'app-date-range-picker-overview',
@@ -29,6 +31,8 @@ export const routes: Routes = [
     pathMatch: 'full',
     data: {
       examples: [
+        dateRangePickerAdvancedExampleConfig,
+        dateRangePickerAngularWrapperExampleConfig,
         dateRangePickerBasicExampleConfig,
         dateRangePickerAutoApplyExampleConfig,
         dateRangePickerSingleDateExampleConfig,

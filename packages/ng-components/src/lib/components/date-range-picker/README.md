@@ -1,238 +1,273 @@
-# TypeScript DateRangePicker
+# DateRangePicker
 
-A modern, TypeScript-based date range picker library using `@formkit/tempo` instead of moment.js. This is a consolidated implementation with improved architecture, better performance, and modern development practices.
+Un componente Angular que envuelve la librería `datex-ui` para proporcionar un selector de rango de fechas potente y fácil de usar.
 
-## Features
+## Características
 
-- ✅ **Modern TypeScript**: Full type safety and IntelliSense support
-- ✅ **@formkit/tempo**: Lightweight date library instead of moment.js
-- ✅ **Clean Architecture**: Consolidated single-file implementation
-- ✅ **Theming Support**: Multiple built-in themes and custom theming
-- ✅ **Time Picker**: Optional time selection with 12/24 hour formats
-- ✅ **Accessibility**: WCAG compliant with keyboard navigation
-- ✅ **Responsive**: Mobile-friendly design
-- ✅ **Zero Dependencies**: Except for @formkit/tempo
+- ✅ **Integración con Angular Forms**: Soporte completo para Reactive Forms y Template-driven Forms
+- ✅ **Control de Valor Personalizado**: Implementa `ControlValueAccessor` para integración perfecta
+- ✅ **Temas Predefinidos**: Bootstrap, Material Design y tema por defecto
+- ✅ **Configuración Flexible**: Más de 20 opciones de configuración
+- ✅ **Eventos Personalizados**: Eventos detallados para todas las interacciones
+- ✅ **TypeScript**: Tipado completo para mejor experiencia de desarrollo
+- ✅ **Standalone Component**: Compatible con Angular 14+ standalone components
+- ✅ **Signals API**: Usa la nueva API de signals de Angular para mejor rendimiento
 
-## Installation
+## Instalación
+
+El componente está incluido en el paquete `@acontplus/ng-components` y requiere `datex-ui` como dependencia.
 
 ```bash
-npm install @formkit/tempo
+npm install datex-ui
 ```
 
-## Basic Usage
+## Uso Básico
 
 ```typescript
-import { DateRangePicker } from './date-range-picker';
+import { DateRangePicker } from '@acontplus/ng-components';
 
-// Basic initialization
-const picker = new DateRangePicker(
-  '#daterange-input',
-  {
-    startDate: new Date(),
-    endDate: new Date(),
-    locale: SPANISH_LOCALE,
-  },
-  (startDate, endDate, label) => {
-    console.log('Selected:', startDate, endDate, label);
-  },
-);
+@Component({
+  selector: 'app-example',
+  standalone: true,
+  imports: [DateRangePicker],
+  template: `
+    <acp-date-range-picker
+      placeholder="Seleccionar rango de fechas"
+      [autoApply]="false"
+      (dateRangeSelected)="onDateSelected($event)"
+    >
+    </acp-date-range-picker>
+  `,
+})
+export class ExampleComponent {
+  onDateSelected(event: { startDate: Date; endDate: Date; label?: string }) {
+    console.log('Rango seleccionado:', event);
+  }
+}
 ```
 
-## Advanced Usage
+## Integración con Angular Forms
 
 ```typescript
-import {
-  DateRangePicker,
-  DateRangePickerOptions,
-  SPANISH_LOCALE,
-  BOOTSTRAP_THEME,
-} from './date-range-picker';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { DateRangePicker } from '@acontplus/ng-components';
 
-const options: DateRangePickerOptions = {
-  startDate: new Date(),
-  endDate: new Date(),
-  minDate: new Date(2020, 0, 1),
-  maxDate: new Date(2030, 11, 31),
-  showDropdowns: true,
-  timePicker: true,
-  timePicker24Hour: true,
-  timePickerSeconds: true,
-  autoApply: false,
-  linkedCalendars: true,
-  showCustomRangeLabel: true,
-  alwaysShowCalendars: true,
-  theme: BOOTSTRAP_THEME,
-  ranges: {
-    Today: [new Date(), new Date()],
-    Yesterday: [
-      new Date(Date.now() - 24 * 60 * 60 * 1000),
-      new Date(Date.now() - 24 * 60 * 60 * 1000),
-    ],
-    'Last 7 Days': [new Date(Date.now() - 6 * 24 * 60 * 60 * 1000), new Date()],
-    'Last 30 Days': [new Date(Date.now() - 29 * 24 * 60 * 60 * 1000), new Date()],
-    'This Month': [
-      new Date(new Date().getFullYear(), new Date().getMonth(), 1),
-      new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
-    ],
-  },
-  locale: SPANISH_LOCALE,
-  opens: 'center',
-  drops: 'auto',
-};
+@Component({
+  selector: 'app-form-example',
+  standalone: true,
+  imports: [DateRangePicker, ReactiveFormsModule],
+  template: `
+    <form [formGroup]="dateForm">
+      <acp-date-range-picker
+        formControlName="dateRange"
+        placeholder="Seleccionar rango"
+        [ranges]="predefinedRanges"
+      >
+      </acp-date-range-picker>
+    </form>
+  `,
+})
+export class FormExampleComponent {
+  dateForm = new FormGroup({
+    dateRange: new FormControl({
+      startDate: new Date(),
+      endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    }),
+  });
 
-const picker = new DateRangePicker('#my-input', options, (start, end, label) => {
-  console.log(`Selected: ${start} to ${end} (${label})`);
-});
+  predefinedRanges = {
+    Hoy: [new Date(), new Date()],
+    'Últimos 7 días': [new Date(Date.now() - 6 * 24 * 60 * 60 * 1000), new Date()],
+  } as Record<string, [Date, Date]>;
+}
 ```
 
-## Configuration Options
+## Propiedades de Entrada (Signals)
 
-### DateRangePickerOptions
+| Propiedad          | Tipo                                                              | Valor por Defecto               | Descripción                          |
+| ------------------ | ----------------------------------------------------------------- | ------------------------------- | ------------------------------------ |
+| `startDate`        | `InputSignal<Date>`                                               | `undefined`                     | Fecha de inicio inicial              |
+| `endDate`          | `InputSignal<Date>`                                               | `undefined`                     | Fecha de fin inicial                 |
+| `minDate`          | `InputSignal<Date \| null>`                                       | `null`                          | Fecha mínima seleccionable           |
+| `maxDate`          | `InputSignal<Date \| null>`                                       | `null`                          | Fecha máxima seleccionable           |
+| `autoApply`        | `InputSignal<boolean>`                                            | `false`                         | Aplicar automáticamente la selección |
+| `singleDatePicker` | `InputSignal<boolean>`                                            | `false`                         | Modo de fecha única                  |
+| `showDropdowns`    | `InputSignal<boolean>`                                            | `true`                          | Mostrar dropdowns de mes/año         |
+| `timePicker`       | `InputSignal<boolean>`                                            | `false`                         | Habilitar selector de tiempo         |
+| `timePicker24Hour` | `InputSignal<boolean>`                                            | `true`                          | Formato de 24 horas                  |
+| `ranges`           | `InputSignal<Record<string, [Date, Date]>>`                       | `{}`                            | Rangos predefinidos                  |
+| `presetTheme`      | `InputSignal<'default' \| 'bootstrap' \| 'material' \| 'custom'>` | `'default'`                     | Tema predefinido                     |
+| `placeholder`      | `InputSignal<string>`                                             | `'Seleccionar rango de fechas'` | Texto del placeholder                |
+| `disabled`         | `InputSignal<boolean>`                                            | `false`                         | Deshabilitar el componente           |
 
-| Option                | Type                    | Default          | Description                          |
-| --------------------- | ----------------------- | ---------------- | ------------------------------------ |
-| `startDate`           | `Date`                  | `new Date()`     | Initial start date                   |
-| `endDate`             | `Date`                  | `new Date()`     | Initial end date                     |
-| `minDate`             | `Date`                  | `null`           | Minimum selectable date              |
-| `maxDate`             | `Date`                  | `null`           | Maximum selectable date              |
-| `autoApply`           | `boolean`               | `false`          | Auto-apply selection without confirm |
-| `singleDatePicker`    | `boolean`               | `false`          | Single date selection mode           |
-| `showDropdowns`       | `boolean`               | `true`           | Show month/year dropdowns            |
-| `linkedCalendars`     | `boolean`               | `true`           | Link calendar navigation             |
-| `autoUpdateInput`     | `boolean`               | `true`           | Auto-update input value              |
-| `alwaysShowCalendars` | `boolean`               | `false`          | Always show calendars                |
-| `timePicker`          | `boolean`               | `false`          | Enable time selection                |
-| `timePicker24Hour`    | `boolean`               | `true`           | 24-hour time format                  |
-| `timePickerIncrement` | `number`                | `1`              | Minute increment                     |
-| `timePickerSeconds`   | `boolean`               | `false`          | Show seconds                         |
-| `ranges`              | `object`                | `{}`             | Predefined ranges                    |
-| `opens`               | `string`                | `'right'`        | Picker alignment                     |
-| `drops`               | `string`                | `'down'`         | Picker direction                     |
-| `locale`              | `DateRangePickerLocale` | `SPANISH_LOCALE` | Localization                         |
-| `theme`               | `DateRangePickerTheme`  | `DEFAULT_THEME`  | Visual theme                         |
+## Eventos (Output Signals)
 
-### Themes
+| Evento              | Tipo                                                                   | Descripción                             |
+| ------------------- | ---------------------------------------------------------------------- | --------------------------------------- |
+| `dateRangeSelected` | `OutputEmitterRef<{ startDate: Date; endDate: Date; label?: string }>` | Se emite cuando se selecciona un rango  |
+| `pickerShow`        | `OutputEmitterRef<void>`                                               | Se emite cuando se muestra el picker    |
+| `pickerHide`        | `OutputEmitterRef<void>`                                               | Se emite cuando se oculta el picker     |
+| `pickerApply`       | `OutputEmitterRef<void>`                                               | Se emite cuando se aplica la selección  |
+| `pickerCancel`      | `OutputEmitterRef<void>`                                               | Se emite cuando se cancela la selección |
+
+## Métodos Públicos
 
 ```typescript
-import { BOOTSTRAP_THEME, MATERIAL_THEME, DEFAULT_THEME } from './date-range-picker';
+// Obtener referencia al componente
+@ViewChild(DateRangePicker) picker!: DateRangePicker;
 
-// Use built-in themes
-const picker = new DateRangePicker('#input', { theme: BOOTSTRAP_THEME });
+// Métodos disponibles
+this.picker.show();           // Mostrar el picker
+this.picker.hide();           // Ocultar el picker
+this.picker.toggle();         // Alternar visibilidad
+this.picker.getStartDate();   // Obtener fecha de inicio
+this.picker.getEndDate();     // Obtener fecha de fin
+this.picker.setStartDate(new Date()); // Establecer fecha de inicio
+this.picker.setEndDate(new Date());   // Establecer fecha de fin
+this.picker.updateTheme(customTheme); // Actualizar tema
+this.picker.updateRanges(newRanges);  // Actualizar rangos
+```
 
-// Or create custom theme
+## Temas
+
+### Temas Predefinidos
+
+```typescript
+// Tema Bootstrap
+<acp-date-range-picker presetTheme="bootstrap">
+
+// Tema Material
+<acp-date-range-picker presetTheme="material">
+
+// Tema por defecto
+<acp-date-range-picker presetTheme="default">
+```
+
+### Tema Personalizado
+
+```typescript
 const customTheme = {
   primaryColor: '#ff6b6b',
   backgroundColor: '#ffffff',
   selectedColor: '#ff6b6b',
   rangeColor: '#ffe0e0',
-  borderRadius: '8px',
+  borderRadius: '8px'
 };
 
-picker.setTheme(customTheme);
+<acp-date-range-picker
+  presetTheme="custom"
+  [theme]="customTheme">
 ```
 
-### Locale Configuration
+## Estilos
 
-```typescript
-const customLocale: DateRangePickerLocale = {
-  format: 'DD/MM/YYYY',
-  separator: ' - ',
-  applyLabel: 'Apply',
-  cancelLabel: 'Cancel',
-  customRangeLabel: 'Custom Range',
-  daysOfWeek: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
-  monthNames: [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ],
-  firstDay: 0,
-  // Time picker labels
-  hourLabel: 'Hour',
-  minuteLabel: 'Minute',
-  secondLabel: 'Second',
-  amLabel: 'AM',
-  pmLabel: 'PM',
-};
-```
+El componente utiliza los estilos integrados de `datex-ui`. Los estilos se aplican automáticamente cuando se usa el componente.
 
-## Events
-
-```typescript
-// Listen to events
-element.addEventListener('show.daterangepicker', e => {
-  console.log('Picker shown');
-});
-
-element.addEventListener('hide.daterangepicker', e => {
-  console.log('Picker hidden');
-});
-
-element.addEventListener('apply.daterangepicker', e => {
-  console.log('Selection applied');
-});
-
-element.addEventListener('cancel.daterangepicker', e => {
-  console.log('Selection cancelled');
-});
-```
-
-## Methods
-
-```typescript
-const picker = new DateRangePicker('#input', options);
-
-// Show/hide picker
-picker.show();
-picker.hide();
-picker.toggle();
-
-// Get/set dates
-const startDate = picker.getStartDate();
-const endDate = picker.getEndDate();
-picker.setStartDate(new Date());
-picker.setEndDate(new Date());
-
-// Change theme dynamically
-picker.setTheme(MATERIAL_THEME);
-
-// Cleanup
-picker.remove();
-```
-
-## Styling
-
-The component includes built-in CSS-in-JS theming. You can also include the SCSS file for additional customization:
+Si necesitas personalizar los estilos, puedes usar las propiedades de tema disponibles o aplicar CSS personalizado al selector `acp-date-range-picker`:
 
 ```scss
-@import './styles/date-range-picker.scss';
+// Ejemplo de personalización CSS
+acp-date-range-picker {
+  input {
+    border: 2px solid #007bff;
+    border-radius: 8px;
+    padding: 12px;
+
+    &:focus {
+      border-color: #0056b3;
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    }
+  }
+}
 ```
 
-## Architecture
+## Ejemplos Avanzados
 
-The library is now consolidated into a single file for better maintainability:
+### Con Selector de Tiempo
 
-- **`date-range-picker.ts`**: Main implementation with all functionality
-- **`index.ts`**: Public API exports
-- **`styles/`**: SCSS stylesheets
-- **`README.md`**: Documentation
+```typescript
+<acp-date-range-picker
+  [timePicker]="true"
+  [timePicker24Hour]="true"
+  [timePickerSeconds]="true"
+  placeholder="Seleccionar fecha y hora">
+</acp-date-range-picker>
+```
 
-## Browser Support
+### Con Rangos Predefinidos
 
-- Chrome 88+
-- Firefox 85+
-- Safari 14+
-- Edge 88+
+```typescript
+const ranges = {
+  'Hoy': [new Date(), new Date()],
+  'Ayer': [
+    new Date(Date.now() - 24 * 60 * 60 * 1000),
+    new Date(Date.now() - 24 * 60 * 60 * 1000)
+  ],
+  'Últimos 7 días': [
+    new Date(Date.now() - 6 * 24 * 60 * 60 * 1000),
+    new Date()
+  ],
+  'Este mes': [
+    new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+    new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0)
+  ]
+};
 
-## License
+<acp-date-range-picker [ranges]="ranges">
+```
 
-MIT License - see LICENSE file for details.
+### Validación con Angular Forms
+
+```typescript
+import { Validators } from '@angular/forms';
+
+dateForm = new FormGroup({
+  dateRange: new FormControl(null, [Validators.required]),
+});
+```
+
+### Usando Signals para Reactividad
+
+```typescript
+import { signal, computed } from '@angular/core';
+
+@Component({
+  template: `
+    <acp-date-range-picker
+      [startDate]="startDate()"
+      [endDate]="endDate()"
+      [disabled]="isDisabled()"
+      (dateRangeSelected)="onDateSelected($event)"
+    >
+    </acp-date-range-picker>
+
+    <p>Días seleccionados: {{ daysDifference() }}</p>
+  `,
+})
+export class SignalExampleComponent {
+  startDate = signal(new Date());
+  endDate = signal(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000));
+  isDisabled = signal(false);
+
+  daysDifference = computed(() => {
+    const start = this.startDate();
+    const end = this.endDate();
+    return Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+  });
+
+  onDateSelected(event: { startDate: Date; endDate: Date }) {
+    this.startDate.set(event.startDate);
+    this.endDate.set(event.endDate);
+  }
+}
+```
+
+## Compatibilidad
+
+- Angular 17+
+- TypeScript 5.0+
+- datex-ui 1.1.11+
+
+## Licencia
+
+MIT

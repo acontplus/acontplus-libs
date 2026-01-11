@@ -1,19 +1,28 @@
 <mat-card class="example-card">
   <mat-card-header>
     <mat-card-title>DateRangePicker Básico</mat-card-title>
-    <mat-card-subtitle>Configuración estándar con rangos predefinidos</mat-card-subtitle>
+    <mat-card-subtitle>Ejemplo básico usando el componente Angular</mat-card-subtitle>
   </mat-card-header>
 
   <mat-card-content>
     <div class="example-container">
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Seleccionar rango de fechas</mat-label>
-        <input matInput #daterangeInput placeholder="Selecciona un rango de fechas" readonly />
-        <mat-hint>Configuración básica con botones Aplicar/Cancelar</mat-hint>
-      </mat-form-field>
+      <!-- Componente DateRangePicker con mat-form-field integrado -->
+      <acp-date-range-picker
+        [options]="pickerOptions"
+        [showCheckbox]="true"
+        [checkboxChecked]="isSelected"
+        [checkboxPosition]="checkboxPosition"
+        label="Seleccionar rango de fechas"
+        hint="Usa los rangos predefinidos o selecciona fechas personalizadas"
+        placeholderText="Selecciona un rango de fechas"
+        calendarIcon="date_range"
+        (dateRangeSelected)="onDateRangeSelected($event)"
+        (checkboxChange)="onCheckboxChange($event)"
+      ></acp-date-range-picker>
 
+      <!-- Resultado de la selección -->
       <div class="result-display">
-        <h4>Resultado:</h4>
+        <h4>Resultado de la selección:</h4>
         <div class="result-grid">
           <div class="result-item">
             <strong>Fecha inicio:</strong>
@@ -27,54 +36,61 @@
             <strong>Etiqueta:</strong>
             <span>{{ selectedLabel || 'Personalizado' }}</span>
           </div>
+          <div class="result-item">
+            <strong>Seleccionado:</strong>
+            <span>{{ isSelected ? 'Sí' : 'No' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controles de tema -->
+      <div class="theme-controls">
+        <h4>Cambiar tema:</h4>
+        <div class="theme-buttons">
+          <button
+            mat-raised-button
+            [color]="currentTheme === 'default' ? 'primary' : ''"
+            (click)="switchTheme('default')"
+          >
+            Default
+          </button>
+          <button
+            mat-raised-button
+            [color]="currentTheme === 'bootstrap' ? 'primary' : ''"
+            (click)="switchTheme('bootstrap')"
+          >
+            Bootstrap
+          </button>
+          <button
+            mat-raised-button
+            [color]="currentTheme === 'material' ? 'primary' : ''"
+            (click)="switchTheme('material')"
+          >
+            Material
+          </button>
+        </div>
+      </div>
+
+      <!-- Controles de posición del checkbox -->
+      <div class="checkbox-controls">
+        <h4>Posición del checkbox:</h4>
+        <div class="checkbox-buttons">
+          <button
+            mat-raised-button
+            [color]="checkboxPosition === 'prefix' ? 'accent' : ''"
+            (click)="switchCheckboxPosition('prefix')"
+          >
+            Prefix (Izquierda)
+          </button>
+          <button
+            mat-raised-button
+            [color]="checkboxPosition === 'suffix' ? 'accent' : ''"
+            (click)="switchCheckboxPosition('suffix')"
+          >
+            Suffix (Derecha)
+          </button>
         </div>
       </div>
     </div>
   </mat-card-content>
-
-  <mat-card-actions>
-    <div class="theme-switcher">
-      <h4>Cambiar Tema:</h4>
-      <button
-        mat-raised-button
-        [color]="currentTheme === 'MATERIAL' ? 'primary' : ''"
-        (click)="switchTheme('MATERIAL')"
-      >
-        Material
-      </button>
-      <button
-        mat-raised-button
-        [color]="currentTheme === 'BOOTSTRAP' ? 'primary' : ''"
-        (click)="switchTheme('BOOTSTRAP')"
-      >
-        Bootstrap
-      </button>
-      <button
-        mat-raised-button
-        [color]="currentTheme === 'DEFAULT' ? 'primary' : ''"
-        (click)="switchTheme('DEFAULT')"
-      >
-        Default
-      </button>
-    </div>
-
-    <div class="config-info">
-      <h4>Configuración:</h4>
-      <pre><code>{{'{'}}{{'{'}}
-  locale: SPANISH_LOCALE,
-  showDropdowns: true,
-  autoApply: false,
-  linkedCalendars: true,
-  alwaysShowCalendars: true,
-  theme: MATERIAL_THEME,
-  ranges: {{'{'}}{{'{'}}
-    'Hoy': [today, today],
-    'Ayer': [yesterday, yesterday],
-    'Últimos 7 días': [last7Days, today],
-    'Últimos 30 días': [last30Days, today],
-    'Este mes': [thisMonthStart, thisMonthEnd]
-  {{'}'}}{{'}'}}
-{{'}'}}{{'}'}}</code></pre>
-    </div>
-  </mat-card-actions>
 </mat-card>

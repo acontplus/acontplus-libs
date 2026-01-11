@@ -1,0 +1,125 @@
+.example-card {
+  max-width: 800px;
+  margin: 20px auto;
+
+  .example-container {
+    padding: 16px 0;
+
+    acp-date-range-picker {
+      display: block;
+      width: 100%;
+      margin-bottom: 30px;
+    }
+
+    .result-display {
+      margin-top: 20px;
+      padding: 16px;
+      background-color: #f5f5f5;
+      border-radius: 8px;
+
+      h4 {
+        margin: 0 0 12px 0;
+        color: #333;
+        font-size: 16px;
+      }
+
+      .result-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+
+        .result-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 8px 0;
+          border-bottom: 1px solid #e0e0e0;
+
+          &:last-child {
+            border-bottom: none;
+          }
+
+          strong {
+            color: #666;
+            font-weight: 500;
+          }
+
+          span {
+            color: #333;
+            font-weight: 600;
+          }
+        }
+      }
+    }
+
+    .theme-controls {
+      margin-top: 30px;
+      padding: 20px;
+      background-color: #fff3e0;
+      border-radius: 8px;
+
+      h4 {
+        margin-bottom: 16px;
+        color: #ef6c00;
+      }
+
+      .theme-buttons {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+
+        button {
+          min-width: 100px;
+        }
+      }
+    }
+
+    .checkbox-controls {
+      margin-top: 20px;
+      padding: 20px;
+      background-color: #e8f5e8;
+      border-radius: 8px;
+
+      h4 {
+        margin-bottom: 16px;
+        color: #2e7d32;
+      }
+
+      .checkbox-buttons {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+
+        button {
+          min-width: 140px;
+        }
+      }
+    }
+  }
+
+  .config-info {
+    width: 100%;
+
+    h4 {
+      margin: 0 0 12px 0;
+      color: #fff;
+      font-size: 14px;
+    }
+
+    pre {
+      background-color: #f8f9fa;
+      border: 1px solid #e9ecef;
+      border-radius: 4px;
+      padding: 12px;
+      margin: 0;
+      overflow-x: auto;
+
+      code {
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        font-size: 12px;
+        color: #495057;
+        line-height: 1.4;
+      }
+    }
+  }
+}

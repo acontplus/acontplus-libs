@@ -65,9 +65,8 @@ export class App implements OnInit {
   page = signal(0);
   pageSize = signal(25);
 
-  trackByName(index: number, item: any) {
-    console.log(index);
-    return item.name;
+  trackByName(index: number) {
+    return `${index}-`;
   }
 
   ngOnInit() {

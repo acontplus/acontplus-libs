@@ -9,3 +9,4 @@ export * from './tables';
 export * from './theme-toggle';
 export * from './autocomplete-wrapper';
 export * from './data-grid';
+export * from './date-range-picker';

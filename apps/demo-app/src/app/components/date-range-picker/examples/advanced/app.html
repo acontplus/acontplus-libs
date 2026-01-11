@@ -1,0 +1,269 @@
+<mat-card class="example-card">
+  <mat-card-header>
+    <mat-card-title>DateRangePicker - Configuración Avanzada</mat-card-title>
+    <mat-card-subtitle
+      >Panel de configuración interactivo similar al configurador web</mat-card-subtitle
+    >
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="advanced-container">
+      <!-- Panel de Configuración -->
+      <div class="config-panel">
+        <h3>Configuración</h3>
+
+        <!-- Fechas básicas -->
+        <div class="config-section">
+          <h4>Fechas</h4>
+          <div class="config-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Fecha Inicio</mat-label>
+              <input
+                matInput
+                type="date"
+                [ngModel]="startDateValue()"
+                (ngModelChange)="startDateValue.set($event)"
+              />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Fecha Fin</mat-label>
+              <input
+                matInput
+                type="date"
+                [ngModel]="endDateValue()"
+                (ngModelChange)="endDateValue.set($event)"
+              />
+            </mat-form-field>
+          </div>
+
+          <div class="config-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Fecha Mínima</mat-label>
+              <input
+                matInput
+                type="date"
+                [ngModel]="minDateValue()"
+                (ngModelChange)="minDateValue.set($event)"
+              />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Fecha Máxima</mat-label>
+              <input
+                matInput
+                type="date"
+                [ngModel]="maxDateValue()"
+                (ngModelChange)="maxDateValue.set($event)"
+              />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Opciones de UI -->
+        <div class="config-section">
+          <h4>Opciones de Interfaz</h4>
+          <div class="checkbox-grid">
+            <mat-checkbox [ngModel]="showDropdowns()" (ngModelChange)="showDropdowns.set($event)"
+              >showDropdowns</mat-checkbox
+            >
+            <mat-checkbox
+              [ngModel]="showWeekNumbers()"
+              (ngModelChange)="showWeekNumbers.set($event)"
+              >showWeekNumbers</mat-checkbox
+            >
+            <mat-checkbox
+              [ngModel]="showISOWeekNumbers()"
+              (ngModelChange)="showISOWeekNumbers.set($event)"
+              >showISOWeekNumbers</mat-checkbox
+            >
+            <mat-checkbox
+              [ngModel]="singleDatePicker()"
+              (ngModelChange)="singleDatePicker.set($event)"
+              >singleDatePicker</mat-checkbox
+            >
+            <mat-checkbox [ngModel]="timePicker()" (ngModelChange)="timePicker.set($event)"
+              >timePicker</mat-checkbox
+            >
+            <mat-checkbox
+              [ngModel]="timePicker24Hour()"
+              (ngModelChange)="timePicker24Hour.set($event)"
+              >timePicker24Hour</mat-checkbox
+            >
+            <mat-checkbox
+              [ngModel]="timePickerSeconds()"
+              (ngModelChange)="timePickerSeconds.set($event)"
+              >timePickerSeconds</mat-checkbox
+            >
+            <mat-checkbox [ngModel]="autoApply()" (ngModelChange)="autoApply.set($event)"
+              >autoApply</mat-checkbox
+            >
+            <mat-checkbox [ngModel]="ranges()" (ngModelChange)="ranges.set($event)"
+              >ranges (with example predefined ranges)</mat-checkbox
+            >
+            <mat-checkbox
+              [ngModel]="alwaysShowCalendars()"
+              (ngModelChange)="alwaysShowCalendars.set($event)"
+              >alwaysShowCalendars</mat-checkbox
+            >
+            <mat-checkbox
+              [ngModel]="showCustomRangeLabel()"
+              (ngModelChange)="showCustomRangeLabel.set($event)"
+              >showCustomRangeLabel</mat-checkbox
+            >
+            <mat-checkbox
+              [ngModel]="linkedCalendars()"
+              (ngModelChange)="linkedCalendars.set($event)"
+              >linkedCalendars</mat-checkbox
+            >
+            <mat-checkbox
+              [ngModel]="autoUpdateInput()"
+              (ngModelChange)="autoUpdateInput.set($event)"
+              >autoUpdateInput</mat-checkbox
+            >
+          </div>
+        </div>
+
+        <!-- Configuración de Tiempo -->
+        <div class="config-section">
+          <h4>Configuración de Tiempo</h4>
+          <div class="config-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Incremento (minutos)</mat-label>
+              <input
+                matInput
+                type="number"
+                [ngModel]="timePickerIncrement()"
+                (ngModelChange)="timePickerIncrement.set($event)"
+                min="1"
+                max="60"
+              />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Posición del Checkbox</mat-label>
+              <mat-select
+                [ngModel]="checkboxPosition()"
+                (ngModelChange)="checkboxPosition.set($event)"
+              >
+                <mat-option value="prefix">Prefix (Izquierda)</mat-option>
+                <mat-option value="suffix">Suffix (Derecha)</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Posicionamiento -->
+        <div class="config-section">
+          <h4>Posicionamiento</h4>
+          <div class="config-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Opens</mat-label>
+              <mat-select [ngModel]="opens()" (ngModelChange)="opens.set($event)">
+                <mat-option value="left">left</mat-option>
+                <mat-option value="right">right</mat-option>
+                <mat-option value="center">center</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Drops</mat-label>
+              <mat-select [ngModel]="drops()" (ngModelChange)="drops.set($event)">
+                <mat-option value="down">down</mat-option>
+                <mat-option value="up">up</mat-option>
+                <mat-option value="auto">auto</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Clases CSS -->
+        <div class="config-section">
+          <h4>Clases CSS</h4>
+          <div class="config-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Button Classes</mat-label>
+              <input
+                matInput
+                [ngModel]="buttonClasses()"
+                (ngModelChange)="buttonClasses.set($event)"
+                placeholder="btn btn-sm"
+              />
+            </mat-form-field>
+          </div>
+          <div class="config-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Apply Button Classes</mat-label>
+              <input
+                matInput
+                [ngModel]="applyButtonClasses()"
+                (ngModelChange)="applyButtonClasses.set($event)"
+                placeholder="btn-primary"
+              />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Cancel Button Classes</mat-label>
+              <input
+                matInput
+                [ngModel]="cancelButtonClasses()"
+                (ngModelChange)="cancelButtonClasses.set($event)"
+                placeholder="btn-default"
+              />
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vista Previa del Componente -->
+      <div class="preview-panel">
+        <h3>Vista Previa</h3>
+
+        <!-- DateRangePicker con configuración dinámica -->
+        <div class="picker-container">
+          <acp-date-range-picker
+            [options]="pickerOptions()"
+            [showCheckbox]="true"
+            [checkboxChecked]="isSelected"
+            [checkboxReadonly]="false"
+            [checkboxPosition]="checkboxPosition()"
+            [showCalendarButton]="true"
+            [inputReadonly]="false"
+            label="Configuración Personalizada"
+            hint="Ajusta las opciones en el panel izquierdo"
+            placeholderText="Selecciona fechas con configuración personalizada"
+            (dateRangeSelected)="onDateRangeSelected($event)"
+            (checkboxChange)="onCheckboxChange($event)"
+          ></acp-date-range-picker>
+        </div>
+
+        <!-- Resultado -->
+        <div class="result-section">
+          <h4>Resultado de la Selección:</h4>
+          <div class="result-display">
+            <div class="result-item">
+              <strong>Fecha inicio:</strong>
+              <span>{{ selectedStartDate | date:'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+            <div class="result-item">
+              <strong>Fecha fin:</strong>
+              <span>{{ selectedEndDate | date:'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+            <div class="result-item">
+              <strong>Etiqueta:</strong>
+              <span>{{ selectedLabel || 'Personalizado' }}</span>
+            </div>
+            <div class="result-item">
+              <strong>Checkbox:</strong>
+              <span>{{ isSelected ? 'Seleccionado' : 'No seleccionado' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Configuración para Copiar -->
+        <div class="config-copy-section">
+          <h4>Tu Configuración para Copiar:</h4>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Código HTML</mat-label>
+            <textarea matInput readonly [value]="getConfigurationCode()" rows="15"></textarea>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

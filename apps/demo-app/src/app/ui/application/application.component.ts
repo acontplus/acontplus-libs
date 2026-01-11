@@ -81,9 +81,9 @@ export class ApplicationComponent implements OnInit, AfterViewInit {
   searchQuery = '';
 
   // Template references
-  readonly actionsTemplate = viewChild.required<TemplateRef<any>>('actionsTemplate');
-  readonly statusTemplate = viewChild.required<TemplateRef<any>>('statusTemplate');
-  readonly environmentTemplate = viewChild.required<TemplateRef<any>>('environmentTemplate');
+  readonly actionsTemplate = viewChild.required<TemplateRef<unknown>>('actionsTemplate');
+  readonly statusTemplate = viewChild.required<TemplateRef<unknown>>('statusTemplate');
+  readonly environmentTemplate = viewChild.required<TemplateRef<unknown>>('environmentTemplate');
 
   // Column definitions
   applicationColumns: DataGridColumn<Application>[] = [];
@@ -335,8 +335,6 @@ export class ApplicationComponent implements OnInit, AfterViewInit {
 
   onRowSelected(selectedRows: Application[]): void {
     this.selectedApplications = selectedRows.map(application => application.id);
-    console.info('Selected Applications:', selectedRows);
-    console.info('Selected Application IDs:', this.selectedApplications);
     this.cdr.markForCheck();
   }
 

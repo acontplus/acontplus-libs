@@ -1,0 +1,69 @@
+<mat-card class="example-card">
+  <mat-card-header>
+    <mat-card-title>DateTime Range Picker</mat-card-title>
+    <mat-card-subtitle>Selector de fecha y hora usando el componente Angular</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="example-container">
+      <acp-date-range-picker
+        [formControl]="dateTimeControl"
+        [options]="dateTimeOptions"
+        placeholderText="Selecciona fecha y hora"
+        (dateRangeSelected)="onDateRangeSelected($event)"
+      >
+      </acp-date-range-picker>
+
+      <div class="result-display">
+        <h4>Resultado:</h4>
+        <div class="datetime-grid">
+          <div class="datetime-item">
+            <mat-chip-set>
+              <mat-chip>Inicio</mat-chip>
+            </mat-chip-set>
+            <div class="datetime-values">
+              <span class="date">{{ selectedStartDate | date:'EEEE, dd MMM':'es' }}</span>
+              <span class="time">{{ selectedStartDate | date:'HH:mm' }}</span>
+            </div>
+          </div>
+
+          <div class="datetime-separator">→</div>
+
+          <div class="datetime-item">
+            <mat-chip-set>
+              <mat-chip>Fin</mat-chip>
+            </mat-chip-set>
+            <div class="datetime-values">
+              <span class="date">{{ selectedEndDate | date:'EEEE, dd MMM':'es' }}</span>
+              <span class="time">{{ selectedEndDate | date:'HH:mm' }}</span>
+            </div>
+          </div>
+        </div>
+
+        @if (selectedLabel) {
+        <div class="label-display">
+          <mat-chip-set>
+            <mat-chip color="accent" selected>{{ selectedLabel }}</mat-chip>
+          </mat-chip-set>
+        </div>
+        }
+      </div>
+
+      <div class="form-values">
+        <h4>Valor del FormControl:</h4>
+        <pre>{{ dateTimeControl.value | json }}</pre>
+      </div>
+    </div>
+  </mat-card-content>
+
+  <mat-card-actions>
+    <div class="config-info">
+      <h4>Configuración del Componente:</h4>
+      <pre><code>&lt;acp-date-range-picker
+  [options]="dateTimeOptions"
+  placeholderText="Selecciona fecha y hora"
+  (dateRangeSelected)="onDateRangeSelected($event)"&gt;
+&lt;/acp-date-range-picker&gt;</code></pre>
+    </div>
+  </mat-card-actions>
+</mat-card>

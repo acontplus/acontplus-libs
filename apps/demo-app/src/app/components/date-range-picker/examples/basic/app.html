@@ -1,0 +1,96 @@
+<mat-card class="example-card">
+  <mat-card-header>
+    <mat-card-title>DateRangePicker Básico</mat-card-title>
+    <mat-card-subtitle>Ejemplo básico usando el componente Angular</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="example-container">
+      <!-- Componente DateRangePicker con mat-form-field integrado -->
+      <acp-date-range-picker
+        [options]="pickerOptions"
+        [showCheckbox]="true"
+        [checkboxChecked]="isSelected"
+        [checkboxPosition]="checkboxPosition"
+        label="Seleccionar rango de fechas"
+        hint="Usa los rangos predefinidos o selecciona fechas personalizadas"
+        placeholderText="Selecciona un rango de fechas"
+        calendarIcon="date_range"
+        (dateRangeSelected)="onDateRangeSelected($event)"
+        (checkboxChange)="onCheckboxChange($event)"
+      ></acp-date-range-picker>
+
+      <!-- Resultado de la selección -->
+      <div class="result-display">
+        <h4>Resultado de la selección:</h4>
+        <div class="result-grid">
+          <div class="result-item">
+            <strong>Fecha inicio:</strong>
+            <span>{{ selectedStartDate | date:'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="result-item">
+            <strong>Fecha fin:</strong>
+            <span>{{ selectedEndDate | date:'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="result-item">
+            <strong>Etiqueta:</strong>
+            <span>{{ selectedLabel || 'Personalizado' }}</span>
+          </div>
+          <div class="result-item">
+            <strong>Seleccionado:</strong>
+            <span>{{ isSelected ? 'Sí' : 'No' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controles de tema -->
+      <div class="theme-controls">
+        <h4>Cambiar tema:</h4>
+        <div class="theme-buttons">
+          <button
+            mat-raised-button
+            [color]="currentTheme === 'default' ? 'primary' : ''"
+            (click)="switchTheme('default')"
+          >
+            Default
+          </button>
+          <button
+            mat-raised-button
+            [color]="currentTheme === 'bootstrap' ? 'primary' : ''"
+            (click)="switchTheme('bootstrap')"
+          >
+            Bootstrap
+          </button>
+          <button
+            mat-raised-button
+            [color]="currentTheme === 'material' ? 'primary' : ''"
+            (click)="switchTheme('material')"
+          >
+            Material
+          </button>
+        </div>
+      </div>
+
+      <!-- Controles de posición del checkbox -->
+      <div class="checkbox-controls">
+        <h4>Posición del checkbox:</h4>
+        <div class="checkbox-buttons">
+          <button
+            mat-raised-button
+            [color]="checkboxPosition === 'prefix' ? 'accent' : ''"
+            (click)="switchCheckboxPosition('prefix')"
+          >
+            Prefix (Izquierda)
+          </button>
+          <button
+            mat-raised-button
+            [color]="checkboxPosition === 'suffix' ? 'accent' : ''"
+            (click)="switchCheckboxPosition('suffix')"
+          >
+            Suffix (Derecha)
+          </button>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

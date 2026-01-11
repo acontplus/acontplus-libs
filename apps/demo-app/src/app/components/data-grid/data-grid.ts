@@ -16,7 +16,7 @@ import { DataGridStyling } from './data-grid-styling';
 export class GridOverview {
   route = inject(ActivatedRoute);
 
-  examples: any[] = [];
+  examples = [];
 }
 
 export const routes: Routes = [

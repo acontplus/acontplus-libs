@@ -1,0 +1,55 @@
+<mat-card class="example-card">
+  <mat-card-header>
+    <mat-card-title>Auto-Apply DateRangePicker</mat-card-title>
+    <mat-card-subtitle
+      >Selección automática sin botones Aplicar/Cancelar usando el componente
+      Angular</mat-card-subtitle
+    >
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="example-container">
+      <acp-date-range-picker
+        [formControl]="dateRangeControl"
+        [options]="autoApplyOptions"
+        placeholderText="Haz clic para seleccionar"
+        (dateRangeSelected)="onDateRangeSelected($event)"
+      >
+      </acp-date-range-picker>
+
+      <div class="result-display">
+        <h4>Resultado:</h4>
+        <div class="result-grid">
+          <div class="result-item">
+            <strong>Fecha inicio:</strong>
+            <span>{{ selectedStartDate | date:'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="result-item">
+            <strong>Fecha fin:</strong>
+            <span>{{ selectedEndDate | date:'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="result-item">
+            <strong>Etiqueta:</strong>
+            <span>{{ selectedLabel || 'Personalizado' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-values">
+        <h4>Valor del FormControl:</h4>
+        <pre>{{ dateRangeControl.value | json }}</pre>
+      </div>
+    </div>
+  </mat-card-content>
+
+  <mat-card-actions>
+    <div class="config-info">
+      <h4>Configuración del Componente:</h4>
+      <pre><code>&lt;acp-date-range-picker
+  [options]="autoApplyOptions"
+  placeholderText="Haz clic para seleccionar"
+  (dateRangeSelected)="onDateRangeSelected($event)"&gt;
+&lt;/acp-date-range-picker&gt;</code></pre>
+    </div>
+  </mat-card-actions>
+</mat-card>

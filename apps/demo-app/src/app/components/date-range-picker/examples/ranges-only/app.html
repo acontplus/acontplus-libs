@@ -1,0 +1,58 @@
+<mat-card class="example-card">
+  <mat-card-header>
+    <mat-card-title>Ranges Only Picker</mat-card-title>
+    <mat-card-subtitle>Solo rangos predefinidos con opción personalizada</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="example-container">
+      <!-- Componente DateRangePicker -->
+      <acp-date-range-picker
+        [options]="rangesOnlyOptions"
+        placeholderText="Elige un rango predefinido"
+        (dateRangeSelected)="onDateRangeSelected($event)"
+      ></acp-date-range-picker>
+
+      <div class="result-display">
+        <h4>Rango seleccionado:</h4>
+        <div class="range-info">
+          <mat-chip-set>
+            <mat-chip color="primary" selected>{{ selectedLabel || 'Personalizado' }}</mat-chip>
+          </mat-chip-set>
+
+          <div class="date-range">
+            <div class="date-item">
+              <span class="label">Desde:</span>
+              <span class="value">{{ selectedStartDate | date:'dd/MM/yyyy' }}</span>
+            </div>
+            <div class="date-separator">→</div>
+            <div class="date-item">
+              <span class="label">Hasta:</span>
+              <span class="value">{{ selectedEndDate | date:'dd/MM/yyyy' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+
+  <mat-card-actions>
+    <div class="config-info">
+      <h4>Configuración:</h4>
+      <pre><code>{{'{'}}{{'{'}}
+  autoApply: true,
+  alwaysShowCalendars: false,
+  showCustomRangeLabel: true,
+  theme: MATERIAL_THEME,
+  ranges: {{'{'}}{{'{'}}
+    'Hoy': [today, today],
+    'Ayer': [yesterday, yesterday],
+    'Últimos 3 días': [last3Days, today],
+    'Últimos 7 días': [last7Days, today],
+    'Últimos 15 días': [last15Days, today],
+    'Este mes': [thisMonthStart, today]
+  {{'}'}}{{'}'}}
+{{'}'}}{{'}'}}</code></pre>
+    </div>
+  </mat-card-actions>
+</mat-card>

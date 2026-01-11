@@ -1,0 +1,42 @@
+<mat-card class="example-card">
+  <mat-card-header>
+    <mat-card-title>Single Date Picker</mat-card-title>
+    <mat-card-subtitle>Selector de fecha única usando el componente Angular</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="example-container">
+      <acp-date-range-picker
+        [formControl]="singleDateControl"
+        [options]="singleDateOptions"
+        placeholderText="Selecciona una fecha"
+        (dateRangeSelected)="onDateRangeSelected($event)"
+      >
+      </acp-date-range-picker>
+
+      <div class="result-display">
+        <h4>Fecha seleccionada:</h4>
+        <div class="selected-date">
+          <span class="date-value">{{ selectedDate | date:'EEEE, dd MMMM yyyy':'es' }}</span>
+          <span class="date-format">{{ selectedDate | date:'dd/MM/yyyy' }}</span>
+        </div>
+      </div>
+
+      <div class="form-values">
+        <h4>Valor del FormControl:</h4>
+        <pre>{{ singleDateControl.value | json }}</pre>
+      </div>
+    </div>
+  </mat-card-content>
+
+  <mat-card-actions>
+    <div class="config-info">
+      <h4>Configuración del Componente:</h4>
+      <pre><code>&lt;acp-date-range-picker
+  [options]="singleDateOptions"
+  placeholderText="Selecciona una fecha"
+  (dateRangeSelected)="onDateRangeSelected($event)"&gt;
+&lt;/acp-date-range-picker&gt;</code></pre>
+    </div>
+  </mat-card-actions>
+</mat-card>

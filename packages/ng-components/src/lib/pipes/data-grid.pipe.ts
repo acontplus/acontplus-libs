@@ -12,10 +12,10 @@ export class DataGridColClassPipe implements PipeTransform {
     currentValue?: any,
   ) {
     if (rowChangeRecord) {
-      console.log('');
+      /* empty */
     }
     if (currentValue) {
-      console.log('');
+      /* empty */
     }
     if (typeof colDef.class === 'string') {
       return colDef.class;
@@ -56,10 +56,10 @@ export class DataGridCellActionsPipe implements PipeTransform {
     currentValue?: any,
   ) {
     if (rowChangeRecord) {
-      console.log('');
+      /* empty */
     }
     if (currentValue) {
-      console.log('');
+      /* empty */
     }
     if (typeof btns === 'function') {
       return btns(rowData);
@@ -101,10 +101,10 @@ export class DataGridCellActionDisablePipe implements PipeTransform {
     currentValue?: any,
   ) {
     if (typeof rowChangeRecord === 'object') {
-      console.log('');
+      /* empty */
     }
     if (currentValue) {
-      console.log('');
+      /* empty */
     }
     if (typeof btn.disabled === 'boolean') {
       return btn.disabled;

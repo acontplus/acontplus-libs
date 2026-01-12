@@ -11,7 +11,6 @@ import {
   output,
   signal,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatFormFieldControl, MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -112,14 +111,7 @@ export interface DateRangeValue {
       useExisting: DateRangePicker,
     },
   ],
-  imports: [
-    CommonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatIconModule,
-    MatCheckboxModule,
-  ],
+  imports: [MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatCheckboxModule],
   host: {
     '[class.floating]': 'shouldLabelFloat',
     '[id]': 'id',

@@ -356,7 +356,7 @@ export class DateRangePicker
       timePicker24Hour: true,
       timePickerIncrement: 1,
       timePickerSeconds: false,
-      ranges: {},
+      ranges: this.getDefaultRanges(),
       opens: 'center',
       drops: 'auto',
       locale: SPANISH_LOCALE,
@@ -370,11 +370,61 @@ export class DateRangePicker
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { presetTheme, ...userOptions } = opts;
 
+    // Merge ranges: user ranges override defaults
+    const mergedRanges = {
+      ...defaultOptions.ranges,
+      ...(userOptions.ranges || {}),
+    };
+
     return {
       ...defaultOptions,
       ...userOptions,
+      ranges: mergedRanges,
       // Always use getTheme() to handle presetTheme properly
       theme: this.getTheme(),
+    };
+  }
+
+  private getDefaultRanges(): Record<string, [Date, Date]> {
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(today.getDate() - 1);
+
+    const last5Days = new Date(today);
+    last5Days.setDate(today.getDate() - 4);
+
+    const last10Days = new Date(today);
+    last10Days.setDate(today.getDate() - 9);
+
+    const last15Days = new Date(today);
+    last15Days.setDate(today.getDate() - 14);
+
+    const last30Days = new Date(today);
+    last30Days.setDate(today.getDate() - 29);
+
+    // Esta semana (lunes a domingo)
+    const startOfWeek = new Date(today);
+    const dayOfWeek = today.getDay();
+    const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Domingo = 0, necesitamos ir 6 días atrás
+    startOfWeek.setDate(today.getDate() - daysToMonday);
+
+    // Este mes
+    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+
+    // El mes pasado
+    const startOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+    const endOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+
+    return {
+      Hoy: [today, today],
+      Ayer: [yesterday, yesterday],
+      'Últimos 5 días': [last5Days, today],
+      'Últimos 10 días': [last10Days, today],
+      'Últimos 15 días': [last15Days, today],
+      'Últimos 30 días': [last30Days, today],
+      'Esta semana': [startOfWeek, today],
+      'Este mes': [startOfMonth, today],
+      'El mes pasado': [startOfLastMonth, endOfLastMonth],
     };
   }
 

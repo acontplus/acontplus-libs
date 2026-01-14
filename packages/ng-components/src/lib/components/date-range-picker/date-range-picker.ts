@@ -18,6 +18,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { Subject } from 'rxjs';
+
 import {
   Datex,
   DatexOptions,
@@ -28,24 +29,74 @@ import {
   MATERIAL_THEME,
 } from 'datex-ui';
 
+import { addDay, weekStart, weekEnd, monthStart, monthEnd, tzDate, format } from '@formkit/tempo';
+
+/* ============================
+   TYPES
+============================ */
+
 export interface DateRangePickerOptions extends DatexOptions {
   presetTheme?: 'default' | 'bootstrap' | 'material' | 'custom';
 }
 
-export interface DateRangeValue {
-  startDate: Date;
-  endDate: Date;
+export type DateValue<AsString extends boolean> = AsString extends true ? string : Date;
+
+export interface DateRangeValue<AsString extends boolean> {
+  from: DateValue<AsString>;
+  to: DateValue<AsString>;
+  label?: string;
 }
+
+/* ============================
+   HELPERS
+============================ */
+
+function formatDateToString(date: Date): string {
+  const dateZone = tzDate(date, 'America/Guayaquil');
+  return format({
+    date: dateZone,
+    format: 'YYYY-MM-DD hh:mm:ss A',
+    tz: 'America/Guayaquil',
+  });
+}
+
+/* ============================
+   COMPONENT
+============================ */
 
 @Component({
   selector: 'acp-date-range-picker',
+  standalone: true,
+  imports: [MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatCheckboxModule],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => DateRangePicker),
+      multi: true,
+    },
+    {
+      provide: MatFormFieldControl,
+      useExisting: DateRangePicker,
+    },
+  ],
+  host: {
+    '[class.floating]': 'shouldLabelFloat',
+    '[id]': 'id',
+  },
+  styles: [
+    `
+      .full-width {
+        width: 100%;
+      }
+    `,
+  ],
   template: `
     <mat-form-field [appearance]="appearance()" class="full-width">
       @if (label()) {
         <mat-label>{{ label() }}</mat-label>
       }
 
-      <!-- Checkbox in prefix -->
+      <!-- Checkbox prefix -->
       @if (showCheckbox() && checkboxPosition() === 'prefix') {
         <mat-checkbox
           matPrefix
@@ -64,10 +115,9 @@ export interface DateRangeValue {
         [placeholder]="placeholderText()"
         [disabled]="isDisabled()"
         [readonly]="inputReadonly()"
-        [id]="id"
       />
 
-      <!-- Checkbox in suffix -->
+      <!-- Checkbox suffix -->
       @if (showCheckbox() && checkboxPosition() === 'suffix') {
         <mat-checkbox
           matSuffix
@@ -79,72 +129,35 @@ export interface DateRangeValue {
         ></mat-checkbox>
       }
 
-      <!-- Calendar icon button -->
-      <!-- @if (showCalendarButton()) {
-        <button
-          mat-icon-button
-          matSuffix
-          type="button"
-          (click)="toggle()"
-          [attr.aria-label]="'Abrir selector de fechas'"
-        >
-          <mat-icon>{{ calendarIcon() }}</mat-icon>
-        </button>
-      } -->
-
       @if (hint()) {
         <mat-hint>{{ hint() }}</mat-hint>
       }
+
       @if (errorState && errorMessage()) {
         <mat-error>{{ errorMessage() }}</mat-error>
       }
     </mat-form-field>
   `,
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => DateRangePicker),
-      multi: true,
-    },
-    {
-      provide: MatFormFieldControl,
-      useExisting: DateRangePicker,
-    },
-  ],
-  imports: [MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatCheckboxModule],
-  host: {
-    '[class.floating]': 'shouldLabelFloat',
-    '[id]': 'id',
-  },
-  styles: [
-    `
-      .full-width {
-        width: 100%;
-      }
-    `,
-  ],
 })
-export class DateRangePicker
-  implements
-    OnInit,
-    OnChanges,
-    OnDestroy,
-    ControlValueAccessor,
-    MatFormFieldControl<DateRangeValue | Date>
+export class DateRangePicker<AsString extends boolean = true>
+  implements OnInit, OnChanges, OnDestroy, ControlValueAccessor, MatFormFieldControl<any>
 {
+  /* ============================
+     MAT FORM FIELD
+  ============================ */
+
   static nextId = 0;
-
-  @ViewChild('dateInput', { static: true }) dateInput!: ElementRef<HTMLInputElement>;
-
-  // MatFormFieldControl implementation
-  readonly stateChanges = new Subject<void>();
   readonly id = `acp-date-range-picker-${DateRangePicker.nextId++}`;
   readonly controlType = 'acp-date-range-picker';
+  readonly stateChanges = new Subject<void>();
   readonly autofilled = false;
+
+  @ViewChild('dateInput', { static: true })
+  dateInput!: ElementRef<HTMLInputElement>;
 
   private _focused = signal(false);
   private _required = signal(false);
-  private _value = signal<DateRangeValue | Date | null>(null);
+  private _value = signal<any>(null);
 
   get focused(): boolean {
     return this._focused();
@@ -162,23 +175,19 @@ export class DateRangePicker
     return this._required();
   }
 
-  get value(): DateRangeValue | Date | null {
-    return this._value();
-  }
-
-  set value(val: DateRangeValue | Date | null) {
-    this._value.set(val);
-    this.stateChanges.next();
-  }
-
   private readonly _errorState = false;
 
   get errorState(): boolean {
     return this._errorState;
   }
 
-  get userAriaDescribedBy(): string | undefined {
-    return undefined;
+  get value(): any {
+    return this._value();
+  }
+
+  set value(val: any) {
+    this._value.set(val);
+    this.stateChanges.next();
   }
 
   get placeholder(): string {
@@ -191,85 +200,12 @@ export class DateRangePicker
 
   ngControl: any = null;
 
-  // Configuration inputs
-  options = input<DateRangePickerOptions>({});
-
-  // UI inputs
-  placeholderText = input('Seleccionar rango de fechas');
-  isDisabled = input(false);
-  inputReadonly = input(false);
-  label = input<string>();
-  hint = input<string>();
-  errorMessage = input<string>();
-  appearance = input<'fill' | 'outline'>('outline');
-
-  // Icon inputs
-  calendarIcon = input('date_range');
-  showCalendarButton = input(false);
-
-  // Checkbox functionality
-  showCheckbox = input(false);
-  checkboxChecked = input(false);
-  checkboxReadonly = input(false);
-  checkboxAriaLabel = input('Toggle selection');
-  checkboxPosition = input<'prefix' | 'suffix'>('suffix');
-
-  // Events
-  dateRangeSelected = output<{
-    startDate: Date;
-    endDate: Date;
-    label?: string;
-  }>();
-  pickerShow = output<void>();
-  pickerHide = output<void>();
-  pickerApply = output<void>();
-  pickerCancel = output<void>();
-  checkboxChange = output<boolean>();
-
-  // Internal state
-  private picker?: Datex;
-  private isInitialized = signal(false);
-
-  // ControlValueAccessor implementation
-  private onChange = (_value: any) => {
-    // This will be replaced by registerOnChange
-  };
-  private onTouched = () => {
-    // This will be replaced by registerOnTouched
-  };
-
-  constructor() {
-    // No effect here to avoid infinite loops - using ngOnChanges instead
-  }
-
-  ngOnInit(): void {
-    this.initializePicker();
-    this.isInitialized.set(true);
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['options'] && !changes['options'].isFirstChange()) {
-      if (this.picker) {
-        this.updateOptions();
-      }
-    }
-  }
-
-  ngOnDestroy(): void {
-    if (this.picker) {
-      this.picker.remove();
-    }
-    this.stateChanges.complete();
-  }
-
   setDescribedByIds(_ids: string[]): void {
     // Implementation for accessibility
   }
 
-  onContainerClick(_event: MouseEvent): void {
-    if (!this.focused) {
-      this.focus();
-    }
+  onContainerClick(): void {
+    this.focus();
   }
 
   focus(): void {
@@ -278,27 +214,100 @@ export class DateRangePicker
     this.stateChanges.next();
   }
 
-  blur(): void {
-    this._focused.set(false);
-    this.onTouched();
-    this.stateChanges.next();
+  /* ============================
+     INPUTS
+  ============================ */
+
+  options = input<DateRangePickerOptions>({});
+  placeholderText = input('Seleccionar rango de fechas');
+  isDisabled = input(false);
+  inputReadonly = input(false);
+  label = input<string>();
+  hint = input<string>();
+  errorMessage = input<string>();
+  appearance = input<'fill' | 'outline'>('outline');
+
+  formatOutputAsString = input<AsString>(true as AsString);
+
+  calendarIcon = input('date_range');
+  showCalendarButton = input(false);
+
+  showCheckbox = input(false);
+  checkboxChecked = input(false);
+  checkboxReadonly = input(false);
+  checkboxAriaLabel = input('Toggle selection');
+  checkboxPosition = input<'prefix' | 'suffix'>('suffix');
+
+  /* ============================
+     OUTPUTS
+  ============================ */
+
+  dateRangeSelected = output<DateRangeValue<AsString>>();
+  pickerShow = output<void>();
+  pickerHide = output<void>();
+  pickerApply = output<void>();
+  pickerCancel = output<void>();
+  checkboxChange = output<boolean>();
+
+  /* ============================
+     INTERNAL
+  ============================ */
+
+  private picker?: Datex;
+  private currentDate = new Date();
+
+  private onChange = (_value: any) => {
+    // This will be replaced by registerOnChange
+  };
+  private onTouched = () => {
+    // This will be replaced by registerOnTouched
+  };
+
+  /* ============================
+     LIFECYCLE
+  ============================ */
+
+  ngOnInit(): void {
+    this.initializePicker();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['options'] && this.picker) {
+      this.reinitializePicker();
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.picker?.remove();
+    this.stateChanges.complete();
+  }
+
+  /* ============================
+     DATE LOGIC
+  ============================ */
+
+  private mapDate(date: Date): DateValue<AsString> {
+    return this.formatOutputAsString()
+      ? (formatDateToString(date) as DateValue<AsString>)
+      : (date as DateValue<AsString>);
   }
 
   private initializePicker(): void {
-    const options = this.buildDatexOptions();
-
     this.picker = new Datex(
       this.dateInput.nativeElement,
-      options,
-      (startDate: Date, endDate: Date, label?: string) => {
-        const opts = this.options();
-        const value = opts.singleDatePicker ? startDate : { startDate, endDate };
+      this.buildDatexOptions(),
+      (start: Date, end: Date, label?: string) => {
+        const range: DateRangeValue<AsString> = {
+          from: this.mapDate(start),
+          to: this.mapDate(end),
+          label,
+        };
 
-        this._value.set(value);
-        this.onChange(value);
+        this._value.set(range);
+        this.onChange(range);
         this.onTouched();
 
-        this.dateRangeSelected.emit({ startDate, endDate, label });
+        this.dateRangeSelected.emit(range);
         this.stateChanges.next();
       },
     );
@@ -306,125 +315,44 @@ export class DateRangePicker
     this.setupEventListeners();
   }
 
-  private updateOptions(): void {
-    if (!this.picker) return;
-
-    // Try to use native updateOptions if available
-    if (typeof this.picker.updateOptions === 'function') {
-      const newOptions = this.buildDatexOptions();
-      this.picker.updateOptions(newOptions);
-    } else {
-      // Fallback to reinitialize if updateOptions is not available
-      this.reinitializePicker();
-    }
-  }
-
   private reinitializePicker(): void {
-    if (!this.isInitialized()) return;
-
-    const currentValue = this._value();
-
-    if (this.picker) {
-      this.picker.remove();
-      this.picker = undefined;
-    }
-
+    const value = this._value();
+    this.picker?.remove();
     this.initializePicker();
-
-    if (currentValue) {
-      setTimeout(() => {
-        this.writeValue(currentValue);
-      }, 0);
+    if (value) {
+      this.writeValue(value);
     }
   }
 
   private buildDatexOptions(): DatexOptions {
     const opts = this.options();
-    const today = new Date();
-
-    const defaultOptions: DatexOptions = {
-      startDate: today,
-      endDate: today,
-      autoApply: false,
-      singleDatePicker: false,
-      showDropdowns: true,
-      linkedCalendars: true,
-      autoUpdateInput: true,
-      alwaysShowCalendars: false,
-      showCustomRangeLabel: true,
-      timePicker: false,
-      timePicker24Hour: true,
-      timePickerIncrement: 1,
-      timePickerSeconds: false,
-      ranges: this.getDefaultRanges(),
-      opens: 'center',
-      drops: 'auto',
-      locale: SPANISH_LOCALE,
-      buttonClasses: 'btn btn-sm',
-      applyButtonClasses: 'btn-success',
-      cancelButtonClasses: 'btn-danger',
-      theme: this.getTheme(),
-    };
-
-    // Merge user options with defaults, excluding presetTheme
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { presetTheme, ...userOptions } = opts;
-
-    // Merge ranges: user ranges override defaults
-    const mergedRanges = {
-      ...defaultOptions.ranges,
-      ...(userOptions.ranges || {}),
-    };
+    const userOptions = { ...opts };
+    delete userOptions.presetTheme;
 
     return {
-      ...defaultOptions,
-      ...userOptions,
-      ranges: mergedRanges,
-      // Always use getTheme() to handle presetTheme properly
+      startDate: this.currentDate,
+      endDate: this.currentDate,
+      locale: SPANISH_LOCALE,
+      ranges: this.getDefaultRanges(),
       theme: this.getTheme(),
+      ...userOptions,
     };
   }
 
   private getDefaultRanges(): Record<string, [Date, Date]> {
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(today.getDate() - 1);
-
-    const last5Days = new Date(today);
-    last5Days.setDate(today.getDate() - 4);
-
-    const last10Days = new Date(today);
-    last10Days.setDate(today.getDate() - 9);
-
-    const last15Days = new Date(today);
-    last15Days.setDate(today.getDate() - 14);
-
-    const last30Days = new Date(today);
-    last30Days.setDate(today.getDate() - 29);
-
-    // Esta semana (lunes a domingo)
-    const startOfWeek = new Date(today);
-    const dayOfWeek = today.getDay();
-    const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Domingo = 0, necesitamos ir 6 días atrás
-    startOfWeek.setDate(today.getDate() - daysToMonday);
-
-    // Este mes
-    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-
-    // El mes pasado
-    const startOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-    const endOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
-
     return {
-      Hoy: [today, today],
-      Ayer: [yesterday, yesterday],
-      'Últimos 5 días': [last5Days, today],
-      'Últimos 10 días': [last10Days, today],
-      'Últimos 15 días': [last15Days, today],
-      'Últimos 30 días': [last30Days, today],
-      'Esta semana': [startOfWeek, today],
-      'Este mes': [startOfMonth, today],
-      'El mes pasado': [startOfLastMonth, endOfLastMonth],
+      Hoy: [this.currentDate, this.currentDate],
+      Ayer: [addDay(this.currentDate, -1), addDay(this.currentDate, -1)],
+      'Últimos 5 días': [addDay(this.currentDate, -4), this.currentDate],
+      'Últimos 10 días': [addDay(this.currentDate, -9), this.currentDate],
+      'Últimos 15 días': [addDay(this.currentDate, -14), this.currentDate],
+      'Últimos 30 días': [addDay(this.currentDate, -29), this.currentDate],
+      'Esta semana': [weekStart(this.currentDate), weekEnd(this.currentDate)],
+      'Este mes': [monthStart(this.currentDate), monthEnd(this.currentDate)],
+      'El mes pasado': [
+        monthStart(addDay(monthStart(this.currentDate), -1)),
+        addDay(monthStart(this.currentDate), -1),
+      ],
     };
   }
 
@@ -445,25 +373,12 @@ export class DateRangePicker
   }
 
   private setupEventListeners(): void {
-    if (!this.picker) return;
-
     const input = this.dateInput.nativeElement;
 
-    input.addEventListener('show.daterangepicker', () => {
-      this.pickerShow.emit();
-    });
-
-    input.addEventListener('hide.daterangepicker', () => {
-      this.pickerHide.emit();
-    });
-
-    input.addEventListener('apply.daterangepicker', () => {
-      this.pickerApply.emit();
-    });
-
-    input.addEventListener('cancel.daterangepicker', () => {
-      this.pickerCancel.emit();
-    });
+    input.addEventListener('show.daterangepicker', () => this.pickerShow.emit());
+    input.addEventListener('hide.daterangepicker', () => this.pickerHide.emit());
+    input.addEventListener('apply.daterangepicker', () => this.pickerApply.emit());
+    input.addEventListener('cancel.daterangepicker', () => this.pickerCancel.emit());
 
     input.addEventListener('focus', () => {
       this._focused.set(true);
@@ -477,24 +392,12 @@ export class DateRangePicker
     });
   }
 
+  /* ============================
+     CVA
+  ============================ */
+
   writeValue(value: any): void {
     this._value.set(value);
-
-    if (!this.picker) return;
-
-    if (value) {
-      const opts = this.options();
-      if (opts.singleDatePicker) {
-        const date = value instanceof Date ? value : new Date(value);
-        this.picker.setStartDate(date);
-        this.picker.setEndDate(date);
-      } else if (value.startDate && value.endDate) {
-        this.picker.setStartDate(new Date(value.startDate));
-        this.picker.setEndDate(new Date(value.endDate));
-      }
-    }
-
-    this.stateChanges.next();
   }
 
   registerOnChange(fn: any): void {
@@ -506,10 +409,12 @@ export class DateRangePicker
   }
 
   setDisabledState(isDisabled: boolean): void {
-    if (this.dateInput) {
-      this.dateInput.nativeElement.disabled = isDisabled;
-    }
+    this.dateInput.nativeElement.disabled = isDisabled;
   }
+
+  /* ============================
+     UI API
+  ============================ */
 
   show(): void {
     this.picker?.show();
@@ -523,46 +428,9 @@ export class DateRangePicker
     this.picker?.toggle();
   }
 
-  getStartDate(): Date | null {
-    return this.picker?.getStartDate() || null;
-  }
-
-  getEndDate(): Date | null {
-    return this.picker?.getEndDate() || null;
-  }
-
-  setStartDate(date: Date): void {
-    this.picker?.setStartDate(date);
-  }
-
-  setEndDate(date: Date): void {
-    this.picker?.setEndDate(date);
-  }
-
-  updateTheme(theme: DatexTheme): void {
-    this.picker?.setTheme({ ...this.getTheme(), ...theme });
-  }
-
-  updateRanges(ranges: Record<string, [Date, Date]>): void {
-    if (this.picker && 'updateRanges' in this.picker) {
-      (this.picker as any).updateRanges(ranges);
-    }
-  }
-
-  updateConfiguration(): void {
-    this.reinitializePicker();
-  }
-
-  forceReinitialize(): void {
-    this.reinitializePicker();
-  }
-
   onCheckboxToggle(event: any): void {
-    if (this.checkboxReadonly()) {
-      return;
+    if (!this.checkboxReadonly()) {
+      this.checkboxChange.emit(event.checked);
     }
-
-    const newValue = event.checked;
-    this.checkboxChange.emit(newValue);
   }
 }

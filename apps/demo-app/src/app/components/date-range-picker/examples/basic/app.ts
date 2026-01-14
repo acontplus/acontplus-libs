@@ -4,7 +4,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
-import { DateRangePicker, DateRangePickerOptions } from '@acontplus/ng-components';
+import { DateRangePicker, DateRangePickerOptions, DateRangeValue } from '@acontplus/ng-components';
 
 @Component({
   selector: 'app-date-range-picker-basic-example',
@@ -57,9 +57,10 @@ export class App {
   };
 
   // Manejador de eventos cuando se selecciona un rango
-  onDateRangeSelected(event: { startDate: Date; endDate: Date; label?: string }) {
-    this.selectedStartDate = event.startDate;
-    this.selectedEndDate = event.endDate;
+  onDateRangeSelected(event: DateRangeValue<false>) {
+    // Convert to Date objects if they come as strings
+    this.selectedStartDate = event.from;
+    this.selectedEndDate = new Date(event.to);
     this.selectedLabel = event.label || null;
   }
 

@@ -1,25 +1,43 @@
 # DateRangePicker
 
-Un componente Angular que envuelve la librería `datex-ui` para proporcionar un selector de rango de fechas potente y fácil de usar.
+Un componente Angular que envuelve la librería `datex-ui` para proporcionar un selector de rango de fechas potente y fácil de usar con integración completa a Angular Material.
 
 ## Características
 
 - ✅ **Integración con Angular Forms**: Soporte completo para Reactive Forms y Template-driven Forms
 - ✅ **Control de Valor Personalizado**: Implementa `ControlValueAccessor` para integración perfecta
+- ✅ **Angular Material Integration**: Implementa `MatFormFieldControl` para integración nativa
 - ✅ **Temas Predefinidos**: Bootstrap, Material Design y tema por defecto
+- ✅ **Rangos Predefinidos**: Incluye rangos en español por defecto
 - ✅ **Configuración Flexible**: Más de 20 opciones de configuración
 - ✅ **Eventos Personalizados**: Eventos detallados para todas las interacciones
-- ✅ **TypeScript**: Tipado completo para mejor experiencia de desarrollo
-- ✅ **Standalone Component**: Compatible con Angular 14+ standalone components
+- ✅ **TypeScript Genérico**: Tipado completo con soporte para salida como string o Date
+- ✅ **Standalone Component**: Compatible con Angular 17+ standalone components
 - ✅ **Signals API**: Usa la nueva API de signals de Angular para mejor rendimiento
+- ✅ **Checkbox Integration**: Soporte opcional para checkbox integrado
+- ✅ **Formkit Tempo**: Utiliza @formkit/tempo para manejo avanzado de fechas
 
 ## Instalación
 
-El componente está incluido en el paquete `@acontplus/ng-components` y requiere `datex-ui` como dependencia.
+El componente está incluido en el paquete `@acontplus/ng-components` y requiere `datex-ui` y `@formkit/tempo` como dependencias.
 
 ```bash
-npm install datex-ui
+npm install datex-ui @formkit/tempo
 ```
+
+## Rangos Predefinidos
+
+El componente incluye por defecto los siguientes rangos en español:
+
+- **Hoy**: Fecha actual
+- **Ayer**: Día anterior
+- **Últimos 5 días**: Últimos 5 días incluyendo hoy
+- **Últimos 10 días**: Últimos 10 días incluyendo hoy
+- **Últimos 15 días**: Últimos 15 días incluyendo hoy
+- **Últimos 30 días**: Últimos 30 días incluyendo hoy
+- **Esta semana**: Desde el lunes hasta hoy
+- **Este mes**: Desde el primer día del mes hasta hoy
+- **El mes pasado**: Todo el mes anterior completo
 
 ## Uso Básico
 
@@ -32,16 +50,51 @@ import { DateRangePicker } from '@acontplus/ng-components';
   imports: [DateRangePicker],
   template: `
     <acp-date-range-picker
-      placeholder="Seleccionar rango de fechas"
-      [autoApply]="false"
+      label="Rango de Fechas"
+      placeholderText="Seleccionar rango de fechas"
       (dateRangeSelected)="onDateSelected($event)"
     >
     </acp-date-range-picker>
   `,
 })
 export class ExampleComponent {
-  onDateSelected(event: { startDate: Date; endDate: Date; label?: string }) {
+  onDateSelected(event: { from: Date | string; to: Date | string; label?: string }) {
     console.log('Rango seleccionado:', event);
+  }
+}
+```
+
+## Uso con Angular Material
+
+```typescript
+import { DateRangePicker } from '@acontplus/ng-components';
+import { MatFormFieldModule } from '@angular/material/form-field';
+
+@Component({
+  selector: 'app-material-example',
+  standalone: true,
+  imports: [DateRangePicker, MatFormFieldModule],
+  template: `
+    <acp-date-range-picker
+      label="Período de Reporte"
+      appearance="outline"
+      hint="Selecciona el rango de fechas para el reporte"
+      placeholderText="dd/mm/yyyy - dd/mm/yyyy"
+      [showCheckbox]="true"
+      checkboxAriaLabel="Incluir en reporte"
+      (dateRangeSelected)="onDateSelected($event)"
+      (checkboxChange)="onCheckboxChange($event)"
+    >
+    </acp-date-range-picker>
+  `,
+})
+export class MaterialExampleComponent {
+  onDateSelected(event: { from: Date | string; to: Date | string; label?: string }) {
+    console.log('Rango seleccionado:', event);
+  }
+
+  onCheckboxChange(checked: boolean) {
+    console.log('Checkbox:', checked);
   }
 }
 ```
@@ -50,7 +103,7 @@ export class ExampleComponent {
 
 ```typescript
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { DateRangePicker } from '@acontplus/ng-components';
+import { DateRangePicker, DateRangeValue } from '@acontplus/ng-components';
 
 @Component({
   selector: 'app-form-example',
@@ -60,55 +113,130 @@ import { DateRangePicker } from '@acontplus/ng-components';
     <form [formGroup]="dateForm">
       <acp-date-range-picker
         formControlName="dateRange"
-        placeholder="Seleccionar rango"
-        [ranges]="predefinedRanges"
+        label="Rango de Fechas"
+        placeholderText="Seleccionar rango"
+        [formatOutputAsString]="false"
       >
       </acp-date-range-picker>
     </form>
+
+    <pre>{{ dateForm.value | json }}</pre>
   `,
 })
 export class FormExampleComponent {
   dateForm = new FormGroup({
-    dateRange: new FormControl({
-      startDate: new Date(),
-      endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-    }),
+    dateRange: new FormControl<DateRangeValue<false> | null>(null),
   });
+}
+```
 
-  predefinedRanges = {
-    Hoy: [new Date(), new Date()],
-    'Últimos 7 días': [new Date(Date.now() - 6 * 24 * 60 * 60 * 1000), new Date()],
-  } as Record<string, [Date, Date]>;
+## Control de Formato de Salida
+
+El componente soporta dos formatos de salida mediante el parámetro genérico `AsString`:
+
+```typescript
+// Salida como strings (por defecto)
+@Component({
+  template: `
+    <acp-date-range-picker
+      [formatOutputAsString]="true"
+      (dateRangeSelected)="onStringDates($event)"
+    >
+    </acp-date-range-picker>
+  `,
+})
+export class StringOutputComponent {
+  onStringDates(event: DateRangeValue<true>) {
+    // event.from y event.to son strings en formato 'YYYY-MM-DD hh:mm:ss A'
+    console.log(typeof event.from); // 'string'
+  }
+}
+
+// Salida como objetos Date
+@Component({
+  template: `
+    <acp-date-range-picker
+      [formatOutputAsString]="false"
+      (dateRangeSelected)="onDateObjects($event)"
+    >
+    </acp-date-range-picker>
+  `,
+})
+export class DateOutputComponent {
+  onDateObjects(event: DateRangeValue<false>) {
+    // event.from y event.to son objetos Date
+    console.log(typeof event.from); // 'object'
+  }
 }
 ```
 
 ## Propiedades de Entrada (Signals)
 
-| Propiedad          | Tipo                                                              | Valor por Defecto               | Descripción                          |
-| ------------------ | ----------------------------------------------------------------- | ------------------------------- | ------------------------------------ |
-| `startDate`        | `InputSignal<Date>`                                               | `undefined`                     | Fecha de inicio inicial              |
-| `endDate`          | `InputSignal<Date>`                                               | `undefined`                     | Fecha de fin inicial                 |
-| `minDate`          | `InputSignal<Date \| null>`                                       | `null`                          | Fecha mínima seleccionable           |
-| `maxDate`          | `InputSignal<Date \| null>`                                       | `null`                          | Fecha máxima seleccionable           |
-| `autoApply`        | `InputSignal<boolean>`                                            | `false`                         | Aplicar automáticamente la selección |
-| `singleDatePicker` | `InputSignal<boolean>`                                            | `false`                         | Modo de fecha única                  |
-| `showDropdowns`    | `InputSignal<boolean>`                                            | `true`                          | Mostrar dropdowns de mes/año         |
-| `timePicker`       | `InputSignal<boolean>`                                            | `false`                         | Habilitar selector de tiempo         |
-| `timePicker24Hour` | `InputSignal<boolean>`                                            | `true`                          | Formato de 24 horas                  |
-| `ranges`           | `InputSignal<Record<string, [Date, Date]>>`                       | `{}`                            | Rangos predefinidos                  |
-| `presetTheme`      | `InputSignal<'default' \| 'bootstrap' \| 'material' \| 'custom'>` | `'default'`                     | Tema predefinido                     |
-| `placeholder`      | `InputSignal<string>`                                             | `'Seleccionar rango de fechas'` | Texto del placeholder                |
-| `disabled`         | `InputSignal<boolean>`                                            | `false`                         | Deshabilitar el componente           |
+### Configuración Principal
+
+| Propiedad              | Tipo                                  | Valor por Defecto | Descripción                           |
+| ---------------------- | ------------------------------------- | ----------------- | ------------------------------------- |
+| `options`              | `InputSignal<DateRangePickerOptions>` | `{}`              | Opciones de configuración de datex-ui |
+| `formatOutputAsString` | `InputSignal<AsString>`               | `true`            | Si la salida debe ser string o Date   |
+
+### UI y Apariencia
+
+| Propiedad         | Tipo                               | Valor por Defecto               | Descripción                        |
+| ----------------- | ---------------------------------- | ------------------------------- | ---------------------------------- |
+| `placeholderText` | `InputSignal<string>`              | `'Seleccionar rango de fechas'` | Texto del placeholder              |
+| `label`           | `InputSignal<string \| undefined>` | `undefined`                     | Etiqueta del campo                 |
+| `hint`            | `InputSignal<string \| undefined>` | `undefined`                     | Texto de ayuda                     |
+| `errorMessage`    | `InputSignal<string \| undefined>` | `undefined`                     | Mensaje de error                   |
+| `appearance`      | `InputSignal<'fill' \| 'outline'>` | `'outline'`                     | Apariencia del Material Form Field |
+| `isDisabled`      | `InputSignal<boolean>`             | `false`                         | Deshabilitar el componente         |
+| `inputReadonly`   | `InputSignal<boolean>`             | `false`                         | Campo de solo lectura              |
+
+### Iconos y Botones
+
+| Propiedad            | Tipo                   | Valor por Defecto | Descripción                 |
+| -------------------- | ---------------------- | ----------------- | --------------------------- |
+| `calendarIcon`       | `InputSignal<string>`  | `'date_range'`    | Icono del calendario        |
+| `showCalendarButton` | `InputSignal<boolean>` | `false`           | Mostrar botón de calendario |
+
+### Funcionalidad de Checkbox
+
+| Propiedad           | Tipo                                | Valor por Defecto    | Descripción                 |
+| ------------------- | ----------------------------------- | -------------------- | --------------------------- |
+| `showCheckbox`      | `InputSignal<boolean>`              | `false`              | Mostrar checkbox            |
+| `checkboxChecked`   | `InputSignal<boolean>`              | `false`              | Estado inicial del checkbox |
+| `checkboxReadonly`  | `InputSignal<boolean>`              | `false`              | Checkbox de solo lectura    |
+| `checkboxAriaLabel` | `InputSignal<string>`               | `'Toggle selection'` | Etiqueta ARIA del checkbox  |
+| `checkboxPosition`  | `InputSignal<'prefix' \| 'suffix'>` | `'suffix'`           | Posición del checkbox       |
 
 ## Eventos (Output Signals)
 
-| Evento              | Tipo                                                                   | Descripción                             |
-| ------------------- | ---------------------------------------------------------------------- | --------------------------------------- |
-| `dateRangeSelected` | `OutputEmitterRef<{ startDate: Date; endDate: Date; label?: string }>` | Se emite cuando se selecciona un rango  |
-| `pickerShow`        | `OutputEmitterRef<void>`                                               | Se emite cuando se muestra el picker    |
-| `pickerHide`        | `OutputEmitterRef<void>`                                               | Se emite cuando se oculta el picker     |
-| `pickerApply`       | `OutputEmitterRef<void>`                                               | Se emite cuando se aplica la selección  |
-| `pickerCancel`      | `OutputEmitterRef<void>`                                               | Se emite cuando se cancela la selección |
+| Evento              | Tipo                                         | Descripción                                   |
+| ------------------- | -------------------------------------------- | --------------------------------------------- |
+| `dateRangeSelected` | `OutputEmitterRef<DateRangeValue<AsString>>` | Se emite cuando se selecciona un rango        |
+| `pickerShow`        | `OutputEmitterRef<void>`                     | Se emite cuando se muestra el picker          |
+| `pickerHide`        | `OutputEmitterRef<void>`                     | Se emite cuando se oculta el picker           |
+| `pickerApply`       | `OutputEmitterRef<void>`                     | Se emite cuando se aplica la selección        |
+| `pickerCancel`      | `OutputEmitterRef<void>`                     | Se emite cuando se cancela la selección       |
+| `checkboxChange`    | `OutputEmitterRef<boolean>`                  | Se emite cuando cambia el estado del checkbox |
+
+## Tipos TypeScript
+
+```typescript
+// Interfaz principal para opciones
+export interface DateRangePickerOptions extends DatexOptions {
+  presetTheme?: 'default' | 'bootstrap' | 'material' | 'custom';
+}
+
+// Tipo para valores de fecha
+export type DateValue<AsString extends boolean> = AsString extends true ? string : Date;
+
+// Interfaz para el valor del rango
+export interface DateRangeValue<AsString extends boolean> {
+  from: DateValue<AsString>;
+  to: DateValue<AsString>;
+  label?: string;
+}
+```
 
 ## Métodos Públicos
 
@@ -120,12 +248,7 @@ export class FormExampleComponent {
 this.picker.show();           // Mostrar el picker
 this.picker.hide();           // Ocultar el picker
 this.picker.toggle();         // Alternar visibilidad
-this.picker.getStartDate();   // Obtener fecha de inicio
-this.picker.getEndDate();     // Obtener fecha de fin
-this.picker.setStartDate(new Date()); // Establecer fecha de inicio
-this.picker.setEndDate(new Date());   // Establecer fecha de fin
-this.picker.updateTheme(customTheme); // Actualizar tema
-this.picker.updateRanges(newRanges);  // Actualizar rangos
+this.picker.focus();          // Enfocar el input
 ```
 
 ## Temas
@@ -134,13 +257,13 @@ this.picker.updateRanges(newRanges);  // Actualizar rangos
 
 ```typescript
 // Tema Bootstrap
-<acp-date-range-picker presetTheme="bootstrap">
+<acp-date-range-picker [options]="{ presetTheme: 'bootstrap' }">
 
-// Tema Material
-<acp-date-range-picker presetTheme="material">
+// Tema Material (por defecto)
+<acp-date-range-picker [options]="{ presetTheme: 'material' }">
 
 // Tema por defecto
-<acp-date-range-picker presetTheme="default">
+<acp-date-range-picker [options]="{ presetTheme: 'default' }">
 ```
 
 ### Tema Personalizado
@@ -154,9 +277,12 @@ const customTheme = {
   borderRadius: '8px'
 };
 
-<acp-date-range-picker
-  presetTheme="custom"
-  [theme]="customTheme">
+const customOptions: DateRangePickerOptions = {
+  presetTheme: 'custom',
+  theme: customTheme
+};
+
+<acp-date-range-picker [options]="customOptions">
 ```
 
 ## Estilos
@@ -186,18 +312,22 @@ acp-date-range-picker {
 ### Con Selector de Tiempo
 
 ```typescript
+const timePickerOptions: DateRangePickerOptions = {
+  timePicker: true,
+  timePicker24Hour: true,
+  timePickerSeconds: true
+};
+
 <acp-date-range-picker
-  [timePicker]="true"
-  [timePicker24Hour]="true"
-  [timePickerSeconds]="true"
-  placeholder="Seleccionar fecha y hora">
+  [options]="timePickerOptions"
+  placeholderText="Seleccionar fecha y hora">
 </acp-date-range-picker>
 ```
 
-### Con Rangos Predefinidos
+### Con Rangos Personalizados
 
 ```typescript
-const ranges = {
+const customRanges = {
   'Hoy': [new Date(), new Date()],
   'Ayer': [
     new Date(Date.now() - 24 * 60 * 60 * 1000),
@@ -211,9 +341,44 @@ const ranges = {
     new Date(new Date().getFullYear(), new Date().getMonth(), 1),
     new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0)
   ]
+} as Record<string, [Date, Date]>;
+
+const rangeOptions: DateRangePickerOptions = {
+  ranges: customRanges
 };
 
-<acp-date-range-picker [ranges]="ranges">
+<acp-date-range-picker [options]="rangeOptions">
+```
+
+### Con Checkbox Integrado
+
+```typescript
+@Component({
+  template: `
+    <acp-date-range-picker
+      label="Rango de Fechas del Reporte"
+      [showCheckbox]="true"
+      checkboxAriaLabel="Incluir en el reporte mensual"
+      checkboxPosition="prefix"
+      [checkboxChecked]="includeInReport()"
+      (dateRangeSelected)="onDateSelected($event)"
+      (checkboxChange)="onReportToggle($event)"
+    >
+    </acp-date-range-picker>
+  `,
+})
+export class CheckboxExampleComponent {
+  includeInReport = signal(false);
+
+  onDateSelected(range: DateRangeValue<true>) {
+    console.log('Rango seleccionado:', range);
+  }
+
+  onReportToggle(checked: boolean) {
+    this.includeInReport.set(checked);
+    console.log('Incluir en reporte:', checked);
+  }
+}
 ```
 
 ### Validación con Angular Forms
@@ -222,8 +387,23 @@ const ranges = {
 import { Validators } from '@angular/forms';
 
 dateForm = new FormGroup({
-  dateRange: new FormControl(null, [Validators.required]),
+  dateRange: new FormControl<DateRangeValue<false> | null>(null, [
+    Validators.required,
+    this.dateRangeValidator
+  ]),
 });
+
+// Validador personalizado
+dateRangeValidator(control: AbstractControl): ValidationErrors | null {
+  const value = control.value as DateRangeValue<false>;
+  if (!value) return null;
+
+  const diffDays = Math.ceil(
+    (value.to.getTime() - value.from.getTime()) / (1000 * 60 * 60 * 24)
+  );
+
+  return diffDays > 90 ? { maxRangeExceeded: { maxDays: 90, actualDays: diffDays } } : null;
+}
 ```
 
 ### Usando Signals para Reactividad
@@ -234,30 +414,34 @@ import { signal, computed } from '@angular/core';
 @Component({
   template: `
     <acp-date-range-picker
-      [startDate]="startDate()"
-      [endDate]="endDate()"
-      [disabled]="isDisabled()"
+      [isDisabled]="isDisabled()"
+      [formatOutputAsString]="false"
       (dateRangeSelected)="onDateSelected($event)"
     >
     </acp-date-range-picker>
 
     <p>Días seleccionados: {{ daysDifference() }}</p>
+    <p>Rango válido: {{ isValidRange() ? 'Sí' : 'No' }}</p>
   `,
 })
 export class SignalExampleComponent {
-  startDate = signal(new Date());
-  endDate = signal(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000));
+  selectedRange = signal<DateRangeValue<false> | null>(null);
   isDisabled = signal(false);
 
   daysDifference = computed(() => {
-    const start = this.startDate();
-    const end = this.endDate();
-    return Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+    const range = this.selectedRange();
+    if (!range) return 0;
+
+    return Math.ceil((range.to.getTime() - range.from.getTime()) / (1000 * 60 * 60 * 24)) + 1;
   });
 
-  onDateSelected(event: { startDate: Date; endDate: Date }) {
-    this.startDate.set(event.startDate);
-    this.endDate.set(event.endDate);
+  isValidRange = computed(() => {
+    const days = this.daysDifference();
+    return days > 0 && days <= 30;
+  });
+
+  onDateSelected(range: DateRangeValue<false>) {
+    this.selectedRange.set(range);
   }
 }
 ```
@@ -267,6 +451,24 @@ export class SignalExampleComponent {
 - Angular 17+
 - TypeScript 5.0+
 - datex-ui 1.1.11+
+- @formkit/tempo 0.1.2+
+- Angular Material 17+
+
+## Dependencias
+
+```json
+{
+  "dependencies": {
+    "datex-ui": "^1.1.11",
+    "@formkit/tempo": "^0.1.2"
+  },
+  "peerDependencies": {
+    "@angular/core": "^17.0.0",
+    "@angular/forms": "^17.0.0",
+    "@angular/material": "^17.0.0"
+  }
+}
+```
 
 ## Licencia
 

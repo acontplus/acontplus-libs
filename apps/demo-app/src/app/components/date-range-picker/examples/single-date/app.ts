@@ -38,7 +38,8 @@ export class SingleDateApp {
     presetTheme: 'material',
   };
 
-  onDateRangeSelected(event: { startDate: Date; endDate: Date; label?: string }) {
-    this.selectedDate = event.startDate;
+  onDateRangeSelected(event: { from: Date | string; to: Date | string; label?: string }) {
+    // Convert to Date objects if they come as strings
+    this.selectedDate = typeof event.from === 'string' ? new Date(event.from) : event.from;
   }
 }

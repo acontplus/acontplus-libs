@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { DateRangePicker, DateRangePickerOptions } from '@acontplus/ng-components';
+import { DateRangePicker, DateRangePickerOptions, DateRangeValue } from '@acontplus/ng-components';
 
 @Component({
   selector: 'app-date-range-picker-angular-wrapper-example',
@@ -68,8 +68,9 @@ export class DateRangePickerAngularWrapperExample {
   };
 
   // Event handlers
-  onDateRangeSelected(_event: { startDate: Date; endDate: Date; label?: string }) {
-    // Handle date range selection
+  onDateRangeSelected(event: DateRangeValue<false>) {
+    // Handle date range selection - convert to Date objects if needed
+    console.log('Rango seleccionado:', event);
   }
 
   onPickerShow() {

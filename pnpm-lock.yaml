@@ -84,8 +84,8 @@ importers:
         specifier: ^5.3.8
         version: 5.3.8(@popperjs/core@2.11.8)
       datex-ui:
-        specifier: 1.1.12
-        version: 1.1.12
+        specifier: 1.2.0
+        version: 1.2.0
       decimal.js:
         specifier: ^10.6.0
         version: 10.6.0
@@ -5195,8 +5195,8 @@ packages:
     resolution: {integrity: sha512-39BOQLs9ZjKh0/patS9nrT8wc3ioX3/eA/zgbKNopnF2wCqJEoxywwwElATYvRsXdnOxA/OQeQoFZ3rFjVajhg==}
     engines: {node: '>=4.0'}
 
-  datex-ui@1.1.12:
-    resolution: {integrity: sha512-ioJ35I2HHGziU4kCuhWoyTX5yL0wZQi8pRm9I4roGjlvsgkmJ44zufpd4EXoa5X5cHPlDIc8M9UAVzHHQjSjyA==}
+  datex-ui@1.2.0:
+    resolution: {integrity: sha512-3vg8qJLZH8uJUiSsJbVb3hSewYv8Vxt+kcl0rcF8fFwBDrlk+2uyRQIUNOM0PZDD5LcrtD+/1TDzYtaUjBblsw==}
     engines: {node: '>=16.0.0', pnpm: '>=8.0.0'}
 
   dayjs@1.11.13:
@@ -15489,7 +15489,7 @@ snapshots:
 
   date-format@4.0.14: {}
 
-  datex-ui@1.1.12: {}
+  datex-ui@1.2.0: {}
 
   dayjs@1.11.13: {}
 

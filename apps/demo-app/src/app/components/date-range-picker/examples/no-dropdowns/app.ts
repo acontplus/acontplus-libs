@@ -48,9 +48,10 @@ export class NoDropdownsApp implements AfterViewInit {
     this.selectedLabel = 'Hoy';
   }
 
-  onDateRangeSelected(event: { startDate: Date; endDate: Date; label?: string }) {
-    this.selectedStartDate = event.startDate;
-    this.selectedEndDate = event.endDate;
+  onDateRangeSelected(event: { from: Date | string; to: Date | string; label?: string }) {
+    // Convert to Date objects if they come as strings
+    this.selectedStartDate = typeof event.from === 'string' ? new Date(event.from) : event.from;
+    this.selectedEndDate = typeof event.to === 'string' ? new Date(event.to) : event.to;
     this.selectedLabel = event.label || null;
   }
 

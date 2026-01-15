@@ -10,8 +10,9 @@ import {
   input,
   output,
   signal,
+  model,
 } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatFormFieldControl, MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -67,7 +68,14 @@ function formatDateToString(date: Date): string {
 @Component({
   selector: 'acp-date-range-picker',
   standalone: true,
-  imports: [MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatCheckboxModule],
+  imports: [
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    MatCheckboxModule,
+    FormsModule,
+  ],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -100,7 +108,7 @@ function formatDateToString(date: Date): string {
       @if (showCheckbox() && checkboxPosition() === 'prefix') {
         <mat-checkbox
           matPrefix
-          [checked]="checkboxChecked()"
+          [(ngModel)]="checkboxChecked"
           [disabled]="checkboxReadonly()"
           [aria-label]="checkboxAriaLabel()"
           (change)="onCheckboxToggle($event)"
@@ -121,7 +129,7 @@ function formatDateToString(date: Date): string {
       @if (showCheckbox() && checkboxPosition() === 'suffix') {
         <mat-checkbox
           matSuffix
-          [checked]="checkboxChecked()"
+          [(ngModel)]="checkboxChecked"
           [disabled]="checkboxReadonly()"
           [aria-label]="checkboxAriaLabel()"
           (change)="onCheckboxToggle($event)"
@@ -233,7 +241,7 @@ export class DateRangePicker<AsString extends boolean = true>
   showCalendarButton = input(false);
 
   showCheckbox = input(false);
-  checkboxChecked = input(false);
+  checkboxChecked = model(false);
   checkboxReadonly = input(false);
   checkboxAriaLabel = input('Toggle selection');
   checkboxPosition = input<'prefix' | 'suffix'>('suffix');

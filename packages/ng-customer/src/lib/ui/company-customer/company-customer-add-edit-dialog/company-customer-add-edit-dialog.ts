@@ -4,13 +4,13 @@ import { MatDialogContent, MatDialogActions, MatDialogRef } from '@angular/mater
 import { Button } from '@acontplus/ng-components';
 
 @Component({
-  selector: 'app-company-customer-create',
+  selector: 'acp-company-customer-add-edit-dialog',
   imports: [CompanyCustomerForm, MatDialogContent, MatDialogActions, Button],
-  templateUrl: './company-customer-create.html',
+  templateUrl: './company-customer-add-edit-dialog.html',
 })
-export class CompanyCustomerCreate {
+export class CompanyCustomerAddEditDialog {
   formId = signal('companyCustomerFormId');
-  private dgRef = inject(MatDialogRef<CompanyCustomerCreate>);
+  private dgRef = inject(MatDialogRef<CompanyCustomerAddEditDialog>);
   onCustomerCreated(customer: any): void {
     console.log('Cliente creado:', customer);
     // Mostrar notificación de éxito

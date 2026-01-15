@@ -5,6 +5,7 @@
   "peerDependencies": {
     "@acontplus/ng-components": "^2.1.0",
     "@acontplus/ng-notifications": "^2.0.2",
+    "@acontplus/utils": "1.0.11",
     "@angular/common": "^21.0.0",
     "@angular/core": "^21.0.0"
   },

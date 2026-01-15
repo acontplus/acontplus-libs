@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { CompanyCustomerFormComponent } from '@acontplus/ng-customer';
+import { CompanyCustomerForm } from '@acontplus/ng-customer';
 
 @Component({
   selector: 'app-company-customer-create',
-  imports: [CompanyCustomerFormComponent],
+  imports: [CompanyCustomerForm],
   templateUrl: './company-customer-list.html',
 })
 export class CompanyCustomerList {

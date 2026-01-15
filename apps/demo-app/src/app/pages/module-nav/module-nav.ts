@@ -17,6 +17,12 @@ export const MODULES_MENU: ModuleCategory[] = [
     summary: 'Enhanced company customer wrapper with custom functionality.',
     category: 'Customer',
   },
+  {
+    id: 'notifications',
+    name: 'Notifications',
+    summary: 'Notifications with custom functionality. Enviar por WhatsApp, Email',
+    category: 'Notifications',
+  },
 ];
 
 @Component({

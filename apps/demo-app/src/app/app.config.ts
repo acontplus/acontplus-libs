@@ -24,6 +24,14 @@ import { companyCustomerProvider } from './modules/company-customer/company-cust
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { TokenLocalStorageRepository } from './core/token-local-storage.repository';
 
+// WhatsApp providers
+import {
+  WHATSAPP_MESSAGING_PORT,
+  MetaWhatsAppAdapter,
+  REPORT_PORT,
+  ReportAdapter,
+} from '@acontplus/ng-common';
+
 export const appConfig: ApplicationConfig = {
   providers: [
     // Core Angular providers
@@ -75,6 +83,13 @@ export const appConfig: ApplicationConfig = {
     // Environment
     { provide: ENVIRONMENT, useValue: environment },
     { provide: AUTH_TOKEN, useClass: TokenLocalStorageRepository },
+
+    // WhatsApp providers
+    { provide: WHATSAPP_MESSAGING_PORT, useClass: MetaWhatsAppAdapter },
+
+    // Report providers
+    { provide: REPORT_PORT, useClass: ReportAdapter },
+
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
 

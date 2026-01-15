@@ -1,0 +1,64 @@
+{
+  "name": "@acontplus/ng-common",
+  "version": "1.0.1",
+  "description": "Common Angular library with shared components, services, and utilities for enterprise applications. Includes WhatsApp messaging, report generation, document printing, and reusable UI components built with clean architecture patterns.",
+  "peerDependencies": {
+    "@angular/core": "^21.0.0",
+    "@angular/common": "^21.0.0",
+    "@angular/material": "^21.0.0",
+    "@angular/forms": "^21.0.0",
+    "rxjs": "^7.8.1"
+  },
+  "sideEffects": false,
+  "main": "fesm2022/acontplus-ng-common.mjs",
+  "module": "fesm2022/acontplus-ng-common.mjs",
+  "typings": "index.d.ts",
+  "files": [
+    "index.d.ts",
+    "*.d.ts",
+    "**/*.d.ts",
+    "fesm2022/**/*"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "keywords": [
+    "acontplus",
+    "angular",
+    "common",
+    "shared",
+    "utilities",
+    "components",
+    "services",
+    "whatsapp",
+    "messaging",
+    "reports",
+    "printing",
+    "material-design",
+    "ui-library",
+    "enterprise",
+    "reusable",
+    "clean-architecture",
+    "typescript",
+    "frontend"
+  ],
+  "author": "Ivan Paz <ifer343@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Acontplus-S-A-S/acontplus-libs/issues"
+  },
+  "homepage": "https://github.com/Acontplus-S-A-S/acontplus-libs#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Acontplus-S-A-S/acontplus-libs.git"
+  },
+  "release": {
+    "branches": [
+      "main"
+    ]
+  }
+}

@@ -1,6 +1,6 @@
 # @acontplus/ng-common
 
-Librería común para aplicaciones Angular con funcionalidades de WhatsApp Cloud API, reportes e impresión. Incluye utilidades para formateo de teléfonos, manejo de archivos y generación de parámetros de reportes.
+Librería común para aplicaciones Angular con funcionalidades de WhatsApp Cloud API, reportes e impresión. Incluye utilidades estáticas para formateo de teléfonos, manejo de archivos y generación de parámetros de reportes con configuración centralizada.
 
 ## Instalación
 
@@ -70,17 +70,7 @@ export class MyComponent {
     ).subscribe();
   }
 
-  // 3. Enviar documento por URL (requiere ventana 24h)
-  sendDocumentByUrl() {
-    this.whatsapp.sendDocument(
-      '0987654321',
-      'https://mi-servidor.com/documento.pdf',
-      'Tu factura está lista',
-      'factura-001.pdf'
-    ).subscribe();
-  }
-
-  // 4. Enviar documento con template (funciona siempre - RECOMENDADO)
+  // 3. Enviar documento con template (funciona siempre - RECOMENDADO)
   sendDocumentWithFile(file: File) {
     this.whatsapp.sendDocumentWithTemplate({
       phone: '0987654321',
@@ -123,77 +113,200 @@ if (validation.isValid) {
 const apiPhone = PhoneFormatterUtil.formatForWhatsAppApi('0987654321');
 // Resultado: "593987654321@c.us"
 
-// Formatear para WhatsApp Web
-const webPhone = PhoneFormatterUtil.formatForWhatsAppWeb('0987654321');
-// Resultado: "593987654321"
-
 // Formatear para mostrar al usuario
 const displayPhone = PhoneFormatterUtil.formatForDisplay('0987654321');
 // Resultado: "+593 98 765 4321"
-
-// Obtener hints dinámicos
-const hint = PhoneFormatterUtil.getPhoneHint('0987654321');
-// Resultado: "Se enviará a: +593 98 765 4321"
 ```
 
-### Reportes con Builder Configurado
+### Reportes con Builder Estático
 
 ```typescript
-import { ReportFacade, ReportParamsBuilder } from '@acontplus/ng-common';
+import {
+  ReportFacade,
+  ReportParamsBuilder,
+  SALE_CODE_REPORT,
+  INVENTORY_CODE_REPORT,
+  ELECTRONIC_DOCUMENT_CODE,
+  REPORT_FORMAT
+} from '@acontplus/ng-common';
 
 @Component({...})
 export class ReportsComponent {
-  constructor(
-    private reports: ReportFacade,
-    private reportBuilder: ReportParamsBuilder
-  ) {}
+  constructor(private reportFacade: ReportFacade) {}
 
-  // Generar reporte usando el builder (RECOMENDADO)
+  // Ejemplo 1: Reporte simple de factura
   generateInvoiceReport(id: number, codEstab: string) {
-    const docData = {
-      codDoc: 'FV', // Factura
-      id,
-      codEstab
-    };
+    const reportOptions = ReportParamsBuilder.build(
+      {
+        codDoc: ELECTRONIC_DOCUMENT_CODE.FV,
+        id,
+        codEstab
+      },
+      REPORT_FORMAT.PDF,
+      true // returnBlob
+    );
 
-    const reportOptions = this.reportBuilder.generateReportFor(docData, 'pdf', true);
-
-    this.reports.generate(reportOptions).subscribe(response => {
-      // Manejar respuesta
+    this.reportFacade.generate(reportOptions).subscribe(response => {
+      console.log('Reporte generado');
     });
   }
 
-  // Generar reporte de Nota de Entrega
-  generateDeliveryNote(id: number, codEstab: string) {
-    const docData = {
-      codDoc: 'NE', // Nota de Entrega
-      id,
-      codEstab
-    };
+  // Ejemplo 2: Reporte de ventas con parámetros personalizados
+  generateSalesReport() {
+    const reportOptions = ReportParamsBuilder.build(
+      {
+        codDoc: SALE_CODE_REPORT.FG,
+        fechaInicio: '2024-01-01',
+        fechaFin: '2024-12-31',
+        codEstab: '001',
+        idUsuario: 5,
+        userRoleId: 2
+      },
+      REPORT_FORMAT.EXCEL
+    );
 
-    const reportOptions = this.reportBuilder.generateReportFor(docData, 'excel');
-    this.reports.generate(reportOptions);
+    this.reportFacade.generate(reportOptions);
   }
 
-  // Generar reporte de Orden de Pedido
-  generateOrder(id: number, codEstab: string) {
-    const docData = {
-      codDoc: 'NORMAL', // Orden
-      id,
-      codEstab
-    };
+  // Ejemplo 3: Reporte de inventario con múltiples parámetros
+  generateInventoryReport() {
+    const reportOptions = ReportParamsBuilder.build(
+      {
+        codDoc: INVENTORY_CODE_REPORT.ARTICULO_PVP,
+        tipo: 2,
+        stockStatusCode: 1,
+        idTarifa: 3,
+        idMarca: 10,
+        fechaInicio: this.fromDate,
+        fechaFin: this.toDate,
+        // Cualquier parámetro adicional se incluye automáticamente
+        customParam: 'valor'
+      },
+      REPORT_FORMAT.PDF
+    );
 
-    const reportOptions = this.reportBuilder.generateReportFor(docData, 'word');
-    this.reports.generate(reportOptions);
+    this.reportFacade.generate(reportOptions);
+  }
+
+  // Ejemplo 4: Reporte condicional
+  generateConditionalReport(useCustom: boolean) {
+    const reportCode = useCustom
+      ? SALE_CODE_REPORT.SRRC
+      : SALE_CODE_REPORT.SRR;
+
+    const reportOptions = ReportParamsBuilder.build(
+      {
+        codDoc: reportCode,
+        porcentajeRenta: 15,
+        porcentajeComision: 5,
+        fechaInicio: this.fromDate,
+        fechaFin: this.toDate
+      },
+      REPORT_FORMAT.PDF
+    );
+
+    this.reportFacade.generate(reportOptions);
   }
 
   // Verificar tipos soportados
   checkSupportedTypes() {
-    const supportedTypes = this.reportBuilder.getSupportedDocumentTypes();
-    console.log('Tipos soportados:', supportedTypes);
-    // ['FV', 'NE', 'NORMAL', 'NC', 'ND', 'GR']
+    const types = ReportParamsBuilder.getSupportedDocumentTypes();
+    console.log('Tipos soportados:', types);
+  }
+
+  // Verificar si un tipo está soportado
+  isSupported(code: string) {
+    return ReportParamsBuilder.isDocumentTypeSupported(code);
   }
 }
+```
+
+### Constantes de Reportes Disponibles
+
+```typescript
+import {
+  SALE_CODE_REPORT,
+  PURCHASE_CODE_REPORT,
+  ACCOUNTING_CODE_REPORT,
+  CUSTOMER_CODE_REPORT,
+  INVENTORY_CODE_REPORT,
+  ELECTRONIC_DOCUMENT_CODE,
+  REPORT_FORMAT,
+} from '@acontplus/ng-common';
+
+// Reportes de Ventas
+SALE_CODE_REPORT.SRR; // Reporte Rentabilidad
+SALE_CODE_REPORT.SRRC; // Reporte Rentabilidad Custom
+SALE_CODE_REPORT.FG; // Factura General
+
+// Reportes de Compras
+PURCHASE_CODE_REPORT.RCNH; // Reporte Compras Nota Hidden
+PURCHASE_CODE_REPORT.RLC; // Reporte Liquidación Compra
+
+// Reportes de Contabilidad
+ACCOUNTING_CODE_REPORT.RCEGR; // Estado General Resultado
+ACCOUNTING_CODE_REPORT.ACEDFP; // Estado Flujo de Pago
+ACCOUNTING_CODE_REPORT.ACELC; // Estado Libro Caja
+
+// Reportes de Clientes
+CUSTOMER_CODE_REPORT.RCL; // Reporte Cliente Listado
+
+// Reportes de Inventario
+INVENTORY_CODE_REPORT.RK; // Kardex
+INVENTORY_CODE_REPORT.CDAA; // Consolidado Artículos Agrupado
+INVENTORY_CODE_REPORT.CDA; // Consolidado Artículos
+INVENTORY_CODE_REPORT.STOCK_VALORACION; // Stock Valoración
+INVENTORY_CODE_REPORT.ARTICULO_PVP; // Artículo Tabla
+INVENTORY_CODE_REPORT.RAF; // Artículos Fraccionados
+INVENTORY_CODE_REPORT.RCAA; // Caducidad Artículos
+INVENTORY_CODE_REPORT.RASR; // Artículo Stock Valoración
+INVENTORY_CODE_REPORT.RCD; // Consolidación Detalle
+INVENTORY_CODE_REPORT.RTB; // Transferencia Bodega
+
+// Documentos Electrónicos
+ELECTRONIC_DOCUMENT_CODE.FV; // Factura
+ELECTRONIC_DOCUMENT_CODE.NE; // Nota de Entrega
+ELECTRONIC_DOCUMENT_CODE.NC; // Nota de Crédito
+ELECTRONIC_DOCUMENT_CODE.ND; // Nota de Débito
+ELECTRONIC_DOCUMENT_CODE.GR; // Guía de Remisión
+ELECTRONIC_DOCUMENT_CODE.NORMAL; // Orden de Pedido
+
+// Formatos
+REPORT_FORMAT.PDF;
+REPORT_FORMAT.EXCEL;
+REPORT_FORMAT.WORD;
+```
+
+### Builders de Mensajes WhatsApp
+
+```typescript
+import { WhatsAppMessageBuilder } from '@acontplus/ng-common';
+
+// Mensaje de entrega de documento
+const messages = WhatsAppMessageBuilder.buildDocumentDeliveryMessages({
+  comprador: 'Juan Pérez',
+  establecimiento: 'Mi Empresa S.A.',
+  serie: 'FAC-001-001-000001234',
+  tipo: 'FACTURA',
+});
+console.log(messages.main); // Mensaje principal
+console.log(messages.promo); // Mensaje promocional
+
+// Mensaje de bienvenida
+const welcome = WhatsAppMessageBuilder.buildWelcomeMessage('Juan Pérez', 'Mi Empresa S.A.');
+
+// Mensaje de confirmación de pedido
+const confirmation = WhatsAppMessageBuilder.buildOrderConfirmationMessage(
+  'ORD-12345',
+  'Juan Pérez',
+);
+
+// Mensaje de recordatorio de pago
+const reminder = WhatsAppMessageBuilder.buildPaymentReminderMessage(
+  'Juan Pérez',
+  150.5,
+  '2024-12-31',
+);
 ```
 
 ### Utilidades de Archivos
@@ -215,44 +328,23 @@ FileMapperUtil.openFile(blob, 'documento.pdf');
 
 // Detectar navegador legacy
 if (FileMapperUtil.isLegacyBrowser()) {
-  // Forzar descarga en navegadores antiguos
-}
-```
-
-### Impresión
-
-```typescript
-import { PrinterFacade } from '@acontplus/ng-common';
-
-@Component({...})
-export class PrintingComponent {
-  constructor(private printer: PrinterFacade) {}
-
-  // Imprimir factura
-  printInvoice(orderId: number, documentId: number) {
-    this.printer.printInvoice(orderId, documentId);
-  }
-
-  // Impresión automática
-  autoPrint(data: any, docType: string) {
-    this.printer.autoPrint(data, docType);
-  }
+  FileMapperUtil.downloadFile(blob, fileName); // Forzar descarga
 }
 ```
 
 ### Componente UI para WhatsApp
 
 ```typescript
-import { WhatsAppSender } from '@acontplus/ng-common';
+import { WhatsAppSender, ELECTRONIC_DOCUMENT_CODE } from '@acontplus/ng-common';
 
 @Component({
-  template: ` <acp-whatsapp-sender [config]="whatsappConfig"> </acp-whatsapp-sender> `,
+  template: `<acp-whatsapp-sender [config]="whatsappConfig"></acp-whatsapp-sender>`,
   imports: [WhatsAppSender],
 })
 export class MyComponent {
   whatsappConfig = {
     documentData: {
-      codDoc: 'FV',
+      codDoc: ELECTRONIC_DOCUMENT_CODE.FV,
       id: 123,
       codEstab: '001',
     },
@@ -264,9 +356,59 @@ export class MyComponent {
 }
 ```
 
+## Configuración de Reportes
+
+### Tipos de Documento Soportados
+
+El `ReportParamsBuilder` incluye configuración para todos estos tipos:
+
+| Categoría                   | Códigos Disponibles                                                      |
+| --------------------------- | ------------------------------------------------------------------------ |
+| **Documentos Electrónicos** | FV, NE, NC, ND, GR, NORMAL                                               |
+| **Ventas**                  | SRR, SRRC, FG                                                            |
+| **Compras**                 | RCNH, RLC                                                                |
+| **Contabilidad**            | RCEGR, ACEDFP, ACELC                                                     |
+| **Clientes**                | RCL                                                                      |
+| **Inventario**              | RK, CDAA, CDA, STOCK_VALORACION, ARTICULO_PVP, RAF, RCAA, RASR, RCD, RTB |
+
+### Agregar Nuevos Tipos de Reporte
+
+**Opción 1: Agregar a la configuración (Recomendado)**
+
+```typescript
+// 1. Agregar constante en report-codes.ts
+export const enum PURCHASE_CODE_REPORT {
+  RCNH = 'RCNH',
+  RLC = 'RLC',
+  RNP = 'RNP', // ← NUEVO
+}
+
+// 2. Agregar configuración en report-params.builder.ts
+[PURCHASE_CODE_REPORT.RNP]: {
+  codigo: PURCHASE_CODE_REPORT.RNP,
+  hasService: true,
+  useV1Api: false,
+  idField: 'id',
+  hasParams: false,
+}
+```
+
+**Opción 2: Registro dinámico**
+
+```typescript
+// En runtime
+ReportParamsBuilder.registerReportType('CUSTOM_REPORT', {
+  codigo: 'CUSTOM_REPORT',
+  hasService: true,
+  useV1Api: false,
+  idField: 'id',
+  hasParams: true,
+});
+```
+
 ## API de WhatsApp Cloud
 
-### Endpoints utilizados (configurados en constants):
+### Endpoints utilizados
 
 - `POST /api/common/whatsapp-cloud/text` - Texto directo
 - `POST /api/common/whatsapp-cloud/text-template` - Texto con template
@@ -274,7 +416,7 @@ export class MyComponent {
 - `POST /api/common/whatsapp-cloud/document-template` - Documento con template
 - `GET /api/common/whatsapp-cloud/status` - Estado del proveedor
 
-### Formato de FormData para documentos:
+### Formato de FormData
 
 ```typescript
 // La librería maneja automáticamente el formato correcto:
@@ -283,75 +425,52 @@ formData.append('File', file);
 formData.append('TemplateName', templateName);
 formData.append('LanguageCode', languageCode);
 formData.append('Filename', filename);
-// BodyParams como array indexado
 formData.append('BodyParams[0]', param1);
 formData.append('BodyParams[1]', param2);
 ```
 
-## Configuración de Reportes
+## Arquitectura
 
-### Tipos de Documento Soportados:
+### Separación de Responsabilidades
 
-El `ReportParamsBuilder` soporta múltiples tipos de documento configurados:
+- **WhatsApp**: Mensajería y notificaciones
+- **Report**: Generación de reportes
+- **Printer**: Impresión de documentos
+- **Utils**: Utilidades estáticas reutilizables
+- **Builders**: Construcción de parámetros y mensajes
 
-| Código   | Descripción      | API Version | ID Field | Características                  |
-| -------- | ---------------- | ----------- | -------- | -------------------------------- |
-| `FV`     | Factura          | v1          | `id`     | Incluye establecimiento y código |
-| `NE`     | Nota de Entrega  | v1          | `id`     | Parámetros extra: `tipo: 1`      |
-| `NORMAL` | Orden de Pedido  | v2          | `id`     | Sin servicio adicional           |
-| `NC`     | Nota de Crédito  | v1          | `id`     | Incluye establecimiento          |
-| `ND`     | Nota de Débito   | v1          | `id`     | Incluye establecimiento          |
-| `GR`     | Guía de Remisión | v2          | `id`     | Con servicio                     |
-
-### Agregar Nuevos Tipos:
-
-Para agregar un nuevo tipo de documento, simplemente agrega la configuración:
-
-```typescript
-// En ReportParamsBuilder, agregar a reportConfigs:
-RET: {
-  codigo: 'RET',
-  hasService: true,
-  useV1Api: true,
-  idField: 'id',
-  includeEstabInData: true,
-}
-```
-
-## Arquitectura Limpia
-
-### Separación de responsabilidades:
-
-- **WhatsApp**: Solo mensajería
-- **Report**: Solo generación de reportes
-- **Printer**: Solo impresión
-- **Utils**: Utilidades estáticas sin dependencias
-
-### Estructura optimizada:
+### Estructura del Proyecto
 
 ```
 ng-common/
-├── constants/          # URLs y configuraciones
-├── contracts/          # Puertos/Interfaces separados
-├── models/            # DTOs alineados con tu API
-├── adapters/          # Implementaciones limpias
+├── constants/          # Constantes y códigos de reporte
+├── contracts/          # Interfaces y puertos
+├── models/            # DTOs y modelos de datos
+├── adapters/          # Implementaciones de puertos
 ├── facades/           # Servicios de alto nivel
 ├── tokens/            # Tokens de inyección
-├── builders/          # Constructores y builders configurados
-├── utils/             # Utilidades estáticas (sin Injectable)
+├── builders/          # Builders estáticos
+├── utils/             # Utilidades estáticas
 └── ui/               # Componentes UI
 ```
 
 ## Características
 
-- ✅ **Utilidades estáticas optimizadas** - Mejor performance, sin inyección de dependencias
-- ✅ **Builder configurado para reportes** - Escalable sin switch statements
-- ✅ **Formateo automático de teléfonos ecuatorianos** - 09xxxxxxxx → +593 automáticamente
-- ✅ **Sin dependencias externas problemáticas** - No FileSaver, no SweetAlert2
-- ✅ **Constants en lugar de ConfigService** - Más simple y directo
-- ✅ **Separación clara** - Report ≠ Printer ≠ WhatsApp ≠ Utils
-- ✅ **API completamente alineada** - Con tu implementación real
-- ✅ **Código limpio** - Sin duplicación, principios DRY aplicados
-- ✅ **TypeScript completo** - Tipado fuerte con validaciones
-- ✅ **Fácil de mantener** - Estructura clara y coherente
-- ✅ **Tree-shaking optimizado** - Mejor bundle size con utilidades estáticas
+- ✅ **Builders estáticos** - Sin inyección de dependencias, uso directo
+- ✅ **Constantes centralizadas** - Todos los códigos de reporte en un solo lugar
+- ✅ **Configuración escalable** - Agregar nuevos reportes sin modificar código
+- ✅ **Utilidades optimizadas** - Mejor performance con métodos estáticos
+- ✅ **Formateo automático** - Teléfonos ecuatorianos 09xxxxxxxx → +593
+- ✅ **Type-safe** - TypeScript completo con enums y tipos
+- ✅ **Clean Architecture** - Separación clara de responsabilidades
+- ✅ **Sin dependencias problemáticas** - No FileSaver, no SweetAlert2
+- ✅ **API alineada** - Formato exacto de tu backend
+- ✅ **DRY** - Sin duplicación de código
+- ✅ **Tree-shaking** - Mejor optimización del bundle
+- ✅ **Fácil de mantener** - Código limpio y bien organizado
+- ✅ **Extensible** - Múltiples formas de agregar funcionalidad
+
+## Soporte
+
+Para reportar problemas o solicitar nuevas funcionalidades, visita:
+https://github.com/Acontplus-S-A-S/acontplus-libs/issues

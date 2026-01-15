@@ -1,5 +1,3 @@
-import { Injectable } from '@angular/core';
-
 export interface DocumentDeliveryData {
   comprador: string;
   establecimiento: string;
@@ -12,28 +10,35 @@ export interface WhatsAppMessages {
   promo: string;
 }
 
-@Injectable({ providedIn: 'root' })
+/**
+ * Builder para construir mensajes de WhatsApp
+ * Clase utilitaria con métodos estáticos
+ */
 export class WhatsAppMessageBuilder {
-  buildDocumentDeliveryMessages(data: DocumentDeliveryData): WhatsAppMessages {
+  static buildDocumentDeliveryMessages(data: DocumentDeliveryData): WhatsAppMessages {
     const main = this.buildMainMessage(data);
     const promo = this.buildPromoMessage(data.establecimiento);
 
     return { main, promo };
   }
 
-  buildWelcomeMessage(customerName: string, establishmentName: string): string {
+  static buildWelcomeMessage(customerName: string, establishmentName: string): string {
     return `¡Hola *${customerName}*! 👋\n\nBienvenido a *${establishmentName}*. Estamos aquí para ayudarte.`;
   }
 
-  buildOrderConfirmationMessage(orderNumber: string, customerName: string): string {
+  static buildOrderConfirmationMessage(orderNumber: string, customerName: string): string {
     return `Estimado(a) *${customerName}*,\n\n✅ Tu pedido #${orderNumber} ha sido confirmado.\n\nTe notificaremos cuando esté listo.`;
   }
 
-  buildPaymentReminderMessage(customerName: string, amount: number, dueDate: string): string {
-    return `Estimado(a) *${customerName}*,\n\n💰 Recordatorio de pago:\nMonto: $${amount}\nVencimiento: ${dueDate}\n\nGracias por tu preferencia.`;
+  static buildPaymentReminderMessage(
+    customerName: string,
+    amount: number,
+    dueDate: string,
+  ): string {
+    return `Estimado(a) *${customerName}*,\n\n💰 Recordatorio de pago:\nMonto: ${amount}\nVencimiento: ${dueDate}\n\nGracias por tu preferencia.`;
   }
 
-  private buildMainMessage(data: DocumentDeliveryData): string {
+  private static buildMainMessage(data: DocumentDeliveryData): string {
     const documentTypeDisplay = this.getDocumentTypeDisplay(data.tipo);
 
     return (
@@ -45,7 +50,7 @@ export class WhatsAppMessageBuilder {
     );
   }
 
-  private buildPromoMessage(establishmentName: string): string {
+  private static buildPromoMessage(establishmentName: string): string {
     return (
       `📱 Documento enviado por *${establishmentName}*\n` +
       `Powered by *Acontplus* 🚀\n\n` +
@@ -53,7 +58,7 @@ export class WhatsAppMessageBuilder {
     );
   }
 
-  private getDocumentTypeDisplay(tipo: string): string {
+  private static getDocumentTypeDisplay(tipo: string): string {
     const types: Record<string, string> = {
       FACTURA: 'factura electrónica',
       NOTA_ENTREGA: 'nota de entrega',

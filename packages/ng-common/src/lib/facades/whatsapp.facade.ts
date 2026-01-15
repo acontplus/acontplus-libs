@@ -8,7 +8,6 @@ import { PhoneFormatterUtil } from '../utils/phone-formatter.util';
 @Injectable({ providedIn: 'root' })
 export class WhatsAppMessagingFacade {
   private readonly messagingPort = inject(WHATSAPP_MESSAGING_PORT);
-  private readonly messageBuilder = inject(WhatsAppMessageBuilder);
 
   // Métodos de alto nivel con lógica de negocio
   sendSimpleText(to: string, message: string, previewUrl = true): Observable<WhatsAppResponse> {
@@ -53,7 +52,7 @@ export class WhatsAppMessagingFacade {
   // Caso de uso específico: Entrega de documentos
   deliverDocument(params: DocumentDeliveryParams): Observable<WhatsAppResponse> {
     const formattedPhone = PhoneFormatterUtil.formatForWhatsAppApi(params.phone);
-    const messages = this.messageBuilder.buildDocumentDeliveryMessages({
+    const messages = WhatsAppMessageBuilder.buildDocumentDeliveryMessages({
       comprador: params.customerName,
       establecimiento: params.establishmentName,
       serie: params.documentSeries,

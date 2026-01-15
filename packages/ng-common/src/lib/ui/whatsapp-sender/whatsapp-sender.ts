@@ -59,7 +59,6 @@ export class WhatsAppSender implements OnInit {
   private readonly whatsappFacade = inject(WhatsAppMessagingFacade);
   private readonly reportFacade = inject(ReportFacade);
   private readonly snackBar = inject(MatSnackBar);
-  private readonly reportBuilder = inject(ReportParamsBuilder);
 
   whatsappForm!: FormGroup;
   isLoading = signal(false);
@@ -194,8 +193,8 @@ export class WhatsAppSender implements OnInit {
   private generateReport(): Observable<any> {
     const docData = this.config!.documentData!;
 
-    // Usar el builder centralizado para generar parámetros
-    const reportOptions = this.reportBuilder.generateReportFor(docData, 'pdf', true);
+    // Construir opciones de reporte
+    const reportOptions = ReportParamsBuilder.build(docData, 'pdf', true);
 
     const reportResult = this.reportFacade.generate(reportOptions);
 

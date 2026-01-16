@@ -5,6 +5,9 @@ import {
   CUSTOMER_CODE_REPORT,
   INVENTORY_CODE_REPORT,
   ELECTRONIC_DOCUMENT_CODE,
+  APPROVAL_CODE_REPORT,
+  TECHNICAL_SUPPORT_CODE_REPORT,
+  BILLING_CODE_REPORT,
 } from '../constants/report-codes';
 
 /**
@@ -16,7 +19,10 @@ export type ReportCode =
   | ACCOUNTING_CODE_REPORT
   | CUSTOMER_CODE_REPORT
   | INVENTORY_CODE_REPORT
-  | ELECTRONIC_DOCUMENT_CODE;
+  | ELECTRONIC_DOCUMENT_CODE
+  | APPROVAL_CODE_REPORT
+  | TECHNICAL_SUPPORT_CODE_REPORT
+  | BILLING_CODE_REPORT;
 
 export interface ReportDocumentData {
   codDoc?: string; // Código del documento (puede ser dinámico en dataParams)
@@ -40,17 +46,19 @@ export interface ReportParams {
   hasService?: boolean;
   reportParams: string;
   dataParams: string;
+  hasIdUsuarioRol?: boolean;
 }
 
 interface ReportConfig {
   codigo: string;
   hasService: boolean;
   useV1Api: boolean;
-  idField: string;
+  idField?: string;
   extraDataParams?: Record<string, any>;
   includeEstabInData?: boolean;
   includeCodigoInData?: boolean;
   hasParams?: boolean;
+  hasIdUsuarioRol?: boolean; // Nueva propiedad
 }
 
 /**
@@ -108,6 +116,50 @@ export class ReportParamsBuilder {
       hasParams: true,
     },
 
+    // Reportes de facturación
+    [BILLING_CODE_REPORT.FEG]: {
+      codigo: BILLING_CODE_REPORT.FEG,
+      hasService: true,
+      useV1Api: true, // isOldVersion: true
+      hasParams: false,
+      hasIdUsuarioRol: true,
+    },
+    [BILLING_CODE_REPORT.NCRG]: {
+      codigo: BILLING_CODE_REPORT.NCRG,
+      hasService: true,
+      useV1Api: true, // isOldVersion: true
+      hasParams: false,
+      hasIdUsuarioRol: true,
+    },
+    [BILLING_CODE_REPORT.LCRG]: {
+      codigo: BILLING_CODE_REPORT.LCRG,
+      hasService: true,
+      useV1Api: true, // isOldVersion: true
+      hasParams: false,
+      hasIdUsuarioRol: true,
+    },
+    [BILLING_CODE_REPORT.FCRRG]: {
+      codigo: BILLING_CODE_REPORT.FCRRG,
+      hasService: true,
+      useV1Api: true, // isOldVersion: true
+      hasParams: false,
+      hasIdUsuarioRol: true,
+    },
+    [BILLING_CODE_REPORT.RGGR]: {
+      codigo: BILLING_CODE_REPORT.RGGR,
+      hasService: true,
+      useV1Api: true, // isOldVersion: true
+      hasParams: false,
+      hasIdUsuarioRol: true,
+    },
+    [BILLING_CODE_REPORT.RRC]: {
+      codigo: BILLING_CODE_REPORT.RRC,
+      hasService: true,
+      useV1Api: true, // isOldVersion: true
+      idField: 'idDocumentoElectronico',
+      hasParams: false,
+    },
+
     // Reportes de ventas
     [SALE_CODE_REPORT.SRR]: {
       codigo: SALE_CODE_REPORT.SRR,
@@ -146,6 +198,41 @@ export class ReportParamsBuilder {
       idField: 'id',
       hasParams: false,
     },
+    [PURCHASE_CODE_REPORT.RRNC]: {
+      codigo: PURCHASE_CODE_REPORT.RRNC,
+      hasService: true,
+      useV1Api: false,
+      idField: 'id',
+      hasParams: false,
+    },
+    [PURCHASE_CODE_REPORT.RRG]: {
+      codigo: PURCHASE_CODE_REPORT.RRG,
+      hasService: true,
+      useV1Api: false,
+      idField: 'id',
+      hasParams: false,
+    },
+    [PURCHASE_CODE_REPORT.RRND]: {
+      codigo: PURCHASE_CODE_REPORT.RRND,
+      hasService: true,
+      useV1Api: false,
+      idField: 'id',
+      hasParams: false,
+    },
+    [PURCHASE_CODE_REPORT.RRF]: {
+      codigo: PURCHASE_CODE_REPORT.RRF,
+      hasService: true,
+      useV1Api: false,
+      idField: 'id',
+      hasParams: false,
+    },
+    [PURCHASE_CODE_REPORT.RCP]: {
+      codigo: PURCHASE_CODE_REPORT.RCP,
+      hasService: true,
+      useV1Api: false,
+      idField: 'id',
+      hasParams: false,
+    },
 
     // Reportes de contabilidad
     [ACCOUNTING_CODE_REPORT.RCEGR]: {
@@ -168,6 +255,19 @@ export class ReportParamsBuilder {
       useV1Api: false,
       idField: 'id',
       hasParams: false,
+    },
+    [ACCOUNTING_CODE_REPORT.RMC]: {
+      codigo: ACCOUNTING_CODE_REPORT.RMC,
+      hasService: true,
+      useV1Api: false,
+      hasParams: false,
+    },
+    [ACCOUNTING_CODE_REPORT.RAAM]: {
+      codigo: ACCOUNTING_CODE_REPORT.RAAM,
+      hasService: true,
+      useV1Api: false,
+      hasParams: false,
+      hasIdUsuarioRol: true,
     },
 
     // Reportes de clientes
@@ -282,11 +382,18 @@ export class ReportParamsBuilder {
   ): ReportParams {
     const config = this.getReportConfig(codeReport);
 
-    return {
+    const result: ReportParams = {
       hasService: config.hasService,
       reportParams: this.buildReportParams(docData, config, format),
       dataParams: this.buildDataParams(docData, config),
     };
+
+    // Agregar hasIdUsuarioRol si está configurado
+    if (config.hasIdUsuarioRol !== undefined) {
+      result.hasIdUsuarioRol = config.hasIdUsuarioRol;
+    }
+
+    return result;
   }
 
   /**

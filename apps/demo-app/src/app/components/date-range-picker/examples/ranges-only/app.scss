@@ -1,0 +1,118 @@
+.example-card {
+  max-width: 600px;
+  margin: 20px auto;
+
+  .example-container {
+    padding: 16px 0;
+
+    acp-date-range-picker {
+      display: block;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    .result-display {
+      margin-top: 20px;
+      padding: 20px;
+      background: linear-gradient(135deg, #e8eaf6 0%, #f3e5f5 100%);
+      border-radius: 12px;
+
+      h4 {
+        margin: 0 0 16px 0;
+        color: #333;
+        font-size: 16px;
+        text-align: center;
+      }
+
+      .range-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+
+        mat-chip-set {
+          margin-bottom: 8px;
+        }
+
+        .date-range {
+          display: grid;
+          grid-template-columns: 1fr auto 1fr;
+          gap: 16px;
+          align-items: center;
+          width: 100%;
+          max-width: 400px;
+
+          @media (max-width: 500px) {
+            grid-template-columns: 1fr;
+            gap: 8px;
+            text-align: center;
+          }
+
+          .date-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+
+            .label {
+              font-size: 12px;
+              color: #666;
+              font-weight: 500;
+              text-transform: uppercase;
+              letter-spacing: 0.5px;
+            }
+
+            .value {
+              font-size: 16px;
+              font-weight: 600;
+              color: #1976d2;
+              background-color: rgba(255, 255, 255, 0.8);
+              padding: 8px 12px;
+              border-radius: 8px;
+              border: 1px solid #1976d2;
+              font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            }
+          }
+
+          .date-separator {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1976d2;
+            text-align: center;
+
+            @media (max-width: 500px) {
+              transform: rotate(90deg);
+              font-size: 16px;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .config-info {
+    width: 100%;
+
+    h4 {
+      margin: 0 0 12px 0;
+      color: #fff;
+      font-size: 14px;
+    }
+
+    pre {
+      background-color: #f8f9fa;
+      border: 1px solid #e9ecef;
+      border-radius: 4px;
+      padding: 12px;
+      margin: 0;
+      overflow-x: auto;
+
+      code {
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        font-size: 12px;
+        color: #495057;
+        line-height: 1.4;
+      }
+    }
+  }
+}

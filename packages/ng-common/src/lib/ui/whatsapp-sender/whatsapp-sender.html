@@ -1,0 +1,99 @@
+<div class="whatsapp-sender-container">
+  <mat-card class="sender-card">
+    <mat-card-header>
+      <div mat-card-avatar class="whatsapp-avatar">
+        <mat-icon>chat</mat-icon>
+      </div>
+      <mat-card-title>Enviar por WhatsApp</mat-card-title>
+      <mat-card-subtitle>Comparte contenido directamente</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="whatsappForm" (ngSubmit)="sendWhatsApp()">
+        <!-- Campo para número de teléfono -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Número de teléfono</mat-label>
+          @if (phoneNumbers().length > 1) {
+            <mat-select formControlName="phoneNumber">
+              @for (phone of phoneNumbers(); track phone) {
+                <mat-option [value]="phone">{{ phone }}</mat-option>
+              }
+            </mat-select>
+          } @else {
+            <input
+              matInput
+              formControlName="phoneNumber"
+              [placeholder]="phonePlaceholder"
+              type="tel"
+            />
+          }
+          <mat-icon matSuffix>phone</mat-icon>
+          <mat-hint>{{ phoneHint }}</mat-hint>
+          @if (whatsappForm.get('phoneNumber')?.hasError('required')) {
+            <mat-error>El número de teléfono es requerido</mat-error>
+          }
+          @if (whatsappForm.get('phoneNumber')?.hasError('invalidPhone')) {
+            <mat-error>Ingrese un número ecuatoriano válido (09xxxxxxxx)</mat-error>
+          }
+        </mat-form-field>
+
+        <!-- Campo para mensaje -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Mensaje</mat-label>
+          <textarea
+            matInput
+            formControlName="message"
+            placeholder="Escribe tu mensaje aquí..."
+            rows="4"
+            maxlength="500"
+          >
+          </textarea>
+          <mat-icon matSuffix>message</mat-icon>
+          <mat-hint align="end">{{ messageLength }}/500 caracteres</mat-hint>
+          @if (whatsappForm.get('message')?.hasError('required')) {
+            <mat-error>El mensaje es requerido</mat-error>
+          }
+        </mat-form-field>
+
+        <!-- Botones de acción -->
+        <div class="action-buttons">
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="whatsappForm.invalid || isLoading()"
+            class="send-button"
+          >
+            @if (!isLoading()) {
+              <mat-icon>send</mat-icon>
+            }
+            @if (isLoading()) {
+              <mat-spinner diameter="20"></mat-spinner>
+            }
+            {{ isLoading() ? 'Enviando...' : 'Enviar por WhatsApp' }}
+          </button>
+
+          <button mat-button type="button" (click)="clearForm()" [disabled]="isLoading()">
+            <mat-icon>clear</mat-icon>
+            Limpiar
+          </button>
+        </div>
+
+        <!-- Enlace opcional a WhatsApp Web -->
+        @if (showWhatsAppWebLink()) {
+          <div class="whatsapp-web-link">
+            <mat-icon>info</mat-icon>
+            <span>¿No se pudo enviar? Prueba enviando directamente:</span>
+            <button mat-button color="accent" (click)="openWhatsAppWeb()">
+              <mat-icon>open_in_new</mat-icon>
+              Abrir WhatsApp Web
+            </button>
+            <button mat-icon-button (click)="hideWhatsAppWebLink()" aria-label="Cerrar">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        }
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

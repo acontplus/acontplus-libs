@@ -1,19 +1,19 @@
 import { AdvancedDialogService, Button, DataGrid, DataGridColumn } from '@acontplus/ng-components';
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { CompanyCustomerCreate } from '../company-customer-create/company-customer-create';
-import { COMPANY_CUSTOMER_SERVICE } from '@acontplus/ng-customer';
+import { COMPANY_CUSTOMER_HTTP_TOKEN, CompanyCustomerList } from '@acontplus/ng-customer';
 
 @Component({
   selector: 'app-company-customer-example',
   templateUrl: './app.html',
   styleUrl: './app.scss',
-  imports: [DataGrid, Button],
+  imports: [DataGrid, Button, CompanyCustomerList],
 })
 export class App implements OnInit {
   dgSvc = inject(AdvancedDialogService);
-  ccSvc = inject(COMPANY_CUSTOMER_SERVICE);
+  ccSvc = inject(COMPANY_CUSTOMER_HTTP_TOKEN);
 
-  list = [];
+  list: any = [];
   add() {
     this.dgSvc.openInWrapper(
       {
@@ -65,9 +65,8 @@ export class App implements OnInit {
   page = signal(0);
   pageSize = signal(25);
 
-  trackByName(index: number, item: any) {
-    console.log(index);
-    return item.name;
+  trackByName(index: number) {
+    return `${index}-`;
   }
 
   ngOnInit() {

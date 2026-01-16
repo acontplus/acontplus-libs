@@ -1,4 +1,4 @@
-import { Injectable, ElementRef, signal, computed, effect } from '@angular/core';
+import { Injectable, ElementRef, signal, computed } from '@angular/core';
 import { Subject, fromEvent } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
@@ -60,18 +60,6 @@ export class KeyboardNavigationService {
     }
     return '';
   });
-
-  constructor() {
-    // Este effect se dispara cada vez que el elemento enfocado cambia.
-    // Es útil para realizar acciones secundarias si fuera necesario.
-    effect(() => {
-      const focusedElementIndex = this.currentFocusIndex();
-      const focusedElementName = this.focusedElementName();
-      console.log(
-        `El foco cambió al elemento: ${focusedElementName} (índice: ${focusedElementIndex})`,
-      );
-    });
-  }
 
   /**
    * Registra un nuevo elemento en el sistema de navegación por teclado.

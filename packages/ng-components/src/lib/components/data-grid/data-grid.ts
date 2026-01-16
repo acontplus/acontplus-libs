@@ -23,6 +23,7 @@ import {
   OnDestroy,
   HostListener,
   OnChanges,
+  viewChild,
 } from '@angular/core';
 import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
 import { fromEvent, Subject, takeUntil, debounceTime, filter } from 'rxjs';
@@ -133,8 +134,9 @@ export class DataGrid<T = any> implements AfterViewInit, OnDestroy, OnChanges {
   private _destroy$ = new Subject<void>();
 
   // ViewChild & ContentChildren
+  paginator = viewChild(MatPaginator);
   @ViewChild(MatTable) table!: MatTable<any>;
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatPaginator) paginator1!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild('tableContainer') tableContainer!: ElementRef<HTMLDivElement>;
   @ContentChildren(MatRowDef) rowDefs!: QueryList<MatRowDef<any>>;
@@ -306,8 +308,12 @@ export class DataGrid<T = any> implements AfterViewInit, OnDestroy, OnChanges {
   }
 
   ngAfterViewInit() {
-    this.dataSource.paginator = this.pageOnFront() ? this.paginator : null;
-    this.dataSource.sort = this.sortOnFront() ? this.sort : null;
+    if (this.pageOnFront()) {
+      this.dataSource.paginator = this.paginator();
+    }
+    if (this.sortOnFront()) {
+      this.dataSource.sort = this.sort;
+    }
 
     if (this.rowDefs?.length > 0 && this.useContentRowTemplate()) {
       this.rowDefs.forEach(rowDef => this.table.addRowDef(rowDef));
@@ -609,7 +615,7 @@ export class DataGrid<T = any> implements AfterViewInit, OnDestroy, OnChanges {
       this.rowSelection = new SelectionModel<any>(this.multiSelectable(), this.rowSelected());
     }
 
-    this.dataSource.paginator = this.pageOnFront() ? this.paginator : null;
+    // this.dataSource.paginator = this.pageOnFront() ? this.paginator() : null;
     this.dataSource.sort = this.sortOnFront() ? this.sort : null;
 
     if (changes['infiniteScroll'] && this.infiniteScroll()) {

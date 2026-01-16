@@ -25,7 +25,8 @@
       "@acontplus/ng-infrastructure": ["packages/ng-infrastructure/src/index.ts"],
       "@acontplus/ng-notifications": ["packages/ng-notifications/src/index.ts"],
       "@acontplus/ui-kit": ["packages/ui-kit/src/index.ts"],
-      "@acontplus/utils": ["packages/utils/src/index.ts"]
+      "@acontplus/utils": ["packages/utils/src/index.ts"],
+      "@acontplus/ng-common": ["packages/ng-common/src/index.ts"]
     }
   },
   "angularCompilerOptions": {

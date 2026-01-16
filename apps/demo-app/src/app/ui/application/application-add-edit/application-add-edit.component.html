@@ -37,9 +37,9 @@
           <mat-form-field appearance="outline">
             <mat-label>Categoría *</mat-label>
             <mat-select formControlName="category">
-              @for (category of categoryOptions; track category) {
-                <mat-option [value]="category">
-                  {{ category }}
+              @for (item of categoryOptions; track $index) {
+                <mat-option [value]="item">
+                  {{ item }}
                 </mat-option>
               }
             </mat-select>
@@ -64,9 +64,9 @@
           <mat-form-field appearance="outline">
             <mat-label>Estado *</mat-label>
             <mat-select formControlName="status">
-              @for (status of statusOptions; track status) {
-                <mat-option [value]="status">
-                  {{ status | titlecase }}
+              @for (item of statusOptions; track $index) {
+                <mat-option [value]="item">
+                  {{ item | titlecase }}
                 </mat-option>
               }
             </mat-select>
@@ -76,9 +76,9 @@
           <mat-form-field appearance="outline">
             <mat-label>Entorno *</mat-label>
             <mat-select formControlName="environment">
-              @for (env of environmentOptions; track env) {
-                <mat-option [value]="env">
-                  {{ env | titlecase }}
+              @for (item of environmentOptions; track $index) {
+                <mat-option [value]="item">
+                  {{ item | titlecase }}
                 </mat-option>
               }
             </mat-select>

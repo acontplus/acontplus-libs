@@ -134,7 +134,7 @@ import {
 export class ReportsComponent {
   constructor(private reportFacade: ReportFacade) {}
 
-  // Ejemplo 1: Reporte simple de factura
+  // Ejemplo 1: Generar y abrir PDF automáticamente
   generateInvoiceReport(id: number, codEstab: string) {
     const reportOptions = ReportParamsBuilder.build(
       {
@@ -142,16 +142,18 @@ export class ReportsComponent {
         id,
         codEstab
       },
-      REPORT_FORMAT.PDF,
-      true // returnBlob
+      REPORT_FORMAT.PDF
     );
 
-    this.reportFacade.generate(reportOptions).subscribe(response => {
-      console.log('Reporte generado');
-    });
+    // Se abre automáticamente en nueva ventana (o descarga en navegadores legacy)
+    this.reportFacade.openPDF(reportOptions.data, reportOptions.useV1Api)
+      .subscribe({
+        next: () => console.log('Reporte generado'),
+        error: (err) => console.error('Error:', err)
+      });
   }
 
-  // Ejemplo 2: Reporte de ventas con parámetros personalizados
+  // Ejemplo 2: Generar Excel y descargar automáticamente
   generateSalesReport() {
     const reportOptions = ReportParamsBuilder.build(
       {
@@ -165,58 +167,60 @@ export class ReportsComponent {
       REPORT_FORMAT.EXCEL
     );
 
-    this.reportFacade.generate(reportOptions);
+    this.reportFacade.downloadExcel(reportOptions.data, reportOptions.useV1Api)
+      .subscribe();
   }
 
-  // Ejemplo 3: Reporte de inventario con múltiples parámetros
-  generateInventoryReport() {
+  // Ejemplo 3: Control total sobre el blob
+  generateCustomReport() {
     const reportOptions = ReportParamsBuilder.build(
       {
         codDoc: INVENTORY_CODE_REPORT.ARTICULO_PVP,
         tipo: 2,
         stockStatusCode: 1,
-        idTarifa: 3,
-        idMarca: 10,
-        fechaInicio: this.fromDate,
-        fechaFin: this.toDate,
-        // Cualquier parámetro adicional se incluye automáticamente
-        customParam: 'valor'
+        idTarifa: 3
       },
       REPORT_FORMAT.PDF
     );
 
-    this.reportFacade.generate(reportOptions);
+    this.reportFacade.generate(reportOptions)
+      .subscribe({
+        next: (response) => {
+          // Tienes control total del blob
+          const blob = response.body;
+          if (blob) {
+            // Hacer lo que quieras: enviar por WhatsApp, guardar, etc.
+            this.sendViaWhatsApp(blob);
+          }
+        }
+      });
   }
 
-  // Ejemplo 4: Reporte condicional
-  generateConditionalReport(useCustom: boolean) {
-    const reportCode = useCustom
-      ? SALE_CODE_REPORT.SRRC
-      : SALE_CODE_REPORT.SRR;
-
+  // Ejemplo 4: Usar métodos genéricos
+  quickPDFReport() {
     const reportOptions = ReportParamsBuilder.build(
-      {
-        codDoc: reportCode,
-        porcentajeRenta: 15,
-        porcentajeComision: 5,
-        fechaInicio: this.fromDate,
-        fechaFin: this.toDate
-      },
+      { codDoc: SALE_CODE_REPORT.SRR },
       REPORT_FORMAT.PDF
     );
 
-    this.reportFacade.generate(reportOptions);
+    // Abre automáticamente
+    this.reportFacade.open(reportOptions).subscribe();
+  }
+
+  quickExcelDownload() {
+    const reportOptions = ReportParamsBuilder.build(
+      { codDoc: INVENTORY_CODE_REPORT.RCD },
+      REPORT_FORMAT.EXCEL
+    );
+
+    // Descarga automáticamente
+    this.reportFacade.download(reportOptions).subscribe();
   }
 
   // Verificar tipos soportados
   checkSupportedTypes() {
     const types = ReportParamsBuilder.getSupportedDocumentTypes();
     console.log('Tipos soportados:', types);
-  }
-
-  // Verificar si un tipo está soportado
-  isSupported(code: string) {
-    return ReportParamsBuilder.isDocumentTypeSupported(code);
   }
 }
 ```

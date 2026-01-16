@@ -1,7 +1,7 @@
 export const API_PATHS = {
-  WHATSAPP: '/api/common/whatsapp-cloud',
-  REPORTS: '/api/reports',
-  CONFIG: '/api/config',
+  WHATSAPP: 'common/whatsapp-cloud',
+  REPORTS: 'reports',
+  CONFIG: 'config',
 } as const;
 
 export const DOCUMENT_TYPES = {

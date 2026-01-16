@@ -1,7 +1,7 @@
 /**
  * Códigos de reportes de ventas
  */
-export const enum SALE_CODE_REPORT {
+export enum SALE_CODE_REPORT {
   /**
    * SALE REPORT RENTABILIDAD
    */
@@ -21,7 +21,7 @@ export const enum SALE_CODE_REPORT {
 /**
  * Códigos de reportes de compras
  */
-export const enum PURCHASE_CODE_REPORT {
+export enum PURCHASE_CODE_REPORT {
   /**
    * REPORTE COMPRAS NOTA HIDDEN
    */
@@ -36,7 +36,7 @@ export const enum PURCHASE_CODE_REPORT {
 /**
  * Códigos de reportes de contabilidad
  */
-export const enum ACCOUNTING_CODE_REPORT {
+export enum ACCOUNTING_CODE_REPORT {
   /**
    * REPORTE CONTABLE ESTADO GENERAL RESULTADO
    */
@@ -56,7 +56,7 @@ export const enum ACCOUNTING_CODE_REPORT {
 /**
  * Códigos de reportes de clientes
  */
-export const enum CUSTOMER_CODE_REPORT {
+export enum CUSTOMER_CODE_REPORT {
   /**
    * REPORTE CLIENTE LISTADO
    */
@@ -66,7 +66,7 @@ export const enum CUSTOMER_CODE_REPORT {
 /**
  * Códigos de reportes de inventario
  */
-export const enum INVENTORY_CODE_REPORT {
+export enum INVENTORY_CODE_REPORT {
   /**
    * REPORTE KARDEX
    */
@@ -121,7 +121,7 @@ export const enum INVENTORY_CODE_REPORT {
 /**
  * Códigos de documentos electrónicos
  */
-export const enum ELECTRONIC_DOCUMENT_CODE {
+export enum ELECTRONIC_DOCUMENT_CODE {
   /**
    * FACTURA
    */
@@ -156,7 +156,7 @@ export const enum ELECTRONIC_DOCUMENT_CODE {
 /**
  * Formatos de reporte disponibles
  */
-export const enum REPORT_FORMAT {
+export enum REPORT_FORMAT {
   PDF = 'pdf',
   EXCEL = 'excel',
   WORD = 'word',

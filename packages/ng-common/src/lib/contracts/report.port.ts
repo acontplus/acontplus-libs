@@ -5,8 +5,6 @@ export interface ReportOptions<T = any> {
   data: T;
   format?: 'pdf' | 'excel' | 'word';
   useV1Api?: boolean;
-  forceDownload?: boolean;
-  returnBlob?: boolean;
 }
 
 /**
@@ -14,10 +12,9 @@ export interface ReportOptions<T = any> {
  * Solo se encarga de generar reportes, no de impresión
  */
 export interface ReportPort {
-  // Método principal con opciones completas
-  generate<T>(options: ReportOptions<T>): Observable<HttpResponse<Blob>> | void;
-
-  // Métodos de utilidad
-  saveFile(response: any, format?: string, forceDownload?: boolean): void;
-  getFileName(response: any): string;
+  /**
+   * Genera un reporte y devuelve el Observable
+   * El consumidor decide si descargar, abrir o procesar el blob
+   */
+  generate<T>(options: ReportOptions<T>): Observable<HttpResponse<Blob>>;
 }

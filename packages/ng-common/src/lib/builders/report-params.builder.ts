@@ -270,6 +270,12 @@ export class ReportParamsBuilder {
       hasIdUsuarioRol: true,
     },
 
+    [ACCOUNTING_CODE_REPORT.RMIE]: {
+      codigo: ACCOUNTING_CODE_REPORT.RMIE,
+      hasService: false,
+      useV1Api: false,
+    },
+
     // Reportes de clientes
     [CUSTOMER_CODE_REPORT.RCL]: {
       codigo: CUSTOMER_CODE_REPORT.RCL,
@@ -282,57 +288,58 @@ export class ReportParamsBuilder {
     // Reportes de inventario
     [INVENTORY_CODE_REPORT.RK]: {
       codigo: INVENTORY_CODE_REPORT.RK,
-      hasService: true,
+      hasService: false,
       useV1Api: false,
       idField: 'id',
       hasParams: true,
+      hasIdUsuarioRol: true,
     },
     [INVENTORY_CODE_REPORT.CDAA]: {
       codigo: INVENTORY_CODE_REPORT.CDAA,
       hasService: true,
-      useV1Api: false,
+      useV1Api: true,
       idField: 'id',
       hasParams: false,
     },
     [INVENTORY_CODE_REPORT.CDA]: {
       codigo: INVENTORY_CODE_REPORT.CDA,
       hasService: true,
-      useV1Api: false,
+      useV1Api: true,
       idField: 'id',
       hasParams: false,
     },
     [INVENTORY_CODE_REPORT.STOCK_VALORACION]: {
       codigo: INVENTORY_CODE_REPORT.STOCK_VALORACION,
       hasService: true,
-      useV1Api: false,
+      useV1Api: true,
       idField: 'id',
       hasParams: false,
     },
     [INVENTORY_CODE_REPORT.ARTICULO_PVP]: {
       codigo: INVENTORY_CODE_REPORT.ARTICULO_PVP,
       hasService: true,
-      useV1Api: false,
+      useV1Api: true,
       idField: 'id',
       hasParams: false,
     },
     [INVENTORY_CODE_REPORT.RAF]: {
       codigo: INVENTORY_CODE_REPORT.RAF,
       hasService: true,
-      useV1Api: false,
+      useV1Api: true,
       idField: 'id',
       hasParams: false,
     },
     [INVENTORY_CODE_REPORT.RCAA]: {
       codigo: INVENTORY_CODE_REPORT.RCAA,
       hasService: true,
-      useV1Api: false,
+      useV1Api: true,
       idField: 'id',
       hasParams: false,
     },
     [INVENTORY_CODE_REPORT.RASR]: {
       codigo: INVENTORY_CODE_REPORT.RASR,
       hasService: true,
-      useV1Api: false,
+      useV1Api: true,
       idField: 'id',
       hasParams: false,
     },

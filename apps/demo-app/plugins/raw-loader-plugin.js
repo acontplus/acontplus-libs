@@ -2,13 +2,13 @@ import fs from 'fs';
 import path from 'path';
 
 /**
- * Esbuild plugin para manejar importaciones de archivos .html y .scss con ?raw
+ * Esbuild plugin para manejar importaciones de archivos .html y .styles con ?raw
  * Ejemplo: import template from './app.html?raw';
  */
 export const rawLoaderPlugin = {
   name: 'raw-loader-plugin',
   setup(build) {
-    // Intercepta importaciones que terminen en .html?raw o .scss?raw
+    // Intercepta importaciones que terminen en .html?raw o .styles?raw
     build.onResolve({ filter: /\.(html|scss)\?raw$/ }, args => {
       const filePath = path.resolve(args.resolveDir, args.path.replace(/\?raw$/, ''));
       return { path: filePath, namespace: 'raw-file' };

@@ -275,6 +275,12 @@ export class ReportParamsBuilder {
       hasService: false,
       useV1Api: false,
     },
+    [ACCOUNTING_CODE_REPORT.CDCC]: {
+      codigo: ACCOUNTING_CODE_REPORT.CDCC,
+      hasService: true,
+      useV1Api: true,
+      idField: 'id',
+    },
 
     // Reportes de clientes
     [CUSTOMER_CODE_REPORT.RCL]: {

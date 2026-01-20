@@ -75,7 +75,7 @@ import { CodeExample } from '../../shared/code-example/code-example';
 
       <h2>Global SCSS Customization</h2>
       <p class="section-description">Override default styles with SCSS variables.</p>
-      <app-code-example [code]="scssCustomizationCode" [language]="'scss'" />
+      <app-code-example [code]="scssCustomizationCode" [language]="'styles'" />
     </div>
   `,
   styles: [

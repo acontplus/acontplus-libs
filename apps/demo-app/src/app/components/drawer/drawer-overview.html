@@ -1,0 +1,9 @@
+<p>
+  El <code>acp-drawer</code> es un componente de panel deslizante que puede posicionarse en
+  cualquier lado de la pantalla. Está construido sobre Angular CDK Dialog y proporciona una forma
+  flexible de mostrar contenido adicional sin navegar fuera de la página actual.
+</p>
+@if (route.data | async; as data) { @for (exampleData of data["examples"]; track exampleData) {
+<app-doc-heading [text]="exampleData.title"></app-doc-heading>
+<app-example-viewer [exampleData]="exampleData"></app-example-viewer>
+} }

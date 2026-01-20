@@ -30,16 +30,16 @@ import { CodeExample } from '../../shared/code-example/code-example';
       </mat-card>
 
       <h2>Custom Button Colors</h2>
-      <app-code-example [code]="customColorCode" [language]="'scss'" />
+      <app-code-example [code]="customColorCode" [language]="'styles'" />
 
       <h2>Button Sizing</h2>
-      <app-code-example [code]="sizingCode" [language]="'scss'" />
+      <app-code-example [code]="sizingCode" [language]="'styles'" />
 
       <h2>Custom Variants</h2>
       <p class="section-description">
         Create custom button variants by extending the base button styles.
       </p>
-      <app-code-example [code]="customVariantCode" [language]="'scss'" />
+      <app-code-example [code]="customVariantCode" [language]="'styles'" />
     </div>
   `,
   styles: [
@@ -100,7 +100,7 @@ export class ButtonStyling {
 .acp-button.custom-variant {
   background-color: var(--mat-sys-tertiary);
   color: var(--mat-sys-on-tertiary);
-  
+
   &:hover {
     background-color: var(--mat-sys-tertiary-container);
   }
@@ -132,7 +132,7 @@ export class ButtonStyling {
   border: 0;
   color: white;
   box-shadow: 0 3px 5px 2px rgba(255, 105, 135, .3);
-  
+
   &:hover {
     background: linear-gradient(45deg, #fe8ba0 30%, #ffa070 90%);
   }

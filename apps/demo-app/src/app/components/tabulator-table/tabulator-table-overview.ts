@@ -49,7 +49,7 @@ import { CodeExample } from '../../shared/code-example/code-example';
       <app-code-example [code]="basicCode" [language]="'typescript'" />
 
       <h2>Theme Integration</h2>
-      <app-code-example [code]="themeCode" [language]="'scss'" />
+      <app-code-example [code]="themeCode" [language]="'styles'" />
     </div>
   `,
   styles: [

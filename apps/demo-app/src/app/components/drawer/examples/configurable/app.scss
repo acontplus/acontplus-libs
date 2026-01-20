@@ -1,0 +1,72 @@
+/* Estilos específicos para el ejemplo de Drawer configurable */
+section {
+  margin: 16px 0;
+}
+
+.size-controls {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+
+  mat-form-field {
+    flex: 1;
+    margin: 0;
+  }
+}
+
+.checkbox-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+
+  mat-checkbox {
+    margin: 0;
+  }
+}
+
+mat-radio-group {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+mat-radio-button {
+  margin: 0;
+}
+
+.heading {
+  display: flex;
+  align-items: center;
+}
+
+.flex-spacer {
+  flex-grow: 1;
+}
+
+// Responsive design for smaller screens
+@media (max-width: 768px) {
+  .size-controls {
+    flex-direction: column;
+    align-items: stretch;
+
+    mat-form-field {
+      flex: none;
+    }
+  }
+
+  .checkbox-controls {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  mat-radio-group {
+    flex-direction: column;
+    gap: 8px;
+
+    mat-radio-button {
+      margin: 4px 0;
+    }
+  }
+}

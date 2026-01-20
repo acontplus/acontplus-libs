@@ -83,7 +83,7 @@ import { DateRangePicker } from '@acontplus/ng-components';
 @Component({
   selector: 'app-date-range-picker-basic-example',
   templateUrl: './app.html',
-  styleUrl: './app.scss',
+  styleUrl: './app.styles',
   imports: [
     DatePipe,
     MatInputModule,
@@ -243,7 +243,7 @@ const dateRangePickerBasicExampleConfig = {
       filecontent: { default: appTs },
     },
     {
-      file: 'app.scss',
+      file: 'app.styles',
       content: hljs.highlightAuto(appScss).value,
       filecontent: { default: appScss },
     },

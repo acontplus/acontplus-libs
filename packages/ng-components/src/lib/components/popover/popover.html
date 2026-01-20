@@ -1,0 +1,33 @@
+<ng-template>
+  <!-- eslint-disable @angular-eslint/template/mouse-events-have-key-events -->
+  <div
+    [id]="panelId"
+    class="acp-popover-panel"
+    [class]="_classList"
+    [class.acp-popover-panel-animations-disabled]="_animationsDisabled"
+    [class.acp-popover-panel-exit-animation]="_panelAnimationState === 'void'"
+    [class.acp-popover-panel-animating]="_isAnimating"
+    [class.acp-popover-panel-without-arrow]="hideArrow"
+    (keydown)="_handleKeydown($event)"
+    (click)="_handleClick()"
+    (mouseover)="_handleMouseOver()"
+    (mouseleave)="_handleMouseLeave()"
+    tabindex="-1"
+    role="dialog"
+    (animationstart)="_onAnimationStart($event.animationName)"
+    (animationend)="_onAnimationDone($event.animationName)"
+    (animationcancel)="_onAnimationDone($event.animationName)"
+    [attr.aria-label]="ariaLabel || null"
+    [attr.aria-labelledby]="ariaLabelledby || null"
+    [attr.aria-describedby]="ariaDescribedby || null"
+    [cdkTrapFocus]="focusTrapEnabled"
+    [cdkTrapFocusAutoCapture]="focusTrapAutoCaptureEnabled"
+  >
+    <div class="acp-popover-content">
+      <ng-content></ng-content>
+    </div>
+    @if (!hideArrow) {
+    <div class="acp-popover-direction-arrow" [style]="arrowStyles"></div>
+    }
+  </div>
+</ng-template>

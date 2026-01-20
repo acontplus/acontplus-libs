@@ -97,7 +97,7 @@ import { DateRangePicker } from '@acontplus/ng-components';
   standalone: true,
   imports: [DateRangePicker, ReactiveFormsModule],
   templateUrl: './app.html',
-  styleUrl: './app.scss',
+  styleUrl: './app.styles',
 })
 export class DateRangePickerAngularWrapperExample {
   // Form integration example
@@ -298,7 +298,7 @@ export const dateRangePickerAngularWrapperExampleConfig = {
       filecontent: { default: appTs },
     },
     {
-      file: 'app.scss',
+      file: 'app.styles',
       content: hljs.highlightAuto(appScss).value,
       filecontent: { default: appScss },
     },

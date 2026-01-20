@@ -135,7 +135,7 @@ const dateRangePickerSingleDateExampleConfig = {
       filecontent: { default: appTs },
     },
     {
-      file: 'app.scss',
+      file: 'app.styles',
       content: hljs.highlightAuto(appScss).value,
       filecontent: { default: appScss },
     },

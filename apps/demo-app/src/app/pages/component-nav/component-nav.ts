@@ -80,6 +80,20 @@ export const COMPONENTS_MENU: ComponentCategory[] = [
     category: 'Data Tables',
   },
   {
+    id: 'drawer',
+    name: 'Drawer',
+    summary:
+      'Advanced data grid with Material table integration, signals, and modern Angular patterns.',
+    category: 'Data Tables',
+  },
+  {
+    id: 'popover',
+    name: 'Popover',
+    summary:
+      'Advanced data grid with Material table integration, signals, and modern Angular patterns.',
+    category: 'Popover',
+  },
+  {
     id: 'tabulator-table',
     name: 'Tabulator Table',
     summary: 'Advanced table with Tabulator.js integration and virtual scrolling.',

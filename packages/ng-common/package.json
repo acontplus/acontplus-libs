@@ -1,6 +1,6 @@
 {
   "name": "@acontplus/ng-common",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "Common Angular library with shared components, services, and utilities for enterprise applications. Includes WhatsApp messaging, report generation, document printing, and reusable UI components built with clean architecture patterns.",
   "peerDependencies": {
     "@angular/core": "^21.0.0",

@@ -56,6 +56,15 @@ export const routes = [
         path: 'tabulator-table',
         loadChildren: () => import('./tabulator-table/tabulator-table.routes').then(m => m.routes),
       },
+      {
+        path: 'drawer',
+        loadChildren: () => import('./drawer/drawer').then(m => m.routes),
+      },
+
+      {
+        path: 'popover',
+        loadChildren: () => import('./popover/popover').then(m => m.routes),
+      },
 
       // Theming
       {

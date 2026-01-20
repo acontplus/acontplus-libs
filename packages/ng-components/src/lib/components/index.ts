@@ -10,3 +10,5 @@ export * from './theme-toggle';
 export * from './autocomplete-wrapper';
 export * from './data-grid';
 export * from './date-range-picker';
+export * from './drawer';
+export * from './popover';

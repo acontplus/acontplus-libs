@@ -94,6 +94,13 @@ export const COMPONENTS_MENU: ComponentCategory[] = [
     category: 'Popover',
   },
   {
+    id: 'alert-dialog',
+    name: 'Alert Dialog',
+    summary:
+      'Advanced data grid with Material table integration, signals, and modern Angular patterns.',
+    category: 'Alert Dialog',
+  },
+  {
     id: 'tabulator-table',
     name: 'Tabulator Table',
     summary: 'Advanced table with Tabulator.js integration and virtual scrolling.',

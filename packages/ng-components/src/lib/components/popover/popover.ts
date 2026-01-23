@@ -56,6 +56,7 @@ const EXIT_ANIMATION = '_acp-popover-exit';
  * various positioning options. It's built on top of Angular CDK Overlay
  * and provides a flexible way to display contextual information.
  *
+ * ## Basic Usage
  * @example
  * ```html
  * <acp-popover #popover="acpPopover" [position]="['below', 'after']">
@@ -64,6 +65,62 @@ const EXIT_ANIMATION = '_acp-popover-exit';
  *
  * <button [acpPopoverTriggerFor]="popover">Show popover</button>
  * ```
+ *
+ * ## Closing Explicitly
+ *
+ * ### 1. Close from within popover content:
+ * @example
+ * ```html
+ * <acp-popover #popover="acpPopover">
+ *   <div>
+ *     <p>Popover content</p>
+ *     <button (click)="popover.close()">Close</button>
+ *     <button (click)="popover.close('user-action')">Close with reason</button>
+ *   </div>
+ * </acp-popover>
+ * ```
+ *
+ * ### 2. Close from component using ViewChild:
+ * @example
+ * ```typescript
+ * @Component({
+ *   template: `
+ *     <acp-popover #popover="acpPopover">
+ *       <div>Content with external close</div>
+ *     </acp-popover>
+ *     <button [acpPopoverTriggerFor]="popover">Open</button>
+ *     <button (click)="closePopover()">Close from outside</button>
+ *   `
+ * })
+ * export class MyComponent {
+ *   @ViewChild('popover') popover!: AcpPopover;
+ *
+ *   closePopover() {
+ *     this.popover.close('programmatic');
+ *   }
+ * }
+ * ```
+ *
+ * ### 3. Close using trigger reference:
+ * @example
+ * ```html
+ * <acp-popover #popover="acpPopover">
+ *   <div>Popover content</div>
+ * </acp-popover>
+ *
+ * <button [acpPopoverTriggerFor]="popover" #trigger="acpPopoverTrigger">
+ *   Show popover
+ * </button>
+ * <button (click)="trigger.closePopover()">Close via trigger</button>
+ * <button (click)="trigger.closePopoverWithReason('external')">Close with reason</button>
+ * ```
+ *
+ * ## Automatic Closing
+ * The popover automatically closes on:
+ * - ESC key press
+ * - Click outside (backdrop) when `closeOnBackdropClick` is true
+ * - Mouse leave after delay when `triggerEvent` is 'hover'
+ * - Click on panel when `closeOnPanelClick` is true
  */
 @Component({
   selector: 'acp-popover',
@@ -72,7 +129,6 @@ const EXIT_ANIMATION = '_acp-popover-exit';
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   exportAs: 'acpPopover',
-  standalone: true,
   imports: [CdkTrapFocus],
 })
 export class AcpPopover implements AcpPopoverPanel, OnInit, OnDestroy {
@@ -244,6 +300,14 @@ export class AcpPopover implements AcpPopoverPanel, OnInit, OnDestroy {
 
   /** Event emitted when the popover is closed. */
   @Output() closed = new EventEmitter<PopoverCloseReason>();
+
+  /**
+   * Programmatically closes the popover.
+   * @param reason Optional reason for closing
+   */
+  close(reason?: PopoverCloseReason): void {
+    this.closed.emit(reason || 'programmatic');
+  }
 
   /** @docs-private */
   @ViewChild(TemplateRef) templateRef!: TemplateRef<any>;

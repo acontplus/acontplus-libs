@@ -66,6 +66,12 @@ export const routes = [
         loadChildren: () => import('./popover/popover').then(m => m.routes),
       },
 
+      {
+        path: 'alert-dialog',
+        loadComponent: () =>
+          import('./alert-dialog/alert-dialog').then(m => m.AlertDialogComponent),
+      },
+
       // Theming
       {
         path: 'theme-toggle',

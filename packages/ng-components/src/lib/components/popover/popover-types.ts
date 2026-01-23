@@ -11,4 +11,4 @@ export type AcpPopoverPosition = [AcpPopoverPositionStart, AcpPopoverPositionEnd
 export type AcpPopoverTriggerEvent = 'click' | 'hover' | 'none';
 
 /** Reason why the popover was closed. */
-export type PopoverCloseReason = void | 'click' | 'keydown' | 'tab';
+export type PopoverCloseReason = void | 'click' | 'keydown' | 'tab' | 'programmatic';

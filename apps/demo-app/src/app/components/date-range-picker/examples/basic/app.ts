@@ -1,10 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
-import { DateRangePicker, DateRangePickerOptions, DateRangeValue } from '@acontplus/ng-components';
+import {
+  DateRangePicker,
+  DateRangePickerOptions,
+  DateRangeValue,
+  SPANISH_LOCALE,
+  MATERIAL_LIGHT_THEME,
+} from '@acontplus/ng-components';
 
 @Component({
   selector: 'app-date-range-picker-basic-example',
@@ -20,10 +26,10 @@ import { DateRangePicker, DateRangePickerOptions, DateRangeValue } from '@acontp
   ],
 })
 export class App {
-  // Propiedades para mostrar los valores seleccionados
-  selectedStartDate: Date = new Date();
-  selectedEndDate: Date = new Date();
-  selectedLabel: string | null = null;
+  // Propiedades para mostrar los valores seleccionados usando signals
+  selectedStartDate = signal<Date>(new Date());
+  selectedEndDate = signal<Date>(new Date());
+  selectedLabel = signal<string | null>(null);
   currentTheme: 'default' | 'bootstrap' | 'material' = 'material';
   isSelected: boolean = false;
   checkboxPosition: 'prefix' | 'suffix' = 'prefix';
@@ -49,19 +55,20 @@ export class App {
   // Configuración del picker como propiedad
   pickerOptions: DateRangePickerOptions = {
     ranges: this.ranges,
-    presetTheme: this.currentTheme,
+    theme: MATERIAL_LIGHT_THEME,
+    locale: SPANISH_LOCALE,
     autoApply: false,
     showDropdowns: true,
     linkedCalendars: true,
-    showCustomRangeLabel: true,
   };
 
   // Manejador de eventos cuando se selecciona un rango
-  onDateRangeSelected(event: DateRangeValue<false>) {
-    // Convert to Date objects if they come as strings
-    this.selectedStartDate = event.from;
-    this.selectedEndDate = new Date(event.to);
-    this.selectedLabel = event.label || null;
+  onDateRangeSelected(event: DateRangeValue<false> | null) {
+    if (event && event.from && event.to) {
+      this.selectedStartDate.set(event.from);
+      this.selectedEndDate.set(event.to);
+      this.selectedLabel.set(event.label || null);
+    }
   }
 
   // Cambiar tema
@@ -70,7 +77,7 @@ export class App {
     // Actualizar la configuración
     this.pickerOptions = {
       ...this.pickerOptions,
-      presetTheme: themeName,
+      theme: MATERIAL_LIGHT_THEME, // Usar siempre el tema material
     };
   }
 

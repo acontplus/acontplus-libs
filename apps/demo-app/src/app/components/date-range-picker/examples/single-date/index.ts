@@ -10,86 +10,59 @@ const appHtml = `<mat-card class="example-card">
 
   <mat-card-content>
     <div class="example-container">
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Seleccionar fecha</mat-label>
-        <input
-          matInput
-          id="single-date-input"
-          placeholder="Selecciona una fecha"
-          readonly
-        />
-        <mat-hint>Solo se puede seleccionar una fecha</mat-hint>
-      </mat-form-field>
+      <acp-date-range-picker
+        [singleDatePicker]="true"
+        [autoApply]="true"
+        [showDropdowns]="true"
+        [alwaysShowCalendars]="true"
+        [options]="options"
+        label="Seleccionar fecha"
+        placeholderText="Selecciona una fecha"
+        (dateRangeSelected)="onDateRangeSelected($event)"
+      ></acp-date-range-picker>
 
       <div class="result-display">
         <h4>Fecha seleccionada:</h4>
         <div class="selected-date">
-          <span class="date-value">{{ selectedDate | date:'EEEE, dd MMMM yyyy':'es' }}</span>
-          <span class="date-format">{{ selectedDate | date:'dd/MM/yyyy' }}</span>
+          <span class="date-value">{{ selectedDate() | date:'EEEE, dd MMMM yyyy':'es' }}</span>
+          <span class="date-format">{{ selectedDate() | date:'dd/MM/yyyy' }}</span>
         </div>
       </div>
     </div>
   </mat-card-content>
 </mat-card>`;
 
-const appTs = `import { Component, OnDestroy, AfterViewInit, NgZone } from '@angular/core';
+const appTs = `import { Component, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
 import {
   DateRangePicker,
+  DateRangeValue,
   SPANISH_LOCALE,
-  MATERIAL_THEME,
+  MATERIAL_LIGHT_THEME,
 } from '@acontplus/ng-components';
 
 @Component({
   selector: 'app-date-range-picker-single-date-example',
   templateUrl: './app.html',
   styleUrl: './app.scss',
-  imports: [DatePipe, MatInputModule, MatFormFieldModule, MatCardModule],
+  imports: [DatePipe, MatInputModule, MatFormFieldModule, MatCardModule, DateRangePicker],
 })
-export class SingleDateApp implements AfterViewInit, OnDestroy {
-  private dateRangePicker!: DateRangePicker;
-  selectedDate: Date = new Date();
+export class SingleDateApp {
+  selectedDate = signal<Date>(new Date());
 
-  constructor(private ngZone: NgZone) {}
+  // Configuración para el date picker
+  readonly options = {
+    locale: SPANISH_LOCALE,
+    theme: MATERIAL_LIGHT_THEME,
+  };
 
-  ngAfterViewInit() {
-    setTimeout(() => {
-      this.initializeDateRangePicker();
-    }, 0);
-  }
-
-  ngOnDestroy() {
-    if (this.dateRangePicker) {
-      this.dateRangePicker.remove();
+  onDateRangeSelected(range: DateRangeValue<false> | null) {
+    if (range && range.from) {
+      this.selectedDate.set(range.from);
     }
-  }
-
-  private initializeDateRangePicker() {
-    const input = document.getElementById('single-date-input') as HTMLInputElement;
-    if (!input) return;
-
-    const today = new Date();
-
-    this.dateRangePicker = new DateRangePicker(
-      input,
-      {
-        startDate: today,
-        endDate: today,
-        locale: SPANISH_LOCALE,
-        singleDatePicker: true, // Solo una fecha
-        autoApply: true,
-        showDropdowns: true,
-        theme: MATERIAL_THEME,
-      },
-      (startDate: Date) => {
-        this.ngZone.run(() => {
-          this.selectedDate = startDate;
-        });
-      },
-    );
   }
 }`;
 

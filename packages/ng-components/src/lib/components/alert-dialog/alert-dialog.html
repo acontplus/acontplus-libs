@@ -1,0 +1,137 @@
+<div
+  class="alert-dialog"
+  [attr.aria-label]="data.ariaLabel"
+  [attr.aria-describedby]="data.ariaDescribedBy"
+>
+  <!-- Timer Progress Bar -->
+  @if (data.timer && data.timerProgressBar) {
+  <mat-progress-bar mode="determinate" [value]="timerProgress" class="timer-progress">
+  </mat-progress-bar>
+  }
+
+  <!-- Image -->
+  @if (data.imageUrl) {
+  <div class="alert-dialog-image">
+    <img
+      [src]="data.imageUrl"
+      [alt]="data.imageAlt || 'Alert image'"
+      [style.width]="data.imageWidth || 'auto'"
+      [style.height]="data.imageHeight || 'auto'"
+      [style.max-width]="data.imageWidth || '100%'"
+    />
+  </div>
+  }
+
+  <!-- Icon -->
+  @if (data.type || data.icon) {
+  <div class="alert-dialog-icon" [ngClass]="'icon-' + (data.type || 'custom')">
+    <mat-icon class="icon-large" [style.color]="data.iconColor"> {{ getIconName() }} </mat-icon>
+  </div>
+  }
+
+  <!-- Title -->
+  @if (data.title) {
+  <h2 mat-dialog-title class="alert-dialog-title">{{ data.title }}</h2>
+  }
+
+  <!-- Content -->
+  <mat-dialog-content class="alert-dialog-content">
+    <!-- Dynamic Component -->
+    @if (data.component) {
+    <div #dynamicComponentContainer></div>
+    } @if (data.html) {
+    <div [innerHTML]="sanitizedHtml"></div>
+    } @else if (data.message) {
+    <p class="alert-message">{{ data.message }}</p>
+    }
+
+    <!-- Input Field -->
+    @if (data.input) {
+    <mat-form-field appearance="outline" class="alert-input-field">
+      @if (data.inputLabel) {
+      <mat-label>{{ data.inputLabel }}</mat-label>
+      } @if (data.input === 'textarea') {
+      <textarea
+        matInput
+        #inputField
+        [(ngModel)]="inputValue"
+        [placeholder]="data.inputPlaceholder || ''"
+        [type]="data.input"
+        rows="4"
+        (keyup.enter)="onInputEnter()"
+        [attr.aria-invalid]="!!validationError"
+      >
+      </textarea>
+      } @else {
+      <input
+        matInput
+        #inputField
+        [(ngModel)]="inputValue"
+        [placeholder]="data.inputPlaceholder || ''"
+        [type]="data.input"
+        (keyup.enter)="onInputEnter()"
+        [attr.aria-invalid]="!!validationError"
+      />
+      } @if (validationError) {
+      <mat-error>{{ validationError }}</mat-error>
+      }
+    </mat-form-field>
+    }
+  </mat-dialog-content>
+
+  <!-- Actions -->
+  <mat-dialog-actions
+    class="alert-dialog-actions"
+    [class.reverse-buttons]="data.reverseButtons"
+    [class.vertical-buttons]="data.verticalButtons"
+    align="center"
+  >
+    @if (data.showDenyButton) {
+    <acp-button
+      type="button"
+      [matStyle]="getButtonStyle('deny')"
+      [variant]="getButtonVariant('deny')"
+      [icon]="getButtonIcon('deny')"
+      (handleClick)="onDeny()"
+      [text]="data.denyText || 'No'"
+      [disabled]="data.disableDenyButton?? false"
+      [class.spinning]="data.processing && data.processingButton === 'deny'"
+      [class.full-width]="data.fullWidthButtons"
+    />
+    } @if (data.showCancelButton) {
+    <acp-button
+      type="button"
+      [matStyle]="getButtonStyle('cancel')"
+      [variant]="getButtonVariant('cancel')"
+      [icon]="getButtonIcon('cancel')"
+      (handleClick)="onCancel()"
+      [text]="data.cancelText || 'Cancel'"
+      [disabled]="data.disableCancelButton??false"
+      [class.spinning]="data.processing && data.processingButton === 'cancel'"
+      [class.full-width]="data.fullWidthButtons"
+    />
+    } @if (data.showConfirmButton !== false) {
+    <acp-button
+      type="button"
+      [matStyle]="getButtonStyle('confirm')"
+      [variant]="getButtonVariant('confirm')"
+      [icon]="getButtonIcon('confirm')"
+      (handleClick)="onConfirm()"
+      [text]="data.confirmText || 'OK'"
+      [disabled]="data.disableConfirmButton?? false"
+      [class.spinning]="data.processing && data.processingButton === 'confirm'"
+      [class.full-width]="data.fullWidthButtons"
+      [autofocus]="data.focusConfirm"
+    />
+    }
+  </mat-dialog-actions>
+
+  <!-- Footer -->
+  @if (data.footer || data.footerHtml) {
+  <div class="alert-dialog-footer">
+    @if (data.footerHtml) {
+    <div [innerHTML]="sanitizedFooter"></div>
+    } @else { {{ data.footer }} }
+  </div>
+  }
+</div>

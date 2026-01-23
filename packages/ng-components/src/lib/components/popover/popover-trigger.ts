@@ -57,6 +57,7 @@ export const ACP_POPOVER_SCROLL_STRATEGY = new InjectionToken<() => ScrollStrate
  * The trigger handles various events (click, hover) and manages the popover's lifecycle,
  * including opening, closing, positioning, and focus management.
  *
+ * ## Basic Usage
  * @example
  * ```html
  * <acp-popover #popover="acpPopover">
@@ -65,6 +66,33 @@ export const ACP_POPOVER_SCROLL_STRATEGY = new InjectionToken<() => ScrollStrate
  *
  * <button [acpPopoverTriggerFor]="popover">
  *   Show popover
+ * </button>
+ * ```
+ *
+ * ## Programmatic Control
+ * @example
+ * ```html
+ * <acp-popover #popover="acpPopover">
+ *   <div>Popover content</div>
+ * </acp-popover>
+ *
+ * <button [acpPopoverTriggerFor]="popover" #trigger="acpPopoverTrigger">
+ *   Toggle popover
+ * </button>
+ *
+ * <!-- Programmatic control -->
+ * <button (click)="trigger.openPopover()">Open</button>
+ * <button (click)="trigger.closePopover()">Close</button>
+ * <button (click)="trigger.closePopoverWithReason('manual')">Close with reason</button>
+ * <button (click)="trigger.togglePopover()">Toggle</button>
+ * ```
+ *
+ * ## Custom Target
+ * @example
+ * ```html
+ * <div acpPopoverTarget #target="acpPopoverTarget">Target element</div>
+ * <button [acpPopoverTriggerFor]="popover" [targetElement]="target">
+ *   Trigger (popover appears at target)
  * </button>
  * ```
  */
@@ -308,6 +336,14 @@ export class AcpPopoverTrigger implements AfterContentInit, OnDestroy {
   /** Closes the popover. */
   closePopover(): void {
     this.popover.closed.emit();
+  }
+
+  /**
+   * Programmatically closes the popover with a specific reason.
+   * @param reason The reason for closing
+   */
+  closePopoverWithReason(reason: PopoverCloseReason): void {
+    this.popover.closed.emit(reason);
   }
 
   /**

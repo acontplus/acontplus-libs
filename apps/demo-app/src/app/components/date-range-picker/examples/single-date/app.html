@@ -17,8 +17,8 @@
       <div class="result-display">
         <h4>Fecha seleccionada:</h4>
         <div class="selected-date">
-          <span class="date-value">{{ selectedDate | date:'EEEE, dd MMMM yyyy':'es' }}</span>
-          <span class="date-format">{{ selectedDate | date:'dd/MM/yyyy' }}</span>
+          <span class="date-value">{{ selectedDate() | date:'EEEE, dd MMMM yyyy':'es' }}</span>
+          <span class="date-format">{{ selectedDate() | date:'dd/MM/yyyy' }}</span>
         </div>
       </div>
 

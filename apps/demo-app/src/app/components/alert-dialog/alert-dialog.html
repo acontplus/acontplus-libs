@@ -1,0 +1,51 @@
+<div class="demo-container">
+  <mat-card class="demo-card">
+    <mat-card-header>
+      <mat-card-title>🎨 Alert Dialog Demo</mat-card-title>
+      <mat-card-subtitle>Angular + Material Design</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <!-- 1. Basic Alerts -->
+      <h3>1. Basic Alerts</h3>
+      <div class="button-grid">
+        <button mat-raised-button color="primary" (click)="showSuccess()">Success Alert</button>
+        <button mat-raised-button color="warn" (click)="showError()">Error Alert</button>
+        <button mat-raised-button color="accent" (click)="showInfo()">Info Alert</button>
+      </div>
+
+      <!-- 2. Confirmation Dialogs -->
+      <h3>2. Confirmation Dialogs</h3>
+      <div class="button-grid">
+        <button mat-raised-button color="warn" (click)="showConfirm()">Confirm Dialog</button>
+        <button mat-raised-button color="accent" (click)="showDenyConfirm()">
+          Save/Discard Dialog
+        </button>
+      </div>
+
+      <!-- 3. Input Prompts -->
+      <h3>3. Input Prompts</h3>
+      <div class="button-grid">
+        <button mat-raised-button (click)="showTextPrompt()">Text Input</button>
+        <button mat-raised-button (click)="showEmailPrompt()">Email Input</button>
+      </div>
+
+      <!-- 4. Advanced Usage -->
+      <h3>4. Advanced Usage</h3>
+      <div class="button-grid">
+        <button mat-raised-button (click)="showHtmlContent()">HTML Content</button>
+        <button mat-raised-button (click)="showImageDialog()">Image Dialog</button>
+        <button mat-raised-button (click)="showCustomComponent()">Custom Component</button>
+      </div>
+
+      <!-- 5. Toast Notifications -->
+      <h3>5. Toast Notifications</h3>
+      <div class="button-grid">
+        <button mat-raised-button color="primary" (click)="showSuccessToast()">
+          Success Toast
+        </button>
+        <button mat-raised-button color="warn" (click)="showErrorToast()">Error Toast</button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -22,8 +22,8 @@
               <mat-chip>Inicio</mat-chip>
             </mat-chip-set>
             <div class="datetime-values">
-              <span class="date">{{ selectedStartDate | date:'EEEE, dd MMM':'es' }}</span>
-              <span class="time">{{ selectedStartDate | date:'HH:mm' }}</span>
+              <span class="date">{{ selectedStartDate() | date:'EEEE, dd MMM':'es' }}</span>
+              <span class="time">{{ selectedStartDate() | date:'HH:mm' }}</span>
             </div>
           </div>
 
@@ -34,16 +34,16 @@
               <mat-chip>Fin</mat-chip>
             </mat-chip-set>
             <div class="datetime-values">
-              <span class="date">{{ selectedEndDate | date:'EEEE, dd MMM':'es' }}</span>
-              <span class="time">{{ selectedEndDate | date:'HH:mm' }}</span>
+              <span class="date">{{ selectedEndDate() | date:'EEEE, dd MMM':'es' }}</span>
+              <span class="time">{{ selectedEndDate() | date:'HH:mm' }}</span>
             </div>
           </div>
         </div>
 
-        @if (selectedLabel) {
+        @if (selectedLabel()) {
         <div class="label-display">
           <mat-chip-set>
-            <mat-chip color="accent" selected>{{ selectedLabel }}</mat-chip>
+            <mat-chip color="accent" selected>{{ selectedLabel() }}</mat-chip>
           </mat-chip-set>
         </div>
         }

@@ -1,4 +1,4 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal, computed, model } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -6,7 +6,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { DateRangePicker, DateRangePickerOptions } from '@acontplus/ng-components';
+import { MatIcon } from '@angular/material/icon';
+import {
+  DateRangePicker,
+  DateRangePickerOptions,
+  DateRangeValue,
+  SPANISH_LOCALE,
+  MATERIAL_LIGHT_THEME,
+} from '@acontplus/ng-components';
 
 @Component({
   selector: 'app-date-range-picker-advanced-example',
@@ -21,6 +28,7 @@ import { DateRangePicker, DateRangePickerOptions } from '@acontplus/ng-component
     MatSelectModule,
     MatCheckboxModule,
     DateRangePicker,
+    MatIcon,
   ],
 })
 export class AdvancedApp {
@@ -35,6 +43,8 @@ export class AdvancedApp {
   endDateValue = signal(this.formatDateForInput(new Date()));
   minDateValue = signal('');
   maxDateValue = signal('');
+  dateFormat = signal('DD/MM/YYYY');
+  timeFormat = signal('HH:mm');
 
   // Opciones de UI usando signals
   showDropdowns = signal(true);
@@ -43,7 +53,7 @@ export class AdvancedApp {
   singleDatePicker = signal(false);
   timePicker = signal(false);
   timePicker24Hour = signal(true);
-  timePickerSeconds = signal(false);
+  timePickerSeconds = model(false);
   autoApply = signal(false);
   ranges = signal(true);
   alwaysShowCalendars = signal(false);
@@ -65,11 +75,12 @@ export class AdvancedApp {
   cancelButtonClasses = signal('btn-default');
 
   // Eventos
-  onDateRangeSelected(event: { from: Date | string; to: Date | string; label?: string }) {
-    // Convert to Date objects if they come as strings
-    this.selectedStartDate = typeof event.from === 'string' ? new Date(event.from) : event.from;
-    this.selectedEndDate = typeof event.to === 'string' ? new Date(event.to) : event.to;
-    this.selectedLabel = event.label || null;
+  onDateRangeSelected(event: DateRangeValue<false> | null) {
+    if (event && event.from && event.to) {
+      this.selectedStartDate = event.from;
+      this.selectedEndDate = event.to;
+      this.selectedLabel = event.label || null;
+    }
   }
 
   onCheckboxChange(checked: boolean) {
@@ -100,29 +111,28 @@ export class AdvancedApp {
   // Configuración usando un objeto options
   // Configuración usando computed para evitar recrear el objeto
   pickerOptions = computed((): DateRangePickerOptions => {
+    const fullFormat = this.timePicker()
+      ? `${this.dateFormat()} ${this.timeFormat()}`
+      : this.dateFormat();
+
     return {
-      startDate: this.getStartDate(),
-      endDate: this.getEndDate(),
+      locale: {
+        ...SPANISH_LOCALE,
+        format: fullFormat,
+      },
+      theme: MATERIAL_LIGHT_THEME,
       minDate: this.getMinDate(),
       maxDate: this.getMaxDate(),
-      showDropdowns: this.showDropdowns(),
       singleDatePicker: this.singleDatePicker(),
       timePicker: this.timePicker(),
       timePicker24Hour: this.timePicker24Hour(),
       timePickerSeconds: this.timePickerSeconds(),
       timePickerIncrement: this.timePickerIncrement(),
       autoApply: this.autoApply(),
-      ranges: this.getRanges(),
-      alwaysShowCalendars: this.alwaysShowCalendars(),
-      showCustomRangeLabel: this.showCustomRangeLabel(),
+      showDropdowns: this.showDropdowns(),
       linkedCalendars: this.linkedCalendars(),
-      autoUpdateInput: this.autoUpdateInput(),
-      opens: this.opens(),
-      drops: this.drops(),
-      buttonClasses: this.buttonClasses(),
-      applyButtonClasses: this.applyButtonClasses(),
-      cancelButtonClasses: this.cancelButtonClasses(),
-      presetTheme: 'material',
+      alwaysShowCalendars: this.alwaysShowCalendars(),
+      ranges: this.getRanges(),
     };
   });
 
@@ -132,6 +142,8 @@ export class AdvancedApp {
       endDate: this.endDateValue() || undefined,
       minDate: this.minDateValue() || undefined,
       maxDate: this.maxDateValue() || undefined,
+      dateFormat: this.dateFormat(),
+      timeFormat: this.timeFormat(),
       showDropdowns: this.showDropdowns(),
       singleDatePicker: this.singleDatePicker(),
       timePicker: this.timePicker(),
@@ -177,11 +189,24 @@ export class AdvancedApp {
   [showCalendarButton]="true"
   [inputReadonly]="false"
   label="Seleccionar rango de fechas"
-  hint="Configuración personalizada"
   placeholderText="Selecciona fechas"
   (dateRangeSelected)="onDateRangeSelected($event)"
   (checkboxChange)="onCheckboxChange($event)"
-></acp-date-range-picker>`;
+></acp-date-range-picker>
+
+// Configuración del locale con formato personalizado:
+const fullFormat = timePicker ? '${this.dateFormat()} ${this.timeFormat()}' : '${this.dateFormat()}';
+const customLocale = {
+  ...SPANISH_LOCALE,
+  format: fullFormat
+};
+
+// Opciones del picker:
+const pickerOptions: DateRangePickerOptions = {
+  locale: customLocale,
+  theme: MATERIAL_LIGHT_THEME,
+  // ... otras opciones configuradas
+};`;
   }
 
   getRanges(): Record<string, [Date, Date]> | undefined {

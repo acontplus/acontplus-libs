@@ -1,4 +1,4 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, AfterViewInit, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -7,8 +7,9 @@ import { MatChipsModule } from '@angular/material/chips';
 import {
   DateRangePicker,
   DateRangePickerOptions,
+  DateRangeValue,
   SPANISH_LOCALE,
-  MATERIAL_THEME,
+  MATERIAL_LIGHT_THEME,
 } from '@acontplus/ng-components';
 import { addDay } from '@formkit/tempo';
 
@@ -26,32 +27,32 @@ import { addDay } from '@formkit/tempo';
   ],
 })
 export class RangesOnlyApp implements AfterViewInit {
-  selectedStartDate: Date = new Date();
-  selectedEndDate: Date = new Date();
-  selectedLabel: string | null = null;
+  selectedStartDate = signal<Date>(new Date());
+  selectedEndDate = signal<Date>(new Date());
+  selectedLabel = signal<string | null>(null);
 
   // Configuración del picker
   rangesOnlyOptions: DateRangePickerOptions = {
     autoApply: true,
     alwaysShowCalendars: false,
-    showCustomRangeLabel: true,
-    theme: MATERIAL_THEME,
+    theme: MATERIAL_LIGHT_THEME,
     ranges: this.getRanges(),
     locale: SPANISH_LOCALE,
   };
 
   ngAfterViewInit() {
     const today = new Date();
-    this.selectedStartDate = today;
-    this.selectedEndDate = today;
-    this.selectedLabel = 'Hoy';
+    this.selectedStartDate.set(today);
+    this.selectedEndDate.set(today);
+    this.selectedLabel.set('Hoy');
   }
 
-  onDateRangeSelected(event: { from: Date | string; to: Date | string; label?: string }) {
-    // Convert to Date objects if they come as strings
-    this.selectedStartDate = typeof event.from === 'string' ? new Date(event.from) : event.from;
-    this.selectedEndDate = typeof event.to === 'string' ? new Date(event.to) : event.to;
-    this.selectedLabel = event.label || null;
+  onDateRangeSelected(event: DateRangeValue<false> | null) {
+    if (event && event.from && event.to) {
+      this.selectedStartDate.set(event.from);
+      this.selectedEndDate.set(event.to);
+      this.selectedLabel.set(event.label || null);
+    }
   }
 
   private getRanges(): Record<string, [Date, Date]> {

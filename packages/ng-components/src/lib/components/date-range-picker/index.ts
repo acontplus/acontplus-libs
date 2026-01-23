@@ -2,18 +2,11 @@
 export { DateRangePicker } from './date-range-picker';
 export type { DateRangePickerOptions, DateRangeValue } from './date-range-picker';
 
-// Re-exports from datex-ui
-export {
-  Datex,
-  SPANISH_LOCALE,
-  SPANISH_LOCALE_WITH_TIME,
-  DEFAULT_THEME,
-  BOOTSTRAP_THEME,
-  MATERIAL_THEME,
-} from 'datex-ui';
+// Re-exports from ngx-datex
+export { NgxDatex, SPANISH_LOCALE, MATERIAL_LIGHT_THEME } from 'ngx-datex';
 
-// Type re-exports from datex-ui
-export type { DatexOptions } from 'datex-ui';
-export type { DatexLocale } from 'datex-ui';
-export type { DatexCallback } from 'datex-ui';
-export type { DatexTheme } from 'datex-ui';
+export type { NgxDatexValue } from 'ngx-datex';
+export type { NgxDatexLocale } from 'ngx-datex';
+export type { NgxDatexTheme } from 'ngx-datex';
+export type { NgxDatexConfig } from 'ngx-datex';
+export type { NgxDatexRange } from 'ngx-datex';

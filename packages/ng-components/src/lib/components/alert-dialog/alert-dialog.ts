@@ -1,28 +1,32 @@
 import {
-  Component,
-  OnInit,
-  OnDestroy,
-  ViewChild,
-  ElementRef,
-  ViewContainerRef,
-  ComponentRef,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ComponentRef,
   createComponent,
+  ElementRef,
   EnvironmentInjector,
   inject,
+  OnDestroy,
+  OnInit,
+  Renderer2,
+  ViewChild,
+  ViewContainerRef,
 } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { AlertDialogOptions, AlertDialogResult } from '../../services';
+import { AlertDialogOptions } from '../../services';
 import { NgClass } from '@angular/common';
 import { Button } from '../button/button';
 import { ButtonVariant, MaterialButtonStyle } from '@acontplus/ui-kit';
+import { DialogZIndexService } from '../../services/dialog/dialog-z-index.service';
 
 type ButtonType = 'confirm' | 'cancel' | 'deny';
 
@@ -37,53 +41,276 @@ type ButtonType = 'confirm' | 'cancel' | 'deny';
     MatInputModule,
     MatFormFieldModule,
     MatProgressBarModule,
+    DragDropModule,
     NgClass,
     Button,
   ],
   templateUrl: 'alert-dialog.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.Default,
   styles: [
     `
       .alert-dialog {
-        text-align: center;
-        padding: 1rem;
         position: relative;
         overflow: hidden;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        border-radius: 16px;
       }
 
+      /* ===== ALERT HEADER ===== */
+      .acp-alert-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        padding: 24px 24px 0 24px;
+        position: relative;
+      }
+
+      .acp-alert-header .alert-dialog-icon {
+        margin: 0;
+        flex-shrink: 0;
+        margin-top: 4px; /* Alinear con el texto del título */
+      }
+
+      /* ===== TITLE ===== */
+      .alert-dialog-title {
+        margin: 0 0 12px 0;
+        font-size: 20px;
+        font-weight: 600;
+        line-height: 1.2;
+        color: #1a1a1a;
+        text-align: left;
+      }
+
+      /* ===== CONTENT ===== */
+      .alert-dialog-content {
+        /* Sin padding/margin - mat-dialog-content ya los maneja */
+        text-align: left;
+
+        .alert-message {
+          margin: 0;
+          font-size: 16px;
+          line-height: 1.4;
+          color: #666;
+        }
+      }
+
+      /* ===== ACTIONS ===== */
+      .alert-dialog-actions {
+        margin: 24px 24px 24px 24px;
+        padding: 0;
+        gap: 12px;
+      }
+
+      /* Reverse buttons - solo cambiar el orden, mat-dialog-actions maneja align */
+      .alert-dialog-actions.reverse-buttons {
+        flex-direction: row-reverse;
+      }
+
+      /* Vertical buttons */
+      .alert-dialog-actions.vertical-buttons {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .alert-dialog-actions.vertical-buttons.reverse-buttons {
+        flex-direction: column-reverse;
+      }
+
+      /* ===== CLOSE BUTTON ===== */
+      .close-button {
+        position: relative;
+        z-index: 10;
+        width: 40px;
+        height: 40px;
+        margin: 0;
+        background-color: rgba(0, 0, 0, 0.05);
+        border-radius: 50%;
+
+        mat-icon {
+          font-size: 20px;
+          width: 20px;
+          height: 20px;
+          color: rgba(0, 0, 0, 0.6);
+        }
+
+        &:hover {
+          background-color: rgba(0, 0, 0, 0.1);
+        }
+      }
+
+      /* ===== LAYOUTS ===== */
+
+      /* Modern Layout - Icon a la izquierda */
+      .alert-dialog.modern-layout {
+        .acp-alert-header {
+          padding: 24px 24px 0 24px;
+
+          .alert-dialog-icon {
+            margin-right: 16px;
+
+            .icon-large {
+              font-size: 48px;
+              width: 48px;
+              height: 48px;
+            }
+          }
+        }
+      }
+
+      /* Toast Layout */
+      .alert-dialog.toast-layout {
+        border-radius: 8px;
+
+        .acp-alert-header {
+          padding: 16px;
+          align-items: center;
+          gap: 12px;
+
+          .alert-dialog-icon {
+            margin: 0;
+            flex-shrink: 0;
+
+            .icon-large {
+              font-size: 24px;
+              width: 24px;
+              height: 24px;
+            }
+          }
+
+          .toast-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0; /* Permite que el texto se trunque si es necesario */
+
+            .toast-title {
+              font-size: 14px;
+              font-weight: 600;
+              line-height: 1.2;
+              color: #1a1a1a;
+              margin: 0;
+            }
+
+            .toast-message {
+              font-size: 13px;
+              line-height: 1.3;
+              color: #666;
+              margin: 0;
+            }
+          }
+
+          .close-button {
+            margin: 0;
+            flex-shrink: 0;
+          }
+        }
+
+        /* Ocultar contenido normal en modo toast */
+
+        .alert-dialog-content,
+        .alert-dialog-actions {
+          display: none;
+        }
+      }
+
+      /* ===== ICON POSITIONS ===== */
+      .alert-dialog.icon-center {
+        .acp-alert-header {
+          flex-direction: column;
+          text-align: center;
+          align-items: center;
+          padding: 24px 24px 16px 24px;
+
+          .alert-dialog-icon {
+            margin: 0 0 16px 0;
+          }
+
+          .close-button {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+          }
+        }
+
+        .alert-dialog-title,
+        .alert-dialog-content {
+          text-align: center;
+        }
+      }
+
+      .alert-dialog.icon-top {
+        .acp-alert-header {
+          flex-direction: column;
+          align-items: flex-start;
+          padding: 24px 24px 16px 24px;
+
+          .alert-dialog-icon {
+            margin: 0 0 16px 0;
+          }
+
+          .close-button {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+          }
+        }
+      }
+
+      /* ===== CONTENT ALIGNMENT ===== */
+      .alert-dialog.content-left {
+        .alert-dialog-title,
+        .alert-dialog-content {
+          text-align: left;
+        }
+      }
+
+      .alert-dialog.content-center {
+        .acp-alert-header {
+          justify-content: center;
+        }
+
+        .alert-dialog-title,
+        .alert-dialog-content {
+          text-align: center;
+        }
+      }
+
+      .alert-dialog.content-right {
+        .alert-dialog-title,
+        .alert-dialog-content {
+          text-align: right;
+        }
+      }
+
+      /* ===== TIMER PROGRESS ===== */
       .timer-progress {
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
         height: 4px;
+        z-index: 5;
+        border-radius: 0;
       }
 
-      .alert-dialog-image {
-        margin: 1rem auto;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+      .timer-progress.toast-progress {
+        height: 3px;
+        border-radius: 0;
       }
 
-      .alert-dialog-image img {
-        max-width: 100%;
-        border-radius: 8px;
+      /* Asegurar que la barra de progreso sea visible */
+      :host ::ng-deep .timer-progress .mdc-linear-progress__bar {
+        transition: transform 50ms linear;
       }
 
-      .alert-dialog-icon {
-        margin: 1rem auto;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+      :host ::ng-deep .timer-progress .mdc-linear-progress__buffer {
+        background-color: rgba(0, 0, 0, 0.1);
       }
 
-      .icon-large {
-        font-size: 80px;
-        width: 80px;
-        height: 80px;
-      }
-
+      /* ===== ICON COLORS ===== */
       .icon-success mat-icon {
         color: #10b981;
       }
@@ -104,32 +331,26 @@ type ButtonType = 'confirm' | 'cancel' | 'deny';
         color: #8b5cf6;
       }
 
-      .alert-dialog-title {
-        font-size: 1.5rem;
-        font-weight: 600;
-        text-align: center;
+      .icon-delete mat-icon {
+        color: #ef4444;
       }
 
-      .alert-dialog-content {
-        color: #666;
-        font-size: 1rem;
-        min-height: 50px;
+      /* ===== LEGACY STYLES ===== */
+      .alert-dialog-image {
+        margin: 1rem auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .alert-dialog-image img {
+        max-width: 100%;
+        border-radius: 8px;
       }
 
       .alert-input-field {
         width: 100%;
         margin-top: 1rem;
-      }
-
-      .alert-dialog-actions {
-        gap: 0.75rem;
-        padding: 1rem 0 0.5rem 0;
-        display: flex;
-        justify-content: center;
-      }
-
-      .alert-dialog-actions.reverse-buttons {
-        flex-direction: row-reverse;
       }
 
       .confirm-button,
@@ -143,32 +364,148 @@ type ButtonType = 'confirm' | 'cancel' | 'deny';
       }
 
       .alert-dialog-footer {
-        margin-top: 1rem;
+        margin: 0 24px 24px 24px;
         padding-top: 1rem;
         border-top: 1px solid #e0e0e0;
         font-size: 0.875rem;
         color: #666;
+      }
+
+      /* ===== CDK DRAG STYLES ===== */
+      .acp-alert-header[cdkDrag] {
+        cursor: move;
+        user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+      }
+
+      .acp-alert-header[cdkDrag]:hover {
+        background-color: rgba(0, 0, 0, 0.02);
+      }
+
+      /* Prevent text selection during drag */
+      .cdk-drag-dragging {
+        user-select: none !important;
+        -webkit-user-select: none !important;
+        -moz-user-select: none !important;
+        -ms-user-select: none !important;
+      }
+
+      /* ===== ANIMATIONS ===== */
+      :host ::ng-deep .animation-fade .mat-mdc-dialog-container {
+        animation: fadeIn 0.3s ease-out;
+      }
+
+      :host ::ng-deep .animation-slide .mat-mdc-dialog-container {
+        animation: slideIn 0.3s ease-out;
+      }
+
+      :host ::ng-deep .animation-bounce .mat-mdc-dialog-container {
+        animation: bounceIn 0.5s ease-out;
+      }
+
+      :host ::ng-deep .animation-zoom .mat-mdc-dialog-container {
+        animation: zoomIn 0.3s ease-out;
+      }
+
+      /* ===== TOAST MODE STYLES ===== */
+      :host ::ng-deep .toast-mode .mat-mdc-dialog-container {
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        max-width: 400px;
+        animation: slideInRight 0.3s ease-out;
+      }
+
+      :host ::ng-deep .layout-toast .mat-mdc-dialog-container {
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        max-width: 400px;
+      }
+
+      /* ===== KEYFRAMES ===== */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translateY(-20px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideInRight {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      @keyframes bounceIn {
+        0% {
+          transform: scale(0.3);
+          opacity: 0;
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        70% {
+          transform: scale(0.9);
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      @keyframes zoomIn {
+        from {
+          transform: scale(0.8);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
       }
     `,
   ],
 })
 export class AlertDialog implements OnInit, OnDestroy {
   @ViewChild('inputField') inputField?: ElementRef<HTMLInputElement | HTMLTextAreaElement>;
+  @ViewChild('dialogTitle') dialogTitle?: ElementRef<HTMLElement>;
   @ViewChild('dynamicComponentContainer', { read: ViewContainerRef, static: true })
   private container!: ViewContainerRef;
 
   private componentRef: ComponentRef<any> | null = null;
+  private timerInterval: any;
 
   inputValue = '';
   validationError: string | null = null;
   timerProgress = 100;
-  private timerInterval: any;
   sanitizedHtml: SafeHtml;
   sanitizedFooter: SafeHtml | null = null;
   public dialogRef = inject(MatDialogRef<AlertDialog>);
   public data = inject<AlertDialogOptions>(MAT_DIALOG_DATA);
   private sanitizer = inject(DomSanitizer);
-  private environmentInjector = inject(EnvironmentInjector);
+  private renderer = inject(Renderer2);
+  private elementRef = inject(ElementRef);
+  private cdr = inject(ChangeDetectorRef);
+  private zIndexService = inject(DialogZIndexService);
 
   constructor() {
     this.sanitizedHtml = this.sanitizer.bypassSecurityTrustHtml(this.data.html || '');
@@ -188,8 +525,10 @@ export class AlertDialog implements OnInit, OnDestroy {
   private startTimer(): void {
     if (!this.data.timer) return;
 
+    console.log('Starting timer with duration:', this.data.timer);
     const startTime = Date.now();
     const endTime = startTime + this.data.timer;
+    this.timerProgress = 100;
 
     this.timerInterval = setInterval(() => {
       const now = Date.now();
@@ -197,6 +536,9 @@ export class AlertDialog implements OnInit, OnDestroy {
 
       if (remaining <= 0) {
         clearInterval(this.timerInterval);
+        this.timerProgress = 0;
+        this.cdr.detectChanges();
+        console.log('Timer finished, closing dialog');
         this.dialogRef.close({
           isConfirmed: false,
           isDismissed: true,
@@ -206,7 +548,11 @@ export class AlertDialog implements OnInit, OnDestroy {
         return;
       }
 
-      this.timerProgress = (remaining / this.data.timer!) * 100;
+      const newProgress = (remaining / this.data.timer!) * 100;
+      if (Math.abs(this.timerProgress - newProgress) > 0.5) {
+        this.timerProgress = newProgress;
+        this.cdr.detectChanges();
+      }
     }, 50);
   }
 
@@ -237,12 +583,16 @@ export class AlertDialog implements OnInit, OnDestroy {
       this.loadComponent();
     }
 
-    if (this.data.timer) {
-      this.startTimer();
-    }
-
     if (this.data.footerHtml) {
       this.sanitizedFooter = this.sanitizer.bypassSecurityTrustHtml(this.data.footerHtml);
+    }
+
+    // Inicializar timer después de que el componente esté listo
+    if (this.data.timer) {
+      // Usar setTimeout para asegurar que el componente esté completamente inicializado
+      setTimeout(() => {
+        this.startTimer();
+      }, 100);
     }
   }
 
@@ -262,9 +612,20 @@ export class AlertDialog implements OnInit, OnDestroy {
         return 'info';
       case 'question':
         return 'help';
+      case 'delete':
+        return 'delete_forever';
       default:
         return '';
     }
+  }
+
+  onClose(): void {
+    this.dialogRef.close({
+      isConfirmed: false,
+      isDismissed: true,
+      isDenied: false,
+      dismiss: 'close',
+    });
   }
 
   getButtonVariant(buttonType: ButtonType): ButtonVariant {
@@ -284,6 +645,8 @@ export class AlertDialog implements OnInit, OnDestroy {
           return 'info';
         case 'question':
           return 'primary';
+        case 'delete':
+          return 'danger';
         default:
           return 'primary';
       }
@@ -316,6 +679,25 @@ export class AlertDialog implements OnInit, OnDestroy {
   getButtonStyle(buttonType: ButtonType): MaterialButtonStyle {
     const style = (this.data as any)[`${buttonType}ButtonStyle`] as MaterialButtonStyle | undefined;
     return style || 'elevated';
+  }
+
+  getActionsAlignment(): 'start' | 'center' | 'end' {
+    // Si hay una configuración específica de alineación de acciones, usarla
+    if (this.data.actionsAlignment) {
+      return this.data.actionsAlignment;
+    }
+
+    // Si no, usar la alineación del contenido como referencia
+    switch (this.data.contentAlignment) {
+      case 'left':
+        return 'start';
+      case 'center':
+        return 'center';
+      case 'right':
+        return 'end';
+      default:
+        return 'end'; // Por defecto a la derecha
+    }
   }
 
   async onConfirm(): Promise<void> {
@@ -402,10 +784,6 @@ export class AlertDialog implements OnInit, OnDestroy {
     }
   }
 
-  private closeWithResult(result: AlertDialogResult): void {
-    this.dialogRef.close(result);
-  }
-
   getConfirmColor(): any {
     if (!this.data.confirmButtonColor) return 'primary';
     if (['primary', 'accent', 'warn'].includes(this.data.confirmButtonColor)) {
@@ -452,5 +830,16 @@ export class AlertDialog implements OnInit, OnDestroy {
       return undefined;
     }
     return this.data.denyButtonColor;
+  }
+
+  // ===== CDK DRAG FUNCTIONALITY =====
+
+  /**
+   * Brings the dialog to the front by adjusting its z-index.
+   * Uses the centralized DialogZIndexService for consistent z-index management.
+   * Called when the dialog header is clicked.
+   */
+  bringToFront(): void {
+    this.zIndexService.bringToFront(this.elementRef.nativeElement);
   }
 }

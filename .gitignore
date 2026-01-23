@@ -58,3 +58,4 @@ vitest.config.*.timestamp*
 /packages/ng-auth/node_modules
 /packages/core/node_modules
 /packages/ng-components/node_modules
+commit.txt

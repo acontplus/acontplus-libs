@@ -1,20 +1,22 @@
 import {
-  Component,
-  ViewContainerRef,
   AfterViewInit,
-  ElementRef,
   ChangeDetectionStrategy,
+  Component,
+  ElementRef,
   inject,
-  viewChild,
   OnDestroy,
+  Signal,
+  viewChild,
+  ViewContainerRef,
   ViewEncapsulation,
 } from '@angular/core';
 
 import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
-import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { DialogWrapperConfig } from '../../services';
 import { Button } from '../button';
+import { DialogZIndexService } from '../../services/dialog/dialog-z-index.service';
 
 /**
  * A wrapper component for Angular Material dialogs that provides a consistent look and feel,
@@ -34,24 +36,21 @@ import { Button } from '../button';
 export class DialogWrapper implements AfterViewInit, OnDestroy {
   dialogRef = inject<MatDialogRef<DialogWrapper>>(MatDialogRef);
   config = inject<DialogWrapperConfig>(MAT_DIALOG_DATA);
+  private zIndexService = inject(DialogZIndexService);
 
   /**
    * A template reference that acts as an anchor for dynamic content.
    * This is where the component specified in the config will be rendered.
    */
-  readonly contentHost = viewChild.required('contentHost', { read: ViewContainerRef });
+  readonly contentHost: Signal<ViewContainerRef> = viewChild.required('contentHost', {
+    read: ViewContainerRef,
+  });
 
   /**
    * A reference to the header element for the z-index focus logic.
    * Used to bring the dialog to the front when clicked.
    */
-  readonly header = viewChild<ElementRef>('dialogHeader');
-
-  /**
-   * Static counter to track the highest z-index for multiple dialogs.
-   * Ensures that the most recently clicked dialog appears on top.
-   */
-  private static lastZIndex = 1000;
+  readonly header: Signal<ElementRef | undefined> = viewChild<ElementRef>('dialogHeader');
 
   /**
    * Timeout ID for debouncing z-index updates to prevent excessive DOM manipulations.
@@ -104,22 +103,13 @@ export class DialogWrapper implements AfterViewInit, OnDestroy {
 
   /**
    * Brings the dialog to the front by adjusting its z-index.
-   * Uses requestAnimationFrame to debounce updates and prevent excessive DOM manipulations.
+   * Uses the centralized DialogZIndexService for consistent z-index management.
    * Called when the dialog header is clicked.
    */
   bringToFront(): void {
-    // Clear any pending update
-    if (this.bringToFrontTimeoutId !== null) {
-      cancelAnimationFrame(this.bringToFrontTimeoutId);
+    const headerElement = this.header()?.nativeElement;
+    if (headerElement) {
+      this.zIndexService.bringToFront(headerElement);
     }
-
-    // Schedule the z-index update for the next animation frame
-    this.bringToFrontTimeoutId = requestAnimationFrame(() => {
-      const pane = this.header()?.nativeElement.closest('.cdk-overlay-pane') as HTMLElement;
-      if (pane) {
-        pane.style.zIndex = (++DialogWrapper.lastZIndex).toString();
-      }
-      this.bringToFrontTimeoutId = null;
-    });
   }
 }

@@ -1,11 +1,12 @@
-import { Injectable, inject, Type } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { inject, Injectable, Type } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AlertDialog } from './../components';
 import { firstValueFrom } from 'rxjs';
 import { ThemePalette } from '@angular/material/core';
 import { ButtonVariant, MaterialButtonStyle } from '@acontplus/ui-kit';
+import { DialogType, DialogZIndexService } from './dialog/dialog-z-index.service';
 
-export type AlertType = 'success' | 'error' | 'warning' | 'info' | 'question';
+export type AlertType = 'success' | 'error' | 'warning' | 'info' | 'question' | 'delete';
 export type AlertPosition =
   | 'top'
   | 'top-start'
@@ -34,11 +35,33 @@ export interface AlertDialogOptions {
   panelClass?: string | string[];
   backdropClass?: string;
 
+  // ===== Layout Configuration =====
+  layout?: 'default' | 'modern' | 'toast'; // Nuevo: tipo de layout
+  iconPosition?: 'left' | 'center' | 'top'; // Posición del icono
+  contentAlignment?: 'left' | 'center' | 'right'; // Alineación del contenido
+  actionsAlignment?: 'start' | 'center' | 'end'; // Alineación específica de los botones
+  showCloseButton?: boolean; // Botón X en la esquina superior derecha
+  closeButtonPosition?: 'top-right' | 'top-left'; // Posición del botón cerrar
+
+  // ===== Drag and Drop =====
+  draggable?: boolean;
+  dragHandle?: string; // CSS selector for drag handle (default: '.alert-dialog-title')
+
+  // ===== Animation =====
+  animation?: 'fade' | 'slide' | 'bounce' | 'zoom' | 'none';
+  animationDuration?: number; // en milisegundos
+
+  // ===== Toast Mode =====
+  autoClose?: boolean; // Auto cerrar en modo toast
+  progressBar?: boolean; // Barra de progreso en modo toast
+
   // ===== Custom Component Support =====
   component?: Type<any>;
   componentProps?: Record<string, any>;
 
-  // ===== Layout and Behavior =====
+  // ===== Z-Index and Priority =====
+  forceToTop?: boolean; // Forzar que este diálogo esté siempre encima de todos
+  dialogType?: DialogType; // Tipo de diálogo para manejo de z-index (normal, alert, toast)
   verticalButtons?: boolean;
   fullWidthButtons?: boolean;
   reverseButtons?: boolean;
@@ -49,6 +72,7 @@ export interface AlertDialogOptions {
   allowEscapeKey?: boolean;
   allowEnterKey?: boolean;
   scrollbarPadding?: boolean;
+  allowMultiple?: boolean; // Permitir múltiples alerts abiertos simultáneamente (por defecto false)
 
   // ===== Button Configuration =====
   // - Visibility
@@ -149,6 +173,11 @@ export interface AlertDialogResult<T = any> {
 })
 export class AlertDialogService {
   private dialog = inject(MatDialog);
+  private zIndexService = inject(DialogZIndexService);
+
+  // Trackear solo los AlertDialogs abiertos
+  private openAlertDialogs: MatDialogRef<AlertDialog>[] = [];
+
   private defaultOptions: Partial<AlertDialogOptions> = {
     width: '400px',
     showConfirmButton: true,
@@ -166,6 +195,21 @@ export class AlertDialogService {
     focusConfirm: true,
     scrollbarPadding: true,
     position: 'center',
+    draggable: false,
+    allowMultiple: false, // Por defecto no permitir múltiples alerts
+    forceToTop: true, // Por defecto los alerts siempre van encima
+    dialogType: 'alert', // Por defecto usar el tipo alert (z-index alto)
+    // Nuevas opciones por defecto
+    layout: 'modern',
+    iconPosition: 'left',
+    contentAlignment: 'left',
+    actionsAlignment: 'end', // Botones a la derecha por defecto
+    showCloseButton: true,
+    closeButtonPosition: 'top-right',
+    animation: 'fade',
+    animationDuration: 300,
+    autoClose: true,
+    progressBar: true,
   };
 
   /**
@@ -203,6 +247,14 @@ export class AlertDialogService {
       focusConfirm: true,
       scrollbarPadding: true,
       position: 'center',
+      draggable: false,
+      allowMultiple: false,
+      forceToTop: true,
+      dialogType: 'alert',
+      layout: 'modern',
+      iconPosition: 'left',
+      contentAlignment: 'left',
+      actionsAlignment: 'end',
     };
   }
 
@@ -211,6 +263,36 @@ export class AlertDialogService {
    */
   fire(options: AlertDialogOptions): Promise<AlertDialogResult> {
     const mergedOptions = { ...this.defaultOptions, ...options };
+
+    // Si allowMultiple es false (por defecto), cerrar solo los AlertDialogs existentes
+    if (!mergedOptions.allowMultiple) {
+      this.closeAllAlertDialogs();
+    }
+
+    // Configuración especial para modo toast
+    if (mergedOptions.layout === 'toast') {
+      mergedOptions.width = mergedOptions.width || '350px';
+      mergedOptions.showConfirmButton = mergedOptions.showConfirmButton ?? false;
+      mergedOptions.timer = mergedOptions.timer || 4000;
+      mergedOptions.timerProgressBar = mergedOptions.progressBar ?? true;
+
+      // Si no se especificó position, usar por defecto para toasts
+      if (!mergedOptions.position) {
+        mergedOptions.position = 'top-end'; // Por defecto top-right para toasts
+      }
+
+      mergedOptions.disableClose = false;
+      mergedOptions.animation = mergedOptions.animation || 'slide';
+      mergedOptions.dialogType = 'toast'; // Los toasts usan el z-index más alto
+      // Configuración específica para toasts no-intrusivos
+      mergedOptions.closeOnBackdropClick = false; // No hay backdrop en toasts
+      mergedOptions.allowEscapeKey = false; // ESC no debe cerrar toasts
+      mergedOptions.allowMultiple = true; // Permitir múltiples toasts
+    }
+
+    // Determinar el tipo de diálogo para z-index
+    const dialogType: DialogType =
+      mergedOptions.dialogType || (mergedOptions.layout === 'toast' ? 'toast' : 'alert');
 
     // Calcular posición del diálogo
     const position = this.getDialogPosition(mergedOptions.position || 'center');
@@ -228,8 +310,28 @@ export class AlertDialogService {
       closeOnNavigation: true,
       autoFocus: mergedOptions.focusConfirm !== false,
       restoreFocus: true,
-      hasBackdrop: true,
+      hasBackdrop: mergedOptions.layout !== 'toast', // Los toasts NO tienen backdrop
     });
+
+    // Trackear este AlertDialog
+    this.openAlertDialogs.push(dialogRef);
+
+    // Limpiar del tracking cuando se cierre
+    dialogRef.afterClosed().subscribe(() => {
+      const index = this.openAlertDialogs.indexOf(dialogRef);
+      if (index > -1) {
+        this.openAlertDialogs.splice(index, 1);
+      }
+    });
+
+    // Aplicar z-index dinámico usando el servicio centralizado
+    if (mergedOptions.forceToTop) {
+      // Si se requiere forzar al tope, usar forceToTop
+      this.zIndexService.forceToTop(dialogRef);
+    } else {
+      // Usar el tipo de diálogo apropiado para z-index
+      this.zIndexService.applyZIndex(dialogRef, dialogType);
+    }
 
     // Callbacks de ciclo de vida
     if (mergedOptions.willOpen) {
@@ -377,26 +479,110 @@ export class AlertDialogService {
   }
 
   /**
-   * Toast notification (auto-cierre, posición personalizada)
+   * Diálogo de confirmación para eliminar
+   */
+  delete(
+    options: string | Omit<AlertDialogOptions, 'type' | 'showCancelButton'>,
+  ): Promise<AlertDialogResult> {
+    const opts =
+      typeof options === 'string'
+        ? { message: options, title: '¿Eliminar elemento?' }
+        : { title: '¿Eliminar elemento?', ...options };
+
+    return this.fire({
+      ...opts,
+      type: 'delete',
+      showCancelButton: true,
+      confirmText: opts.confirmText || 'Eliminar',
+      cancelText: opts.cancelText || 'Cancelar',
+      confirmButtonVariant: 'danger',
+    });
+  }
+
+  /**
+   * Toast notification (auto-cierre, posición personalizada, no-intrusivo)
    */
   toast(options: string | AlertDialogOptions): Promise<AlertDialogResult> {
     const opts = typeof options === 'string' ? { message: options } : options;
 
     return this.fire({
+      // Valores por defecto que pueden ser sobrescritos
       timer: 3000,
-      timerProgressBar: true,
       showConfirmButton: false,
-      position: 'top-end',
+      position: 'bottom-start', // Valor por defecto
       width: '350px',
+      layout: 'toast', // Usar layout en lugar de toastMode
+      dialogType: 'toast',
+      forceToTop: false,
+      allowMultiple: true,
+      disableClose: true,
+      closeOnBackdropClick: false,
+      allowEscapeKey: false,
+      allowEnterKey: false,
+      autoClose: true,
+      progressBar: true,
+      // Los valores del usuario sobrescriben los por defecto
       ...opts,
     });
   }
 
   /**
-   * Cerrar todos los diálogos abiertos
+   * Alerta crítica que siempre aparece encima de todo
+   */
+  critical(options: string | Omit<AlertDialogOptions, 'forceToTop'>): Promise<AlertDialogResult> {
+    const opts =
+      typeof options === 'string'
+        ? { message: options, title: '¡Atención!' }
+        : { title: '¡Atención!', ...options };
+
+    return this.fire({
+      ...opts,
+      type: 'error',
+      forceToTop: true,
+      disableClose: true,
+      closeOnBackdropClick: false,
+      allowEscapeKey: false,
+    });
+  }
+
+  /**
+   * Cerrar solo los AlertDialogs abiertos (no afecta otros diálogos)
+   */
+  closeAllAlertDialogs(): void {
+    // Crear una copia del array para evitar problemas de concurrencia
+    const dialogsToClose = [...this.openAlertDialogs];
+    dialogsToClose.forEach(dialogRef => {
+      if (dialogRef && !dialogRef.componentInstance) {
+        // Solo cerrar si el diálogo aún está abierto
+        dialogRef.close();
+      }
+    });
+    // Limpiar el array
+    this.openAlertDialogs = [];
+  }
+
+  /**
+   * Cerrar TODOS los diálogos abiertos (incluyendo otros servicios)
+   * ⚠️ Usar con cuidado - afecta todos los diálogos de MatDialog
    */
   closeAll(): void {
     this.dialog.closeAll();
+    // También limpiar nuestro tracking
+    this.openAlertDialogs = [];
+  }
+
+  /**
+   * Cerrar solo los toasts activos (mantener otros diálogos abiertos)
+   */
+  closeAllToasts(): void {
+    this.zIndexService.closeAllToasts();
+  }
+
+  /**
+   * Obtener el número de toasts activos
+   */
+  getActiveToastCount(): number {
+    return this.zIndexService.getActiveToastCount();
   }
 
   private getDialogPosition(position: AlertPosition): any {
@@ -419,6 +605,35 @@ export class AlertDialogService {
 
     if (options.customClass) {
       classes.push(options.customClass);
+    }
+
+    if (options.draggable) {
+      classes.push('draggable-dialog');
+    }
+
+    // Agregar clases para layout
+    if (options.layout) {
+      classes.push(`layout-${options.layout}`);
+    }
+
+    // Agregar clases para posición de icono
+    if (options.iconPosition) {
+      classes.push(`icon-${options.iconPosition}`);
+    }
+
+    // Agregar clases para alineación de contenido
+    if (options.contentAlignment) {
+      classes.push(`content-${options.contentAlignment}`);
+    }
+
+    // Agregar clase para modo toast
+    if (options.layout === 'toast') {
+      classes.push('toast-mode');
+    }
+
+    // Agregar clase para animación
+    if (options.animation) {
+      classes.push(`animation-${options.animation}`);
     }
 
     if (options.panelClass) {

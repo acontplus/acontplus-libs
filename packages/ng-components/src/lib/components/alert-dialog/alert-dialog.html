@@ -1,41 +1,126 @@
 <div
   class="alert-dialog"
+  [class.modern-layout]="data.layout === 'modern'"
+  [class.toast-layout]="data.layout === 'toast'"
+  [class.icon-left]="data.iconPosition === 'left'"
+  [class.icon-center]="data.iconPosition === 'center'"
+  [class.icon-top]="data.iconPosition === 'top'"
+  [class.content-left]="data.contentAlignment === 'left'"
+  [class.content-center]="data.contentAlignment === 'center'"
+  [class.content-right]="data.contentAlignment === 'right'"
   [attr.aria-label]="data.ariaLabel"
   [attr.aria-describedby]="data.ariaDescribedBy"
 >
   <!-- Timer Progress Bar -->
-  @if (data.timer && data.timerProgressBar) {
-  <mat-progress-bar mode="determinate" [value]="timerProgress" class="timer-progress">
+  @if (data.timer && (data.timerProgressBar || data.progressBar || data.layout === 'toast')) {
+  <mat-progress-bar
+    mode="determinate"
+    [value]="timerProgress"
+    class="timer-progress"
+    [class.toast-progress]="data.layout === 'toast'"
+  >
   </mat-progress-bar>
   }
 
-  <!-- Image -->
-  @if (data.imageUrl) {
-  <div class="alert-dialog-image">
-    <img
-      [src]="data.imageUrl"
-      [alt]="data.imageAlt || 'Alert image'"
-      [style.width]="data.imageWidth || 'auto'"
-      [style.height]="data.imageHeight || 'auto'"
-      [style.max-width]="data.imageWidth || '100%'"
-    />
+  <!-- Alert Header -->
+  @if (data.draggable) {
+  <div
+    class="acp-alert-header"
+    cdkDrag
+    cdkDragRootElement=".cdk-overlay-pane"
+    cdkDragHandle
+    (mousedown)="bringToFront()"
+  >
+    <!-- Icon -->
+    @if (data.type || data.icon) {
+    <div class="alert-dialog-icon" [ngClass]="'icon-' + (data.type || 'custom')">
+      <mat-icon class="icon-large" [style.color]="data.iconColor"> {{ getIconName() }} </mat-icon>
+    </div>
+    }
+
+    <!-- Toast Content (solo para modo toast) -->
+    @if (data.layout === 'toast') {
+    <!-- Title y Message en línea para toast -->
+    <div class="toast-content">
+      @if (data.title) {
+      <span class="toast-title" #dialogTitle>{{ data.title }}</span>
+      } @if (data.message) {
+      <span class="toast-message">{{ data.message }}</span>
+      }
+    </div>
+    }
+
+    <!-- Close Button -->
+    @if (data.showCloseButton) {
+    <button
+      mat-icon-button
+      class="close-button"
+      [class.top-right]="data.closeButtonPosition === 'top-right'"
+      [class.top-left]="data.closeButtonPosition === 'top-left'"
+      (click)="onClose()"
+      aria-label="Cerrar"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+    }
+  </div>
+  } @else {
+  <div class="acp-alert-header">
+    <!-- Icon -->
+    @if (data.type || data.icon) {
+    <div class="alert-dialog-icon" [ngClass]="'icon-' + (data.type || 'custom')">
+      <mat-icon class="icon-large" [style.color]="data.iconColor"> {{ getIconName() }} </mat-icon>
+    </div>
+    }
+
+    <!-- Toast Content (solo para modo toast) -->
+    @if (data.layout === 'toast') {
+    <!-- Title y Message en línea para toast -->
+    <div class="toast-content">
+      @if (data.title) {
+      <span class="toast-title" #dialogTitle>{{ data.title }}</span>
+      } @if (data.message) {
+      <span class="toast-message">{{ data.message }}</span>
+      }
+    </div>
+    }
+
+    <!-- Close Button -->
+    @if (data.showCloseButton) {
+    <button
+      mat-icon-button
+      class="close-button"
+      [class.top-right]="data.closeButtonPosition === 'top-right'"
+      [class.top-left]="data.closeButtonPosition === 'top-left'"
+      (click)="onClose()"
+      aria-label="Cerrar"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+    }
   </div>
   }
 
-  <!-- Icon -->
-  @if (data.type || data.icon) {
-  <div class="alert-dialog-icon" [ngClass]="'icon-' + (data.type || 'custom')">
-    <mat-icon class="icon-large" [style.color]="data.iconColor"> {{ getIconName() }} </mat-icon>
-  </div>
-  }
-
-  <!-- Title -->
-  @if (data.title) {
-  <h2 mat-dialog-title class="alert-dialog-title">{{ data.title }}</h2>
-  }
-
-  <!-- Content -->
+  <!-- Content (solo para modo normal, no toast) -->
+  @if (data.layout !== 'toast') {
   <mat-dialog-content class="alert-dialog-content">
+    <!-- Title -->
+    @if (data.title) {
+    <h2 class="alert-dialog-title" #dialogTitle>{{ data.title }}</h2>
+    }
+    <!-- Image -->
+    @if (data.imageUrl) {
+    <div class="alert-dialog-image">
+      <img
+        [src]="data.imageUrl"
+        [alt]="data.imageAlt || 'Alert image'"
+        [style.width]="data.imageWidth || 'auto'"
+        [style.height]="data.imageHeight || 'auto'"
+        [style.max-width]="data.imageWidth || '100%'"
+      />
+    </div>
+    }
+
     <!-- Dynamic Component -->
     @if (data.component) {
     <div #dynamicComponentContainer></div>
@@ -78,13 +163,16 @@
     </mat-form-field>
     }
   </mat-dialog-content>
+  }
 
-  <!-- Actions -->
+  <!-- Actions (solo para modo normal, no toast) -->
+  @if (data.layout !== 'toast' && (data.showConfirmButton !== false || data.showCancelButton ||
+  data.showDenyButton)) {
   <mat-dialog-actions
     class="alert-dialog-actions"
     [class.reverse-buttons]="data.reverseButtons"
     [class.vertical-buttons]="data.verticalButtons"
-    align="center"
+    [align]="getActionsAlignment()"
   >
     @if (data.showDenyButton) {
     <acp-button
@@ -125,6 +213,7 @@
     />
     }
   </mat-dialog-actions>
+  }
 
   <!-- Footer -->
   @if (data.footer || data.footerHtml) {

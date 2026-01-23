@@ -5,8 +5,9 @@ import { firstValueFrom, map } from 'rxjs';
 import { ComponentType } from '@angular/cdk/portal';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
-import { MatCustomDialogConfig, DialogSize, DialogWrapperConfig } from './dialog.interfaces';
+import { DialogSize, DialogWrapperConfig, MatCustomDialogConfig } from './dialog.interfaces';
 import { DialogWrapper } from '../../components/dialog-wrapper/dialog-wrapper';
+import { DialogZIndexService } from './dialog-z-index.service';
 
 @Injectable({
   providedIn: 'root',
@@ -15,6 +16,7 @@ export class AdvancedDialogService {
   private readonly dialog = inject(MatDialog);
   private readonly overlay = inject(Overlay);
   private readonly breakpointObserver = inject(BreakpointObserver);
+  private readonly zIndexService = inject(DialogZIndexService);
 
   // An observable that emits true if the viewport matches mobile dimensions.
   private readonly isMobile$ = this.breakpointObserver
@@ -33,7 +35,12 @@ export class AdvancedDialogService {
     config: MatCustomDialogConfig<D> = {},
   ): Promise<MatDialogRef<T, R>> {
     const dialogConfig = await this.buildDialogConfig(config);
-    return this.dialog.open<T, D, R>(component, dialogConfig);
+    const dialogRef = this.dialog.open<T, D, R>(component, dialogConfig);
+
+    // Aplicar z-index centralizado
+    this.zIndexService.applyZIndex(dialogRef);
+
+    return dialogRef;
   }
 
   /**
@@ -53,7 +60,15 @@ export class AdvancedDialogService {
       data: wrapperConfig,
     } as MatCustomDialogConfig<DialogWrapperConfig<T>>;
     const dialogConfig = await this.buildDialogConfig(configWithWrapperData);
-    return this.dialog.open<DialogWrapper, DialogWrapperConfig<T>, R>(DialogWrapper, dialogConfig);
+    const dialogRef = this.dialog.open<DialogWrapper, DialogWrapperConfig<T>, R>(
+      DialogWrapper,
+      dialogConfig,
+    );
+
+    // Aplicar z-index centralizado
+    this.zIndexService.applyZIndex(dialogRef);
+
+    return dialogRef;
   }
 
   /**

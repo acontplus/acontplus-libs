@@ -1,0 +1,1452 @@
+import { a as Be, b as S } from './chunk-TEMGEHUK.js';
+import './chunk-IS3KC4W2.js';
+import { b as fe } from './chunk-ZTXRY76I.js';
+import './chunk-4JMGPBNX.js';
+import {
+  A as Ze,
+  B as Ke,
+  C as $e,
+  D as Je,
+  E as Xe,
+  F as Ye,
+  G as et,
+  Q as tt,
+  R as it,
+  t as Le,
+  u as We,
+  v as He,
+  w as je,
+  x as Ve,
+  y as Ue,
+  z as Qe,
+} from './chunk-H5QXEMOA.js';
+import {
+  N as Fe,
+  V as qe,
+  Y as ze,
+  Z as Ge,
+  _ as Ne,
+  a as xe,
+  d as De,
+  e as Me,
+  i as Se,
+  n as Ee,
+  y as Ae,
+} from './chunk-7JP3HI6F.js';
+import './chunk-57Q2UAVZ.js';
+import { a as M } from './chunk-QJ46N2FA.js';
+import { a as Oe, b as Pe } from './chunk-U7VJQUDE.js';
+import { a as Re, c as Ie, d as Te, g as H } from './chunk-XJJY6XHD.js';
+import {
+  $b as n,
+  Ab as u,
+  Cd as ge,
+  Eb as _,
+  Ed as ve,
+  Fa as q,
+  Fb as h,
+  Gc as N,
+  Hb as de,
+  Jc as g,
+  Kb as C,
+  Kc as L,
+  Nb as le,
+  Nd as W,
+  Ob as ce,
+  Pa as l,
+  Pb as se,
+  Qb as me,
+  Ra as X,
+  Rb as x,
+  Sb as D,
+  Va as Y,
+  Vd as we,
+  Yb as G,
+  Yc as be,
+  ab as f,
+  ac as b,
+  bb as ee,
+  ca as Z,
+  cb as te,
+  ce as ye,
+  ea as K,
+  ec as v,
+  fc as w,
+  ga as O,
+  gb as p,
+  gc as y,
+  he as Ce,
+  ia as m,
+  ic as pe,
+  ie as ke,
+  ma as P,
+  na as B,
+  pb as z,
+  pc as ue,
+  qa as $,
+  qb as ie,
+  qc as _e,
+  sb as ae,
+  ua as F,
+  ub as oe,
+  va as J,
+  vb as re,
+  wb as ne,
+  xb as s,
+  yb as a,
+  yc as he,
+  zb as o,
+} from './chunk-GV4MRAZ3.js';
+var st = ['input'],
+  mt = ['formField'],
+  pt = ['*'],
+  E = class {
+    source;
+    value;
+    constructor(r, e) {
+      ((this.source = r), (this.value = e));
+    }
+  },
+  ut = { provide: De, useExisting: Z(() => V), multi: !0 },
+  at = new O('MatRadioGroup'),
+  _t = new O('mat-radio-default-options', {
+    providedIn: 'root',
+    factory: () => ({ color: 'accent', disabledInteractive: !1 }),
+  }),
+  V = (() => {
+    class t {
+      _changeDetector = m(N);
+      _value = null;
+      _name = m(W).getId('mat-radio-group-');
+      _selected = null;
+      _isInitialized = !1;
+      _labelPosition = 'after';
+      _disabled = !1;
+      _required = !1;
+      _buttonChanges;
+      _controlValueAccessorChangeFn = () => {};
+      onTouched = () => {};
+      change = new F();
+      _radios;
+      color;
+      get name() {
+        return this._name;
+      }
+      set name(e) {
+        ((this._name = e), this._updateRadioButtonNames());
+      }
+      get labelPosition() {
+        return this._labelPosition;
+      }
+      set labelPosition(e) {
+        ((this._labelPosition = e === 'before' ? 'before' : 'after'), this._markRadiosForCheck());
+      }
+      get value() {
+        return this._value;
+      }
+      set value(e) {
+        this._value !== e &&
+          ((this._value = e),
+          this._updateSelectedRadioFromValue(),
+          this._checkSelectedRadioButton());
+      }
+      _checkSelectedRadioButton() {
+        this._selected && !this._selected.checked && (this._selected.checked = !0);
+      }
+      get selected() {
+        return this._selected;
+      }
+      set selected(e) {
+        ((this._selected = e), (this.value = e ? e.value : null), this._checkSelectedRadioButton());
+      }
+      get disabled() {
+        return this._disabled;
+      }
+      set disabled(e) {
+        ((this._disabled = e), this._markRadiosForCheck());
+      }
+      get required() {
+        return this._required;
+      }
+      set required(e) {
+        ((this._required = e), this._markRadiosForCheck());
+      }
+      get disabledInteractive() {
+        return this._disabledInteractive;
+      }
+      set disabledInteractive(e) {
+        ((this._disabledInteractive = e), this._markRadiosForCheck());
+      }
+      _disabledInteractive = !1;
+      constructor() {}
+      ngAfterContentInit() {
+        ((this._isInitialized = !0),
+          (this._buttonChanges = this._radios.changes.subscribe(() => {
+            this.selected &&
+              !this._radios.find((e) => e === this.selected) &&
+              (this._selected = null);
+          })));
+      }
+      ngOnDestroy() {
+        this._buttonChanges?.unsubscribe();
+      }
+      _touch() {
+        this.onTouched && this.onTouched();
+      }
+      _updateRadioButtonNames() {
+        this._radios &&
+          this._radios.forEach((e) => {
+            ((e.name = this.name), e._markForCheck());
+          });
+      }
+      _updateSelectedRadioFromValue() {
+        let e = this._selected !== null && this._selected.value === this._value;
+        this._radios &&
+          !e &&
+          ((this._selected = null),
+          this._radios.forEach((i) => {
+            ((i.checked = this.value === i.value), i.checked && (this._selected = i));
+          }));
+      }
+      _emitChangeEvent() {
+        this._isInitialized && this.change.emit(new E(this._selected, this._value));
+      }
+      _markRadiosForCheck() {
+        this._radios && this._radios.forEach((e) => e._markForCheck());
+      }
+      writeValue(e) {
+        ((this.value = e), this._changeDetector.markForCheck());
+      }
+      registerOnChange(e) {
+        this._controlValueAccessorChangeFn = e;
+      }
+      registerOnTouched(e) {
+        this.onTouched = e;
+      }
+      setDisabledState(e) {
+        ((this.disabled = e), this._changeDetector.markForCheck());
+      }
+      static ɵfac = function (i) {
+        return new (i || t)();
+      };
+      static ɵdir = te({
+        type: t,
+        selectors: [['mat-radio-group']],
+        contentQueries: function (i, d, c) {
+          if ((i & 1 && se(c, A, 5), i & 2)) {
+            let k;
+            x((k = D())) && (d._radios = k);
+          }
+        },
+        hostAttrs: ['role', 'radiogroup', 1, 'mat-mdc-radio-group'],
+        inputs: {
+          color: 'color',
+          name: 'name',
+          labelPosition: 'labelPosition',
+          value: 'value',
+          selected: 'selected',
+          disabled: [2, 'disabled', 'disabled', g],
+          required: [2, 'required', 'required', g],
+          disabledInteractive: [2, 'disabledInteractive', 'disabledInteractive', g],
+        },
+        outputs: { change: 'change' },
+        exportAs: ['matRadioGroup'],
+        features: [pe([ut, { provide: at, useExisting: t }])],
+      });
+    }
+    return t;
+  })(),
+  A = (() => {
+    class t {
+      _elementRef = m(q);
+      _changeDetector = m(N);
+      _focusMonitor = m(ge);
+      _radioDispatcher = m(xe);
+      _defaultOptions = m(_t, { optional: !0 });
+      _ngZone = m(J);
+      _renderer = m(Y);
+      _uniqueId = m(W).getId('mat-radio-');
+      _cleanupClick;
+      id = this._uniqueId;
+      name;
+      ariaLabel;
+      ariaLabelledby;
+      ariaDescribedby;
+      disableRipple = !1;
+      tabIndex = 0;
+      get checked() {
+        return this._checked;
+      }
+      set checked(e) {
+        this._checked !== e &&
+          ((this._checked = e),
+          e && this.radioGroup && this.radioGroup.value !== this.value
+            ? (this.radioGroup.selected = this)
+            : !e &&
+              this.radioGroup &&
+              this.radioGroup.value === this.value &&
+              (this.radioGroup.selected = null),
+          e && this._radioDispatcher.notify(this.id, this.name),
+          this._changeDetector.markForCheck());
+      }
+      get value() {
+        return this._value;
+      }
+      set value(e) {
+        this._value !== e &&
+          ((this._value = e),
+          this.radioGroup !== null &&
+            (this.checked || (this.checked = this.radioGroup.value === e),
+            this.checked && (this.radioGroup.selected = this)));
+      }
+      get labelPosition() {
+        return this._labelPosition || (this.radioGroup && this.radioGroup.labelPosition) || 'after';
+      }
+      set labelPosition(e) {
+        this._labelPosition = e;
+      }
+      _labelPosition;
+      get disabled() {
+        return this._disabled || (this.radioGroup !== null && this.radioGroup.disabled);
+      }
+      set disabled(e) {
+        this._setDisabled(e);
+      }
+      get required() {
+        return this._required || (this.radioGroup && this.radioGroup.required);
+      }
+      set required(e) {
+        (e !== this._required && this._changeDetector.markForCheck(), (this._required = e));
+      }
+      get color() {
+        return (
+          this._color ||
+          (this.radioGroup && this.radioGroup.color) ||
+          (this._defaultOptions && this._defaultOptions.color) ||
+          'accent'
+        );
+      }
+      set color(e) {
+        this._color = e;
+      }
+      _color;
+      get disabledInteractive() {
+        return (
+          this._disabledInteractive ||
+          (this.radioGroup !== null && this.radioGroup.disabledInteractive)
+        );
+      }
+      set disabledInteractive(e) {
+        this._disabledInteractive = e;
+      }
+      _disabledInteractive;
+      change = new F();
+      radioGroup;
+      get inputId() {
+        return `${this.id || this._uniqueId}-input`;
+      }
+      _checked = !1;
+      _disabled;
+      _required;
+      _value = null;
+      _removeUniqueSelectionListener = () => {};
+      _previousTabIndex;
+      _inputElement;
+      _rippleTrigger;
+      _noopAnimations = ye();
+      _injector = m($);
+      constructor() {
+        m(ve).load(ke);
+        let e = m(at, { optional: !0 }),
+          i = m(new he('tabindex'), { optional: !0 });
+        ((this.radioGroup = e),
+          (this._disabledInteractive = this._defaultOptions?.disabledInteractive ?? !1),
+          i && (this.tabIndex = L(i, 0)));
+      }
+      focus(e, i) {
+        i
+          ? this._focusMonitor.focusVia(this._inputElement, i, e)
+          : this._inputElement.nativeElement.focus(e);
+      }
+      _markForCheck() {
+        this._changeDetector.markForCheck();
+      }
+      ngOnInit() {
+        (this.radioGroup &&
+          ((this.checked = this.radioGroup.value === this._value),
+          this.checked && (this.radioGroup.selected = this),
+          (this.name = this.radioGroup.name)),
+          (this._removeUniqueSelectionListener = this._radioDispatcher.listen((e, i) => {
+            e !== this.id && i === this.name && (this.checked = !1);
+          })));
+      }
+      ngDoCheck() {
+        this._updateTabIndex();
+      }
+      ngAfterViewInit() {
+        (this._updateTabIndex(),
+          this._focusMonitor.monitor(this._elementRef, !0).subscribe((e) => {
+            !e && this.radioGroup && this.radioGroup._touch();
+          }),
+          this._ngZone.runOutsideAngular(() => {
+            this._cleanupClick = this._renderer.listen(
+              this._inputElement.nativeElement,
+              'click',
+              this._onInputClick,
+            );
+          }));
+      }
+      ngOnDestroy() {
+        (this._cleanupClick?.(),
+          this._focusMonitor.stopMonitoring(this._elementRef),
+          this._removeUniqueSelectionListener());
+      }
+      _emitChangeEvent() {
+        this.change.emit(new E(this, this._value));
+      }
+      _isRippleDisabled() {
+        return this.disableRipple || this.disabled;
+      }
+      _onInputInteraction(e) {
+        if ((e.stopPropagation(), !this.checked && !this.disabled)) {
+          let i = this.radioGroup && this.value !== this.radioGroup.value;
+          ((this.checked = !0),
+            this._emitChangeEvent(),
+            this.radioGroup &&
+              (this.radioGroup._controlValueAccessorChangeFn(this.value),
+              i && this.radioGroup._emitChangeEvent()));
+        }
+      }
+      _onTouchTargetClick(e) {
+        (this._onInputInteraction(e),
+          (!this.disabled || this.disabledInteractive) &&
+            this._inputElement?.nativeElement.focus());
+      }
+      _setDisabled(e) {
+        this._disabled !== e && ((this._disabled = e), this._changeDetector.markForCheck());
+      }
+      _onInputClick = (e) => {
+        this.disabled && this.disabledInteractive && e.preventDefault();
+      };
+      _updateTabIndex() {
+        let e = this.radioGroup,
+          i;
+        if (
+          (!e || !e.selected || this.disabled
+            ? (i = this.tabIndex)
+            : (i = e.selected === this ? this.tabIndex : -1),
+          i !== this._previousTabIndex)
+        ) {
+          let d = this._inputElement?.nativeElement;
+          d &&
+            (d.setAttribute('tabindex', i + ''),
+            (this._previousTabIndex = i),
+            X(
+              () => {
+                queueMicrotask(() => {
+                  e &&
+                    e.selected &&
+                    e.selected !== this &&
+                    document.activeElement === d &&
+                    (e.selected?._inputElement.nativeElement.focus(),
+                    document.activeElement === d && this._inputElement.nativeElement.blur());
+                });
+              },
+              { injector: this._injector },
+            ));
+        }
+      }
+      static ɵfac = function (i) {
+        return new (i || t)();
+      };
+      static ɵcmp = f({
+        type: t,
+        selectors: [['mat-radio-button']],
+        viewQuery: function (i, d) {
+          if ((i & 1 && me(st, 5)(mt, 7, q), i & 2)) {
+            let c;
+            (x((c = D())) && (d._inputElement = c.first),
+              x((c = D())) && (d._rippleTrigger = c.first));
+          }
+        },
+        hostAttrs: [1, 'mat-mdc-radio-button'],
+        hostVars: 19,
+        hostBindings: function (i, d) {
+          (i & 1 &&
+            C('focus', function () {
+              return d._inputElement.nativeElement.focus();
+            }),
+            i & 2 &&
+              (z('id', d.id)('tabindex', null)('aria-label', null)('aria-labelledby', null)(
+                'aria-describedby',
+                null,
+              ),
+              G('mat-primary', d.color === 'primary')('mat-accent', d.color === 'accent')(
+                'mat-warn',
+                d.color === 'warn',
+              )('mat-mdc-radio-checked', d.checked)('mat-mdc-radio-disabled', d.disabled)(
+                'mat-mdc-radio-disabled-interactive',
+                d.disabledInteractive,
+              )('_mat-animation-noopable', d._noopAnimations)));
+        },
+        inputs: {
+          id: 'id',
+          name: 'name',
+          ariaLabel: [0, 'aria-label', 'ariaLabel'],
+          ariaLabelledby: [0, 'aria-labelledby', 'ariaLabelledby'],
+          ariaDescribedby: [0, 'aria-describedby', 'ariaDescribedby'],
+          disableRipple: [2, 'disableRipple', 'disableRipple', g],
+          tabIndex: [2, 'tabIndex', 'tabIndex', (e) => (e == null ? 0 : L(e))],
+          checked: [2, 'checked', 'checked', g],
+          value: 'value',
+          labelPosition: 'labelPosition',
+          disabled: [2, 'disabled', 'disabled', g],
+          required: [2, 'required', 'required', g],
+          color: 'color',
+          disabledInteractive: [2, 'disabledInteractive', 'disabledInteractive', g],
+        },
+        outputs: { change: 'change' },
+        exportAs: ['matRadioButton'],
+        ngContentSelectors: pt,
+        decls: 13,
+        vars: 17,
+        consts: [
+          ['formField', ''],
+          ['input', ''],
+          ['mat-internal-form-field', '', 3, 'labelPosition'],
+          [1, 'mdc-radio'],
+          [1, 'mat-mdc-radio-touch-target', 3, 'click'],
+          [
+            'type',
+            'radio',
+            'aria-invalid',
+            'false',
+            1,
+            'mdc-radio__native-control',
+            3,
+            'change',
+            'id',
+            'checked',
+            'disabled',
+            'required',
+          ],
+          [1, 'mdc-radio__background'],
+          [1, 'mdc-radio__outer-circle'],
+          [1, 'mdc-radio__inner-circle'],
+          [
+            'mat-ripple',
+            '',
+            1,
+            'mat-radio-ripple',
+            'mat-focus-indicator',
+            3,
+            'matRippleTrigger',
+            'matRippleDisabled',
+            'matRippleCentered',
+          ],
+          [1, 'mat-ripple-element', 'mat-radio-persistent-ripple'],
+          [1, 'mdc-label', 3, 'for'],
+        ],
+        template: function (i, d) {
+          if (i & 1) {
+            let c = de();
+            (le(),
+              a(0, 'div', 2, 0)(2, 'div', 3)(3, 'div', 4),
+              C('click', function (T) {
+                return (P(c), B(d._onTouchTargetClick(T)));
+              }),
+              o(),
+              a(4, 'input', 5, 1),
+              C('change', function (T) {
+                return (P(c), B(d._onInputInteraction(T)));
+              }),
+              o(),
+              a(6, 'div', 6),
+              u(7, 'div', 7)(8, 'div', 8),
+              o(),
+              a(9, 'div', 9),
+              u(10, 'div', 10),
+              o()(),
+              a(11, 'label', 11),
+              ce(12),
+              o()());
+          }
+          i & 2 &&
+            (s('labelPosition', d.labelPosition),
+            l(2),
+            G('mdc-radio--disabled', d.disabled),
+            l(2),
+            s('id', d.inputId)('checked', d.checked)(
+              'disabled',
+              d.disabled && !d.disabledInteractive,
+            )('required', d.required),
+            z('name', d.name)('value', d.value)('aria-label', d.ariaLabel)(
+              'aria-labelledby',
+              d.ariaLabelledby,
+            )('aria-describedby', d.ariaDescribedby)(
+              'aria-disabled',
+              d.disabled && d.disabledInteractive ? 'true' : null,
+            ),
+            l(5),
+            s('matRippleTrigger', d._rippleTrigger.nativeElement)(
+              'matRippleDisabled',
+              d._isRippleDisabled(),
+            )('matRippleCentered', !0),
+            l(2),
+            s('for', d.inputId));
+        },
+        dependencies: [Ce, Xe],
+        styles: [
+          `.mat-mdc-radio-button{-webkit-tap-highlight-color:rgba(0,0,0,0)}.mat-mdc-radio-button .mdc-radio{display:inline-block;position:relative;flex:0 0 auto;box-sizing:content-box;width:20px;height:20px;cursor:pointer;will-change:opacity,transform,border-color,color;padding:calc((var(--mat-radio-state-layer-size, 40px) - 20px)/2)}.mat-mdc-radio-button .mdc-radio:hover>.mdc-radio__native-control:not([disabled]):not(:focus)~.mdc-radio__background::before{opacity:.04;transform:scale(1)}.mat-mdc-radio-button .mdc-radio:hover>.mdc-radio__native-control:not([disabled])~.mdc-radio__background>.mdc-radio__outer-circle{border-color:var(--mat-radio-unselected-hover-icon-color, var(--mat-sys-on-surface))}.mat-mdc-radio-button .mdc-radio:hover>.mdc-radio__native-control:enabled:checked+.mdc-radio__background>.mdc-radio__outer-circle{border-color:var(--mat-radio-selected-hover-icon-color, var(--mat-sys-primary))}.mat-mdc-radio-button .mdc-radio:hover>.mdc-radio__native-control:enabled:checked+.mdc-radio__background>.mdc-radio__inner-circle{background-color:var(--mat-radio-selected-hover-icon-color, var(--mat-sys-primary, currentColor))}.mat-mdc-radio-button .mdc-radio:active>.mdc-radio__native-control:enabled:not(:checked)+.mdc-radio__background>.mdc-radio__outer-circle{border-color:var(--mat-radio-unselected-pressed-icon-color, var(--mat-sys-on-surface))}.mat-mdc-radio-button .mdc-radio:active>.mdc-radio__native-control:enabled:checked+.mdc-radio__background>.mdc-radio__outer-circle{border-color:var(--mat-radio-selected-pressed-icon-color, var(--mat-sys-primary))}.mat-mdc-radio-button .mdc-radio:active>.mdc-radio__native-control:enabled:checked+.mdc-radio__background>.mdc-radio__inner-circle{background-color:var(--mat-radio-selected-pressed-icon-color, var(--mat-sys-primary, currentColor))}.mat-mdc-radio-button .mdc-radio__background{display:inline-block;position:relative;box-sizing:border-box;width:20px;height:20px}.mat-mdc-radio-button .mdc-radio__background::before{position:absolute;transform:scale(0, 0);border-radius:50%;opacity:0;pointer-events:none;content:"";transition:opacity 90ms cubic-bezier(0.4, 0, 0.6, 1),transform 90ms cubic-bezier(0.4, 0, 0.6, 1);width:var(--mat-radio-state-layer-size, 40px);height:var(--mat-radio-state-layer-size, 40px);top:calc(-1*(var(--mat-radio-state-layer-size, 40px) - 20px)/2);left:calc(-1*(var(--mat-radio-state-layer-size, 40px) - 20px)/2)}.mat-mdc-radio-button .mdc-radio__outer-circle{position:absolute;top:0;left:0;box-sizing:border-box;width:100%;height:100%;border-width:2px;border-style:solid;border-radius:50%;transition:border-color 90ms cubic-bezier(0.4, 0, 0.6, 1)}.mat-mdc-radio-button .mdc-radio__inner-circle{position:absolute;top:0;left:0;box-sizing:border-box;width:100%;height:100%;transform:scale(0);border-radius:50%;transition:transform 90ms cubic-bezier(0.4, 0, 0.6, 1),background-color 90ms cubic-bezier(0.4, 0, 0.6, 1)}@media(forced-colors: active){.mat-mdc-radio-button .mdc-radio__inner-circle{background-color:CanvasText !important}}.mat-mdc-radio-button .mdc-radio__native-control{position:absolute;margin:0;padding:0;opacity:0;top:0;right:0;left:0;cursor:inherit;z-index:1;width:var(--mat-radio-state-layer-size, 40px);height:var(--mat-radio-state-layer-size, 40px)}.mat-mdc-radio-button .mdc-radio__native-control:checked+.mdc-radio__background,.mat-mdc-radio-button .mdc-radio__native-control:disabled+.mdc-radio__background{transition:opacity 90ms cubic-bezier(0, 0, 0.2, 1),transform 90ms cubic-bezier(0, 0, 0.2, 1)}.mat-mdc-radio-button .mdc-radio__native-control:checked+.mdc-radio__background>.mdc-radio__outer-circle,.mat-mdc-radio-button .mdc-radio__native-control:disabled+.mdc-radio__background>.mdc-radio__outer-circle{transition:border-color 90ms cubic-bezier(0, 0, 0.2, 1)}.mat-mdc-radio-button .mdc-radio__native-control:checked+.mdc-radio__background>.mdc-radio__inner-circle,.mat-mdc-radio-button .mdc-radio__native-control:disabled+.mdc-radio__background>.mdc-radio__inner-circle{transition:transform 90ms cubic-bezier(0, 0, 0.2, 1),background-color 90ms cubic-bezier(0, 0, 0.2, 1)}.mat-mdc-radio-button .mdc-radio__native-control:focus+.mdc-radio__background::before{transform:scale(1);opacity:.12;transition:opacity 90ms cubic-bezier(0, 0, 0.2, 1),transform 90ms cubic-bezier(0, 0, 0.2, 1)}.mat-mdc-radio-button .mdc-radio__native-control:disabled:not(:checked)+.mdc-radio__background>.mdc-radio__outer-circle{border-color:var(--mat-radio-disabled-unselected-icon-color, var(--mat-sys-on-surface));opacity:var(--mat-radio-disabled-unselected-icon-opacity, 0.38)}.mat-mdc-radio-button .mdc-radio__native-control:disabled+.mdc-radio__background{cursor:default}.mat-mdc-radio-button .mdc-radio__native-control:disabled+.mdc-radio__background>.mdc-radio__outer-circle{border-color:var(--mat-radio-disabled-selected-icon-color, var(--mat-sys-on-surface));opacity:var(--mat-radio-disabled-selected-icon-opacity, 0.38)}.mat-mdc-radio-button .mdc-radio__native-control:disabled+.mdc-radio__background>.mdc-radio__inner-circle{background-color:var(--mat-radio-disabled-selected-icon-color, var(--mat-sys-on-surface, currentColor));opacity:var(--mat-radio-disabled-selected-icon-opacity, 0.38)}.mat-mdc-radio-button .mdc-radio__native-control:enabled:not(:checked)+.mdc-radio__background>.mdc-radio__outer-circle{border-color:var(--mat-radio-unselected-icon-color, var(--mat-sys-on-surface-variant))}.mat-mdc-radio-button .mdc-radio__native-control:enabled:checked+.mdc-radio__background>.mdc-radio__outer-circle{border-color:var(--mat-radio-selected-icon-color, var(--mat-sys-primary))}.mat-mdc-radio-button .mdc-radio__native-control:enabled:checked+.mdc-radio__background>.mdc-radio__inner-circle{background-color:var(--mat-radio-selected-icon-color, var(--mat-sys-primary, currentColor))}.mat-mdc-radio-button .mdc-radio__native-control:enabled:focus:checked+.mdc-radio__background>.mdc-radio__outer-circle{border-color:var(--mat-radio-selected-focus-icon-color, var(--mat-sys-primary))}.mat-mdc-radio-button .mdc-radio__native-control:enabled:focus:checked+.mdc-radio__background>.mdc-radio__inner-circle{background-color:var(--mat-radio-selected-focus-icon-color, var(--mat-sys-primary, currentColor))}.mat-mdc-radio-button .mdc-radio__native-control:checked+.mdc-radio__background>.mdc-radio__inner-circle{transform:scale(0.5);transition:transform 90ms cubic-bezier(0, 0, 0.2, 1),background-color 90ms cubic-bezier(0, 0, 0.2, 1)}.mat-mdc-radio-button.mat-mdc-radio-disabled-interactive .mdc-radio--disabled{pointer-events:auto}.mat-mdc-radio-button.mat-mdc-radio-disabled-interactive .mdc-radio--disabled .mdc-radio__native-control:not(:checked)+.mdc-radio__background>.mdc-radio__outer-circle{border-color:var(--mat-radio-disabled-unselected-icon-color, var(--mat-sys-on-surface));opacity:var(--mat-radio-disabled-unselected-icon-opacity, 0.38)}.mat-mdc-radio-button.mat-mdc-radio-disabled-interactive .mdc-radio--disabled:hover .mdc-radio__native-control:checked+.mdc-radio__background>.mdc-radio__outer-circle,.mat-mdc-radio-button.mat-mdc-radio-disabled-interactive .mdc-radio--disabled .mdc-radio__native-control:checked:focus+.mdc-radio__background>.mdc-radio__outer-circle,.mat-mdc-radio-button.mat-mdc-radio-disabled-interactive .mdc-radio--disabled .mdc-radio__native-control+.mdc-radio__background>.mdc-radio__outer-circle{border-color:var(--mat-radio-disabled-selected-icon-color, var(--mat-sys-on-surface));opacity:var(--mat-radio-disabled-selected-icon-opacity, 0.38)}.mat-mdc-radio-button.mat-mdc-radio-disabled-interactive .mdc-radio--disabled:hover .mdc-radio__native-control:checked+.mdc-radio__background>.mdc-radio__inner-circle,.mat-mdc-radio-button.mat-mdc-radio-disabled-interactive .mdc-radio--disabled .mdc-radio__native-control:checked:focus+.mdc-radio__background>.mdc-radio__inner-circle,.mat-mdc-radio-button.mat-mdc-radio-disabled-interactive .mdc-radio--disabled .mdc-radio__native-control+.mdc-radio__background>.mdc-radio__inner-circle{background-color:var(--mat-radio-disabled-selected-icon-color, var(--mat-sys-on-surface, currentColor));opacity:var(--mat-radio-disabled-selected-icon-opacity, 0.38)}.mat-mdc-radio-button._mat-animation-noopable .mdc-radio__background::before,.mat-mdc-radio-button._mat-animation-noopable .mdc-radio__outer-circle,.mat-mdc-radio-button._mat-animation-noopable .mdc-radio__inner-circle{transition:none !important}.mat-mdc-radio-button label{cursor:pointer}.mat-mdc-radio-button .mdc-radio__background::before{background-color:var(--mat-radio-ripple-color, var(--mat-sys-on-surface))}.mat-mdc-radio-button.mat-mdc-radio-checked .mat-ripple-element,.mat-mdc-radio-button.mat-mdc-radio-checked .mdc-radio__background::before{background-color:var(--mat-radio-checked-ripple-color, var(--mat-sys-primary))}.mat-mdc-radio-button.mat-mdc-radio-disabled-interactive .mdc-radio--disabled .mat-ripple-element,.mat-mdc-radio-button.mat-mdc-radio-disabled-interactive .mdc-radio--disabled .mdc-radio__background::before{background-color:var(--mat-radio-ripple-color, var(--mat-sys-on-surface))}.mat-mdc-radio-button .mat-internal-form-field{color:var(--mat-radio-label-text-color, var(--mat-sys-on-surface));font-family:var(--mat-radio-label-text-font, var(--mat-sys-body-medium-font));line-height:var(--mat-radio-label-text-line-height, var(--mat-sys-body-medium-line-height));font-size:var(--mat-radio-label-text-size, var(--mat-sys-body-medium-size));letter-spacing:var(--mat-radio-label-text-tracking, var(--mat-sys-body-medium-tracking));font-weight:var(--mat-radio-label-text-weight, var(--mat-sys-body-medium-weight))}.mat-mdc-radio-button .mdc-radio--disabled+label{color:var(--mat-radio-disabled-label-color, color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent))}.mat-mdc-radio-button .mat-radio-ripple{top:0;left:0;right:0;bottom:0;position:absolute;pointer-events:none;border-radius:50%}.mat-mdc-radio-button .mat-radio-ripple>.mat-ripple-element{opacity:.14}.mat-mdc-radio-button .mat-radio-ripple::before{border-radius:50%}.mat-mdc-radio-button .mdc-radio>.mdc-radio__native-control:focus:enabled:not(:checked)~.mdc-radio__background>.mdc-radio__outer-circle{border-color:var(--mat-radio-unselected-focus-icon-color, var(--mat-sys-on-surface))}.mat-mdc-radio-button.cdk-focused .mat-focus-indicator::before{content:""}.mat-mdc-radio-disabled{cursor:default;pointer-events:none}.mat-mdc-radio-disabled.mat-mdc-radio-disabled-interactive{pointer-events:auto}.mat-mdc-radio-touch-target{position:absolute;top:50%;left:50%;height:var(--mat-radio-touch-target-size, 48px);width:var(--mat-radio-touch-target-size, 48px);transform:translate(-50%, -50%);display:var(--mat-radio-touch-target-display, block)}[dir=rtl] .mat-mdc-radio-touch-target{left:auto;right:50%;transform:translate(50%, -50%)}
+`,
+        ],
+        encapsulation: 2,
+        changeDetection: 0,
+      });
+    }
+    return t;
+  })(),
+  ot = (() => {
+    class t {
+      static ɵfac = function (i) {
+        return new (i || t)();
+      };
+      static ɵmod = ee({ type: t });
+      static ɵinj = K({ imports: [Re, A, we] });
+    }
+    return t;
+  })();
+var R = class t {
+    drawer = m(it);
+    position = 'right';
+    width = '300px';
+    height = '300px';
+    hasBackdrop = !0;
+    disableClose = !1;
+    closeOnNavigation = !0;
+    fullScreen = !1;
+    open() {
+      this.drawer
+        .open(U, {
+          position: this.position,
+          width: this.width,
+          height: this.height,
+          hasBackdrop: this.hasBackdrop,
+          disableClose: this.disableClose,
+          closeOnNavigation: this.closeOnNavigation,
+          fullScreen: this.fullScreen,
+          data: {},
+        })
+        .afterDismissed()
+        .subscribe((e) => {
+          console.log('The drawer was dismissed');
+        });
+    }
+    static ɵfac = function (e) {
+      return new (e || t)();
+    };
+    static ɵcmp = f({
+      type: t,
+      selectors: [['app-drawer-configurable-example']],
+      decls: 36,
+      vars: 7,
+      consts: [
+        [1, 'positions'],
+        ['for', ''],
+        [3, 'ngModelChange', 'ngModel'],
+        ['value', 'top'],
+        ['value', 'right'],
+        ['value', 'bottom'],
+        ['value', 'left'],
+        [1, 'size-controls'],
+        ['matInput', '', 'type', 'text', 3, 'ngModelChange', 'ngModel'],
+        [1, 'checkbox-controls'],
+        ['matButton', 'elevated', 'color', 'primary', 3, 'click'],
+      ],
+      template: function (e, i) {
+        (e & 1 &&
+          (a(0, 'h2'),
+          n(1, 'Drawer configuration'),
+          o(),
+          a(2, 'section', 0)(3, 'label', 1),
+          n(4, 'Position:'),
+          o(),
+          a(5, 'mat-radio-group', 2),
+          y('ngModelChange', function (c) {
+            return (w(i.position, c) || (i.position = c), c);
+          }),
+          a(6, 'mat-radio-button', 3),
+          n(7, 'Top'),
+          o(),
+          a(8, 'mat-radio-button', 4),
+          n(9, 'Right'),
+          o(),
+          a(10, 'mat-radio-button', 5),
+          n(11, 'Bottom'),
+          o(),
+          a(12, 'mat-radio-button', 6),
+          n(13, 'Left'),
+          o()()(),
+          a(14, 'section', 7)(15, 'mat-form-field')(16, 'mat-label'),
+          n(17, 'Width'),
+          o(),
+          a(18, 'input', 8),
+          y('ngModelChange', function (c) {
+            return (w(i.width, c) || (i.width = c), c);
+          }),
+          o()(),
+          a(19, 'mat-form-field')(20, 'mat-label'),
+          n(21, 'Height'),
+          o(),
+          a(22, 'input', 8),
+          y('ngModelChange', function (c) {
+            return (w(i.height, c) || (i.height = c), c);
+          }),
+          o()()(),
+          a(23, 'section', 9)(24, 'mat-checkbox', 2),
+          y('ngModelChange', function (c) {
+            return (w(i.hasBackdrop, c) || (i.hasBackdrop = c), c);
+          }),
+          n(25, 'Has Backdrop'),
+          o(),
+          a(26, 'mat-checkbox', 2),
+          y('ngModelChange', function (c) {
+            return (w(i.disableClose, c) || (i.disableClose = c), c);
+          }),
+          n(27, 'Disable Close'),
+          o(),
+          a(28, 'mat-checkbox', 2),
+          y('ngModelChange', function (c) {
+            return (w(i.closeOnNavigation, c) || (i.closeOnNavigation = c), c);
+          }),
+          n(29, 'Close On Navigation'),
+          o(),
+          a(30, 'mat-checkbox', 2),
+          y('ngModelChange', function (c) {
+            return (w(i.fullScreen, c) || (i.fullScreen = c), c);
+          }),
+          n(31, 'Full Screen'),
+          o()(),
+          a(32, 'h2'),
+          n(33, 'Result'),
+          o(),
+          a(34, 'button', 10),
+          C('click', function () {
+            return i.open();
+          }),
+          n(35, 'Open'),
+          o()),
+          e & 2 &&
+            (l(5),
+            v('ngModel', i.position),
+            l(13),
+            v('ngModel', i.width),
+            l(4),
+            v('ngModel', i.height),
+            l(2),
+            v('ngModel', i.hasBackdrop),
+            l(2),
+            v('ngModel', i.disableClose),
+            l(2),
+            v('ngModel', i.closeOnNavigation),
+            l(2),
+            v('ngModel', i.fullScreen)));
+      },
+      dependencies: [Ae, Me, Se, Ee, ot, V, A, ze, qe, Fe, Ne, Ge, et, Ye, H, Te],
+      styles: [
+        '@charset "UTF-8";section[_ngcontent-%COMP%]{margin:16px 0}.size-controls[_ngcontent-%COMP%]{display:flex;gap:16px;align-items:center}.size-controls[_ngcontent-%COMP%]   mat-form-field[_ngcontent-%COMP%]{flex:1;margin:0}.checkbox-controls[_ngcontent-%COMP%]{display:flex;flex-wrap:wrap;gap:16px;align-items:center}.checkbox-controls[_ngcontent-%COMP%]   mat-checkbox[_ngcontent-%COMP%]{margin:0}mat-radio-group[_ngcontent-%COMP%]{display:flex;flex-direction:row;gap:16px;flex-wrap:wrap}mat-radio-button[_ngcontent-%COMP%]{margin:0}.heading[_ngcontent-%COMP%]{display:flex;align-items:center}.flex-spacer[_ngcontent-%COMP%]{flex-grow:1}@media(max-width:768px){.size-controls[_ngcontent-%COMP%]{flex-direction:column;align-items:stretch}.size-controls[_ngcontent-%COMP%]   mat-form-field[_ngcontent-%COMP%]{flex:none}.checkbox-controls[_ngcontent-%COMP%]{flex-direction:column;align-items:flex-start}mat-radio-group[_ngcontent-%COMP%]{flex-direction:column;gap:8px}mat-radio-group[_ngcontent-%COMP%]   mat-radio-button[_ngcontent-%COMP%]{margin:4px 0}}',
+      ],
+    });
+  },
+  U = class t {
+    drawerRef = m(tt);
+    onClose() {
+      this.drawerRef.dismiss();
+    }
+    static ɵfac = function (e) {
+      return new (e || t)();
+    };
+    static ɵcmp = f({
+      type: t,
+      selectors: [['app-drawer-overview']],
+      decls: 9,
+      vars: 0,
+      consts: [
+        [1, 'heading'],
+        [1, 'flex-spacer'],
+        ['matIconButton', '', 3, 'click'],
+      ],
+      template: function (e, i) {
+        e & 1 &&
+          (a(0, 'h1', 0)(1, 'span'),
+          n(2, 'Title'),
+          o(),
+          u(3, 'span', 1),
+          a(4, 'button', 2),
+          C('click', function () {
+            return i.onClose();
+          }),
+          a(5, 'mat-icon'),
+          n(6, 'close'),
+          o()()(),
+          a(7, 'p'),
+          n(
+            8,
+            ' Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tiam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. ',
+          ),
+          o());
+      },
+      dependencies: [Pe, Oe, H, Ie],
+      styles: [
+        '.heading[_ngcontent-%COMP%]{display:flex;align-items:center}.flex-spacer[_ngcontent-%COMP%]{flex-grow:1}',
+      ],
+    });
+  };
+var nt = `<h2>Drawer configuration</h2>
+
+<section>
+  <label for="">Position:</label>
+  <mat-radio-group [(ngModel)]="position">
+    <mat-radio-button value="top">Top</mat-radio-button>
+    <mat-radio-button value="right">Right</mat-radio-button>
+    <mat-radio-button value="bottom">Bottom</mat-radio-button>
+    <mat-radio-button value="left">Left</mat-radio-button>
+  </mat-radio-group>
+</section>
+
+<section class="size-controls">
+  <mat-form-field>
+    <mat-label>Width</mat-label>
+    <input matInput [(ngModel)]="width" type="text" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Height</mat-label>
+    <input matInput [(ngModel)]="height" type="text" />
+  </mat-form-field>
+</section>
+
+<section class="checkbox-controls">
+  <mat-checkbox [(ngModel)]="hasBackdrop">Has Backdrop</mat-checkbox>
+  <mat-checkbox [(ngModel)]="disableClose">Disable Close</mat-checkbox>
+  <mat-checkbox [(ngModel)]="closeOnNavigation">Close On Navigation</mat-checkbox>
+  <mat-checkbox [(ngModel)]="fullScreen">Full Screen</mat-checkbox>
+</section>
+
+<h2>Result</h2>
+
+<button matButton="elevated" color="primary" (click)="open()">Open</button>
+`,
+  dt = `import { Component, inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatRadioModule } from '@angular/material/radio';
+import { DrawerPosition, AcpDrawer, AcpDrawerRef } from '@acontplus/ng-components';
+
+@Component({
+  selector: 'app-drawer-configurable-example',
+  templateUrl: './app.html',
+  styleUrl: './app.scss',
+  imports: [
+    FormsModule,
+    MatRadioModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatCheckboxModule,
+    MatButtonModule,
+  ],
+})
+export class App {
+  private drawer = inject(AcpDrawer);
+
+  position: DrawerPosition = 'right';
+  width = '300px';
+  height = '300px';
+  hasBackdrop = true;
+  disableClose = false;
+  closeOnNavigation = true;
+  fullScreen = false;
+
+  open() {
+    const drawerRef = this.drawer.open(DrawerConfigurableOverviewDrawer, {
+      position: this.position,
+      width: this.width,
+      height: this.height,
+      hasBackdrop: this.hasBackdrop,
+      disableClose: this.disableClose,
+      closeOnNavigation: this.closeOnNavigation,
+      fullScreen: this.fullScreen,
+      data: {},
+    });
+
+    drawerRef.afterDismissed().subscribe(_result => {
+      console.log('The drawer was dismissed');
+    });
+  }
+}
+
+@Component({
+  selector: 'app-drawer-overview',
+  template: \`
+    <h1 class="heading">
+      <span>Title</span>
+      <span class="flex-spacer"></span>
+      <button matIconButton (click)="onClose()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </h1>
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tiam, quis nostrud
+      exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
+      reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+    </p>
+  \`,
+  styles: \`
+    .heading {
+      display: flex;
+      align-items: center;
+    }
+
+    .flex-spacer {
+      flex-grow: 1;
+    }
+  \`,
+  imports: [MatIconModule, MatButtonModule],
+})
+export class DrawerConfigurableOverviewDrawer {
+  private drawerRef = inject<AcpDrawerRef<DrawerConfigurableOverviewDrawer>>(AcpDrawerRef);
+
+  onClose(): void {
+    this.drawerRef.dismiss();
+  }
+}
+`,
+  lt = `/* Estilos espec\xEDficos para el ejemplo de Drawer configurable */
+section {
+  margin: 16px 0;
+}
+
+.size-controls {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+
+  mat-form-field {
+    flex: 1;
+    margin: 0;
+  }
+}
+
+.checkbox-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+
+  mat-checkbox {
+    margin: 0;
+  }
+}
+
+mat-radio-group {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+mat-radio-button {
+  margin: 0;
+}
+
+// Responsive design for smaller screens
+@media (max-width: 768px) {
+  .size-controls {
+    flex-direction: column;
+    align-items: stretch;
+
+    mat-form-field {
+      flex: none;
+    }
+  }
+
+  .checkbox-controls {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  mat-radio-group {
+    flex-direction: column;
+    gap: 8px;
+
+    mat-radio-button {
+      margin: 4px 0;
+    }
+  }
+}
+`,
+  ct = {
+    title: 'Configurable drawer',
+    component: R,
+    files: [
+      { file: 'app.html', content: S.highlightAuto(nt, ['html']).value, filecontent: nt },
+      { file: 'app.ts', content: S.highlightAuto(dt, ['typescript']).value, filecontent: dt },
+      { file: 'app.scss', content: S.highlightAuto(lt, ['scss']).value, filecontent: lt },
+    ],
+  };
+function bt(t, r) {
+  t & 1 && (a(0, 'th', 10), n(1, 'Method'), o());
+}
+function ft(t, r) {
+  if ((t & 1 && (a(0, 'td', 11)(1, 'code'), n(2), o()()), t & 2)) {
+    let e = r.$implicit;
+    (l(2), b(e.name));
+  }
+}
+function gt(t, r) {
+  t & 1 && (a(0, 'th', 10), n(1, 'Return Type'), o());
+}
+function vt(t, r) {
+  if ((t & 1 && (a(0, 'td', 11)(1, 'code'), n(2), o()()), t & 2)) {
+    let e = r.$implicit;
+    (l(2), b(e.type));
+  }
+}
+function wt(t, r) {
+  t & 1 && (a(0, 'th', 10), n(1, 'Description'), o());
+}
+function yt(t, r) {
+  if ((t & 1 && (a(0, 'td', 11), n(1), o()), t & 2)) {
+    let e = r.$implicit;
+    (l(), b(e.description));
+  }
+}
+function Ct(t, r) {
+  t & 1 && u(0, 'tr', 12);
+}
+function kt(t, r) {
+  t & 1 && u(0, 'tr', 13);
+}
+function xt(t, r) {
+  t & 1 && (a(0, 'th', 10), n(1, 'Property'), o());
+}
+function Dt(t, r) {
+  if ((t & 1 && (a(0, 'td', 11)(1, 'code'), n(2), o()()), t & 2)) {
+    let e = r.$implicit;
+    (l(2), b(e.name));
+  }
+}
+function Mt(t, r) {
+  t & 1 && (a(0, 'th', 10), n(1, 'Type'), o());
+}
+function St(t, r) {
+  if ((t & 1 && (a(0, 'td', 11)(1, 'code'), n(2), o()()), t & 2)) {
+    let e = r.$implicit;
+    (l(2), b(e.type));
+  }
+}
+function Et(t, r) {
+  t & 1 && (a(0, 'th', 10), n(1, 'Description'), o());
+}
+function At(t, r) {
+  if ((t & 1 && (a(0, 'td', 11), n(1), o()), t & 2)) {
+    let e = r.$implicit;
+    (l(), b(e.description));
+  }
+}
+function Rt(t, r) {
+  t & 1 && (a(0, 'th', 10), n(1, 'Default'), o());
+}
+function It(t, r) {
+  if ((t & 1 && (a(0, 'td', 11)(1, 'code'), n(2), o()()), t & 2)) {
+    let e = r.$implicit;
+    (l(2), b(e.default || '-'));
+  }
+}
+function Tt(t, r) {
+  t & 1 && u(0, 'tr', 12);
+}
+function Ot(t, r) {
+  t & 1 && u(0, 'tr', 13);
+}
+function Pt(t, r) {
+  t & 1 && (a(0, 'th', 10), n(1, 'Method'), o());
+}
+function Bt(t, r) {
+  if ((t & 1 && (a(0, 'td', 11)(1, 'code'), n(2), o()()), t & 2)) {
+    let e = r.$implicit;
+    (l(2), b(e.name));
+  }
+}
+function Ft(t, r) {
+  t & 1 && (a(0, 'th', 10), n(1, 'Return Type'), o());
+}
+function qt(t, r) {
+  if ((t & 1 && (a(0, 'td', 11)(1, 'code'), n(2), o()()), t & 2)) {
+    let e = r.$implicit;
+    (l(2), b(e.type));
+  }
+}
+function zt(t, r) {
+  t & 1 && (a(0, 'th', 10), n(1, 'Description'), o());
+}
+function Gt(t, r) {
+  if ((t & 1 && (a(0, 'td', 11), n(1), o()), t & 2)) {
+    let e = r.$implicit;
+    (l(), b(e.description));
+  }
+}
+function Nt(t, r) {
+  t & 1 && u(0, 'tr', 12);
+}
+function Lt(t, r) {
+  t & 1 && u(0, 'tr', 13);
+}
+function Wt(t, r) {
+  t & 1 && (a(0, 'th', 10), n(1, 'Token'), o());
+}
+function Ht(t, r) {
+  if ((t & 1 && (a(0, 'td', 11)(1, 'code'), n(2), o()()), t & 2)) {
+    let e = r.$implicit;
+    (l(2), b(e.name));
+  }
+}
+function jt(t, r) {
+  t & 1 && (a(0, 'th', 10), n(1, 'Type'), o());
+}
+function Vt(t, r) {
+  if ((t & 1 && (a(0, 'td', 11)(1, 'code'), n(2), o()()), t & 2)) {
+    let e = r.$implicit;
+    (l(2), b(e.type));
+  }
+}
+function Ut(t, r) {
+  t & 1 && (a(0, 'th', 10), n(1, 'Description'), o());
+}
+function Qt(t, r) {
+  if ((t & 1 && (a(0, 'td', 11), n(1), o()), t & 2)) {
+    let e = r.$implicit;
+    (l(), b(e.description));
+  }
+}
+function Zt(t, r) {
+  t & 1 && u(0, 'tr', 12);
+}
+function Kt(t, r) {
+  t & 1 && u(0, 'tr', 13);
+}
+var I = class t {
+  displayedColumns = ['name', 'type', 'description'];
+  displayedColumnsWithDefault = ['name', 'type', 'description', 'default'];
+  serviceMethods = [
+    {
+      name: 'open<T, D, R>(component, config?)',
+      type: 'AcpDrawerRef<T, R>',
+      description: 'Abre un drawer con el componente o template especificado',
+    },
+    { name: 'dismissAll()', type: 'void', description: 'Cierra todos los drawers abiertos' },
+    {
+      name: 'getDrawerById(id)',
+      type: 'AcpDrawerRef | undefined',
+      description: 'Busca un drawer abierto por su ID',
+    },
+  ];
+  configProperties = [
+    {
+      name: 'position',
+      type: "'top' | 'right' | 'bottom' | 'left'",
+      description: 'Posici\xF3n del drawer',
+      default: "'right'",
+    },
+    {
+      name: 'width',
+      type: 'string',
+      description: 'Ancho del drawer (para posiciones left/right)',
+      default: '-',
+    },
+    {
+      name: 'height',
+      type: 'string',
+      description: 'Alto del drawer (para posiciones top/bottom)',
+      default: '-',
+    },
+    {
+      name: 'hasBackdrop',
+      type: 'boolean',
+      description: 'Si el drawer tiene fondo oscuro',
+      default: 'true',
+    },
+    {
+      name: 'disableClose',
+      type: 'boolean',
+      description: 'Si se puede cerrar haciendo clic fuera o presionando escape',
+      default: 'false',
+    },
+    {
+      name: 'data',
+      type: 'any',
+      description: 'Datos a pasar al componente del drawer',
+      default: 'null',
+    },
+    { name: 'id', type: 'string', description: 'ID \xFAnico para el drawer', default: '-' },
+    {
+      name: 'panelClass',
+      type: 'string | string[]',
+      description: 'Clases CSS adicionales para el drawer',
+      default: '-',
+    },
+    { name: 'backdropClass', type: 'string', description: 'Clase CSS para el fondo', default: '-' },
+    {
+      name: 'ariaLabel',
+      type: 'string',
+      description: 'Etiqueta ARIA para el drawer',
+      default: '-',
+    },
+    {
+      name: 'closeOnNavigation',
+      type: 'boolean',
+      description: 'Si se cierra al navegar',
+      default: 'true',
+    },
+    {
+      name: 'autoFocus',
+      type: 'AutoFocusTarget | string | boolean',
+      description: 'D\xF3nde enfocar al abrir',
+      default: "'first-tabbable'",
+    },
+    {
+      name: 'restoreFocus',
+      type: 'boolean',
+      description: 'Si restaurar el foco al cerrar',
+      default: 'true',
+    },
+    {
+      name: 'fullScreen',
+      type: 'boolean',
+      description: 'Si el drawer debe ocupar toda la pantalla',
+      default: 'false',
+    },
+  ];
+  drawerRefMethods = [
+    {
+      name: 'dismiss(result?)',
+      type: 'void',
+      description: 'Cierra el drawer con un resultado opcional',
+    },
+    {
+      name: 'afterDismissed()',
+      type: 'Observable<R | undefined>',
+      description: 'Observable que emite cuando el drawer se cierra',
+    },
+    {
+      name: 'afterOpened()',
+      type: 'Observable<void>',
+      description: 'Observable que emite cuando el drawer se abre completamente',
+    },
+    {
+      name: 'backdropClick()',
+      type: 'Observable<MouseEvent>',
+      description: 'Observable que emite cuando se hace clic en el fondo',
+    },
+    {
+      name: 'keydownEvents()',
+      type: 'Observable<KeyboardEvent>',
+      description: 'Observable que emite eventos de teclado',
+    },
+  ];
+  injectionTokens = [
+    {
+      name: 'ACP_DRAWER_DATA',
+      type: 'any',
+      description: 'Token para inyectar datos pasados al drawer',
+    },
+    {
+      name: 'ACP_DRAWER_DEFAULT_OPTIONS',
+      type: 'AcpDrawerConfig',
+      description: 'Token para proporcionar opciones por defecto del drawer',
+    },
+  ];
+  static ɵfac = function (e) {
+    return new (e || t)();
+  };
+  static ɵcmp = f({
+    type: t,
+    selectors: [['app-drawer-api']],
+    decls: 62,
+    vars: 12,
+    consts: [
+      [1, 'docs-component-viewer-content'],
+      ['mat-table', '', 1, 'api-table', 3, 'dataSource'],
+      ['matColumnDef', 'name'],
+      ['mat-header-cell', '', 4, 'matHeaderCellDef'],
+      ['mat-cell', '', 4, 'matCellDef'],
+      ['matColumnDef', 'type'],
+      ['matColumnDef', 'description'],
+      ['mat-header-row', '', 4, 'matHeaderRowDef'],
+      ['mat-row', '', 4, 'matRowDef', 'matRowDefColumns'],
+      ['matColumnDef', 'default'],
+      ['mat-header-cell', ''],
+      ['mat-cell', ''],
+      ['mat-header-row', ''],
+      ['mat-row', ''],
+    ],
+    template: function (e, i) {
+      (e & 1 &&
+        (a(0, 'div', 0)(1, 'app-doc-heading'),
+        n(2, 'Drawer API'),
+        o(),
+        a(3, 'h2'),
+        n(4, 'AcpDrawer Service'),
+        o(),
+        a(5, 'table', 1),
+        _(6, 2),
+        p(7, bt, 2, 0, 'th', 3)(8, ft, 3, 1, 'td', 4),
+        h(),
+        _(9, 5),
+        p(10, gt, 2, 0, 'th', 3)(11, vt, 3, 1, 'td', 4),
+        h(),
+        _(12, 6),
+        p(13, wt, 2, 0, 'th', 3)(14, yt, 2, 1, 'td', 4),
+        h(),
+        p(15, Ct, 1, 0, 'tr', 7)(16, kt, 1, 0, 'tr', 8),
+        o(),
+        a(17, 'h2'),
+        n(18, 'AcpDrawerConfig'),
+        o(),
+        a(19, 'table', 1),
+        _(20, 2),
+        p(21, xt, 2, 0, 'th', 3)(22, Dt, 3, 1, 'td', 4),
+        h(),
+        _(23, 5),
+        p(24, Mt, 2, 0, 'th', 3)(25, St, 3, 1, 'td', 4),
+        h(),
+        _(26, 6),
+        p(27, Et, 2, 0, 'th', 3)(28, At, 2, 1, 'td', 4),
+        h(),
+        _(29, 9),
+        p(30, Rt, 2, 0, 'th', 3)(31, It, 3, 1, 'td', 4),
+        h(),
+        p(32, Tt, 1, 0, 'tr', 7)(33, Ot, 1, 0, 'tr', 8),
+        o(),
+        a(34, 'h2'),
+        n(35, 'AcpDrawerRef'),
+        o(),
+        a(36, 'table', 1),
+        _(37, 2),
+        p(38, Pt, 2, 0, 'th', 3)(39, Bt, 3, 1, 'td', 4),
+        h(),
+        _(40, 5),
+        p(41, Ft, 2, 0, 'th', 3)(42, qt, 3, 1, 'td', 4),
+        h(),
+        _(43, 6),
+        p(44, zt, 2, 0, 'th', 3)(45, Gt, 2, 1, 'td', 4),
+        h(),
+        p(46, Nt, 1, 0, 'tr', 7)(47, Lt, 1, 0, 'tr', 8),
+        o(),
+        a(48, 'h2'),
+        n(49, 'Injection Tokens'),
+        o(),
+        a(50, 'table', 1),
+        _(51, 2),
+        p(52, Wt, 2, 0, 'th', 3)(53, Ht, 3, 1, 'td', 4),
+        h(),
+        _(54, 5),
+        p(55, jt, 2, 0, 'th', 3)(56, Vt, 3, 1, 'td', 4),
+        h(),
+        _(57, 6),
+        p(58, Ut, 2, 0, 'th', 3)(59, Qt, 2, 1, 'td', 4),
+        h(),
+        p(60, Zt, 1, 0, 'tr', 7)(61, Kt, 1, 0, 'tr', 8),
+        o()()),
+        e & 2 &&
+          (l(5),
+          s('dataSource', i.serviceMethods),
+          l(10),
+          s('matHeaderRowDef', i.displayedColumns),
+          l(),
+          s('matRowDefColumns', i.displayedColumns),
+          l(3),
+          s('dataSource', i.configProperties),
+          l(13),
+          s('matHeaderRowDef', i.displayedColumnsWithDefault),
+          l(),
+          s('matRowDefColumns', i.displayedColumnsWithDefault),
+          l(3),
+          s('dataSource', i.drawerRefMethods),
+          l(10),
+          s('matHeaderRowDef', i.displayedColumns),
+          l(),
+          s('matRowDefColumns', i.displayedColumns),
+          l(3),
+          s('dataSource', i.injectionTokens),
+          l(10),
+          s('matHeaderRowDef', i.displayedColumns),
+          l(),
+          s('matRowDefColumns', i.displayedColumns)));
+    },
+    dependencies: [Je, Le, He, Qe, je, We, Ze, Ve, Ue, Ke, $e, M],
+    styles: [
+      '.docs-component-viewer-content[_ngcontent-%COMP%]{padding:24px;max-width:1400px}h2[_ngcontent-%COMP%]{margin-top:32px;margin-bottom:16px}.api-table[_ngcontent-%COMP%]{width:100%;margin-bottom:24px}.api-table[_ngcontent-%COMP%]   th[_ngcontent-%COMP%], .api-table[_ngcontent-%COMP%]   td[_ngcontent-%COMP%]{padding:12px 16px}.api-table[_ngcontent-%COMP%]   code[_ngcontent-%COMP%]{background:var(--mat-sys-surface-container);padding:2px 6px;border-radius:4px;font-size:13px}',
+    ],
+  });
+};
+function $t(t, r) {
+  if ((t & 1 && u(0, 'app-doc-heading', 0)(1, 'app-example-viewer', 1), t & 2)) {
+    let e = r.$implicit;
+    (s('text', e.title), l(), s('exampleData', e));
+  }
+}
+function Jt(t, r) {
+  (t & 1 && re(0, $t, 2, 2, null, null, oe), t & 2 && ne(r.examples));
+}
+var Q = class t {
+    route = m(fe);
+    static ɵfac = function (e) {
+      return new (e || t)();
+    };
+    static ɵcmp = f({
+      type: t,
+      selectors: [['app-drawer-overview']],
+      decls: 7,
+      vars: 3,
+      consts: [
+        [3, 'text'],
+        [3, 'exampleData'],
+      ],
+      template: function (e, i) {
+        if (
+          (e & 1 &&
+            (a(0, 'p'),
+            n(1, ' El '),
+            a(2, 'code'),
+            n(3, 'acp-drawer'),
+            o(),
+            n(
+              4,
+              ` es un componente de panel deslizante que puede posicionarse en cualquier lado de la pantalla. Est\xE1 construido sobre Angular CDK Dialog y proporciona una forma flexible de mostrar contenido adicional sin navegar fuera de la p\xE1gina actual.
+`,
+            ),
+            o(),
+            ie(5, Jt, 2, 0),
+            ue(6, 'async')),
+          e & 2)
+        ) {
+          let d;
+          (l(5), ae((d = _e(6, 1, i.route.data)) ? 5 : -1, d));
+        }
+      },
+      dependencies: [M, Be, be],
+      encapsulation: 2,
+    });
+  },
+  Ji = [
+    { path: '', redirectTo: 'overview', pathMatch: 'full' },
+    { path: 'overview', component: Q, pathMatch: 'full', data: { examples: [ct] } },
+    { path: 'api', component: I },
+    { path: '**', redirectTo: 'overview' },
+  ];
+export { Q as DrawerOverview, Ji as routes };

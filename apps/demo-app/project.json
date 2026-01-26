@@ -26,6 +26,7 @@
       },
       "configurations": {
         "production": {
+          "baseHref": "/acontplus-libs/",
           "budgets": [
             {
               "type": "initial",

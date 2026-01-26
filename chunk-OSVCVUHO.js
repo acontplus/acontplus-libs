@@ -1,8 +1,2393 @@
-import{a as Yt,b as q,c as Kt,d as Re}from"./chunk-UCTZV3YB.js";import{a as Ot,b as Y}from"./chunk-TEMGEHUK.js";import"./chunk-IS3KC4W2.js";import{b as ft}from"./chunk-ZTXRY76I.js";import"./chunk-4JMGPBNX.js";import{H as zt,I as jt,J as Ut,K as Wt,L as $t,U as Qt,b as xe,c as be,d as _e,g as O,m as Lt,o as ve}from"./chunk-H5QXEMOA.js";import{N as pe,O as qt,R as ue,V as fe,Y as ge,Z as he,_ as Ce,a as de,ba as Bt,da as Ht,e as se,ea as Gt,g as R,i as me,j as yt,n as Et,o as St,r as Ft,s as Tt,t as It,x as Mt,y as wt,z as Dt}from"./chunk-7JP3HI6F.js";import{l as Pt,p as kt,q as Vt}from"./chunk-57Q2UAVZ.js";import{a as Rt}from"./chunk-QJ46N2FA.js";import{a as ce}from"./chunk-U7VJQUDE.js";import{c as Nt,g as At}from"./chunk-XJJY6XHD.js";import{$b as d,Ab as f,Ac as $,Bb as ae,Bc as S,C as je,Ca as ee,Cb as Ae,Cd as gt,Da as Ke,Db as it,Eb as oe,Ed as ht,Fa as De,Fb as re,G as Ue,Ga as Ze,Gc as le,H as G,Hb as E,Jc as P,Kb as g,Kc as pt,M as We,Mb as p,Nb as Pe,Nd as Q,Ob as A,Od as Ct,Pa as l,Pb as ke,Qb as nt,Qd as xt,Rb as z,Sa as Xe,Sb as j,Va as Je,Vd as bt,Wb as D,X as we,Xb as at,Ya as et,Yb as U,Yc as ut,ab as y,ac as W,bb as te,bc as v,cb as I,ce as _t,ea as J,ec as ot,f as Ge,fb as Ne,fc as rt,g as X,ga as k,gb as ie,gc as lt,ia as s,ic as V,ie as vt,k as H,kc as dt,ma as b,na as _,o as ze,oa as $e,p as Me,pb as ne,pc as st,qb as h,qc as mt,ra as Qe,sb as C,tb as w,ua as M,ub as tt,va as Ye,vb as F,vc as Ve,wb as T,xb as m,yb as r,yc as ct,za as u,zb as a}from"./chunk-GV4MRAZ3.js";var Oe=new k("CdkAccordion"),Zt=(()=>{class t{_stateChanges=new H;_openCloseAllActions=new H;id=s(Q).getId("cdk-accordion-");multi=!1;openAll(){this.multi&&this._openCloseAllActions.next(!0)}closeAll(){this._openCloseAllActions.next(!1)}ngOnChanges(e){this._stateChanges.next(e)}ngOnDestroy(){this._stateChanges.complete(),this._openCloseAllActions.complete()}static \u0275fac=function(i){return new(i||t)};static \u0275dir=I({type:t,selectors:[["cdk-accordion"],["","cdkAccordion",""]],inputs:{multi:[2,"multi","multi",P]},exportAs:["cdkAccordion"],features:[V([{provide:Oe,useExisting:t}]),ee]})}return t})(),Xt=(()=>{class t{accordion=s(Oe,{optional:!0,skipSelf:!0});_changeDetectorRef=s(le);_expansionDispatcher=s(de);_openCloseAllSubscription=X.EMPTY;closed=new M;opened=new M;destroyed=new M;expandedChange=new M;id=s(Q).getId("cdk-accordion-child-");get expanded(){return this._expanded}set expanded(e){if(this._expanded!==e){if(this._expanded=e,this.expandedChange.emit(e),e){this.opened.emit();let i=this.accordion?this.accordion.id:this.id;this._expansionDispatcher.notify(this.id,i)}else this.closed.emit();this._changeDetectorRef.markForCheck()}}_expanded=!1;get disabled(){return this._disabled()}set disabled(e){this._disabled.set(e)}_disabled=u(!1);_removeUniqueSelectionListener=()=>{};constructor(){}ngOnInit(){this._removeUniqueSelectionListener=this._expansionDispatcher.listen((e,i)=>{this.accordion&&!this.accordion.multi&&this.accordion.id===i&&this.id!==e&&(this.expanded=!1)}),this.accordion&&(this._openCloseAllSubscription=this._subscribeToOpenCloseAllActions())}ngOnDestroy(){this.opened.complete(),this.closed.complete(),this.destroyed.emit(),this.destroyed.complete(),this._removeUniqueSelectionListener(),this._openCloseAllSubscription.unsubscribe()}toggle(){this.disabled||(this.expanded=!this.expanded)}close(){this.disabled||(this.expanded=!1)}open(){this.disabled||(this.expanded=!0)}_subscribeToOpenCloseAllActions(){return this.accordion._openCloseAllActions.subscribe(e=>{this.disabled||(this.expanded=e)})}static \u0275fac=function(i){return new(i||t)};static \u0275dir=I({type:t,selectors:[["cdk-accordion-item"],["","cdkAccordionItem",""]],inputs:{expanded:[2,"expanded","expanded",P],disabled:[2,"disabled","disabled",P]},outputs:{closed:"closed",opened:"opened",destroyed:"destroyed",expandedChange:"expandedChange"},exportAs:["cdkAccordionItem"],features:[V([{provide:Oe,useValue:void 0}])]})}return t})(),Jt=(()=>{class t{static \u0275fac=function(i){return new(i||t)};static \u0275mod=te({type:t});static \u0275inj=J({})}return t})();var pi=["body"],ui=["bodyWrapper"],fi=[[["mat-expansion-panel-header"]],"*",[["mat-action-row"]]],gi=["mat-expansion-panel-header","*","mat-action-row"];function hi(t,n){}var Ci=[[["mat-panel-title"]],[["mat-panel-description"]],"*"],xi=["mat-panel-title","mat-panel-description","*"];function bi(t,n){t&1&&(ae(0,"span",1),$e(),ae(1,"svg",2),it(2,"path",3),Ae()())}var qe=new k("MAT_ACCORDION"),ei=new k("MAT_EXPANSION_PANEL"),_i=(()=>{class t{_template=s(Xe);_expansionPanel=s(ei,{optional:!0});constructor(){}static \u0275fac=function(i){return new(i||t)};static \u0275dir=I({type:t,selectors:[["ng-template","matExpansionPanelContent",""]]})}return t})(),ti=new k("MAT_EXPANSION_PANEL_DEFAULT_OPTIONS"),Le=(()=>{class t extends Xt{_viewContainerRef=s(et);_animationsDisabled=_t();_document=s(Qe);_ngZone=s(Ye);_elementRef=s(De);_renderer=s(Je);_cleanupTransitionEnd;get hideToggle(){return this._hideToggle||this.accordion&&this.accordion.hideToggle}set hideToggle(e){this._hideToggle=e}_hideToggle=!1;get togglePosition(){return this._togglePosition||this.accordion&&this.accordion.togglePosition}set togglePosition(e){this._togglePosition=e}_togglePosition;afterExpand=new M;afterCollapse=new M;_inputChanges=new H;accordion=s(qe,{optional:!0,skipSelf:!0});_lazyContent;_body;_bodyWrapper;_portal;_headerId=s(Q).getId("mat-expansion-panel-header-");constructor(){super();let e=s(ti,{optional:!0});this._expansionDispatcher=s(de),e&&(this.hideToggle=e.hideToggle)}_hasSpacing(){return this.accordion?this.expanded&&this.accordion.displayMode==="default":!1}_getExpandedState(){return this.expanded?"expanded":"collapsed"}toggle(){this.expanded=!this.expanded}close(){this.expanded=!1}open(){this.expanded=!0}ngAfterContentInit(){this._lazyContent&&this._lazyContent._expansionPanel===this&&this.opened.pipe(we(null),G(()=>this.expanded&&!this._portal),We(1)).subscribe(()=>{this._portal=new Pt(this._lazyContent._template,this._viewContainerRef)}),this._setupAnimationEvents()}ngOnChanges(e){this._inputChanges.next(e)}ngOnDestroy(){super.ngOnDestroy(),this._cleanupTransitionEnd?.(),this._inputChanges.complete()}_containsFocus(){if(this._body){let e=this._document.activeElement,i=this._body.nativeElement;return e===i||i.contains(e)}return!1}_transitionEndListener=({target:e,propertyName:i})=>{e===this._bodyWrapper?.nativeElement&&i==="grid-template-rows"&&this._ngZone.run(()=>{this.expanded?this.afterExpand.emit():this.afterCollapse.emit()})};_setupAnimationEvents(){this._ngZone.runOutsideAngular(()=>{this._animationsDisabled?(this.opened.subscribe(()=>this._ngZone.run(()=>this.afterExpand.emit())),this.closed.subscribe(()=>this._ngZone.run(()=>this.afterCollapse.emit()))):setTimeout(()=>{let e=this._elementRef.nativeElement;this._cleanupTransitionEnd=this._renderer.listen(e,"transitionend",this._transitionEndListener),e.classList.add("mat-expansion-panel-animations-enabled")},200)})}static \u0275fac=function(i){return new(i||t)};static \u0275cmp=y({type:t,selectors:[["mat-expansion-panel"]],contentQueries:function(i,o,c){if(i&1&&ke(c,_i,5),i&2){let x;z(x=j())&&(o._lazyContent=x.first)}},viewQuery:function(i,o){if(i&1&&nt(pi,5)(ui,5),i&2){let c;z(c=j())&&(o._body=c.first),z(c=j())&&(o._bodyWrapper=c.first)}},hostAttrs:[1,"mat-expansion-panel"],hostVars:4,hostBindings:function(i,o){i&2&&U("mat-expanded",o.expanded)("mat-expansion-panel-spacing",o._hasSpacing())},inputs:{hideToggle:[2,"hideToggle","hideToggle",P],togglePosition:"togglePosition"},outputs:{afterExpand:"afterExpand",afterCollapse:"afterCollapse"},exportAs:["matExpansionPanel"],features:[V([{provide:qe,useValue:void 0},{provide:ei,useExisting:t}]),Ne,ee],ngContentSelectors:gi,decls:9,vars:4,consts:[["bodyWrapper",""],["body",""],[1,"mat-expansion-panel-content-wrapper"],["role","region",1,"mat-expansion-panel-content",3,"id"],[1,"mat-expansion-panel-body"],[3,"cdkPortalOutlet"]],template:function(i,o){i&1&&(Pe(fi),A(0),r(1,"div",2,0)(3,"div",3,1)(5,"div",4),A(6,1),ie(7,hi,0,0,"ng-template",5),a(),A(8,2),a()()),i&2&&(l(),ne("inert",o.expanded?null:""),l(2),m("id",o.id),ne("aria-labelledby",o._headerId),l(4),m("cdkPortalOutlet",o._portal))},dependencies:[kt],styles:[`.mat-expansion-panel{box-sizing:content-box;display:block;margin:0;overflow:hidden;position:relative;background:var(--mat-expansion-container-background-color, var(--mat-sys-surface));color:var(--mat-expansion-container-text-color, var(--mat-sys-on-surface));border-radius:var(--mat-expansion-container-shape, 12px)}.mat-expansion-panel.mat-expansion-panel-animations-enabled{transition:margin 225ms cubic-bezier(0.4, 0, 0.2, 1),box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1)}.mat-expansion-panel:not([class*=mat-elevation-z]){box-shadow:var(--mat-expansion-container-elevation-shadow, 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12))}.mat-accordion .mat-expansion-panel:not(.mat-expanded),.mat-accordion .mat-expansion-panel:not(.mat-expansion-panel-spacing){border-radius:0}.mat-accordion .mat-expansion-panel:first-of-type{border-top-right-radius:var(--mat-expansion-container-shape, 12px);border-top-left-radius:var(--mat-expansion-container-shape, 12px)}.mat-accordion .mat-expansion-panel:last-of-type{border-bottom-right-radius:var(--mat-expansion-container-shape, 12px);border-bottom-left-radius:var(--mat-expansion-container-shape, 12px)}@media(forced-colors: active){.mat-expansion-panel{outline:solid 1px}}.mat-expansion-panel-content-wrapper{display:grid;grid-template-rows:0fr;grid-template-columns:100%}.mat-expansion-panel-animations-enabled .mat-expansion-panel-content-wrapper{transition:grid-template-rows 225ms cubic-bezier(0.4, 0, 0.2, 1)}.mat-expansion-panel.mat-expanded>.mat-expansion-panel-content-wrapper{grid-template-rows:1fr}@supports not (grid-template-rows: 0fr){.mat-expansion-panel-content-wrapper{height:0}.mat-expansion-panel.mat-expanded>.mat-expansion-panel-content-wrapper{height:auto}}.mat-expansion-panel-content{display:flex;flex-direction:column;overflow:visible;min-height:0;visibility:hidden;font-family:var(--mat-expansion-container-text-font, var(--mat-sys-body-large-font));font-size:var(--mat-expansion-container-text-size, var(--mat-sys-body-large-size));font-weight:var(--mat-expansion-container-text-weight, var(--mat-sys-body-large-weight));line-height:var(--mat-expansion-container-text-line-height, var(--mat-sys-body-large-line-height));letter-spacing:var(--mat-expansion-container-text-tracking, var(--mat-sys-body-large-tracking))}.mat-expansion-panel-animations-enabled .mat-expansion-panel-content{transition:visibility 190ms linear}.mat-expansion-panel.mat-expanded>.mat-expansion-panel-content-wrapper>.mat-expansion-panel-content{visibility:visible}.mat-expansion-panel-body{padding:0 24px 16px}.mat-expansion-panel-spacing{margin:16px 0}.mat-accordion>.mat-expansion-panel-spacing:first-child,.mat-accordion>*:first-child:not(.mat-expansion-panel) .mat-expansion-panel-spacing{margin-top:0}.mat-accordion>.mat-expansion-panel-spacing:last-child,.mat-accordion>*:last-child:not(.mat-expansion-panel) .mat-expansion-panel-spacing{margin-bottom:0}.mat-action-row{border-top-style:solid;border-top-width:1px;display:flex;flex-direction:row;justify-content:flex-end;padding:16px 8px 16px 24px;border-top-color:var(--mat-expansion-actions-divider-color, var(--mat-sys-outline))}.mat-action-row .mat-button-base,.mat-action-row .mat-mdc-button-base{margin-left:8px}[dir=rtl] .mat-action-row .mat-button-base,[dir=rtl] .mat-action-row .mat-mdc-button-base{margin-left:0;margin-right:8px}
-`],encapsulation:2,changeDetection:0})}return t})();var Be=(()=>{class t{panel=s(Le,{host:!0});_element=s(De);_focusMonitor=s(gt);_changeDetectorRef=s(le);_parentChangeSubscription=X.EMPTY;constructor(){s(ht).load(vt);let e=this.panel,i=s(ti,{optional:!0}),o=s(new ct("tabindex"),{optional:!0}),c=e.accordion?e.accordion._stateChanges.pipe(G(x=>!!(x.hideToggle||x.togglePosition))):ze;this.tabIndex=parseInt(o||"")||0,this._parentChangeSubscription=Ue(e.opened,e.closed,c,e._inputChanges.pipe(G(x=>!!(x.hideToggle||x.disabled||x.togglePosition)))).subscribe(()=>this._changeDetectorRef.markForCheck()),e.closed.pipe(G(()=>e._containsFocus())).subscribe(()=>this._focusMonitor.focusVia(this._element,"program")),i&&(this.expandedHeight=i.expandedHeight,this.collapsedHeight=i.collapsedHeight)}expandedHeight;collapsedHeight;tabIndex=0;get disabled(){return this.panel.disabled}_toggle(){this.disabled||this.panel.toggle()}_isExpanded(){return this.panel.expanded}_getExpandedState(){return this.panel._getExpandedState()}_getPanelId(){return this.panel.id}_getTogglePosition(){return this.panel.togglePosition}_showToggle(){return!this.panel.hideToggle&&!this.panel.disabled}_getHeaderHeight(){let e=this._isExpanded();return e&&this.expandedHeight?this.expandedHeight:!e&&this.collapsedHeight?this.collapsedHeight:null}_keydown(e){switch(e.keyCode){case 32:case 13:Ct(e)||(e.preventDefault(),this._toggle());break;default:this.panel.accordion&&this.panel.accordion._handleHeaderKeydown(e);return}}focus(e,i){e?this._focusMonitor.focusVia(this._element,e,i):this._element.nativeElement.focus(i)}ngAfterViewInit(){this._focusMonitor.monitor(this._element).subscribe(e=>{e&&this.panel.accordion&&this.panel.accordion._handleHeaderFocus(this)})}ngOnDestroy(){this._parentChangeSubscription.unsubscribe(),this._focusMonitor.stopMonitoring(this._element)}static \u0275fac=function(i){return new(i||t)};static \u0275cmp=y({type:t,selectors:[["mat-expansion-panel-header"]],hostAttrs:["role","button",1,"mat-expansion-panel-header","mat-focus-indicator"],hostVars:13,hostBindings:function(i,o){i&1&&g("click",function(){return o._toggle()})("keydown",function(x){return o._keydown(x)}),i&2&&(ne("id",o.panel._headerId)("tabindex",o.disabled?-1:o.tabIndex)("aria-controls",o._getPanelId())("aria-expanded",o._isExpanded())("aria-disabled",o.panel.disabled),at("height",o._getHeaderHeight()),U("mat-expanded",o._isExpanded())("mat-expansion-toggle-indicator-after",o._getTogglePosition()==="after")("mat-expansion-toggle-indicator-before",o._getTogglePosition()==="before"))},inputs:{expandedHeight:"expandedHeight",collapsedHeight:"collapsedHeight",tabIndex:[2,"tabIndex","tabIndex",e=>e==null?0:pt(e)]},ngContentSelectors:xi,decls:5,vars:3,consts:[[1,"mat-content"],[1,"mat-expansion-indicator"],["xmlns","http://www.w3.org/2000/svg","viewBox","0 -960 960 960","aria-hidden","true","focusable","false"],["d","M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z"]],template:function(i,o){i&1&&(Pe(Ci),ae(0,"span",0),A(1),A(2,1),A(3,2),Ae(),h(4,bi,3,0,"span",1)),i&2&&(U("mat-content-hide-toggle",!o._showToggle()),l(4),C(o._showToggle()?4:-1))},styles:[`.mat-expansion-panel-header{display:flex;flex-direction:row;align-items:center;padding:0 24px;border-radius:inherit;height:var(--mat-expansion-header-collapsed-state-height, 48px);font-family:var(--mat-expansion-header-text-font, var(--mat-sys-title-medium-font));font-size:var(--mat-expansion-header-text-size, var(--mat-sys-title-medium-size));font-weight:var(--mat-expansion-header-text-weight, var(--mat-sys-title-medium-weight));line-height:var(--mat-expansion-header-text-line-height, var(--mat-sys-title-medium-line-height));letter-spacing:var(--mat-expansion-header-text-tracking, var(--mat-sys-title-medium-tracking))}.mat-expansion-panel-animations-enabled .mat-expansion-panel-header{transition:height 225ms cubic-bezier(0.4, 0, 0.2, 1)}.mat-expansion-panel-header::before{border-radius:inherit}.mat-expansion-panel-header.mat-expanded{height:var(--mat-expansion-header-expanded-state-height, 64px)}.mat-expansion-panel-header[aria-disabled=true]{color:var(--mat-expansion-header-disabled-state-text-color, color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent))}.mat-expansion-panel-header:not([aria-disabled=true]){cursor:pointer}.mat-expansion-panel:not(.mat-expanded) .mat-expansion-panel-header:not([aria-disabled=true]):hover{background:var(--mat-expansion-header-hover-state-layer-color, color-mix(in srgb, var(--mat-sys-on-surface) calc(var(--mat-sys-hover-state-layer-opacity) * 100%), transparent))}@media(hover: none){.mat-expansion-panel:not(.mat-expanded) .mat-expansion-panel-header:not([aria-disabled=true]):hover{background:var(--mat-expansion-container-background-color, var(--mat-sys-surface))}}.mat-expansion-panel .mat-expansion-panel-header:not([aria-disabled=true]).cdk-keyboard-focused,.mat-expansion-panel .mat-expansion-panel-header:not([aria-disabled=true]).cdk-program-focused{background:var(--mat-expansion-header-focus-state-layer-color, color-mix(in srgb, var(--mat-sys-on-surface) calc(var(--mat-sys-focus-state-layer-opacity) * 100%), transparent))}.mat-expansion-panel-header._mat-animation-noopable{transition:none}.mat-expansion-panel-header:focus,.mat-expansion-panel-header:hover{outline:none}.mat-expansion-panel-header.mat-expanded:focus,.mat-expansion-panel-header.mat-expanded:hover{background:inherit}.mat-expansion-panel-header.mat-expansion-toggle-indicator-before{flex-direction:row-reverse}.mat-expansion-panel-header.mat-expansion-toggle-indicator-before .mat-expansion-indicator{margin:0 16px 0 0}[dir=rtl] .mat-expansion-panel-header.mat-expansion-toggle-indicator-before .mat-expansion-indicator{margin:0 0 0 16px}.mat-content{display:flex;flex:1;flex-direction:row;overflow:hidden}.mat-content.mat-content-hide-toggle{margin-right:8px}[dir=rtl] .mat-content.mat-content-hide-toggle{margin-right:0;margin-left:8px}.mat-expansion-toggle-indicator-before .mat-content.mat-content-hide-toggle{margin-left:24px;margin-right:0}[dir=rtl] .mat-expansion-toggle-indicator-before .mat-content.mat-content-hide-toggle{margin-right:24px;margin-left:0}.mat-expansion-panel-header-title{color:var(--mat-expansion-header-text-color, var(--mat-sys-on-surface))}.mat-expansion-panel-header-title,.mat-expansion-panel-header-description{display:flex;flex-grow:1;flex-basis:0;margin-right:16px;align-items:center}[dir=rtl] .mat-expansion-panel-header-title,[dir=rtl] .mat-expansion-panel-header-description{margin-right:0;margin-left:16px}.mat-expansion-panel-header[aria-disabled=true] .mat-expansion-panel-header-title,.mat-expansion-panel-header[aria-disabled=true] .mat-expansion-panel-header-description{color:inherit}.mat-expansion-panel-header-description{flex-grow:2;color:var(--mat-expansion-header-description-color, var(--mat-sys-on-surface-variant))}.mat-expansion-panel-animations-enabled .mat-expansion-indicator{transition:transform 225ms cubic-bezier(0.4, 0, 0.2, 1)}.mat-expansion-panel-header.mat-expanded .mat-expansion-indicator{transform:rotate(180deg)}.mat-expansion-indicator::after{border-style:solid;border-width:0 2px 2px 0;content:"";padding:3px;transform:rotate(45deg);vertical-align:middle;color:var(--mat-expansion-header-indicator-color, var(--mat-sys-on-surface-variant));display:var(--mat-expansion-legacy-header-indicator-display, none)}.mat-expansion-indicator svg{width:24px;height:24px;margin:0 -8px;vertical-align:middle;fill:var(--mat-expansion-header-indicator-color, var(--mat-sys-on-surface-variant));display:var(--mat-expansion-header-indicator-display, inline-block)}@media(forced-colors: active){.mat-expansion-panel-content{border-top:1px solid;border-top-left-radius:0;border-top-right-radius:0}}
-`],encapsulation:2,changeDetection:0})}return t})();var ii=(()=>{class t{static \u0275fac=function(i){return new(i||t)};static \u0275dir=I({type:t,selectors:[["mat-panel-title"]],hostAttrs:[1,"mat-expansion-panel-header-title"]})}return t})(),ni=(()=>{class t extends Zt{_keyManager;_ownHeaders=new Ze;_headers;hideToggle=!1;displayMode="default";togglePosition="after";ngAfterContentInit(){this._headers.changes.pipe(we(this._headers)).subscribe(e=>{this._ownHeaders.reset(e.filter(i=>i.panel.accordion===this)),this._ownHeaders.notifyOnChanges()}),this._keyManager=new xt(this._ownHeaders).withWrap().withHomeAndEnd()}_handleHeaderKeydown(e){this._keyManager.onKeydown(e)}_handleHeaderFocus(e){this._keyManager.updateActiveItem(e)}ngOnDestroy(){super.ngOnDestroy(),this._keyManager?.destroy(),this._ownHeaders.destroy()}static \u0275fac=(()=>{let e;return function(o){return(e||(e=Ke(t)))(o||t)}})();static \u0275dir=I({type:t,selectors:[["mat-accordion"]],contentQueries:function(i,o,c){if(i&1&&ke(c,Be,5),i&2){let x;z(x=j())&&(o._headers=x)}},hostAttrs:[1,"mat-accordion"],hostVars:2,hostBindings:function(i,o){i&2&&U("mat-accordion-multi",o.multi)},inputs:{hideToggle:[2,"hideToggle","hideToggle",P],displayMode:"displayMode",togglePosition:"togglePosition"},exportAs:["matAccordion"],features:[V([{provide:qe,useExisting:t}]),Ne]})}return t})(),ai=(()=>{class t{static \u0275fac=function(i){return new(i||t)};static \u0275mod=te({type:t});static \u0275inj=J({imports:[Jt,Vt,bt]})}return t})();var L=class{static endsWith001(){return n=>{let e=n.value;return e&&e.length>=3&&!e.endsWith("001")?{endsWith001:!0}:null}}static ecuadorianRuc(){return n=>{let e=n.value;return e?/^\d{13}$/.test(e)?e.endsWith("001")?null:{rucMustEndWith001:!0}:{invalidRuc:!0}:null}}static ecuadorianCedula(){return n=>{let e=n.value;if(!e)return null;if(!/^\d{10}$/.test(e))return{invalidCedula:!0};let i=parseInt(e.substring(0,2));if(i<1||i>24)return{invalidProvince:!0};let o=[2,1,2,1,2,1,2,1,2],c=0;for(let Z=0;Z<9;Z++){let Ie=parseInt(e.charAt(Z))*o[Z];Ie>=10&&(Ie-=9),c+=Ie}let x=parseInt(e.charAt(9));return(c%10===0?0:10-c%10)!==x?{invalidCheckDigit:!0}:null}}static email(){return n=>{let e=n.value;return e?/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)?null:{invalidEmail:!0}:null}}static ecuadorianPhone(){return n=>{let e=n.value;return e?/^0\d{8,9}$/.test(e)?null:{invalidPhone:!0}:null}}};var oi={fields:{idTipoIdentificacion:{name:"idTipoIdentificacion",required:!0,visible:!0,label:"Tipo de Identificaci\xF3n",placeholder:"Seleccione tipo"},idFormaPagoSri:{name:"idFormaPagoSri",required:!1,visible:!0,label:"Forma de Pago SRI",placeholder:"Seleccione forma de pago"},idTipoClienteProveedor:{name:"idTipoClienteProveedor",required:!1,visible:!0,label:"Tipo de Cliente/Proveedor",placeholder:"Seleccione tipo"},idSubContribuyente:{name:"idSubContribuyente",required:!1,visible:!0,label:"Sub-Contribuyente",placeholder:"Seleccione"},idTiempoCredito:{name:"idTiempoCredito",required:!1,visible:!0,label:"Tiempo de Cr\xE9dito",placeholder:"D\xEDas de cr\xE9dito"},idCiudad:{name:"idCiudad",required:!1,visible:!0,label:"Ciudad",placeholder:"Seleccione ciudad"},idCargo:{name:"idCargo",required:!1,visible:!0,label:"Cargo",placeholder:"Seleccione cargo"},idEmpleado:{name:"idEmpleado",required:!1,visible:!0,label:"Empleado Responsable",placeholder:"Seleccione empleado"},numeroIdentificacion:{name:"numeroIdentificacion",required:!0,visible:!0,label:"RUC / C\xE9dula",placeholder:"Ingrese n\xFAmero de identificaci\xF3n (13 d\xEDgitos para RUC)"},nombreFiscal:{name:"nombreFiscal",required:!0,visible:!0,label:"Raz\xF3n Social / Nombre Fiscal",placeholder:"Ingrese raz\xF3n social completa"},nombreComercial:{name:"nombreComercial",required:!1,visible:!0,label:"Nombre Comercial",placeholder:"Ingrese nombre comercial"},direccion:{name:"direccion",required:!0,visible:!0,label:"Direcci\xF3n",placeholder:"Calle principal y secundaria"},correo:{name:"correo",required:!1,visible:!0,label:"Correo Electr\xF3nico",placeholder:"ejemplo@correo.com"},telefono:{name:"telefono",required:!1,visible:!0,label:"Tel\xE9fono",placeholder:"0999999999"},placa:{name:"placa",required:!1,visible:!0,label:"Placa del Veh\xEDculo",placeholder:"ABC-1234"},nota:{name:"nota",required:!1,visible:!0,label:"Notas",placeholder:"Observaciones adicionales"},birthDate:{name:"birthDate",required:!1,visible:!0,label:"Fecha de Nacimiento",placeholder:"DD/MM/AAAA"},estado:{name:"estado",required:!1,visible:!0,label:"Activo"},validationSri:{name:"validationSri",required:!1,visible:!0,label:"Validado en SRI"},configValorBruto:{name:"configValorBruto",required:!1,visible:!0,label:"Configurar Valor Bruto"}},showCreditInfo:!0,creditFields:{maritalStatusId:{name:"maritalStatusId",required:!1,visible:!0,label:"Estado Civil",placeholder:"Seleccione"},conyugeNombre:{name:"conyugeNombre",required:!1,visible:!0,label:"Nombre del C\xF3nyuge",placeholder:"Ingrese nombre"},conyugeTel:{name:"conyugeTel",required:!1,visible:!0,label:"Tel\xE9fono del C\xF3nyuge",placeholder:"0999999999"},refFamNombre:{name:"refFamNombre",required:!1,visible:!0,label:"Referencia Familiar",placeholder:"Nombre"},refFamTel:{name:"refFamTel",required:!1,visible:!0,label:"Tel\xE9fono Referencia",placeholder:"0999999999"},housingTypeId:{name:"housingTypeId",required:!1,visible:!0,label:"Tipo de Vivienda",placeholder:"Seleccione"},dirVivienda:{name:"dirVivienda",required:!1,visible:!0,label:"Direcci\xF3n de Vivienda",placeholder:"Direcci\xF3n completa"},refDomicilio:{name:"refDomicilio",required:!1,visible:!0,label:"Referencia de Domicilio",placeholder:"Referencia"},sector:{name:"sector",required:!1,visible:!0,label:"Sector",placeholder:"Ingrese sector"},barrio:{name:"barrio",required:!1,visible:!0,label:"Barrio",placeholder:"Ingrese barrio"},calle:{name:"calle",required:!1,visible:!0,label:"Calle",placeholder:"Calle principal"}},submitButtonText:"Guardar Cliente",cancelButtonText:"Cancelar"};function Si(t,n){if(t&1&&(r(0,"div",1),d(1),a()),t&2){let e=p();l(),W(e.errorMessage)}}function Fi(t,n){if(t&1&&(r(0,"mat-option",10),d(1),a()),t&2){let e=n.$implicit;m("value",e.idTipoIdentificacion),l(),W(e.descripcion)}}function Ti(t,n){if(t&1&&(r(0,"mat-error"),d(1),a()),t&2){let e=p(2);l(),v(" ",e.getErrorMessage("idTipoIdentificacion"))}}function Ii(t,n){if(t&1){let e=E();r(0,"mat-form-field",7)(1,"mat-label"),d(2),a(),r(3,"mat-select",29),g("selectionChange",function(o){b(e);let c=p();return _(c.identificationTypeChange(o))}),F(4,Fi,2,2,"mat-option",10,w),a(),h(6,Ti,2,1,"mat-error"),a()}if(t&2){let e,i=p();l(2),v(" ",i.getFieldLabel("idTipoIdentificacion")," "),l(2),T(i.tiposIdentificacion()),l(2),C((e=i.form.get("idTipoIdentificacion"))!=null&&e.invalid&&((e=i.form.get("idTipoIdentificacion"))!=null&&e.touched)?6:-1)}}function Mi(t,n){if(t&1&&(r(0,"mat-error"),d(1),a()),t&2){let e=p(2);l(),v(" ",e.getErrorMessage("numeroIdentificacion"))}}function wi(t,n){if(t&1){let e=E();r(0,"mat-form-field",7)(1,"mat-label"),d(2),a(),f(3,"input",30),h(4,Mi,2,1,"mat-error"),oe(5,31),r(6,"button",32),g("click",function(o){b(e);let c=p();return _(c.searchIdentificacion(o))}),r(7,"mat-icon"),d(8,"search"),a()(),re(),a()}if(t&2){let e,i=p();l(2),v(" ",i.getFieldLabel("numeroIdentificacion")," "),l(),m("placeholder",i.getFieldPlaceholder("numeroIdentificacion")),l(),C((e=i.form.get("numeroIdentificacion"))!=null&&e.invalid&&((e=i.form.get("numeroIdentificacion"))!=null&&e.touched)?4:-1)}}function Di(t,n){if(t&1&&(r(0,"mat-error"),d(1),a()),t&2){let e=p(2);l(),v(" ",e.getErrorMessage("nombreFiscal"))}}function Ni(t,n){if(t&1&&(r(0,"div",6)(1,"mat-form-field",7)(2,"mat-label"),d(3),a(),f(4,"input",33),h(5,Di,2,1,"mat-error"),a()()),t&2){let e,i=p();l(3),v(" ",i.getFieldLabel("nombreFiscal")," "),l(),m("placeholder",i.getFieldPlaceholder("nombreFiscal")),l(),C((e=i.form.get("nombreFiscal"))!=null&&e.invalid&&((e=i.form.get("nombreFiscal"))!=null&&e.touched)?5:-1)}}function Ai(t,n){if(t&1&&(r(0,"div",6)(1,"mat-form-field",7)(2,"mat-label"),d(3),a(),f(4,"input",34),a()()),t&2){let e=p();l(3),v(" ",e.getFieldLabel("nombreComercial")," "),l(),m("placeholder",e.getFieldPlaceholder("nombreComercial"))}}function Pi(t,n){if(t&1&&(r(0,"mat-error"),d(1),a()),t&2){let e=p(2);l(),W(e.getErrorMessage("direccion"))}}function ki(t,n){if(t&1&&(r(0,"mat-form-field",7)(1,"mat-label"),d(2),a(),f(3,"input",35),h(4,Pi,2,1,"mat-error"),a()),t&2){let e,i=p();l(2),v(" ",i.getFieldLabel("direccion"),":"),l(),m("placeholder",i.getFieldPlaceholder("direccion")),l(),C((e=i.form.get("direccion"))!=null&&e.invalid&&((e=i.form.get("direccion"))!=null&&e.touched)?4:-1)}}function Vi(t,n){if(t&1&&(r(0,"div",6),f(1,"acp-input-chip",36),a()),t&2){let e=p();l(),m("chips",e.emails)("labelText",e.getFieldLabel("correo"))}}function Ri(t,n){if(t&1&&(r(0,"div",6),f(1,"acp-input-chip",36),a()),t&2){let e=p();l(),m("chips",e.telephones)("labelText",e.getFieldLabel("telefono"))}}function Oi(t,n){if(t&1&&(r(0,"mat-option",10),d(1),a()),t&2){let e=n.$implicit;m("value",e.idFormaPagoSri),l(),v(" ",e.descripcion," ")}}function qi(t,n){if(t&1&&(r(0,"mat-option",10),d(1),a()),t&2){let e=n.$implicit;m("value",e.idTiempoCredito),l(),v(" ",e.descripcion," ")}}function Li(t,n){if(t&1&&(r(0,"mat-option",10),d(1),a()),t&2){let e=n.$implicit;m("value",e.idTipoClienteProveedor),l(),v(" ",e.descripcion," ")}}function Bi(t,n){if(t&1&&(r(0,"mat-option",10),d(1),a()),t&2){let e=n.$implicit;m("value",e.idEmpleado),l(),v(" ",e.nombreCompleto," ")}}function Hi(t,n){if(t&1&&(r(0,"mat-option",10),d(1),a()),t&2){let e=n.$implicit;m("value",e.id),l(),v(" ",e.name," ")}}function Gi(t,n){if(t&1&&(r(0,"mat-option",10),d(1),a()),t&2){let e=n.$implicit;m("value",e.id),l(),v(" ",e.name," ")}}function zi(t,n){if(t&1&&(r(0,"mat-form-field",7)(1,"mat-label"),d(2),a(),f(3,"textarea",37),a()),t&2){let e=p();l(2),v(" ",e.getFieldLabel("nota")," "),l(),m("placeholder",e.getFieldPlaceholder("nota"))}}function ji(t,n){if(t&1&&(r(0,"span"),d(1),a()),t&2){let e=p(2);l(),W(e.config.submitButtonText)}}function Ui(t,n){t&1&&(r(0,"span"),d(1,"Guardando..."),a())}function Wi(t,n){if(t&1){let e=E();r(0,"div",28)(1,"button",38),g("click",function(){b(e);let o=p();return _(o.onCancel())}),d(2),a(),r(3,"button",39),h(4,ji,2,1,"span")(5,Ui,2,0,"span"),a()()}if(t&2){let e=p();l(),m("disabled",e.isLoading()),l(),v(" ",e.config.cancelButtonText," "),l(),m("disabled",e.isLoading()||e.form.invalid),l(),C(e.isLoading()?5:4)}}var B=class t{formId=S();customer=S({});mode=S("create");showButtons=S(!0);submitted=$();cancelled=$();panelOpenState=u(!1);fb=s(Mt);config=s(Yt,{optional:!0})??oi;customerService=s(q,{optional:!0})??s(Kt);form;isLoading=u(!1);errorMessage=null;step=u(0);emails=[];telephones=[];tiemposCredito=u([]);tipoContribuyentes=u([]);tiposCliente=u([]);tiposIdentificacion=u([]);formasPagoSri=u([]);placas=u([]);ciudades=u([]);cargos=u([]);empresas=u([]);employees=u([]);maritalStatuses=u([]);housingTypes=u([]);showRefresh=u(!0);setStep(n){this.step.set(n)}loadFormData(){return this.mode()==="edit"?je([Me(this.customerService.getFormData())]):Me(this.customerService.getFormData())}ngOnInit(){this.buildForm(),this.loadFormData().subscribe(n=>{console.log(n)}),this.customer&&this.patchFormValue(this.customer())}getDefaultConfig(){return{}}getCreditFieldConfig(n){return this.config.creditFields?.[n]}isCreditFieldVisible(n){return this.getCreditFieldConfig(n)?.visible||!1}isCreditFieldRequired(n){return this.getCreditFieldConfig(n)?.required||!1}getCreditFieldLabel(n){return this.getCreditFieldConfig(n)?.label||n}getCreditFieldPlaceholder(n){return this.getCreditFieldConfig(n)?.placeholder||""}buildCreditFormGroup(){if(!this.config.showCreditInfo||!this.config.creditFields)return this.fb.group({maritalStatusId:[null],conyugeNombre:[null],conyugeTel:[null],refFamNombre:[null],refFamTel:[null],housingTypeId:[null],dirVivienda:[null],refDomicilio:[null],sector:[null],barrio:[null],calle:[null]});let n={},e=this.config.creditFields;return Object.keys(e).forEach(i=>{let c=e[i].required?[R.required]:[];n[i]=[null,c]}),this.fb.group(n)}buildForm(){this.form=this.fb.group({idCliente:[0],idEmpresa:[0],idCargo:[0],idFormaPagoSri:[0],idTipoClienteProveedor:[0],idSubContribuyente:[0],idTiempoCredito:[0],idCiudad:[0],idEmpleado:[0],idTipoIdentificacion:[0,this.config.fields.idTipoIdentificacion.required?[R.required]:[]],numeroIdentificacion:["",this.getValidatorsForField("numeroIdentificacion")],nombreFiscal:["",this.getValidatorsForField("nombreFiscal")],nombreComercial:[""],direccion:["",this.getValidatorsForField("direccion")],correo:["",this.getValidatorsForField("correo")],telefono:["",this.getValidatorsForField("telefono")],placa:[""],nota:[""],birthDate:[null],estado:[!1],validationSri:[!1],configValorBruto:[!1],dataInfoCred:this.buildCreditFormGroup()})}patchFormValue(n){this.form.patchValue({idCliente:n.idCliente||0,idEmpresa:n.idEmpresa||0,idCargo:n.idCargo||0,idFormaPagoSri:n.idFormaPagoSri||0,idTipoClienteProveedor:n.idTipoClienteProveedor||0,idTipoIdentificacion:n.idTipoIdentificacion||0,idSubContribuyente:n.idSubContribuyente||0,idTiempoCredito:n.idTiempoCredito||0,idCiudad:n.idCiudad||0,idEmpleado:n.idEmpleado||0,numeroIdentificacion:n.numeroIdentificacion||"",nombreFiscal:n.nombreFiscal||"",nombreComercial:n.nombreComercial||"",direccion:n.direccion||"",correo:n.correo||"",telefono:n.telefono||"",placa:n.placa||"",nota:n.nota||"",birthDate:n.birthDate||null,estado:n.estado||!1,validationSri:n.validationSri||!1,configValorBruto:n.configValorBruto||!1,dataInfoCred:n.dataInfoCred||{}})}getValidatorsForField(n){let e=[],i=this.config.fields[n];if(!i)return e;switch(i.required&&e.push(R.required),n){case"numeroIdentificacion":e.push(R.minLength(13)),e.push(R.maxLength(13)),e.push(L.endsWith001());break;case"correo":i.visible&&e.push(L.email());break;case"telefono":i.visible&&e.push(L.ecuadorianPhone());break}return i.validators&&e.push(...i.validators),e}isFieldVisible(n){return this.config.fields[n]?.visible||!1}isFieldRequired(n){return this.config.fields[n]?.required||!1}getFieldLabel(n){return this.config.fields[n]?.label||n}getFieldPlaceholder(n){return this.config.fields[n]?.placeholder||""}identificationTypeChange(n){console.log(n)}onSubmit(){if(this.form.invalid){this.form.markAllAsTouched();return}let n=this.form.getRawValue();if(this.customerService?.validate&&this.customerService.validate(n)){this.errorMessage="Por favor corrija los errores de validaci\xF3n";return}this.isLoading.set(!0),this.errorMessage=null,(this.mode()==="create"?this.customerService.create(n):this.customerService.update(this.customer().id,n)).subscribe({next:i=>{this.isLoading.set(!1),this.submitted.emit(i)},error:i=>{this.isLoading.set(!1),this.errorMessage=i.message||"Error al guardar el cliente"}})}onCancel(){this.cancelled.emit()}getErrorMessage(n){let e=this.form.get(n);return!e||!e.errors||!e.touched?"":e.errors.required?`${this.getFieldLabel(n)} es requerido`:e.errors.minlength?`M\xEDnimo ${e.errors.minlength.requiredLength} caracteres`:e.errors.maxlength?`M\xE1ximo ${e.errors.maxlength.requiredLength} caracteres`:e.errors.endsWith001?"Debe terminar en 001":e.errors.invalidRuc?"RUC inv\xE1lido":e.errors.invalidCedula?"C\xE9dula inv\xE1lida":e.errors.invalidEmail?"Email inv\xE1lido":e.errors.invalidPhone?"Tel\xE9fono inv\xE1lido (debe empezar con 0)":"Campo inv\xE1lido"}get dataInfoCredForm(){return this.form.get("dataInfoCred")}searchIdentificacion(n){n.stopPropagation(),console.log("search")}static \u0275fac=function(e){return new(e||t)};static \u0275cmp=y({type:t,selectors:[["acp-company-customer-form"]],inputs:{formId:[1,"formId"],customer:[1,"customer"],mode:[1,"mode"],showButtons:[1,"showButtons"]},outputs:{submitted:"submitted",cancelled:"cancelled"},exportAs:["acpCustomerForm"],decls:143,vars:21,consts:[[1,"mb-2",3,"ngSubmit","formGroup","id"],[1,"alert","alert-error"],[1,"mb-2"],["hideToggle","",3,"opened","expanded"],[1,"d-grid","gap-2","mx-3","mt-2"],[1,"row","row-cols-xxl-2","row-cols-xl-2","row-cols-lg-2","row-cols-md-2","row-cols-sm-2","row-cols-1","g-1"],[1,"col"],[1,"w-100"],[1,"d-grid","gap-2","mx-3"],["formControlName","idFormaPagoSri"],[3,"value"],["formControlName","idTiempoCredito"],["formControlName","idTipoClienteProveedor"],["formControlName","idEmpleado"],["matInput",""],["formGroupName","dataInfoCred",1,"d-grid","gap-2","mx-2"],[1,"row","row-cols-xxl-2","row-cols-xl-2","row-cols-lg-2","row-cols-md-2","row-cols-sm-1","row-cols-1","g-1"],["formControlName","maritalStatusId"],["formControlName","housingTypeId"],["matInput","","formControlName","conyugeNombre","placeholder","Nombre del c\xF3nyuge"],["matInput","","formControlName","conyugeTel","placeholder","09xxxxxxxx"],["matInput","","formControlName","refFamTel","placeholder","09xxxxxxxx"],["matInput","","formControlName","dirVivienda","placeholder","Direcci\xF3n completa de la vivienda (Sector, Barrio y Calle)"],[1,"row","row-cols-xxl-3","row-cols-xl-3","row-cols-lg-3","row-cols-md-2","row-cols-sm-1","row-cols-1","g-1"],["matInput","","formControlName","sector","placeholder","Nombre del sector"],["matInput","","formControlName","barrio","placeholder","Nombre del barrio"],["matInput","","formControlName","calle","placeholder","Nombre de la calle"],["matInput","","formControlName","refDomicilio","placeholder","Descripci\xF3n detallada del punto de referencia"],[1,"form-actions"],["formControlName","idTipoIdentificacion",3,"selectionChange"],["matInput","","formControlName","numeroIdentificacion",3,"placeholder"],["matSuffix",""],["type","button","mat-icon-button","",3,"click"],["matInput","","autocomplete","off","formControlName","nombreFiscal","acpToUpperCase","",3,"placeholder"],["matInput","","autocomplete","off","formControlName","nombreComercial","acpToUpperCase","","type","text",3,"placeholder"],["matInput","","formControlName","direccion","acpToUpperCase","",3,"placeholder"],[3,"chips","labelText"],["matInput","","formControlName","nota","rows","3",3,"placeholder"],["type","button",1,"btn","btn-secondary",3,"click","disabled"],["type","submit",1,"btn","btn-primary",3,"disabled"]],template:function(e,i){e&1&&(r(0,"form",0),g("ngSubmit",function(){return i.onSubmit()}),h(1,Si,2,1,"div",1),r(2,"mat-accordion",2)(3,"mat-expansion-panel",3),g("opened",function(){return i.setStep(0)}),r(4,"mat-expansion-panel-header")(5,"mat-panel-title")(6,"mat-icon"),d(7,"account_circle"),a(),d(8," Datos Principales "),a()(),r(9,"div",4)(10,"div",5)(11,"div",6),h(12,Ii,7,2,"mat-form-field",7),a(),r(13,"div",6),h(14,wi,9,3,"mat-form-field",7),a()(),r(15,"div",5),h(16,Ni,6,3,"div",6),h(17,Ai,5,2,"div",6),a(),h(18,ki,5,3,"mat-form-field",7),r(19,"div",5),h(20,Vi,2,2,"div",6),h(21,Ri,2,2,"div",6),a()()(),r(22,"mat-expansion-panel",3),g("opened",function(){return i.setStep(1)}),r(23,"mat-expansion-panel-header")(24,"mat-panel-title"),d(25," Informaci\xF3n Comercial "),a()(),r(26,"div",8)(27,"div",5)(28,"div",6)(29,"mat-form-field",7)(30,"mat-label"),d(31,"Forma de pago: "),a(),r(32,"mat-select",9)(33,"mat-option",10),d(34,"--Ninguno--"),a(),F(35,Oi,2,2,"mat-option",10,w),a()()(),r(37,"div",6)(38,"mat-form-field",7)(39,"mat-label"),d(40,"Tiempo Cr\xE9dito: "),a(),r(41,"mat-select",11),F(42,qi,2,2,"mat-option",10,w),a()()()(),r(44,"div",5)(45,"div",6)(46,"mat-form-field",7)(47,"mat-label"),d(48,"Tipo Cliente: "),a(),r(49,"mat-select",12)(50,"mat-option",10),d(51,"--Ninguno--"),a(),F(52,Li,2,2,"mat-option",10,w),a()()(),r(54,"div",6)(55,"mat-form-field",7)(56,"mat-label"),d(57,"Empleado: "),a(),r(58,"mat-select",13)(59,"mat-option",10),d(60,"--Ninguno--"),a(),F(61,Bi,2,2,"mat-option",10,w),a()()()(),r(63,"mat-form-field")(64,"mat-label"),d(65,"Country"),a(),f(66,"input",14),a()()(),r(67,"mat-expansion-panel",3),g("opened",function(){return i.setStep(2)}),r(68,"mat-expansion-panel-header")(69,"mat-panel-title"),d(70," Informaci\xF3n de Cr\xE9dito "),a()(),r(71,"section",15)(72,"div",16)(73,"div",6)(74,"mat-form-field",7)(75,"mat-label"),d(76,"Estado Civil: "),a(),r(77,"mat-select",17)(78,"mat-option",10),d(79,"Seleccionar..."),a(),F(80,Hi,2,2,"mat-option",10,w),a()()(),r(82,"div",6)(83,"mat-form-field",7)(84,"mat-label"),d(85,"Tipo de Vivienda: "),a(),r(86,"mat-select",18)(87,"mat-option",10),d(88,"Seleccionar..."),a(),F(89,Gi,2,2,"mat-option",10,w),a()()()(),r(91,"div",16)(92,"div",6)(93,"mat-form-field",7)(94,"mat-label"),d(95,"Nombre del C\xF3nyuge:"),a(),f(96,"input",19),a()(),r(97,"div",6)(98,"mat-form-field",7)(99,"mat-label"),d(100,"Tel\xE9fono del C\xF3nyuge:"),a(),f(101,"input",20),a()()(),r(102,"div",16)(103,"div",6)(104,"mat-form-field",7)(105,"mat-label"),d(106,"Referencia Familiar:"),a(),f(107,"input",21),a()(),r(108,"div",6)(109,"mat-form-field",7)(110,"mat-label"),d(111,"Tel\xE9fono Referencia:"),a(),f(112,"input",21),a()()(),r(113,"mat-form-field",7)(114,"mat-label"),d(115,"Direcci\xF3n de Vivienda"),a(),f(116,"textarea",22),a(),r(117,"div",23)(118,"div",6)(119,"mat-form-field",7)(120,"mat-label"),d(121,"Sector:"),a(),f(122,"input",24),a()(),r(123,"div",6)(124,"mat-form-field",7)(125,"mat-label"),d(126,"Barrio:"),a(),f(127,"input",25),a()(),r(128,"div",6)(129,"mat-form-field",7)(130,"mat-label"),d(131,"Calle:"),a(),f(132,"input",26),a()()(),r(133,"mat-form-field",7)(134,"mat-label"),d(135,"Referencia de Domicilio"),a(),f(136,"textarea",27),a()()(),r(137,"mat-expansion-panel",3),g("opened",function(){return i.setStep(3)}),r(138,"mat-expansion-panel-header")(139,"mat-panel-title"),d(140," Notas"),a()(),h(141,zi,4,2,"mat-form-field",7),a()(),h(142,Wi,6,4,"div",28),a()),e&2&&(m("formGroup",i.form)("id",i.formId()),l(),C(i.errorMessage?1:-1),l(2),m("expanded",i.step()===0),l(9),C(i.isFieldVisible("idTipoIdentificacion")?12:-1),l(2),C(i.isFieldVisible("numeroIdentificacion")?14:-1),l(2),C(i.isFieldVisible("nombreFiscal")?16:-1),l(),C(i.isFieldVisible("nombreComercial")?17:-1),l(),C(i.isFieldVisible("direccion")?18:-1),l(2),C(i.isFieldVisible("correo")?20:-1),l(),C(i.isFieldVisible("telefono")?21:-1),l(),m("expanded",i.step()===1),l(11),m("value",0),l(2),T(i.formasPagoSri()),l(7),T(i.tiemposCredito()),l(8),m("value",0),l(2),T(i.tiposCliente()),l(7),m("value",0),l(2),T(i.employees()),l(6),m("expanded",i.step()===2),l(11),m("value",0),l(2),T(i.maritalStatuses()),l(7),m("value",0),l(2),T(i.housingTypes()),l(48),m("expanded",i.step()===3),l(4),C(i.isFieldVisible("nota")?141:-1),l(),C(i.showButtons()?142:-1))},dependencies:[Dt,St,se,me,yt,It,Tt,Ft,ge,fe,pe,qt,ue,Ce,he,ai,ni,Le,Be,ii,Gt,Ht,Bt,ce,Qt,Lt,At,Nt],styles:[`.alert{padding:12px 16px;border-radius:6px;margin-bottom:20px;font-size:14px}.alert.alert-error{background-color:#fef2f2;border:1px solid #fecaca;color:#991b1b}
-`],encapsulation:2,changeDetection:0})};var ye=class t{formId=u("companyCustomerFormId");dgRef=s(xe);onCustomerCreated(n){console.log("Cliente creado:",n)}onCancel(){this.dgRef.close()}static \u0275fac=function(e){return new(e||t)};static \u0275cmp=y({type:t,selectors:[["acp-company-customer-add-edit-dialog"]],decls:8,vars:7,consts:[["form",""],[1,"page-container"],["mode","create",3,"submitted","cancelled","formId","showButtons"],["align","end"],[1,"hstack","gap-2"],["type","submit","icon","save",3,"form","text","variant","matStyle","disabled"],["type","button","variant","dark","text","Cerrar","matStyle","filled",3,"handleClick"]],template:function(e,i){if(e&1){let o=E();r(0,"mat-dialog-content")(1,"div",1)(2,"acp-company-customer-form",2,0),g("submitted",function(x){return b(o),_(i.onCustomerCreated(x))})("cancelled",function(){return b(o),_(i.onCancel())}),a()()(),r(4,"mat-dialog-actions",3)(5,"div",4),f(6,"acp-button",5),r(7,"acp-button",6),g("handleClick",function(){return b(o),_(i.onCancel())}),a()()()}if(e&2){let o=D(3);l(2),m("formId",i.formId())("showButtons",!1),l(4),m("form",i.formId())("text",o.isLoading()?"Guardando...":"Guardar")("variant","success")("matStyle","filled")("disabled",o.form.invalid||o.isLoading())}},dependencies:[B,be,_e,O],encapsulation:2})};var Ee=class t{dgSvc=s(ve);companyCustomerSaved=$();id=S(0);onClick(n){return Ge(this,null,function*(){n.stopPropagation();let e=this.id()>0;(yield this.dgSvc.openInWrapper({component:ye,title:e?"Editar Cliente":"Nuevo Cliente",icon:e?"edit":"add",showCloseButton:!0,data:{id:this.id()}},{size:"xxl"})).afterClosed().subscribe(o=>{o&&typeof o=="object"&&this.companyCustomerSaved.emit(o)})})}static \u0275fac=function(e){return new(e||t)};static \u0275dir=I({type:t,selectors:[["","acpCompanyCustomerAddEdit",""]],hostBindings:function(e,i){e&1&&g("click",function(c){return i.onClick(c)})},inputs:{id:[1,"id"]},outputs:{companyCustomerSaved:"companyCustomerSaved"}})};var $i=t=>({op:t});function Qi(t,n){if(t&1&&f(0,"acp-button",9),t&2){p();let e=D(10);m("matMenuTriggerFor",e)}}function Yi(t,n){if(t&1){let e=E();r(0,"acp-button",12),g("companyCustomerSaved",function(){b(e);let o=p(2);return _(o.refresh())}),a()}}function Ki(t,n){if(t&1){let e=E();r(0,"div",4)(1,"mat-form-field")(2,"mat-label"),d(3,"Buscar"),a(),r(4,"input",5),lt("ngModelChange",function(o){b(e);let c=p();return rt(c.dataSearch.textSearch,o)||(c.dataSearch.textSearch=o),_(o)}),a(),oe(5,6),r(6,"acp-button",7),g("handleClick",function(){b(e);let o=p();return _(o.refresh())}),a(),re(),a(),r(7,"div",8),h(8,Qi,1,1,"acp-button",9),r(9,"mat-menu",null,2)(11,"button",10),g("click",function(){b(e);let o=p();return _(o.exportExcel())}),r(12,"mat-icon"),d(13,"table_view"),a(),r(14,"span"),d(15,"Exportar a Excel"),a()(),r(16,"button",10),g("click",function(){b(e);let o=p();return _(o.exportPdf())}),r(17,"mat-icon"),d(18,"picture_as_pdf"),a(),r(19,"span"),d(20,"Exportar a PDF"),a()()(),h(21,Yi,1,0,"acp-button",11),r(22,"acp-button",7),g("handleClick",function(){b(e);let o=p();return _(o.refresh())}),a()()()}if(t&2){let e=p();l(4),ot("ngModel",e.dataSearch.textSearch),l(4),C(e.canGenerateReport()?8:-1),l(13),C(e.canAdd()?21:-1)}}function Zi(t,n){if(t&1){let e=E();r(0,"acp-button",15),g("companyCustomerSaved",function(){b(e);let o=p(2);return _(o.refresh())}),a()}if(t&2){let e=p().$implicit;m("id",e.idCliente)}}function Xi(t,n){if(t&1){let e=E();r(0,"acp-button",16),g("handleClick",function(){b(e);let o=p().$implicit,c=p();return _(c.askToDelete(o))}),a()}}function Ji(t,n){if(t&1&&(h(0,Zi,1,1,"acp-button",13),h(1,Xi,1,0,"acp-button",14)),t&2){let e=n.$implicit,i=p();C(i.canEdit()?0:-1),l(),C(e.esConsumidorFinal?-1:1)}}var Se=class t{http=s(q);canEdit=S(!0);canAdd=S(!0);canInactive=S(!0);canGenerateReport=S(!0);dataSearch={textSearch:null};dataSource=u([]);columnsDefs=[{field:"index",header:"#"},{field:"op",header:"Op."},{field:"identificationType",header:"Tipo"},{field:"idCard",header:"Nro. Identificaci\xF3n"},{field:"tradeName",header:"Raz\xF3n Social"},{field:"legalName",header:"Nombre Comercial"},{field:"address",header:"Direcci\xF3n"},{field:"email",header:"Correo"},{field:"phone",header:"Tel\xE9fono"},{field:"sriValidation",header:"Validaci\xF3n Sri",type:"tag",tag:{true:{text:"Si",color:"text-danger"},false:{text:"No",color:"text-success"}}},{field:"status",header:"Estado",type:"tag",tag:{true:{text:"Activo",color:"text-primary"},false:{text:"Inactivo",color:"text-success"}}}];pageIndex=u(0);pageSize=u(10);pageCount=u(0);refresh(){this.list()}list(){let n={pageIndex:this.pageIndex()+1,pageSize:this.pageSize(),checkTextSearch:!!Re(this.dataSearch.textSearch),textSearch:Re(this.dataSearch.textSearch)};this.http.list(n).subscribe(e=>{console.log(e),this.dataSource.set(e.data),this.pageCount.set(e.pagination.totalRecords)})}ngOnInit(){this.refresh()}handlePageEvent(n){this.pageIndex.set(n.pageIndex),this.pageSize.set(n.pageSize),this.pageCount.set(n.length),this.refresh()}exportExcel(){}exportPdf(){}askToDelete(n){}static \u0275fac=function(e){return new(e||t)};static \u0275cmp=y({type:t,selectors:[["acp-company-customer-list"]],inputs:{canEdit:[1,"canEdit"],canAdd:[1,"canAdd"],canInactive:[1,"canInactive"],canGenerateReport:[1,"canGenerateReport"]},decls:5,vars:10,consts:[["headerToolbar",""],["templateOp",""],["exportMenu","matMenu"],[3,"page","showToolbar","toolbarTemplate","data","columns","cellTemplate","length","pageIndex","pageSize"],[1,"d-flex","flex-row","gap-2","align-items-center"],["matInput","",3,"ngModelChange","ngModel"],["matSuffix",""],["variant","secondary","icon","refresh","matStyle","icon",3,"handleClick"],[1,"ms-auto","d-flex","flex-row","gap-2"],["variant","info","icon","download","matStyle","filled","text","Exportar Reporte",3,"matMenuTriggerFor"],["mat-menu-item","",3,"click"],["acpCompanyCustomerAddEdit","","variant","success","icon","add","matStyle","filled","text","Nuevo"],["acpCompanyCustomerAddEdit","","variant","success","icon","add","matStyle","filled","text","Nuevo",3,"companyCustomerSaved"],["acpCompanyCustomerAddEdit","","variant","success","icon","edit","matStyle","icon",3,"id"],["variant","danger","icon","delete","matStyle","icon"],["acpCompanyCustomerAddEdit","","variant","success","icon","edit","matStyle","icon",3,"companyCustomerSaved","id"],["variant","danger","icon","delete","matStyle","icon",3,"handleClick"]],template:function(e,i){if(e&1){let o=E();r(0,"acp-data-grid",3),g("page",function(x){return b(o),_(i.handlePageEvent(x))}),a(),ie(1,Ki,23,3,"ng-template",null,0,Ve)(3,Ji,2,2,"ng-template",null,1,Ve)}if(e&2){let o=D(2),c=D(4);m("showToolbar",!0)("toolbarTemplate",o)("data",i.dataSource())("columns",i.columnsDefs)("cellTemplate",dt(8,$i,c))("length",i.pageCount())("pageIndex",i.pageIndex())("pageSize",i.pageSize())}},dependencies:[$t,ge,fe,pe,ue,Ce,he,O,wt,se,me,Et,ce,Wt,jt,zt,Ut,Ee],encapsulation:2})};var Fe=class t{formId=u("companyCustomerFormId");dgRef=s(xe);onCustomerCreated(n){console.log("Cliente creado:",n)}onCancel(){this.dgRef.close()}static \u0275fac=function(e){return new(e||t)};static \u0275cmp=y({type:t,selectors:[["app-company-customer-create"]],decls:8,vars:7,consts:[["form",""],[1,"page-container"],["mode","create",3,"submitted","cancelled","formId","showButtons"],["align","end"],[1,"hstack","gap-2"],["type","submit","icon","save",3,"form","text","variant","matStyle","disabled"],["type","button","variant","dark","text","Cerrar","matStyle","filled",3,"handleClick"]],template:function(e,i){if(e&1){let o=E();r(0,"mat-dialog-content")(1,"div",1)(2,"acp-company-customer-form",2,0),g("submitted",function(x){return b(o),_(i.onCustomerCreated(x))})("cancelled",function(){return b(o),_(i.onCancel())}),a()()(),r(4,"mat-dialog-actions",3)(5,"div",4),f(6,"acp-button",5),r(7,"acp-button",6),g("handleClick",function(){return b(o),_(i.onCancel())}),a()()()}if(e&2){let o=D(3);l(2),m("formId",i.formId())("showButtons",!1),l(4),m("form",i.formId())("text",o.isLoading()?"Guardando...":"Guardar")("variant","success")("matStyle","filled")("disabled",o.form.invalid||o.isLoading())}},dependencies:[B,be,_e,O],encapsulation:2})};var Te=class t{dgSvc=s(ve);ccSvc=s(q);list=[];add(){this.dgSvc.openInWrapper({component:Fe,title:"Nuevo Cliente",icon:"add",showCloseButton:!0,data:{}},{size:"xxl"})}columns=[{header:"Client ID",field:"clientId",type:"number"},{header:"Identification Number",field:"identificationNumber"},{header:"Identification Type",field:"identificationType"},{header:"Trade Name",field:"tradeName",sortable:!0},{header:"Legal Name",field:"legalName"},{header:"Address",field:"address"},{header:"Phone",field:"phone"},{header:"Email",field:"email"},{header:"Final Consumer",field:"finalConsumer",type:"boolean"},{header:"SRI Validation",field:"sriValidation",type:"boolean"},{header:"Status",field:"status",type:"boolean"}];totalRecords=u(0);page=u(0);pageSize=u(25);trackByName(n){return`${n}-`}ngOnInit(){this.ccSvc.list({}).subscribe(n=>{this.list=n.data,this.totalRecords.set(n.pagination.totalRecords)})}static \u0275fac=function(e){return new(e||t)};static \u0275cmp=y({type:t,selectors:[["app-company-customer-example"]],decls:1,vars:0,template:function(e,i){e&1&&f(0,"acp-company-customer-list")},dependencies:[Se],styles:["[_nghost-%COMP%]     .data-grid{height:450px}"]})};Y.highlightAll();var ri=`<acp-data-grid [data]="list" [columns]="columns" [trackBy]="trackByName"></acp-data-grid>
-`,li=`
+import { a as Yt, b as q, c as Kt, d as Re } from './chunk-UCTZV3YB.js';
+import { a as Ot, b as Y } from './chunk-TEMGEHUK.js';
+import './chunk-IS3KC4W2.js';
+import { b as ft } from './chunk-ZTXRY76I.js';
+import './chunk-4JMGPBNX.js';
+import {
+  H as zt,
+  I as jt,
+  J as Ut,
+  K as Wt,
+  L as $t,
+  U as Qt,
+  b as xe,
+  c as be,
+  d as _e,
+  g as O,
+  m as Lt,
+  o as ve,
+} from './chunk-H5QXEMOA.js';
+import {
+  N as pe,
+  O as qt,
+  R as ue,
+  V as fe,
+  Y as ge,
+  Z as he,
+  _ as Ce,
+  a as de,
+  ba as Bt,
+  da as Ht,
+  e as se,
+  ea as Gt,
+  g as R,
+  i as me,
+  j as yt,
+  n as Et,
+  o as St,
+  r as Ft,
+  s as Tt,
+  t as It,
+  x as Mt,
+  y as wt,
+  z as Dt,
+} from './chunk-7JP3HI6F.js';
+import { l as Pt, p as kt, q as Vt } from './chunk-57Q2UAVZ.js';
+import { a as Rt } from './chunk-QJ46N2FA.js';
+import { a as ce } from './chunk-U7VJQUDE.js';
+import { c as Nt, g as At } from './chunk-XJJY6XHD.js';
+import {
+  $b as d,
+  Ab as f,
+  Ac as $,
+  Bb as ae,
+  Bc as S,
+  C as je,
+  Ca as ee,
+  Cb as Ae,
+  Cd as gt,
+  Da as Ke,
+  Db as it,
+  Eb as oe,
+  Ed as ht,
+  Fa as De,
+  Fb as re,
+  G as Ue,
+  Ga as Ze,
+  Gc as le,
+  H as G,
+  Hb as E,
+  Jc as P,
+  Kb as g,
+  Kc as pt,
+  M as We,
+  Mb as p,
+  Nb as Pe,
+  Nd as Q,
+  Ob as A,
+  Od as Ct,
+  Pa as l,
+  Pb as ke,
+  Qb as nt,
+  Qd as xt,
+  Rb as z,
+  Sa as Xe,
+  Sb as j,
+  Va as Je,
+  Vd as bt,
+  Wb as D,
+  X as we,
+  Xb as at,
+  Ya as et,
+  Yb as U,
+  Yc as ut,
+  ab as y,
+  ac as W,
+  bb as te,
+  bc as v,
+  cb as I,
+  ce as _t,
+  ea as J,
+  ec as ot,
+  f as Ge,
+  fb as Ne,
+  fc as rt,
+  g as X,
+  ga as k,
+  gb as ie,
+  gc as lt,
+  ia as s,
+  ic as V,
+  ie as vt,
+  k as H,
+  kc as dt,
+  ma as b,
+  na as _,
+  o as ze,
+  oa as $e,
+  p as Me,
+  pb as ne,
+  pc as st,
+  qb as h,
+  qc as mt,
+  ra as Qe,
+  sb as C,
+  tb as w,
+  ua as M,
+  ub as tt,
+  va as Ye,
+  vb as F,
+  vc as Ve,
+  wb as T,
+  xb as m,
+  yb as r,
+  yc as ct,
+  za as u,
+  zb as a,
+} from './chunk-GV4MRAZ3.js';
+var Oe = new k('CdkAccordion'),
+  Zt = (() => {
+    class t {
+      _stateChanges = new H();
+      _openCloseAllActions = new H();
+      id = s(Q).getId('cdk-accordion-');
+      multi = !1;
+      openAll() {
+        this.multi && this._openCloseAllActions.next(!0);
+      }
+      closeAll() {
+        this._openCloseAllActions.next(!1);
+      }
+      ngOnChanges(e) {
+        this._stateChanges.next(e);
+      }
+      ngOnDestroy() {
+        (this._stateChanges.complete(), this._openCloseAllActions.complete());
+      }
+      static ɵfac = function (i) {
+        return new (i || t)();
+      };
+      static ɵdir = I({
+        type: t,
+        selectors: [['cdk-accordion'], ['', 'cdkAccordion', '']],
+        inputs: { multi: [2, 'multi', 'multi', P] },
+        exportAs: ['cdkAccordion'],
+        features: [V([{ provide: Oe, useExisting: t }]), ee],
+      });
+    }
+    return t;
+  })(),
+  Xt = (() => {
+    class t {
+      accordion = s(Oe, { optional: !0, skipSelf: !0 });
+      _changeDetectorRef = s(le);
+      _expansionDispatcher = s(de);
+      _openCloseAllSubscription = X.EMPTY;
+      closed = new M();
+      opened = new M();
+      destroyed = new M();
+      expandedChange = new M();
+      id = s(Q).getId('cdk-accordion-child-');
+      get expanded() {
+        return this._expanded;
+      }
+      set expanded(e) {
+        if (this._expanded !== e) {
+          if (((this._expanded = e), this.expandedChange.emit(e), e)) {
+            this.opened.emit();
+            let i = this.accordion ? this.accordion.id : this.id;
+            this._expansionDispatcher.notify(this.id, i);
+          } else this.closed.emit();
+          this._changeDetectorRef.markForCheck();
+        }
+      }
+      _expanded = !1;
+      get disabled() {
+        return this._disabled();
+      }
+      set disabled(e) {
+        this._disabled.set(e);
+      }
+      _disabled = u(!1);
+      _removeUniqueSelectionListener = () => {};
+      constructor() {}
+      ngOnInit() {
+        ((this._removeUniqueSelectionListener = this._expansionDispatcher.listen((e, i) => {
+          this.accordion &&
+            !this.accordion.multi &&
+            this.accordion.id === i &&
+            this.id !== e &&
+            (this.expanded = !1);
+        })),
+          this.accordion &&
+            (this._openCloseAllSubscription = this._subscribeToOpenCloseAllActions()));
+      }
+      ngOnDestroy() {
+        (this.opened.complete(),
+          this.closed.complete(),
+          this.destroyed.emit(),
+          this.destroyed.complete(),
+          this._removeUniqueSelectionListener(),
+          this._openCloseAllSubscription.unsubscribe());
+      }
+      toggle() {
+        this.disabled || (this.expanded = !this.expanded);
+      }
+      close() {
+        this.disabled || (this.expanded = !1);
+      }
+      open() {
+        this.disabled || (this.expanded = !0);
+      }
+      _subscribeToOpenCloseAllActions() {
+        return this.accordion._openCloseAllActions.subscribe((e) => {
+          this.disabled || (this.expanded = e);
+        });
+      }
+      static ɵfac = function (i) {
+        return new (i || t)();
+      };
+      static ɵdir = I({
+        type: t,
+        selectors: [['cdk-accordion-item'], ['', 'cdkAccordionItem', '']],
+        inputs: {
+          expanded: [2, 'expanded', 'expanded', P],
+          disabled: [2, 'disabled', 'disabled', P],
+        },
+        outputs: {
+          closed: 'closed',
+          opened: 'opened',
+          destroyed: 'destroyed',
+          expandedChange: 'expandedChange',
+        },
+        exportAs: ['cdkAccordionItem'],
+        features: [V([{ provide: Oe, useValue: void 0 }])],
+      });
+    }
+    return t;
+  })(),
+  Jt = (() => {
+    class t {
+      static ɵfac = function (i) {
+        return new (i || t)();
+      };
+      static ɵmod = te({ type: t });
+      static ɵinj = J({});
+    }
+    return t;
+  })();
+var pi = ['body'],
+  ui = ['bodyWrapper'],
+  fi = [[['mat-expansion-panel-header']], '*', [['mat-action-row']]],
+  gi = ['mat-expansion-panel-header', '*', 'mat-action-row'];
+function hi(t, n) {}
+var Ci = [[['mat-panel-title']], [['mat-panel-description']], '*'],
+  xi = ['mat-panel-title', 'mat-panel-description', '*'];
+function bi(t, n) {
+  t & 1 && (ae(0, 'span', 1), $e(), ae(1, 'svg', 2), it(2, 'path', 3), Ae()());
+}
+var qe = new k('MAT_ACCORDION'),
+  ei = new k('MAT_EXPANSION_PANEL'),
+  _i = (() => {
+    class t {
+      _template = s(Xe);
+      _expansionPanel = s(ei, { optional: !0 });
+      constructor() {}
+      static ɵfac = function (i) {
+        return new (i || t)();
+      };
+      static ɵdir = I({ type: t, selectors: [['ng-template', 'matExpansionPanelContent', '']] });
+    }
+    return t;
+  })(),
+  ti = new k('MAT_EXPANSION_PANEL_DEFAULT_OPTIONS'),
+  Le = (() => {
+    class t extends Xt {
+      _viewContainerRef = s(et);
+      _animationsDisabled = _t();
+      _document = s(Qe);
+      _ngZone = s(Ye);
+      _elementRef = s(De);
+      _renderer = s(Je);
+      _cleanupTransitionEnd;
+      get hideToggle() {
+        return this._hideToggle || (this.accordion && this.accordion.hideToggle);
+      }
+      set hideToggle(e) {
+        this._hideToggle = e;
+      }
+      _hideToggle = !1;
+      get togglePosition() {
+        return this._togglePosition || (this.accordion && this.accordion.togglePosition);
+      }
+      set togglePosition(e) {
+        this._togglePosition = e;
+      }
+      _togglePosition;
+      afterExpand = new M();
+      afterCollapse = new M();
+      _inputChanges = new H();
+      accordion = s(qe, { optional: !0, skipSelf: !0 });
+      _lazyContent;
+      _body;
+      _bodyWrapper;
+      _portal;
+      _headerId = s(Q).getId('mat-expansion-panel-header-');
+      constructor() {
+        super();
+        let e = s(ti, { optional: !0 });
+        ((this._expansionDispatcher = s(de)), e && (this.hideToggle = e.hideToggle));
+      }
+      _hasSpacing() {
+        return this.accordion ? this.expanded && this.accordion.displayMode === 'default' : !1;
+      }
+      _getExpandedState() {
+        return this.expanded ? 'expanded' : 'collapsed';
+      }
+      toggle() {
+        this.expanded = !this.expanded;
+      }
+      close() {
+        this.expanded = !1;
+      }
+      open() {
+        this.expanded = !0;
+      }
+      ngAfterContentInit() {
+        (this._lazyContent &&
+          this._lazyContent._expansionPanel === this &&
+          this.opened
+            .pipe(
+              we(null),
+              G(() => this.expanded && !this._portal),
+              We(1),
+            )
+            .subscribe(() => {
+              this._portal = new Pt(this._lazyContent._template, this._viewContainerRef);
+            }),
+          this._setupAnimationEvents());
+      }
+      ngOnChanges(e) {
+        this._inputChanges.next(e);
+      }
+      ngOnDestroy() {
+        (super.ngOnDestroy(), this._cleanupTransitionEnd?.(), this._inputChanges.complete());
+      }
+      _containsFocus() {
+        if (this._body) {
+          let e = this._document.activeElement,
+            i = this._body.nativeElement;
+          return e === i || i.contains(e);
+        }
+        return !1;
+      }
+      _transitionEndListener = ({ target: e, propertyName: i }) => {
+        e === this._bodyWrapper?.nativeElement &&
+          i === 'grid-template-rows' &&
+          this._ngZone.run(() => {
+            this.expanded ? this.afterExpand.emit() : this.afterCollapse.emit();
+          });
+      };
+      _setupAnimationEvents() {
+        this._ngZone.runOutsideAngular(() => {
+          this._animationsDisabled
+            ? (this.opened.subscribe(() => this._ngZone.run(() => this.afterExpand.emit())),
+              this.closed.subscribe(() => this._ngZone.run(() => this.afterCollapse.emit())))
+            : setTimeout(() => {
+                let e = this._elementRef.nativeElement;
+                ((this._cleanupTransitionEnd = this._renderer.listen(
+                  e,
+                  'transitionend',
+                  this._transitionEndListener,
+                )),
+                  e.classList.add('mat-expansion-panel-animations-enabled'));
+              }, 200);
+        });
+      }
+      static ɵfac = function (i) {
+        return new (i || t)();
+      };
+      static ɵcmp = y({
+        type: t,
+        selectors: [['mat-expansion-panel']],
+        contentQueries: function (i, o, c) {
+          if ((i & 1 && ke(c, _i, 5), i & 2)) {
+            let x;
+            z((x = j())) && (o._lazyContent = x.first);
+          }
+        },
+        viewQuery: function (i, o) {
+          if ((i & 1 && nt(pi, 5)(ui, 5), i & 2)) {
+            let c;
+            (z((c = j())) && (o._body = c.first), z((c = j())) && (o._bodyWrapper = c.first));
+          }
+        },
+        hostAttrs: [1, 'mat-expansion-panel'],
+        hostVars: 4,
+        hostBindings: function (i, o) {
+          i & 2 && U('mat-expanded', o.expanded)('mat-expansion-panel-spacing', o._hasSpacing());
+        },
+        inputs: {
+          hideToggle: [2, 'hideToggle', 'hideToggle', P],
+          togglePosition: 'togglePosition',
+        },
+        outputs: { afterExpand: 'afterExpand', afterCollapse: 'afterCollapse' },
+        exportAs: ['matExpansionPanel'],
+        features: [
+          V([
+            { provide: qe, useValue: void 0 },
+            { provide: ei, useExisting: t },
+          ]),
+          Ne,
+          ee,
+        ],
+        ngContentSelectors: gi,
+        decls: 9,
+        vars: 4,
+        consts: [
+          ['bodyWrapper', ''],
+          ['body', ''],
+          [1, 'mat-expansion-panel-content-wrapper'],
+          ['role', 'region', 1, 'mat-expansion-panel-content', 3, 'id'],
+          [1, 'mat-expansion-panel-body'],
+          [3, 'cdkPortalOutlet'],
+        ],
+        template: function (i, o) {
+          (i & 1 &&
+            (Pe(fi),
+            A(0),
+            r(1, 'div', 2, 0)(3, 'div', 3, 1)(5, 'div', 4),
+            A(6, 1),
+            ie(7, hi, 0, 0, 'ng-template', 5),
+            a(),
+            A(8, 2),
+            a()()),
+            i & 2 &&
+              (l(),
+              ne('inert', o.expanded ? null : ''),
+              l(2),
+              m('id', o.id),
+              ne('aria-labelledby', o._headerId),
+              l(4),
+              m('cdkPortalOutlet', o._portal)));
+        },
+        dependencies: [kt],
+        styles: [
+          `.mat-expansion-panel{box-sizing:content-box;display:block;margin:0;overflow:hidden;position:relative;background:var(--mat-expansion-container-background-color, var(--mat-sys-surface));color:var(--mat-expansion-container-text-color, var(--mat-sys-on-surface));border-radius:var(--mat-expansion-container-shape, 12px)}.mat-expansion-panel.mat-expansion-panel-animations-enabled{transition:margin 225ms cubic-bezier(0.4, 0, 0.2, 1),box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1)}.mat-expansion-panel:not([class*=mat-elevation-z]){box-shadow:var(--mat-expansion-container-elevation-shadow, 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12))}.mat-accordion .mat-expansion-panel:not(.mat-expanded),.mat-accordion .mat-expansion-panel:not(.mat-expansion-panel-spacing){border-radius:0}.mat-accordion .mat-expansion-panel:first-of-type{border-top-right-radius:var(--mat-expansion-container-shape, 12px);border-top-left-radius:var(--mat-expansion-container-shape, 12px)}.mat-accordion .mat-expansion-panel:last-of-type{border-bottom-right-radius:var(--mat-expansion-container-shape, 12px);border-bottom-left-radius:var(--mat-expansion-container-shape, 12px)}@media(forced-colors: active){.mat-expansion-panel{outline:solid 1px}}.mat-expansion-panel-content-wrapper{display:grid;grid-template-rows:0fr;grid-template-columns:100%}.mat-expansion-panel-animations-enabled .mat-expansion-panel-content-wrapper{transition:grid-template-rows 225ms cubic-bezier(0.4, 0, 0.2, 1)}.mat-expansion-panel.mat-expanded>.mat-expansion-panel-content-wrapper{grid-template-rows:1fr}@supports not (grid-template-rows: 0fr){.mat-expansion-panel-content-wrapper{height:0}.mat-expansion-panel.mat-expanded>.mat-expansion-panel-content-wrapper{height:auto}}.mat-expansion-panel-content{display:flex;flex-direction:column;overflow:visible;min-height:0;visibility:hidden;font-family:var(--mat-expansion-container-text-font, var(--mat-sys-body-large-font));font-size:var(--mat-expansion-container-text-size, var(--mat-sys-body-large-size));font-weight:var(--mat-expansion-container-text-weight, var(--mat-sys-body-large-weight));line-height:var(--mat-expansion-container-text-line-height, var(--mat-sys-body-large-line-height));letter-spacing:var(--mat-expansion-container-text-tracking, var(--mat-sys-body-large-tracking))}.mat-expansion-panel-animations-enabled .mat-expansion-panel-content{transition:visibility 190ms linear}.mat-expansion-panel.mat-expanded>.mat-expansion-panel-content-wrapper>.mat-expansion-panel-content{visibility:visible}.mat-expansion-panel-body{padding:0 24px 16px}.mat-expansion-panel-spacing{margin:16px 0}.mat-accordion>.mat-expansion-panel-spacing:first-child,.mat-accordion>*:first-child:not(.mat-expansion-panel) .mat-expansion-panel-spacing{margin-top:0}.mat-accordion>.mat-expansion-panel-spacing:last-child,.mat-accordion>*:last-child:not(.mat-expansion-panel) .mat-expansion-panel-spacing{margin-bottom:0}.mat-action-row{border-top-style:solid;border-top-width:1px;display:flex;flex-direction:row;justify-content:flex-end;padding:16px 8px 16px 24px;border-top-color:var(--mat-expansion-actions-divider-color, var(--mat-sys-outline))}.mat-action-row .mat-button-base,.mat-action-row .mat-mdc-button-base{margin-left:8px}[dir=rtl] .mat-action-row .mat-button-base,[dir=rtl] .mat-action-row .mat-mdc-button-base{margin-left:0;margin-right:8px}
+`,
+        ],
+        encapsulation: 2,
+        changeDetection: 0,
+      });
+    }
+    return t;
+  })();
+var Be = (() => {
+  class t {
+    panel = s(Le, { host: !0 });
+    _element = s(De);
+    _focusMonitor = s(gt);
+    _changeDetectorRef = s(le);
+    _parentChangeSubscription = X.EMPTY;
+    constructor() {
+      s(ht).load(vt);
+      let e = this.panel,
+        i = s(ti, { optional: !0 }),
+        o = s(new ct('tabindex'), { optional: !0 }),
+        c = e.accordion
+          ? e.accordion._stateChanges.pipe(G((x) => !!(x.hideToggle || x.togglePosition)))
+          : ze;
+      ((this.tabIndex = parseInt(o || '') || 0),
+        (this._parentChangeSubscription = Ue(
+          e.opened,
+          e.closed,
+          c,
+          e._inputChanges.pipe(G((x) => !!(x.hideToggle || x.disabled || x.togglePosition))),
+        ).subscribe(() => this._changeDetectorRef.markForCheck())),
+        e.closed
+          .pipe(G(() => e._containsFocus()))
+          .subscribe(() => this._focusMonitor.focusVia(this._element, 'program')),
+        i &&
+          ((this.expandedHeight = i.expandedHeight), (this.collapsedHeight = i.collapsedHeight)));
+    }
+    expandedHeight;
+    collapsedHeight;
+    tabIndex = 0;
+    get disabled() {
+      return this.panel.disabled;
+    }
+    _toggle() {
+      this.disabled || this.panel.toggle();
+    }
+    _isExpanded() {
+      return this.panel.expanded;
+    }
+    _getExpandedState() {
+      return this.panel._getExpandedState();
+    }
+    _getPanelId() {
+      return this.panel.id;
+    }
+    _getTogglePosition() {
+      return this.panel.togglePosition;
+    }
+    _showToggle() {
+      return !this.panel.hideToggle && !this.panel.disabled;
+    }
+    _getHeaderHeight() {
+      let e = this._isExpanded();
+      return e && this.expandedHeight
+        ? this.expandedHeight
+        : !e && this.collapsedHeight
+          ? this.collapsedHeight
+          : null;
+    }
+    _keydown(e) {
+      switch (e.keyCode) {
+        case 32:
+        case 13:
+          Ct(e) || (e.preventDefault(), this._toggle());
+          break;
+        default:
+          this.panel.accordion && this.panel.accordion._handleHeaderKeydown(e);
+          return;
+      }
+    }
+    focus(e, i) {
+      e ? this._focusMonitor.focusVia(this._element, e, i) : this._element.nativeElement.focus(i);
+    }
+    ngAfterViewInit() {
+      this._focusMonitor.monitor(this._element).subscribe((e) => {
+        e && this.panel.accordion && this.panel.accordion._handleHeaderFocus(this);
+      });
+    }
+    ngOnDestroy() {
+      (this._parentChangeSubscription.unsubscribe(),
+        this._focusMonitor.stopMonitoring(this._element));
+    }
+    static ɵfac = function (i) {
+      return new (i || t)();
+    };
+    static ɵcmp = y({
+      type: t,
+      selectors: [['mat-expansion-panel-header']],
+      hostAttrs: ['role', 'button', 1, 'mat-expansion-panel-header', 'mat-focus-indicator'],
+      hostVars: 13,
+      hostBindings: function (i, o) {
+        (i & 1 &&
+          g('click', function () {
+            return o._toggle();
+          })('keydown', function (x) {
+            return o._keydown(x);
+          }),
+          i & 2 &&
+            (ne('id', o.panel._headerId)('tabindex', o.disabled ? -1 : o.tabIndex)(
+              'aria-controls',
+              o._getPanelId(),
+            )('aria-expanded', o._isExpanded())('aria-disabled', o.panel.disabled),
+            at('height', o._getHeaderHeight()),
+            U('mat-expanded', o._isExpanded())(
+              'mat-expansion-toggle-indicator-after',
+              o._getTogglePosition() === 'after',
+            )('mat-expansion-toggle-indicator-before', o._getTogglePosition() === 'before')));
+      },
+      inputs: {
+        expandedHeight: 'expandedHeight',
+        collapsedHeight: 'collapsedHeight',
+        tabIndex: [2, 'tabIndex', 'tabIndex', (e) => (e == null ? 0 : pt(e))],
+      },
+      ngContentSelectors: xi,
+      decls: 5,
+      vars: 3,
+      consts: [
+        [1, 'mat-content'],
+        [1, 'mat-expansion-indicator'],
+        [
+          'xmlns',
+          'http://www.w3.org/2000/svg',
+          'viewBox',
+          '0 -960 960 960',
+          'aria-hidden',
+          'true',
+          'focusable',
+          'false',
+        ],
+        ['d', 'M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z'],
+      ],
+      template: function (i, o) {
+        (i & 1 &&
+          (Pe(Ci), ae(0, 'span', 0), A(1), A(2, 1), A(3, 2), Ae(), h(4, bi, 3, 0, 'span', 1)),
+          i & 2 &&
+            (U('mat-content-hide-toggle', !o._showToggle()), l(4), C(o._showToggle() ? 4 : -1)));
+      },
+      styles: [
+        `.mat-expansion-panel-header{display:flex;flex-direction:row;align-items:center;padding:0 24px;border-radius:inherit;height:var(--mat-expansion-header-collapsed-state-height, 48px);font-family:var(--mat-expansion-header-text-font, var(--mat-sys-title-medium-font));font-size:var(--mat-expansion-header-text-size, var(--mat-sys-title-medium-size));font-weight:var(--mat-expansion-header-text-weight, var(--mat-sys-title-medium-weight));line-height:var(--mat-expansion-header-text-line-height, var(--mat-sys-title-medium-line-height));letter-spacing:var(--mat-expansion-header-text-tracking, var(--mat-sys-title-medium-tracking))}.mat-expansion-panel-animations-enabled .mat-expansion-panel-header{transition:height 225ms cubic-bezier(0.4, 0, 0.2, 1)}.mat-expansion-panel-header::before{border-radius:inherit}.mat-expansion-panel-header.mat-expanded{height:var(--mat-expansion-header-expanded-state-height, 64px)}.mat-expansion-panel-header[aria-disabled=true]{color:var(--mat-expansion-header-disabled-state-text-color, color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent))}.mat-expansion-panel-header:not([aria-disabled=true]){cursor:pointer}.mat-expansion-panel:not(.mat-expanded) .mat-expansion-panel-header:not([aria-disabled=true]):hover{background:var(--mat-expansion-header-hover-state-layer-color, color-mix(in srgb, var(--mat-sys-on-surface) calc(var(--mat-sys-hover-state-layer-opacity) * 100%), transparent))}@media(hover: none){.mat-expansion-panel:not(.mat-expanded) .mat-expansion-panel-header:not([aria-disabled=true]):hover{background:var(--mat-expansion-container-background-color, var(--mat-sys-surface))}}.mat-expansion-panel .mat-expansion-panel-header:not([aria-disabled=true]).cdk-keyboard-focused,.mat-expansion-panel .mat-expansion-panel-header:not([aria-disabled=true]).cdk-program-focused{background:var(--mat-expansion-header-focus-state-layer-color, color-mix(in srgb, var(--mat-sys-on-surface) calc(var(--mat-sys-focus-state-layer-opacity) * 100%), transparent))}.mat-expansion-panel-header._mat-animation-noopable{transition:none}.mat-expansion-panel-header:focus,.mat-expansion-panel-header:hover{outline:none}.mat-expansion-panel-header.mat-expanded:focus,.mat-expansion-panel-header.mat-expanded:hover{background:inherit}.mat-expansion-panel-header.mat-expansion-toggle-indicator-before{flex-direction:row-reverse}.mat-expansion-panel-header.mat-expansion-toggle-indicator-before .mat-expansion-indicator{margin:0 16px 0 0}[dir=rtl] .mat-expansion-panel-header.mat-expansion-toggle-indicator-before .mat-expansion-indicator{margin:0 0 0 16px}.mat-content{display:flex;flex:1;flex-direction:row;overflow:hidden}.mat-content.mat-content-hide-toggle{margin-right:8px}[dir=rtl] .mat-content.mat-content-hide-toggle{margin-right:0;margin-left:8px}.mat-expansion-toggle-indicator-before .mat-content.mat-content-hide-toggle{margin-left:24px;margin-right:0}[dir=rtl] .mat-expansion-toggle-indicator-before .mat-content.mat-content-hide-toggle{margin-right:24px;margin-left:0}.mat-expansion-panel-header-title{color:var(--mat-expansion-header-text-color, var(--mat-sys-on-surface))}.mat-expansion-panel-header-title,.mat-expansion-panel-header-description{display:flex;flex-grow:1;flex-basis:0;margin-right:16px;align-items:center}[dir=rtl] .mat-expansion-panel-header-title,[dir=rtl] .mat-expansion-panel-header-description{margin-right:0;margin-left:16px}.mat-expansion-panel-header[aria-disabled=true] .mat-expansion-panel-header-title,.mat-expansion-panel-header[aria-disabled=true] .mat-expansion-panel-header-description{color:inherit}.mat-expansion-panel-header-description{flex-grow:2;color:var(--mat-expansion-header-description-color, var(--mat-sys-on-surface-variant))}.mat-expansion-panel-animations-enabled .mat-expansion-indicator{transition:transform 225ms cubic-bezier(0.4, 0, 0.2, 1)}.mat-expansion-panel-header.mat-expanded .mat-expansion-indicator{transform:rotate(180deg)}.mat-expansion-indicator::after{border-style:solid;border-width:0 2px 2px 0;content:"";padding:3px;transform:rotate(45deg);vertical-align:middle;color:var(--mat-expansion-header-indicator-color, var(--mat-sys-on-surface-variant));display:var(--mat-expansion-legacy-header-indicator-display, none)}.mat-expansion-indicator svg{width:24px;height:24px;margin:0 -8px;vertical-align:middle;fill:var(--mat-expansion-header-indicator-color, var(--mat-sys-on-surface-variant));display:var(--mat-expansion-header-indicator-display, inline-block)}@media(forced-colors: active){.mat-expansion-panel-content{border-top:1px solid;border-top-left-radius:0;border-top-right-radius:0}}
+`,
+      ],
+      encapsulation: 2,
+      changeDetection: 0,
+    });
+  }
+  return t;
+})();
+var ii = (() => {
+    class t {
+      static ɵfac = function (i) {
+        return new (i || t)();
+      };
+      static ɵdir = I({
+        type: t,
+        selectors: [['mat-panel-title']],
+        hostAttrs: [1, 'mat-expansion-panel-header-title'],
+      });
+    }
+    return t;
+  })(),
+  ni = (() => {
+    class t extends Zt {
+      _keyManager;
+      _ownHeaders = new Ze();
+      _headers;
+      hideToggle = !1;
+      displayMode = 'default';
+      togglePosition = 'after';
+      ngAfterContentInit() {
+        (this._headers.changes.pipe(we(this._headers)).subscribe((e) => {
+          (this._ownHeaders.reset(e.filter((i) => i.panel.accordion === this)),
+            this._ownHeaders.notifyOnChanges());
+        }),
+          (this._keyManager = new xt(this._ownHeaders).withWrap().withHomeAndEnd()));
+      }
+      _handleHeaderKeydown(e) {
+        this._keyManager.onKeydown(e);
+      }
+      _handleHeaderFocus(e) {
+        this._keyManager.updateActiveItem(e);
+      }
+      ngOnDestroy() {
+        (super.ngOnDestroy(), this._keyManager?.destroy(), this._ownHeaders.destroy());
+      }
+      static ɵfac = (() => {
+        let e;
+        return function (o) {
+          return (e || (e = Ke(t)))(o || t);
+        };
+      })();
+      static ɵdir = I({
+        type: t,
+        selectors: [['mat-accordion']],
+        contentQueries: function (i, o, c) {
+          if ((i & 1 && ke(c, Be, 5), i & 2)) {
+            let x;
+            z((x = j())) && (o._headers = x);
+          }
+        },
+        hostAttrs: [1, 'mat-accordion'],
+        hostVars: 2,
+        hostBindings: function (i, o) {
+          i & 2 && U('mat-accordion-multi', o.multi);
+        },
+        inputs: {
+          hideToggle: [2, 'hideToggle', 'hideToggle', P],
+          displayMode: 'displayMode',
+          togglePosition: 'togglePosition',
+        },
+        exportAs: ['matAccordion'],
+        features: [V([{ provide: qe, useExisting: t }]), Ne],
+      });
+    }
+    return t;
+  })(),
+  ai = (() => {
+    class t {
+      static ɵfac = function (i) {
+        return new (i || t)();
+      };
+      static ɵmod = te({ type: t });
+      static ɵinj = J({ imports: [Jt, Vt, bt] });
+    }
+    return t;
+  })();
+var L = class {
+  static endsWith001() {
+    return (n) => {
+      let e = n.value;
+      return e && e.length >= 3 && !e.endsWith('001') ? { endsWith001: !0 } : null;
+    };
+  }
+  static ecuadorianRuc() {
+    return (n) => {
+      let e = n.value;
+      return e
+        ? /^\d{13}$/.test(e)
+          ? e.endsWith('001')
+            ? null
+            : { rucMustEndWith001: !0 }
+          : { invalidRuc: !0 }
+        : null;
+    };
+  }
+  static ecuadorianCedula() {
+    return (n) => {
+      let e = n.value;
+      if (!e) return null;
+      if (!/^\d{10}$/.test(e)) return { invalidCedula: !0 };
+      let i = parseInt(e.substring(0, 2));
+      if (i < 1 || i > 24) return { invalidProvince: !0 };
+      let o = [2, 1, 2, 1, 2, 1, 2, 1, 2],
+        c = 0;
+      for (let Z = 0; Z < 9; Z++) {
+        let Ie = parseInt(e.charAt(Z)) * o[Z];
+        (Ie >= 10 && (Ie -= 9), (c += Ie));
+      }
+      let x = parseInt(e.charAt(9));
+      return (c % 10 === 0 ? 0 : 10 - (c % 10)) !== x ? { invalidCheckDigit: !0 } : null;
+    };
+  }
+  static email() {
+    return (n) => {
+      let e = n.value;
+      return e ? (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e) ? null : { invalidEmail: !0 }) : null;
+    };
+  }
+  static ecuadorianPhone() {
+    return (n) => {
+      let e = n.value;
+      return e ? (/^0\d{8,9}$/.test(e) ? null : { invalidPhone: !0 }) : null;
+    };
+  }
+};
+var oi = {
+  fields: {
+    idTipoIdentificacion: {
+      name: 'idTipoIdentificacion',
+      required: !0,
+      visible: !0,
+      label: 'Tipo de Identificaci\xF3n',
+      placeholder: 'Seleccione tipo',
+    },
+    idFormaPagoSri: {
+      name: 'idFormaPagoSri',
+      required: !1,
+      visible: !0,
+      label: 'Forma de Pago SRI',
+      placeholder: 'Seleccione forma de pago',
+    },
+    idTipoClienteProveedor: {
+      name: 'idTipoClienteProveedor',
+      required: !1,
+      visible: !0,
+      label: 'Tipo de Cliente/Proveedor',
+      placeholder: 'Seleccione tipo',
+    },
+    idSubContribuyente: {
+      name: 'idSubContribuyente',
+      required: !1,
+      visible: !0,
+      label: 'Sub-Contribuyente',
+      placeholder: 'Seleccione',
+    },
+    idTiempoCredito: {
+      name: 'idTiempoCredito',
+      required: !1,
+      visible: !0,
+      label: 'Tiempo de Cr\xE9dito',
+      placeholder: 'D\xEDas de cr\xE9dito',
+    },
+    idCiudad: {
+      name: 'idCiudad',
+      required: !1,
+      visible: !0,
+      label: 'Ciudad',
+      placeholder: 'Seleccione ciudad',
+    },
+    idCargo: {
+      name: 'idCargo',
+      required: !1,
+      visible: !0,
+      label: 'Cargo',
+      placeholder: 'Seleccione cargo',
+    },
+    idEmpleado: {
+      name: 'idEmpleado',
+      required: !1,
+      visible: !0,
+      label: 'Empleado Responsable',
+      placeholder: 'Seleccione empleado',
+    },
+    numeroIdentificacion: {
+      name: 'numeroIdentificacion',
+      required: !0,
+      visible: !0,
+      label: 'RUC / C\xE9dula',
+      placeholder: 'Ingrese n\xFAmero de identificaci\xF3n (13 d\xEDgitos para RUC)',
+    },
+    nombreFiscal: {
+      name: 'nombreFiscal',
+      required: !0,
+      visible: !0,
+      label: 'Raz\xF3n Social / Nombre Fiscal',
+      placeholder: 'Ingrese raz\xF3n social completa',
+    },
+    nombreComercial: {
+      name: 'nombreComercial',
+      required: !1,
+      visible: !0,
+      label: 'Nombre Comercial',
+      placeholder: 'Ingrese nombre comercial',
+    },
+    direccion: {
+      name: 'direccion',
+      required: !0,
+      visible: !0,
+      label: 'Direcci\xF3n',
+      placeholder: 'Calle principal y secundaria',
+    },
+    correo: {
+      name: 'correo',
+      required: !1,
+      visible: !0,
+      label: 'Correo Electr\xF3nico',
+      placeholder: 'ejemplo@correo.com',
+    },
+    telefono: {
+      name: 'telefono',
+      required: !1,
+      visible: !0,
+      label: 'Tel\xE9fono',
+      placeholder: '0999999999',
+    },
+    placa: {
+      name: 'placa',
+      required: !1,
+      visible: !0,
+      label: 'Placa del Veh\xEDculo',
+      placeholder: 'ABC-1234',
+    },
+    nota: {
+      name: 'nota',
+      required: !1,
+      visible: !0,
+      label: 'Notas',
+      placeholder: 'Observaciones adicionales',
+    },
+    birthDate: {
+      name: 'birthDate',
+      required: !1,
+      visible: !0,
+      label: 'Fecha de Nacimiento',
+      placeholder: 'DD/MM/AAAA',
+    },
+    estado: { name: 'estado', required: !1, visible: !0, label: 'Activo' },
+    validationSri: { name: 'validationSri', required: !1, visible: !0, label: 'Validado en SRI' },
+    configValorBruto: {
+      name: 'configValorBruto',
+      required: !1,
+      visible: !0,
+      label: 'Configurar Valor Bruto',
+    },
+  },
+  showCreditInfo: !0,
+  creditFields: {
+    maritalStatusId: {
+      name: 'maritalStatusId',
+      required: !1,
+      visible: !0,
+      label: 'Estado Civil',
+      placeholder: 'Seleccione',
+    },
+    conyugeNombre: {
+      name: 'conyugeNombre',
+      required: !1,
+      visible: !0,
+      label: 'Nombre del C\xF3nyuge',
+      placeholder: 'Ingrese nombre',
+    },
+    conyugeTel: {
+      name: 'conyugeTel',
+      required: !1,
+      visible: !0,
+      label: 'Tel\xE9fono del C\xF3nyuge',
+      placeholder: '0999999999',
+    },
+    refFamNombre: {
+      name: 'refFamNombre',
+      required: !1,
+      visible: !0,
+      label: 'Referencia Familiar',
+      placeholder: 'Nombre',
+    },
+    refFamTel: {
+      name: 'refFamTel',
+      required: !1,
+      visible: !0,
+      label: 'Tel\xE9fono Referencia',
+      placeholder: '0999999999',
+    },
+    housingTypeId: {
+      name: 'housingTypeId',
+      required: !1,
+      visible: !0,
+      label: 'Tipo de Vivienda',
+      placeholder: 'Seleccione',
+    },
+    dirVivienda: {
+      name: 'dirVivienda',
+      required: !1,
+      visible: !0,
+      label: 'Direcci\xF3n de Vivienda',
+      placeholder: 'Direcci\xF3n completa',
+    },
+    refDomicilio: {
+      name: 'refDomicilio',
+      required: !1,
+      visible: !0,
+      label: 'Referencia de Domicilio',
+      placeholder: 'Referencia',
+    },
+    sector: {
+      name: 'sector',
+      required: !1,
+      visible: !0,
+      label: 'Sector',
+      placeholder: 'Ingrese sector',
+    },
+    barrio: {
+      name: 'barrio',
+      required: !1,
+      visible: !0,
+      label: 'Barrio',
+      placeholder: 'Ingrese barrio',
+    },
+    calle: {
+      name: 'calle',
+      required: !1,
+      visible: !0,
+      label: 'Calle',
+      placeholder: 'Calle principal',
+    },
+  },
+  submitButtonText: 'Guardar Cliente',
+  cancelButtonText: 'Cancelar',
+};
+function Si(t, n) {
+  if ((t & 1 && (r(0, 'div', 1), d(1), a()), t & 2)) {
+    let e = p();
+    (l(), W(e.errorMessage));
+  }
+}
+function Fi(t, n) {
+  if ((t & 1 && (r(0, 'mat-option', 10), d(1), a()), t & 2)) {
+    let e = n.$implicit;
+    (m('value', e.idTipoIdentificacion), l(), W(e.descripcion));
+  }
+}
+function Ti(t, n) {
+  if ((t & 1 && (r(0, 'mat-error'), d(1), a()), t & 2)) {
+    let e = p(2);
+    (l(), v(' ', e.getErrorMessage('idTipoIdentificacion')));
+  }
+}
+function Ii(t, n) {
+  if (t & 1) {
+    let e = E();
+    (r(0, 'mat-form-field', 7)(1, 'mat-label'),
+      d(2),
+      a(),
+      r(3, 'mat-select', 29),
+      g('selectionChange', function (o) {
+        b(e);
+        let c = p();
+        return _(c.identificationTypeChange(o));
+      }),
+      F(4, Fi, 2, 2, 'mat-option', 10, w),
+      a(),
+      h(6, Ti, 2, 1, 'mat-error'),
+      a());
+  }
+  if (t & 2) {
+    let e,
+      i = p();
+    (l(2),
+      v(' ', i.getFieldLabel('idTipoIdentificacion'), ' '),
+      l(2),
+      T(i.tiposIdentificacion()),
+      l(2),
+      C(
+        (e = i.form.get('idTipoIdentificacion')) != null &&
+          e.invalid &&
+          (e = i.form.get('idTipoIdentificacion')) != null &&
+          e.touched
+          ? 6
+          : -1,
+      ));
+  }
+}
+function Mi(t, n) {
+  if ((t & 1 && (r(0, 'mat-error'), d(1), a()), t & 2)) {
+    let e = p(2);
+    (l(), v(' ', e.getErrorMessage('numeroIdentificacion')));
+  }
+}
+function wi(t, n) {
+  if (t & 1) {
+    let e = E();
+    (r(0, 'mat-form-field', 7)(1, 'mat-label'),
+      d(2),
+      a(),
+      f(3, 'input', 30),
+      h(4, Mi, 2, 1, 'mat-error'),
+      oe(5, 31),
+      r(6, 'button', 32),
+      g('click', function (o) {
+        b(e);
+        let c = p();
+        return _(c.searchIdentificacion(o));
+      }),
+      r(7, 'mat-icon'),
+      d(8, 'search'),
+      a()(),
+      re(),
+      a());
+  }
+  if (t & 2) {
+    let e,
+      i = p();
+    (l(2),
+      v(' ', i.getFieldLabel('numeroIdentificacion'), ' '),
+      l(),
+      m('placeholder', i.getFieldPlaceholder('numeroIdentificacion')),
+      l(),
+      C(
+        (e = i.form.get('numeroIdentificacion')) != null &&
+          e.invalid &&
+          (e = i.form.get('numeroIdentificacion')) != null &&
+          e.touched
+          ? 4
+          : -1,
+      ));
+  }
+}
+function Di(t, n) {
+  if ((t & 1 && (r(0, 'mat-error'), d(1), a()), t & 2)) {
+    let e = p(2);
+    (l(), v(' ', e.getErrorMessage('nombreFiscal')));
+  }
+}
+function Ni(t, n) {
+  if (
+    (t & 1 &&
+      (r(0, 'div', 6)(1, 'mat-form-field', 7)(2, 'mat-label'),
+      d(3),
+      a(),
+      f(4, 'input', 33),
+      h(5, Di, 2, 1, 'mat-error'),
+      a()()),
+    t & 2)
+  ) {
+    let e,
+      i = p();
+    (l(3),
+      v(' ', i.getFieldLabel('nombreFiscal'), ' '),
+      l(),
+      m('placeholder', i.getFieldPlaceholder('nombreFiscal')),
+      l(),
+      C(
+        (e = i.form.get('nombreFiscal')) != null &&
+          e.invalid &&
+          (e = i.form.get('nombreFiscal')) != null &&
+          e.touched
+          ? 5
+          : -1,
+      ));
+  }
+}
+function Ai(t, n) {
+  if (
+    (t & 1 &&
+      (r(0, 'div', 6)(1, 'mat-form-field', 7)(2, 'mat-label'), d(3), a(), f(4, 'input', 34), a()()),
+    t & 2)
+  ) {
+    let e = p();
+    (l(3),
+      v(' ', e.getFieldLabel('nombreComercial'), ' '),
+      l(),
+      m('placeholder', e.getFieldPlaceholder('nombreComercial')));
+  }
+}
+function Pi(t, n) {
+  if ((t & 1 && (r(0, 'mat-error'), d(1), a()), t & 2)) {
+    let e = p(2);
+    (l(), W(e.getErrorMessage('direccion')));
+  }
+}
+function ki(t, n) {
+  if (
+    (t & 1 &&
+      (r(0, 'mat-form-field', 7)(1, 'mat-label'),
+      d(2),
+      a(),
+      f(3, 'input', 35),
+      h(4, Pi, 2, 1, 'mat-error'),
+      a()),
+    t & 2)
+  ) {
+    let e,
+      i = p();
+    (l(2),
+      v(' ', i.getFieldLabel('direccion'), ':'),
+      l(),
+      m('placeholder', i.getFieldPlaceholder('direccion')),
+      l(),
+      C(
+        (e = i.form.get('direccion')) != null &&
+          e.invalid &&
+          (e = i.form.get('direccion')) != null &&
+          e.touched
+          ? 4
+          : -1,
+      ));
+  }
+}
+function Vi(t, n) {
+  if ((t & 1 && (r(0, 'div', 6), f(1, 'acp-input-chip', 36), a()), t & 2)) {
+    let e = p();
+    (l(), m('chips', e.emails)('labelText', e.getFieldLabel('correo')));
+  }
+}
+function Ri(t, n) {
+  if ((t & 1 && (r(0, 'div', 6), f(1, 'acp-input-chip', 36), a()), t & 2)) {
+    let e = p();
+    (l(), m('chips', e.telephones)('labelText', e.getFieldLabel('telefono')));
+  }
+}
+function Oi(t, n) {
+  if ((t & 1 && (r(0, 'mat-option', 10), d(1), a()), t & 2)) {
+    let e = n.$implicit;
+    (m('value', e.idFormaPagoSri), l(), v(' ', e.descripcion, ' '));
+  }
+}
+function qi(t, n) {
+  if ((t & 1 && (r(0, 'mat-option', 10), d(1), a()), t & 2)) {
+    let e = n.$implicit;
+    (m('value', e.idTiempoCredito), l(), v(' ', e.descripcion, ' '));
+  }
+}
+function Li(t, n) {
+  if ((t & 1 && (r(0, 'mat-option', 10), d(1), a()), t & 2)) {
+    let e = n.$implicit;
+    (m('value', e.idTipoClienteProveedor), l(), v(' ', e.descripcion, ' '));
+  }
+}
+function Bi(t, n) {
+  if ((t & 1 && (r(0, 'mat-option', 10), d(1), a()), t & 2)) {
+    let e = n.$implicit;
+    (m('value', e.idEmpleado), l(), v(' ', e.nombreCompleto, ' '));
+  }
+}
+function Hi(t, n) {
+  if ((t & 1 && (r(0, 'mat-option', 10), d(1), a()), t & 2)) {
+    let e = n.$implicit;
+    (m('value', e.id), l(), v(' ', e.name, ' '));
+  }
+}
+function Gi(t, n) {
+  if ((t & 1 && (r(0, 'mat-option', 10), d(1), a()), t & 2)) {
+    let e = n.$implicit;
+    (m('value', e.id), l(), v(' ', e.name, ' '));
+  }
+}
+function zi(t, n) {
+  if (
+    (t & 1 && (r(0, 'mat-form-field', 7)(1, 'mat-label'), d(2), a(), f(3, 'textarea', 37), a()),
+    t & 2)
+  ) {
+    let e = p();
+    (l(2),
+      v(' ', e.getFieldLabel('nota'), ' '),
+      l(),
+      m('placeholder', e.getFieldPlaceholder('nota')));
+  }
+}
+function ji(t, n) {
+  if ((t & 1 && (r(0, 'span'), d(1), a()), t & 2)) {
+    let e = p(2);
+    (l(), W(e.config.submitButtonText));
+  }
+}
+function Ui(t, n) {
+  t & 1 && (r(0, 'span'), d(1, 'Guardando...'), a());
+}
+function Wi(t, n) {
+  if (t & 1) {
+    let e = E();
+    (r(0, 'div', 28)(1, 'button', 38),
+      g('click', function () {
+        b(e);
+        let o = p();
+        return _(o.onCancel());
+      }),
+      d(2),
+      a(),
+      r(3, 'button', 39),
+      h(4, ji, 2, 1, 'span')(5, Ui, 2, 0, 'span'),
+      a()());
+  }
+  if (t & 2) {
+    let e = p();
+    (l(),
+      m('disabled', e.isLoading()),
+      l(),
+      v(' ', e.config.cancelButtonText, ' '),
+      l(),
+      m('disabled', e.isLoading() || e.form.invalid),
+      l(),
+      C(e.isLoading() ? 5 : 4));
+  }
+}
+var B = class t {
+  formId = S();
+  customer = S({});
+  mode = S('create');
+  showButtons = S(!0);
+  submitted = $();
+  cancelled = $();
+  panelOpenState = u(!1);
+  fb = s(Mt);
+  config = s(Yt, { optional: !0 }) ?? oi;
+  customerService = s(q, { optional: !0 }) ?? s(Kt);
+  form;
+  isLoading = u(!1);
+  errorMessage = null;
+  step = u(0);
+  emails = [];
+  telephones = [];
+  tiemposCredito = u([]);
+  tipoContribuyentes = u([]);
+  tiposCliente = u([]);
+  tiposIdentificacion = u([]);
+  formasPagoSri = u([]);
+  placas = u([]);
+  ciudades = u([]);
+  cargos = u([]);
+  empresas = u([]);
+  employees = u([]);
+  maritalStatuses = u([]);
+  housingTypes = u([]);
+  showRefresh = u(!0);
+  setStep(n) {
+    this.step.set(n);
+  }
+  loadFormData() {
+    return this.mode() === 'edit'
+      ? je([Me(this.customerService.getFormData())])
+      : Me(this.customerService.getFormData());
+  }
+  ngOnInit() {
+    (this.buildForm(),
+      this.loadFormData().subscribe((n) => {
+        console.log(n);
+      }),
+      this.customer && this.patchFormValue(this.customer()));
+  }
+  getDefaultConfig() {
+    return {};
+  }
+  getCreditFieldConfig(n) {
+    return this.config.creditFields?.[n];
+  }
+  isCreditFieldVisible(n) {
+    return this.getCreditFieldConfig(n)?.visible || !1;
+  }
+  isCreditFieldRequired(n) {
+    return this.getCreditFieldConfig(n)?.required || !1;
+  }
+  getCreditFieldLabel(n) {
+    return this.getCreditFieldConfig(n)?.label || n;
+  }
+  getCreditFieldPlaceholder(n) {
+    return this.getCreditFieldConfig(n)?.placeholder || '';
+  }
+  buildCreditFormGroup() {
+    if (!this.config.showCreditInfo || !this.config.creditFields)
+      return this.fb.group({
+        maritalStatusId: [null],
+        conyugeNombre: [null],
+        conyugeTel: [null],
+        refFamNombre: [null],
+        refFamTel: [null],
+        housingTypeId: [null],
+        dirVivienda: [null],
+        refDomicilio: [null],
+        sector: [null],
+        barrio: [null],
+        calle: [null],
+      });
+    let n = {},
+      e = this.config.creditFields;
+    return (
+      Object.keys(e).forEach((i) => {
+        let c = e[i].required ? [R.required] : [];
+        n[i] = [null, c];
+      }),
+      this.fb.group(n)
+    );
+  }
+  buildForm() {
+    this.form = this.fb.group({
+      idCliente: [0],
+      idEmpresa: [0],
+      idCargo: [0],
+      idFormaPagoSri: [0],
+      idTipoClienteProveedor: [0],
+      idSubContribuyente: [0],
+      idTiempoCredito: [0],
+      idCiudad: [0],
+      idEmpleado: [0],
+      idTipoIdentificacion: [
+        0,
+        this.config.fields.idTipoIdentificacion.required ? [R.required] : [],
+      ],
+      numeroIdentificacion: ['', this.getValidatorsForField('numeroIdentificacion')],
+      nombreFiscal: ['', this.getValidatorsForField('nombreFiscal')],
+      nombreComercial: [''],
+      direccion: ['', this.getValidatorsForField('direccion')],
+      correo: ['', this.getValidatorsForField('correo')],
+      telefono: ['', this.getValidatorsForField('telefono')],
+      placa: [''],
+      nota: [''],
+      birthDate: [null],
+      estado: [!1],
+      validationSri: [!1],
+      configValorBruto: [!1],
+      dataInfoCred: this.buildCreditFormGroup(),
+    });
+  }
+  patchFormValue(n) {
+    this.form.patchValue({
+      idCliente: n.idCliente || 0,
+      idEmpresa: n.idEmpresa || 0,
+      idCargo: n.idCargo || 0,
+      idFormaPagoSri: n.idFormaPagoSri || 0,
+      idTipoClienteProveedor: n.idTipoClienteProveedor || 0,
+      idTipoIdentificacion: n.idTipoIdentificacion || 0,
+      idSubContribuyente: n.idSubContribuyente || 0,
+      idTiempoCredito: n.idTiempoCredito || 0,
+      idCiudad: n.idCiudad || 0,
+      idEmpleado: n.idEmpleado || 0,
+      numeroIdentificacion: n.numeroIdentificacion || '',
+      nombreFiscal: n.nombreFiscal || '',
+      nombreComercial: n.nombreComercial || '',
+      direccion: n.direccion || '',
+      correo: n.correo || '',
+      telefono: n.telefono || '',
+      placa: n.placa || '',
+      nota: n.nota || '',
+      birthDate: n.birthDate || null,
+      estado: n.estado || !1,
+      validationSri: n.validationSri || !1,
+      configValorBruto: n.configValorBruto || !1,
+      dataInfoCred: n.dataInfoCred || {},
+    });
+  }
+  getValidatorsForField(n) {
+    let e = [],
+      i = this.config.fields[n];
+    if (!i) return e;
+    switch ((i.required && e.push(R.required), n)) {
+      case 'numeroIdentificacion':
+        (e.push(R.minLength(13)), e.push(R.maxLength(13)), e.push(L.endsWith001()));
+        break;
+      case 'correo':
+        i.visible && e.push(L.email());
+        break;
+      case 'telefono':
+        i.visible && e.push(L.ecuadorianPhone());
+        break;
+    }
+    return (i.validators && e.push(...i.validators), e);
+  }
+  isFieldVisible(n) {
+    return this.config.fields[n]?.visible || !1;
+  }
+  isFieldRequired(n) {
+    return this.config.fields[n]?.required || !1;
+  }
+  getFieldLabel(n) {
+    return this.config.fields[n]?.label || n;
+  }
+  getFieldPlaceholder(n) {
+    return this.config.fields[n]?.placeholder || '';
+  }
+  identificationTypeChange(n) {
+    console.log(n);
+  }
+  onSubmit() {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+    let n = this.form.getRawValue();
+    if (this.customerService?.validate && this.customerService.validate(n)) {
+      this.errorMessage = 'Por favor corrija los errores de validaci\xF3n';
+      return;
+    }
+    (this.isLoading.set(!0),
+      (this.errorMessage = null),
+      (this.mode() === 'create'
+        ? this.customerService.create(n)
+        : this.customerService.update(this.customer().id, n)
+      ).subscribe({
+        next: (i) => {
+          (this.isLoading.set(!1), this.submitted.emit(i));
+        },
+        error: (i) => {
+          (this.isLoading.set(!1),
+            (this.errorMessage = i.message || 'Error al guardar el cliente'));
+        },
+      }));
+  }
+  onCancel() {
+    this.cancelled.emit();
+  }
+  getErrorMessage(n) {
+    let e = this.form.get(n);
+    return !e || !e.errors || !e.touched
+      ? ''
+      : e.errors.required
+        ? `${this.getFieldLabel(n)} es requerido`
+        : e.errors.minlength
+          ? `M\xEDnimo ${e.errors.minlength.requiredLength} caracteres`
+          : e.errors.maxlength
+            ? `M\xE1ximo ${e.errors.maxlength.requiredLength} caracteres`
+            : e.errors.endsWith001
+              ? 'Debe terminar en 001'
+              : e.errors.invalidRuc
+                ? 'RUC inv\xE1lido'
+                : e.errors.invalidCedula
+                  ? 'C\xE9dula inv\xE1lida'
+                  : e.errors.invalidEmail
+                    ? 'Email inv\xE1lido'
+                    : e.errors.invalidPhone
+                      ? 'Tel\xE9fono inv\xE1lido (debe empezar con 0)'
+                      : 'Campo inv\xE1lido';
+  }
+  get dataInfoCredForm() {
+    return this.form.get('dataInfoCred');
+  }
+  searchIdentificacion(n) {
+    (n.stopPropagation(), console.log('search'));
+  }
+  static ɵfac = function (e) {
+    return new (e || t)();
+  };
+  static ɵcmp = y({
+    type: t,
+    selectors: [['acp-company-customer-form']],
+    inputs: {
+      formId: [1, 'formId'],
+      customer: [1, 'customer'],
+      mode: [1, 'mode'],
+      showButtons: [1, 'showButtons'],
+    },
+    outputs: { submitted: 'submitted', cancelled: 'cancelled' },
+    exportAs: ['acpCustomerForm'],
+    decls: 143,
+    vars: 21,
+    consts: [
+      [1, 'mb-2', 3, 'ngSubmit', 'formGroup', 'id'],
+      [1, 'alert', 'alert-error'],
+      [1, 'mb-2'],
+      ['hideToggle', '', 3, 'opened', 'expanded'],
+      [1, 'd-grid', 'gap-2', 'mx-3', 'mt-2'],
+      [
+        1,
+        'row',
+        'row-cols-xxl-2',
+        'row-cols-xl-2',
+        'row-cols-lg-2',
+        'row-cols-md-2',
+        'row-cols-sm-2',
+        'row-cols-1',
+        'g-1',
+      ],
+      [1, 'col'],
+      [1, 'w-100'],
+      [1, 'd-grid', 'gap-2', 'mx-3'],
+      ['formControlName', 'idFormaPagoSri'],
+      [3, 'value'],
+      ['formControlName', 'idTiempoCredito'],
+      ['formControlName', 'idTipoClienteProveedor'],
+      ['formControlName', 'idEmpleado'],
+      ['matInput', ''],
+      ['formGroupName', 'dataInfoCred', 1, 'd-grid', 'gap-2', 'mx-2'],
+      [
+        1,
+        'row',
+        'row-cols-xxl-2',
+        'row-cols-xl-2',
+        'row-cols-lg-2',
+        'row-cols-md-2',
+        'row-cols-sm-1',
+        'row-cols-1',
+        'g-1',
+      ],
+      ['formControlName', 'maritalStatusId'],
+      ['formControlName', 'housingTypeId'],
+      ['matInput', '', 'formControlName', 'conyugeNombre', 'placeholder', 'Nombre del c\xF3nyuge'],
+      ['matInput', '', 'formControlName', 'conyugeTel', 'placeholder', '09xxxxxxxx'],
+      ['matInput', '', 'formControlName', 'refFamTel', 'placeholder', '09xxxxxxxx'],
+      [
+        'matInput',
+        '',
+        'formControlName',
+        'dirVivienda',
+        'placeholder',
+        'Direcci\xF3n completa de la vivienda (Sector, Barrio y Calle)',
+      ],
+      [
+        1,
+        'row',
+        'row-cols-xxl-3',
+        'row-cols-xl-3',
+        'row-cols-lg-3',
+        'row-cols-md-2',
+        'row-cols-sm-1',
+        'row-cols-1',
+        'g-1',
+      ],
+      ['matInput', '', 'formControlName', 'sector', 'placeholder', 'Nombre del sector'],
+      ['matInput', '', 'formControlName', 'barrio', 'placeholder', 'Nombre del barrio'],
+      ['matInput', '', 'formControlName', 'calle', 'placeholder', 'Nombre de la calle'],
+      [
+        'matInput',
+        '',
+        'formControlName',
+        'refDomicilio',
+        'placeholder',
+        'Descripci\xF3n detallada del punto de referencia',
+      ],
+      [1, 'form-actions'],
+      ['formControlName', 'idTipoIdentificacion', 3, 'selectionChange'],
+      ['matInput', '', 'formControlName', 'numeroIdentificacion', 3, 'placeholder'],
+      ['matSuffix', ''],
+      ['type', 'button', 'mat-icon-button', '', 3, 'click'],
+      [
+        'matInput',
+        '',
+        'autocomplete',
+        'off',
+        'formControlName',
+        'nombreFiscal',
+        'acpToUpperCase',
+        '',
+        3,
+        'placeholder',
+      ],
+      [
+        'matInput',
+        '',
+        'autocomplete',
+        'off',
+        'formControlName',
+        'nombreComercial',
+        'acpToUpperCase',
+        '',
+        'type',
+        'text',
+        3,
+        'placeholder',
+      ],
+      ['matInput', '', 'formControlName', 'direccion', 'acpToUpperCase', '', 3, 'placeholder'],
+      [3, 'chips', 'labelText'],
+      ['matInput', '', 'formControlName', 'nota', 'rows', '3', 3, 'placeholder'],
+      ['type', 'button', 1, 'btn', 'btn-secondary', 3, 'click', 'disabled'],
+      ['type', 'submit', 1, 'btn', 'btn-primary', 3, 'disabled'],
+    ],
+    template: function (e, i) {
+      (e & 1 &&
+        (r(0, 'form', 0),
+        g('ngSubmit', function () {
+          return i.onSubmit();
+        }),
+        h(1, Si, 2, 1, 'div', 1),
+        r(2, 'mat-accordion', 2)(3, 'mat-expansion-panel', 3),
+        g('opened', function () {
+          return i.setStep(0);
+        }),
+        r(4, 'mat-expansion-panel-header')(5, 'mat-panel-title')(6, 'mat-icon'),
+        d(7, 'account_circle'),
+        a(),
+        d(8, ' Datos Principales '),
+        a()(),
+        r(9, 'div', 4)(10, 'div', 5)(11, 'div', 6),
+        h(12, Ii, 7, 2, 'mat-form-field', 7),
+        a(),
+        r(13, 'div', 6),
+        h(14, wi, 9, 3, 'mat-form-field', 7),
+        a()(),
+        r(15, 'div', 5),
+        h(16, Ni, 6, 3, 'div', 6),
+        h(17, Ai, 5, 2, 'div', 6),
+        a(),
+        h(18, ki, 5, 3, 'mat-form-field', 7),
+        r(19, 'div', 5),
+        h(20, Vi, 2, 2, 'div', 6),
+        h(21, Ri, 2, 2, 'div', 6),
+        a()()(),
+        r(22, 'mat-expansion-panel', 3),
+        g('opened', function () {
+          return i.setStep(1);
+        }),
+        r(23, 'mat-expansion-panel-header')(24, 'mat-panel-title'),
+        d(25, ' Informaci\xF3n Comercial '),
+        a()(),
+        r(26, 'div', 8)(27, 'div', 5)(28, 'div', 6)(29, 'mat-form-field', 7)(30, 'mat-label'),
+        d(31, 'Forma de pago: '),
+        a(),
+        r(32, 'mat-select', 9)(33, 'mat-option', 10),
+        d(34, '--Ninguno--'),
+        a(),
+        F(35, Oi, 2, 2, 'mat-option', 10, w),
+        a()()(),
+        r(37, 'div', 6)(38, 'mat-form-field', 7)(39, 'mat-label'),
+        d(40, 'Tiempo Cr\xE9dito: '),
+        a(),
+        r(41, 'mat-select', 11),
+        F(42, qi, 2, 2, 'mat-option', 10, w),
+        a()()()(),
+        r(44, 'div', 5)(45, 'div', 6)(46, 'mat-form-field', 7)(47, 'mat-label'),
+        d(48, 'Tipo Cliente: '),
+        a(),
+        r(49, 'mat-select', 12)(50, 'mat-option', 10),
+        d(51, '--Ninguno--'),
+        a(),
+        F(52, Li, 2, 2, 'mat-option', 10, w),
+        a()()(),
+        r(54, 'div', 6)(55, 'mat-form-field', 7)(56, 'mat-label'),
+        d(57, 'Empleado: '),
+        a(),
+        r(58, 'mat-select', 13)(59, 'mat-option', 10),
+        d(60, '--Ninguno--'),
+        a(),
+        F(61, Bi, 2, 2, 'mat-option', 10, w),
+        a()()()(),
+        r(63, 'mat-form-field')(64, 'mat-label'),
+        d(65, 'Country'),
+        a(),
+        f(66, 'input', 14),
+        a()()(),
+        r(67, 'mat-expansion-panel', 3),
+        g('opened', function () {
+          return i.setStep(2);
+        }),
+        r(68, 'mat-expansion-panel-header')(69, 'mat-panel-title'),
+        d(70, ' Informaci\xF3n de Cr\xE9dito '),
+        a()(),
+        r(71, 'section', 15)(72, 'div', 16)(73, 'div', 6)(74, 'mat-form-field', 7)(75, 'mat-label'),
+        d(76, 'Estado Civil: '),
+        a(),
+        r(77, 'mat-select', 17)(78, 'mat-option', 10),
+        d(79, 'Seleccionar...'),
+        a(),
+        F(80, Hi, 2, 2, 'mat-option', 10, w),
+        a()()(),
+        r(82, 'div', 6)(83, 'mat-form-field', 7)(84, 'mat-label'),
+        d(85, 'Tipo de Vivienda: '),
+        a(),
+        r(86, 'mat-select', 18)(87, 'mat-option', 10),
+        d(88, 'Seleccionar...'),
+        a(),
+        F(89, Gi, 2, 2, 'mat-option', 10, w),
+        a()()()(),
+        r(91, 'div', 16)(92, 'div', 6)(93, 'mat-form-field', 7)(94, 'mat-label'),
+        d(95, 'Nombre del C\xF3nyuge:'),
+        a(),
+        f(96, 'input', 19),
+        a()(),
+        r(97, 'div', 6)(98, 'mat-form-field', 7)(99, 'mat-label'),
+        d(100, 'Tel\xE9fono del C\xF3nyuge:'),
+        a(),
+        f(101, 'input', 20),
+        a()()(),
+        r(102, 'div', 16)(103, 'div', 6)(104, 'mat-form-field', 7)(105, 'mat-label'),
+        d(106, 'Referencia Familiar:'),
+        a(),
+        f(107, 'input', 21),
+        a()(),
+        r(108, 'div', 6)(109, 'mat-form-field', 7)(110, 'mat-label'),
+        d(111, 'Tel\xE9fono Referencia:'),
+        a(),
+        f(112, 'input', 21),
+        a()()(),
+        r(113, 'mat-form-field', 7)(114, 'mat-label'),
+        d(115, 'Direcci\xF3n de Vivienda'),
+        a(),
+        f(116, 'textarea', 22),
+        a(),
+        r(117, 'div', 23)(118, 'div', 6)(119, 'mat-form-field', 7)(120, 'mat-label'),
+        d(121, 'Sector:'),
+        a(),
+        f(122, 'input', 24),
+        a()(),
+        r(123, 'div', 6)(124, 'mat-form-field', 7)(125, 'mat-label'),
+        d(126, 'Barrio:'),
+        a(),
+        f(127, 'input', 25),
+        a()(),
+        r(128, 'div', 6)(129, 'mat-form-field', 7)(130, 'mat-label'),
+        d(131, 'Calle:'),
+        a(),
+        f(132, 'input', 26),
+        a()()(),
+        r(133, 'mat-form-field', 7)(134, 'mat-label'),
+        d(135, 'Referencia de Domicilio'),
+        a(),
+        f(136, 'textarea', 27),
+        a()()(),
+        r(137, 'mat-expansion-panel', 3),
+        g('opened', function () {
+          return i.setStep(3);
+        }),
+        r(138, 'mat-expansion-panel-header')(139, 'mat-panel-title'),
+        d(140, ' Notas'),
+        a()(),
+        h(141, zi, 4, 2, 'mat-form-field', 7),
+        a()(),
+        h(142, Wi, 6, 4, 'div', 28),
+        a()),
+        e & 2 &&
+          (m('formGroup', i.form)('id', i.formId()),
+          l(),
+          C(i.errorMessage ? 1 : -1),
+          l(2),
+          m('expanded', i.step() === 0),
+          l(9),
+          C(i.isFieldVisible('idTipoIdentificacion') ? 12 : -1),
+          l(2),
+          C(i.isFieldVisible('numeroIdentificacion') ? 14 : -1),
+          l(2),
+          C(i.isFieldVisible('nombreFiscal') ? 16 : -1),
+          l(),
+          C(i.isFieldVisible('nombreComercial') ? 17 : -1),
+          l(),
+          C(i.isFieldVisible('direccion') ? 18 : -1),
+          l(2),
+          C(i.isFieldVisible('correo') ? 20 : -1),
+          l(),
+          C(i.isFieldVisible('telefono') ? 21 : -1),
+          l(),
+          m('expanded', i.step() === 1),
+          l(11),
+          m('value', 0),
+          l(2),
+          T(i.formasPagoSri()),
+          l(7),
+          T(i.tiemposCredito()),
+          l(8),
+          m('value', 0),
+          l(2),
+          T(i.tiposCliente()),
+          l(7),
+          m('value', 0),
+          l(2),
+          T(i.employees()),
+          l(6),
+          m('expanded', i.step() === 2),
+          l(11),
+          m('value', 0),
+          l(2),
+          T(i.maritalStatuses()),
+          l(7),
+          m('value', 0),
+          l(2),
+          T(i.housingTypes()),
+          l(48),
+          m('expanded', i.step() === 3),
+          l(4),
+          C(i.isFieldVisible('nota') ? 141 : -1),
+          l(),
+          C(i.showButtons() ? 142 : -1)));
+    },
+    dependencies: [
+      Dt,
+      St,
+      se,
+      me,
+      yt,
+      It,
+      Tt,
+      Ft,
+      ge,
+      fe,
+      pe,
+      qt,
+      ue,
+      Ce,
+      he,
+      ai,
+      ni,
+      Le,
+      Be,
+      ii,
+      Gt,
+      Ht,
+      Bt,
+      ce,
+      Qt,
+      Lt,
+      At,
+      Nt,
+    ],
+    styles: [
+      `.alert{padding:12px 16px;border-radius:6px;margin-bottom:20px;font-size:14px}.alert.alert-error{background-color:#fef2f2;border:1px solid #fecaca;color:#991b1b}
+`,
+    ],
+    encapsulation: 2,
+    changeDetection: 0,
+  });
+};
+var ye = class t {
+  formId = u('companyCustomerFormId');
+  dgRef = s(xe);
+  onCustomerCreated(n) {
+    console.log('Cliente creado:', n);
+  }
+  onCancel() {
+    this.dgRef.close();
+  }
+  static ɵfac = function (e) {
+    return new (e || t)();
+  };
+  static ɵcmp = y({
+    type: t,
+    selectors: [['acp-company-customer-add-edit-dialog']],
+    decls: 8,
+    vars: 7,
+    consts: [
+      ['form', ''],
+      [1, 'page-container'],
+      ['mode', 'create', 3, 'submitted', 'cancelled', 'formId', 'showButtons'],
+      ['align', 'end'],
+      [1, 'hstack', 'gap-2'],
+      ['type', 'submit', 'icon', 'save', 3, 'form', 'text', 'variant', 'matStyle', 'disabled'],
+      [
+        'type',
+        'button',
+        'variant',
+        'dark',
+        'text',
+        'Cerrar',
+        'matStyle',
+        'filled',
+        3,
+        'handleClick',
+      ],
+    ],
+    template: function (e, i) {
+      if (e & 1) {
+        let o = E();
+        (r(0, 'mat-dialog-content')(1, 'div', 1)(2, 'acp-company-customer-form', 2, 0),
+          g('submitted', function (x) {
+            return (b(o), _(i.onCustomerCreated(x)));
+          })('cancelled', function () {
+            return (b(o), _(i.onCancel()));
+          }),
+          a()()(),
+          r(4, 'mat-dialog-actions', 3)(5, 'div', 4),
+          f(6, 'acp-button', 5),
+          r(7, 'acp-button', 6),
+          g('handleClick', function () {
+            return (b(o), _(i.onCancel()));
+          }),
+          a()()());
+      }
+      if (e & 2) {
+        let o = D(3);
+        (l(2),
+          m('formId', i.formId())('showButtons', !1),
+          l(4),
+          m('form', i.formId())('text', o.isLoading() ? 'Guardando...' : 'Guardar')(
+            'variant',
+            'success',
+          )('matStyle', 'filled')('disabled', o.form.invalid || o.isLoading()));
+      }
+    },
+    dependencies: [B, be, _e, O],
+    encapsulation: 2,
+  });
+};
+var Ee = class t {
+  dgSvc = s(ve);
+  companyCustomerSaved = $();
+  id = S(0);
+  onClick(n) {
+    return Ge(this, null, function* () {
+      n.stopPropagation();
+      let e = this.id() > 0;
+      (yield this.dgSvc.openInWrapper(
+        {
+          component: ye,
+          title: e ? 'Editar Cliente' : 'Nuevo Cliente',
+          icon: e ? 'edit' : 'add',
+          showCloseButton: !0,
+          data: { id: this.id() },
+        },
+        { size: 'xxl' },
+      ))
+        .afterClosed()
+        .subscribe((o) => {
+          o && typeof o == 'object' && this.companyCustomerSaved.emit(o);
+        });
+    });
+  }
+  static ɵfac = function (e) {
+    return new (e || t)();
+  };
+  static ɵdir = I({
+    type: t,
+    selectors: [['', 'acpCompanyCustomerAddEdit', '']],
+    hostBindings: function (e, i) {
+      e & 1 &&
+        g('click', function (c) {
+          return i.onClick(c);
+        });
+    },
+    inputs: { id: [1, 'id'] },
+    outputs: { companyCustomerSaved: 'companyCustomerSaved' },
+  });
+};
+var $i = (t) => ({ op: t });
+function Qi(t, n) {
+  if ((t & 1 && f(0, 'acp-button', 9), t & 2)) {
+    p();
+    let e = D(10);
+    m('matMenuTriggerFor', e);
+  }
+}
+function Yi(t, n) {
+  if (t & 1) {
+    let e = E();
+    (r(0, 'acp-button', 12),
+      g('companyCustomerSaved', function () {
+        b(e);
+        let o = p(2);
+        return _(o.refresh());
+      }),
+      a());
+  }
+}
+function Ki(t, n) {
+  if (t & 1) {
+    let e = E();
+    (r(0, 'div', 4)(1, 'mat-form-field')(2, 'mat-label'),
+      d(3, 'Buscar'),
+      a(),
+      r(4, 'input', 5),
+      lt('ngModelChange', function (o) {
+        b(e);
+        let c = p();
+        return (rt(c.dataSearch.textSearch, o) || (c.dataSearch.textSearch = o), _(o));
+      }),
+      a(),
+      oe(5, 6),
+      r(6, 'acp-button', 7),
+      g('handleClick', function () {
+        b(e);
+        let o = p();
+        return _(o.refresh());
+      }),
+      a(),
+      re(),
+      a(),
+      r(7, 'div', 8),
+      h(8, Qi, 1, 1, 'acp-button', 9),
+      r(9, 'mat-menu', null, 2)(11, 'button', 10),
+      g('click', function () {
+        b(e);
+        let o = p();
+        return _(o.exportExcel());
+      }),
+      r(12, 'mat-icon'),
+      d(13, 'table_view'),
+      a(),
+      r(14, 'span'),
+      d(15, 'Exportar a Excel'),
+      a()(),
+      r(16, 'button', 10),
+      g('click', function () {
+        b(e);
+        let o = p();
+        return _(o.exportPdf());
+      }),
+      r(17, 'mat-icon'),
+      d(18, 'picture_as_pdf'),
+      a(),
+      r(19, 'span'),
+      d(20, 'Exportar a PDF'),
+      a()()(),
+      h(21, Yi, 1, 0, 'acp-button', 11),
+      r(22, 'acp-button', 7),
+      g('handleClick', function () {
+        b(e);
+        let o = p();
+        return _(o.refresh());
+      }),
+      a()()());
+  }
+  if (t & 2) {
+    let e = p();
+    (l(4),
+      ot('ngModel', e.dataSearch.textSearch),
+      l(4),
+      C(e.canGenerateReport() ? 8 : -1),
+      l(13),
+      C(e.canAdd() ? 21 : -1));
+  }
+}
+function Zi(t, n) {
+  if (t & 1) {
+    let e = E();
+    (r(0, 'acp-button', 15),
+      g('companyCustomerSaved', function () {
+        b(e);
+        let o = p(2);
+        return _(o.refresh());
+      }),
+      a());
+  }
+  if (t & 2) {
+    let e = p().$implicit;
+    m('id', e.idCliente);
+  }
+}
+function Xi(t, n) {
+  if (t & 1) {
+    let e = E();
+    (r(0, 'acp-button', 16),
+      g('handleClick', function () {
+        b(e);
+        let o = p().$implicit,
+          c = p();
+        return _(c.askToDelete(o));
+      }),
+      a());
+  }
+}
+function Ji(t, n) {
+  if ((t & 1 && (h(0, Zi, 1, 1, 'acp-button', 13), h(1, Xi, 1, 0, 'acp-button', 14)), t & 2)) {
+    let e = n.$implicit,
+      i = p();
+    (C(i.canEdit() ? 0 : -1), l(), C(e.esConsumidorFinal ? -1 : 1));
+  }
+}
+var Se = class t {
+  http = s(q);
+  canEdit = S(!0);
+  canAdd = S(!0);
+  canInactive = S(!0);
+  canGenerateReport = S(!0);
+  dataSearch = { textSearch: null };
+  dataSource = u([]);
+  columnsDefs = [
+    { field: 'index', header: '#' },
+    { field: 'op', header: 'Op.' },
+    { field: 'identificationType', header: 'Tipo' },
+    { field: 'idCard', header: 'Nro. Identificaci\xF3n' },
+    { field: 'tradeName', header: 'Raz\xF3n Social' },
+    { field: 'legalName', header: 'Nombre Comercial' },
+    { field: 'address', header: 'Direcci\xF3n' },
+    { field: 'email', header: 'Correo' },
+    { field: 'phone', header: 'Tel\xE9fono' },
+    {
+      field: 'sriValidation',
+      header: 'Validaci\xF3n Sri',
+      type: 'tag',
+      tag: {
+        true: { text: 'Si', color: 'text-danger' },
+        false: { text: 'No', color: 'text-success' },
+      },
+    },
+    {
+      field: 'status',
+      header: 'Estado',
+      type: 'tag',
+      tag: {
+        true: { text: 'Activo', color: 'text-primary' },
+        false: { text: 'Inactivo', color: 'text-success' },
+      },
+    },
+  ];
+  pageIndex = u(0);
+  pageSize = u(10);
+  pageCount = u(0);
+  refresh() {
+    this.list();
+  }
+  list() {
+    let n = {
+      pageIndex: this.pageIndex() + 1,
+      pageSize: this.pageSize(),
+      checkTextSearch: !!Re(this.dataSearch.textSearch),
+      textSearch: Re(this.dataSearch.textSearch),
+    };
+    this.http.list(n).subscribe((e) => {
+      (console.log(e), this.dataSource.set(e.data), this.pageCount.set(e.pagination.totalRecords));
+    });
+  }
+  ngOnInit() {
+    this.refresh();
+  }
+  handlePageEvent(n) {
+    (this.pageIndex.set(n.pageIndex),
+      this.pageSize.set(n.pageSize),
+      this.pageCount.set(n.length),
+      this.refresh());
+  }
+  exportExcel() {}
+  exportPdf() {}
+  askToDelete(n) {}
+  static ɵfac = function (e) {
+    return new (e || t)();
+  };
+  static ɵcmp = y({
+    type: t,
+    selectors: [['acp-company-customer-list']],
+    inputs: {
+      canEdit: [1, 'canEdit'],
+      canAdd: [1, 'canAdd'],
+      canInactive: [1, 'canInactive'],
+      canGenerateReport: [1, 'canGenerateReport'],
+    },
+    decls: 5,
+    vars: 10,
+    consts: [
+      ['headerToolbar', ''],
+      ['templateOp', ''],
+      ['exportMenu', 'matMenu'],
+      [
+        3,
+        'page',
+        'showToolbar',
+        'toolbarTemplate',
+        'data',
+        'columns',
+        'cellTemplate',
+        'length',
+        'pageIndex',
+        'pageSize',
+      ],
+      [1, 'd-flex', 'flex-row', 'gap-2', 'align-items-center'],
+      ['matInput', '', 3, 'ngModelChange', 'ngModel'],
+      ['matSuffix', ''],
+      ['variant', 'secondary', 'icon', 'refresh', 'matStyle', 'icon', 3, 'handleClick'],
+      [1, 'ms-auto', 'd-flex', 'flex-row', 'gap-2'],
+      [
+        'variant',
+        'info',
+        'icon',
+        'download',
+        'matStyle',
+        'filled',
+        'text',
+        'Exportar Reporte',
+        3,
+        'matMenuTriggerFor',
+      ],
+      ['mat-menu-item', '', 3, 'click'],
+      [
+        'acpCompanyCustomerAddEdit',
+        '',
+        'variant',
+        'success',
+        'icon',
+        'add',
+        'matStyle',
+        'filled',
+        'text',
+        'Nuevo',
+      ],
+      [
+        'acpCompanyCustomerAddEdit',
+        '',
+        'variant',
+        'success',
+        'icon',
+        'add',
+        'matStyle',
+        'filled',
+        'text',
+        'Nuevo',
+        3,
+        'companyCustomerSaved',
+      ],
+      [
+        'acpCompanyCustomerAddEdit',
+        '',
+        'variant',
+        'success',
+        'icon',
+        'edit',
+        'matStyle',
+        'icon',
+        3,
+        'id',
+      ],
+      ['variant', 'danger', 'icon', 'delete', 'matStyle', 'icon'],
+      [
+        'acpCompanyCustomerAddEdit',
+        '',
+        'variant',
+        'success',
+        'icon',
+        'edit',
+        'matStyle',
+        'icon',
+        3,
+        'companyCustomerSaved',
+        'id',
+      ],
+      ['variant', 'danger', 'icon', 'delete', 'matStyle', 'icon', 3, 'handleClick'],
+    ],
+    template: function (e, i) {
+      if (e & 1) {
+        let o = E();
+        (r(0, 'acp-data-grid', 3),
+          g('page', function (x) {
+            return (b(o), _(i.handlePageEvent(x)));
+          }),
+          a(),
+          ie(1, Ki, 23, 3, 'ng-template', null, 0, Ve)(3, Ji, 2, 2, 'ng-template', null, 1, Ve));
+      }
+      if (e & 2) {
+        let o = D(2),
+          c = D(4);
+        m('showToolbar', !0)('toolbarTemplate', o)('data', i.dataSource())(
+          'columns',
+          i.columnsDefs,
+        )('cellTemplate', dt(8, $i, c))('length', i.pageCount())('pageIndex', i.pageIndex())(
+          'pageSize',
+          i.pageSize(),
+        );
+      }
+    },
+    dependencies: [$t, ge, fe, pe, ue, Ce, he, O, wt, se, me, Et, ce, Wt, jt, zt, Ut, Ee],
+    encapsulation: 2,
+  });
+};
+var Fe = class t {
+  formId = u('companyCustomerFormId');
+  dgRef = s(xe);
+  onCustomerCreated(n) {
+    console.log('Cliente creado:', n);
+  }
+  onCancel() {
+    this.dgRef.close();
+  }
+  static ɵfac = function (e) {
+    return new (e || t)();
+  };
+  static ɵcmp = y({
+    type: t,
+    selectors: [['app-company-customer-create']],
+    decls: 8,
+    vars: 7,
+    consts: [
+      ['form', ''],
+      [1, 'page-container'],
+      ['mode', 'create', 3, 'submitted', 'cancelled', 'formId', 'showButtons'],
+      ['align', 'end'],
+      [1, 'hstack', 'gap-2'],
+      ['type', 'submit', 'icon', 'save', 3, 'form', 'text', 'variant', 'matStyle', 'disabled'],
+      [
+        'type',
+        'button',
+        'variant',
+        'dark',
+        'text',
+        'Cerrar',
+        'matStyle',
+        'filled',
+        3,
+        'handleClick',
+      ],
+    ],
+    template: function (e, i) {
+      if (e & 1) {
+        let o = E();
+        (r(0, 'mat-dialog-content')(1, 'div', 1)(2, 'acp-company-customer-form', 2, 0),
+          g('submitted', function (x) {
+            return (b(o), _(i.onCustomerCreated(x)));
+          })('cancelled', function () {
+            return (b(o), _(i.onCancel()));
+          }),
+          a()()(),
+          r(4, 'mat-dialog-actions', 3)(5, 'div', 4),
+          f(6, 'acp-button', 5),
+          r(7, 'acp-button', 6),
+          g('handleClick', function () {
+            return (b(o), _(i.onCancel()));
+          }),
+          a()()());
+      }
+      if (e & 2) {
+        let o = D(3);
+        (l(2),
+          m('formId', i.formId())('showButtons', !1),
+          l(4),
+          m('form', i.formId())('text', o.isLoading() ? 'Guardando...' : 'Guardar')(
+            'variant',
+            'success',
+          )('matStyle', 'filled')('disabled', o.form.invalid || o.isLoading()));
+      }
+    },
+    dependencies: [B, be, _e, O],
+    encapsulation: 2,
+  });
+};
+var Te = class t {
+  dgSvc = s(ve);
+  ccSvc = s(q);
+  list = [];
+  add() {
+    this.dgSvc.openInWrapper(
+      { component: Fe, title: 'Nuevo Cliente', icon: 'add', showCloseButton: !0, data: {} },
+      { size: 'xxl' },
+    );
+  }
+  columns = [
+    { header: 'Client ID', field: 'clientId', type: 'number' },
+    { header: 'Identification Number', field: 'identificationNumber' },
+    { header: 'Identification Type', field: 'identificationType' },
+    { header: 'Trade Name', field: 'tradeName', sortable: !0 },
+    { header: 'Legal Name', field: 'legalName' },
+    { header: 'Address', field: 'address' },
+    { header: 'Phone', field: 'phone' },
+    { header: 'Email', field: 'email' },
+    { header: 'Final Consumer', field: 'finalConsumer', type: 'boolean' },
+    { header: 'SRI Validation', field: 'sriValidation', type: 'boolean' },
+    { header: 'Status', field: 'status', type: 'boolean' },
+  ];
+  totalRecords = u(0);
+  page = u(0);
+  pageSize = u(25);
+  trackByName(n) {
+    return `${n}-`;
+  }
+  ngOnInit() {
+    this.ccSvc.list({}).subscribe((n) => {
+      ((this.list = n.data), this.totalRecords.set(n.pagination.totalRecords));
+    });
+  }
+  static ɵfac = function (e) {
+    return new (e || t)();
+  };
+  static ɵcmp = y({
+    type: t,
+    selectors: [['app-company-customer-example']],
+    decls: 1,
+    vars: 0,
+    template: function (e, i) {
+      e & 1 && f(0, 'acp-company-customer-list');
+    },
+    dependencies: [Se],
+    styles: ['[_nghost-%COMP%]     .data-grid{height:450px}'],
+  });
+};
+Y.highlightAll();
+var ri = `<acp-data-grid [data]="list" [columns]="columns" [trackBy]="trackByName"></acp-data-grid>
+`,
+  li = `
 import { DataGrid, DataGridColumn } from '@acontplus/ng-components';
 import { Component } from '@angular/core';
 import { EXAMPLE_DATA } from '../../data';
@@ -44,4 +2429,58 @@ export class App {
   }
 }
 
-`,di="/* Estilos espec\xEDficos para el ejemplo de Data Grid b\xE1sico */",si={title:"Example",component:Te,files:[{file:"app.html",content:Y.highlightAuto(ri).value,filecontent:ri},{file:"app.ts",content:Y.highlightAuto(li).value,filecontent:li},{file:"app.styles",content:Y.highlightAuto(di).value,filecontent:di}]};function en(t,n){if(t&1&&f(0,"app-doc-heading",0)(1,"app-example-viewer",1),t&2){let e=n.$implicit;m("text",e.title),l(),m("exampleData",e)}}function tn(t,n){t&1&&F(0,en,2,2,null,null,tt),t&2&&T(n.examples)}var He=class t{route=s(ft);examples=[];static \u0275fac=function(e){return new(e||t)};static \u0275cmp=y({type:t,selectors:[["app-company-customer"]],decls:4,vars:3,consts:[[3,"text"],[3,"exampleData"]],template:function(e,i){if(e&1&&(r(0,"p"),d(1,"Company Customer Module"),a(),h(2,tn,2,0),st(3,"async")),e&2){let o;l(2),C((o=mt(3,1,i.route.data))?2:-1,o)}},dependencies:[Rt,Ot,ut],encapsulation:2})},lo=[{path:"",redirectTo:"overview",pathMatch:"full"},{path:"overview",component:He,pathMatch:"full",data:{examples:[si]}},{path:"**",redirectTo:"overview"}];export{He as CompanyCustomer,lo as routes};
+`,
+  di = '/* Estilos espec\xEDficos para el ejemplo de Data Grid b\xE1sico */',
+  si = {
+    title: 'Example',
+    component: Te,
+    files: [
+      { file: 'app.html', content: Y.highlightAuto(ri).value, filecontent: ri },
+      { file: 'app.ts', content: Y.highlightAuto(li).value, filecontent: li },
+      { file: 'app.styles', content: Y.highlightAuto(di).value, filecontent: di },
+    ],
+  };
+function en(t, n) {
+  if ((t & 1 && f(0, 'app-doc-heading', 0)(1, 'app-example-viewer', 1), t & 2)) {
+    let e = n.$implicit;
+    (m('text', e.title), l(), m('exampleData', e));
+  }
+}
+function tn(t, n) {
+  (t & 1 && F(0, en, 2, 2, null, null, tt), t & 2 && T(n.examples));
+}
+var He = class t {
+    route = s(ft);
+    examples = [];
+    static ɵfac = function (e) {
+      return new (e || t)();
+    };
+    static ɵcmp = y({
+      type: t,
+      selectors: [['app-company-customer']],
+      decls: 4,
+      vars: 3,
+      consts: [
+        [3, 'text'],
+        [3, 'exampleData'],
+      ],
+      template: function (e, i) {
+        if (
+          (e & 1 &&
+            (r(0, 'p'), d(1, 'Company Customer Module'), a(), h(2, tn, 2, 0), st(3, 'async')),
+          e & 2)
+        ) {
+          let o;
+          (l(2), C((o = mt(3, 1, i.route.data)) ? 2 : -1, o));
+        }
+      },
+      dependencies: [Rt, Ot, ut],
+      encapsulation: 2,
+    });
+  },
+  lo = [
+    { path: '', redirectTo: 'overview', pathMatch: 'full' },
+    { path: 'overview', component: He, pathMatch: 'full', data: { examples: [si] } },
+    { path: '**', redirectTo: 'overview' },
+  ];
+export { He as CompanyCustomer, lo as routes };

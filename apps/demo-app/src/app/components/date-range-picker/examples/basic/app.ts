@@ -64,6 +64,7 @@ export class App {
 
   // Manejador de eventos cuando se selecciona un rango
   onDateRangeSelected(event: DateRangeValue<false> | null) {
+    console.log(event, 'event rango seleccionado');
     if (event && event.from && event.to) {
       this.selectedStartDate.set(event.from);
       this.selectedEndDate.set(event.to);

@@ -64,7 +64,7 @@ function formatDateToString(date: Date): string {
   const dateZone = tzDate(date, 'America/Guayaquil');
   return format({
     date: dateZone,
-    format: 'YYYY-MM-DD hh:mm:ss A',
+    format: 'YYYY-MM-DD HH:mm:ss',
     tz: 'America/Guayaquil',
   });
 }
@@ -161,6 +161,7 @@ export class DateRangePicker<AsString extends boolean = true>
 
   dateRangeSelected: OutputEmitterRef<DateRangeValue<AsString>> =
     output<DateRangeValue<AsString>>();
+
   pickerShow: OutputEmitterRef<void> = output<void>();
   pickerHide: OutputEmitterRef<void> = output<void>();
   pickerApply: OutputEmitterRef<void> = output<void>();
@@ -302,7 +303,6 @@ export class DateRangePicker<AsString extends boolean = true>
       };
 
       this.onChange(dateRange);
-      this.dateRangeSelected.emit(dateRange);
     }
   }
 

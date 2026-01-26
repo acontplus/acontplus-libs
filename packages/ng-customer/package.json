@@ -3,9 +3,6 @@
   "version": "2.0.3",
   "description": "Angular customer management module following clean architecture principles. Provides customer UI components, business logic, and integrates with notification systems for comprehensive customer relationship management.",
   "peerDependencies": {
-    "@acontplus/ng-components": "^2.1.0",
-    "@acontplus/ng-notifications": "^2.0.2",
-    "@acontplus/utils": "1.0.11",
     "@angular/common": "^21.0.0",
     "@angular/core": "^21.0.0"
   },
@@ -17,8 +14,7 @@
     "index.d.ts",
     "*.d.ts",
     "**/*.d.ts",
-    "fesm2022/**/*",
-    "company-customer/**/*"
+    "fesm2022/**/*"
   ],
   "engines": {
     "node": ">=18.0.0"

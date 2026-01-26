@@ -1,4 +1,5 @@
-import { CompanyCustomerFormDataResult, ICompanyCustomerMapper } from '@acontplus/ng-customer';
+import { CompanyCustomerFormDataResult } from './../models';
+import { ICompanyCustomerMapper } from './../interfaces';
 
 export class CompanyCustomerDefaultMapper implements ICompanyCustomerMapper {
   toModelFormData(response: any): any {

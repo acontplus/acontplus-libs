@@ -116,6 +116,8 @@ function formatDateToString(date: Date): string {
       (openEvent)="onPickerShow()"
       (closeEvent)="onPickerHide()"
       (checkboxChange)="onCheckboxToggle($event)"
+      [startDate]="startDate()"
+      [endDate]="endDate()"
     ></ngx-datex>
   `,
 })
@@ -142,6 +144,8 @@ export class DateRangePicker<AsString extends boolean = true>
   checkboxChecked = model(false);
   checkboxPosition = input<'prefix' | 'suffix'>('suffix');
 
+  startDate = input<Date>(new Date());
+  endDate = input<Date>(new Date());
   // NgxDatex specific inputs
   singleDatePicker = input(false);
   timePicker = input(false);

@@ -1,5 +1,5 @@
 <div
-  class="alert-dialog"
+  class="acp-alert-dialog"
   [class.modern-layout]="data.layout === 'modern'"
   [class.icon-left]="data.iconPosition === 'left'"
   [class.icon-center]="data.iconPosition === 'center'"
@@ -27,7 +27,7 @@
   >
     <!-- Icon -->
     @if (data.type || data.icon) {
-    <div class="alert-dialog-icon" [ngClass]="'icon-' + (data.type || 'custom')">
+    <div class="acp-alert-dialog-icon" [ngClass]="'icon-' + (data.type || 'custom')">
       <mat-icon class="icon-large" [style.color]="data.iconColor"> {{ getIconName() }} </mat-icon>
     </div>
     }
@@ -50,7 +50,7 @@
   <div class="acp-alert-header">
     <!-- Icon -->
     @if (data.type || data.icon) {
-    <div class="alert-dialog-icon" [ngClass]="'icon-' + (data.type || 'custom')">
+    <div class="acp-alert-dialog-icon" [ngClass]="'icon-' + (data.type || 'custom')">
       <mat-icon class="icon-large" [style.color]="data.iconColor"> {{ getIconName() }} </mat-icon>
     </div>
     }
@@ -72,14 +72,14 @@
   }
 
   <!-- Content -->
-  <mat-dialog-content class="alert-dialog-content">
+  <mat-dialog-content class="acp-alert-dialog-content">
     <!-- Title -->
     @if (data.title) {
-    <h2 class="alert-dialog-title" #dialogTitle>{{ data.title }}</h2>
+    <h2 class="acp-alert-dialog-title" #dialogTitle>{{ data.title }}</h2>
     }
     <!-- Image -->
     @if (data.imageUrl) {
-    <div class="alert-dialog-image">
+    <div class="acp-alert-dialog-image">
       <img
         [src]="data.imageUrl"
         [alt]="data.imageAlt || 'Alert image'"
@@ -96,12 +96,12 @@
     } @if (data.html) {
     <div [innerHTML]="sanitizedHtml"></div>
     } @else if (data.message) {
-    <p class="alert-message">{{ data.message }}</p>
+    <p class="acp-alert-message">{{ data.message }}</p>
     }
 
     <!-- Input Field -->
     @if (data.input) {
-    <mat-form-field appearance="outline" class="alert-input-field">
+    <mat-form-field appearance="outline" class="acp-alert-input-field">
       @if (data.inputLabel) {
       <mat-label>{{ data.inputLabel }}</mat-label>
       } @if (data.input === 'textarea') {
@@ -136,7 +136,7 @@
   <!-- Actions -->
   @if (data.showConfirmButton !== false || data.showCancelButton || data.showDenyButton) {
   <mat-dialog-actions
-    class="alert-dialog-actions"
+    class="acp-alert-dialog-actions"
     [class.reverse-buttons]="data.reverseButtons"
     [class.vertical-buttons]="data.verticalButtons"
     [align]="getActionsAlignment()"
@@ -148,8 +148,8 @@
       [variant]="getButtonVariant('deny')"
       [icon]="getButtonIcon('deny')"
       (handleClick)="onDeny()"
-      [text]="data.denyText || 'No'"
-      [disabled]="data.disableDenyButton?? false"
+      [text]="getButtonText('deny')"
+      [disabled]="getButtonDisabled('deny')"
       [class.spinning]="data.processing && data.processingButton === 'deny'"
       [class.full-width]="data.fullWidthButtons"
     />
@@ -160,8 +160,8 @@
       [variant]="getButtonVariant('cancel')"
       [icon]="getButtonIcon('cancel')"
       (handleClick)="onCancel()"
-      [text]="data.cancelText || 'Cancel'"
-      [disabled]="data.disableCancelButton??false"
+      [text]="getButtonText('cancel')"
+      [disabled]="getButtonDisabled('cancel')"
       [class.spinning]="data.processing && data.processingButton === 'cancel'"
       [class.full-width]="data.fullWidthButtons"
     />
@@ -172,11 +172,11 @@
       [variant]="getButtonVariant('confirm')"
       [icon]="getButtonIcon('confirm')"
       (handleClick)="onConfirm()"
-      [text]="data.confirmText || 'OK'"
-      [disabled]="data.disableConfirmButton?? false"
+      [text]="getButtonText('confirm')"
+      [disabled]="getButtonDisabled('confirm')"
       [class.spinning]="data.processing && data.processingButton === 'confirm'"
       [class.full-width]="data.fullWidthButtons"
-      [autofocus]="data.focusConfirm"
+      [autofocus]="getButtonFocus('confirm')"
     />
     }
   </mat-dialog-actions>
@@ -184,7 +184,7 @@
 
   <!-- Footer -->
   @if (data.footer || data.footerHtml) {
-  <div class="alert-dialog-footer">
+  <div class="acp-alert-dialog-footer">
     @if (data.footerHtml) {
     <div [innerHTML]="sanitizedFooter"></div>
     } @else { {{ data.footer }} }

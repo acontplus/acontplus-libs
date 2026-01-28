@@ -1,4 +1,4 @@
-.alert-dialog {
+.acp-alert-dialog {
   position: relative;
   overflow: hidden;
   padding: 0;
@@ -16,13 +16,13 @@
   position: relative;
 }
 
-.acp-alert-header .alert-dialog-icon {
+.acp-alert-header .acp-alert-dialog-icon {
   margin: 0;
   flex-shrink: 0;
 }
 
 /* ===== TITLE ===== */
-.alert-dialog-title {
+.acp-alert-dialog-title {
   font-size: 1rem;
   font-weight: 600;
   line-height: 1.2;
@@ -31,11 +31,11 @@
 }
 
 /* ===== CONTENT ===== */
-.alert-dialog-content {
+.acp-alert-dialog-content {
   margin: 0;
   text-align: left;
 
-  .alert-message {
+  .acp-alert-message {
     margin: 0;
     font-size: 16px;
     line-height: 1.4;
@@ -44,7 +44,7 @@
 }
 
 /* ===== ACTIONS ===== */
-.alert-dialog-actions {
+.acp-alert-dialog-actions {
   margin: 24px 24px 24px 24px;
   padding: 0;
   gap: 12px;

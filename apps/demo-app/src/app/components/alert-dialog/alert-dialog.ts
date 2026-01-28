@@ -30,7 +30,9 @@ export class AlertDialogComponent {
     await this.alert.success({
       title: 'Success!',
       message: 'Your operation was completed successfully!',
-      confirmText: 'Great!',
+      buttons: {
+        confirm: { text: 'Great!' },
+      },
       timer: 3000,
       timerProgressBar: true,
     });
@@ -40,7 +42,9 @@ export class AlertDialogComponent {
     await this.alert.error({
       title: 'Error!',
       message: 'Something went wrong. Please try again.',
-      confirmText: 'OK',
+      buttons: {
+        confirm: { text: 'OK' },
+      },
       width: '450px',
     });
   }
@@ -49,9 +53,11 @@ export class AlertDialogComponent {
     await this.alert.info({
       title: 'Information',
       message: 'This is an informational message.',
-      confirmText: 'Got it!',
+      buttons: {
+        confirm: { text: 'Got it!' },
+        cancel: { text: 'Not now' },
+      },
       showCancelButton: true,
-      cancelText: 'Not now',
     });
   }
 
@@ -63,9 +69,10 @@ export class AlertDialogComponent {
     const result = await this.alert.confirm({
       title: 'Are you sure?',
       message: 'This action cannot be undone.',
-      confirmText: 'Yes, delete it!',
-      cancelText: 'No, cancel',
-      confirmButtonVariant: 'danger',
+      buttons: {
+        confirm: { text: 'Yes, delete it!', variant: 'danger' },
+        cancel: { text: 'No, cancel' },
+      },
     });
 
     if (result.isConfirmed) {
@@ -80,9 +87,11 @@ export class AlertDialogComponent {
       showConfirmButton: true,
       showDenyButton: true,
       showCancelButton: true,
-      confirmText: 'Save',
-      denyText: 'Discard',
-      cancelText: 'Cancel',
+      buttons: {
+        confirm: { text: 'Save' },
+        deny: { text: 'Discard' },
+        cancel: { text: 'Cancel' },
+      },
     });
 
     if (result.isConfirmed) {
@@ -184,7 +193,9 @@ export class AlertDialogComponent {
         },
       },
       showCancelButton: true,
-      confirmText: 'Submit',
+      buttons: {
+        confirm: { text: 'Submit' },
+      },
       width: '600px',
       preConfirm: () => {
         if (!selectedItem) return 'Please select an item';
@@ -203,9 +214,11 @@ export class AlertDialogComponent {
 
   async showGlobalDefaultsExample() {
     this.alert.setDefaults({
-      confirmButtonColor: '#8b5cf6',
       width: '450px',
       reverseButtons: true,
+      buttons: {
+        confirm: { color: '#8b5cf6' },
+      },
     });
 
     await this.alert.success({
@@ -240,8 +253,10 @@ export class AlertDialogComponent {
     const result = await this.alert.delete({
       title: 'Delete Account',
       message: 'This action cannot be undone. All your data will be permanently removed.',
-      confirmText: 'Delete Forever',
-      cancelText: 'Keep Account',
+      buttons: {
+        confirm: { text: 'Delete Forever' },
+        cancel: { text: 'Keep Account' },
+      },
       layout: 'modern',
       animation: 'bounce',
     });
@@ -276,8 +291,10 @@ export class AlertDialogComponent {
       draggable: true,
       width: '450px',
       showCancelButton: true,
-      confirmText: 'Got it!',
-      cancelText: 'Close',
+      buttons: {
+        confirm: { text: 'Got it!' },
+        cancel: { text: 'Close' },
+      },
     });
   }
 
@@ -417,14 +434,11 @@ export class AlertDialogComponent {
       showConfirmButton: true,
       showCancelButton: true,
       showDenyButton: true,
-      confirmText: 'Primary',
-      cancelText: 'Secondary',
-      denyText: 'Danger',
-      confirmButtonVariant: 'primary',
-      cancelButtonVariant: 'secondary',
-      denyButtonVariant: 'danger',
-      confirmButtonStyle: 'elevated',
-      cancelButtonStyle: 'outlined',
+      buttons: {
+        confirm: { text: 'Primary', variant: 'primary', style: 'elevated' },
+        cancel: { text: 'Secondary', variant: 'secondary', style: 'outlined' },
+        deny: { text: 'Danger', variant: 'danger' },
+      },
     });
   }
 
@@ -436,15 +450,11 @@ export class AlertDialogComponent {
       showConfirmButton: true,
       showCancelButton: true,
       showDenyButton: true,
-      confirmText: 'Save',
-      cancelText: 'Cancel',
-      denyText: 'Delete',
-      confirmButtonIcon: 'save',
-      cancelButtonIcon: 'close',
-      denyButtonIcon: 'delete',
-      confirmButtonVariant: 'success',
-      cancelButtonVariant: 'secondary',
-      denyButtonVariant: 'danger',
+      buttons: {
+        confirm: { text: 'Save', icon: 'save', variant: 'success' },
+        cancel: { text: 'Cancel', icon: 'close', variant: 'secondary' },
+        deny: { text: 'Delete', icon: 'delete', variant: 'danger' },
+      },
     });
   }
 
@@ -458,9 +468,11 @@ export class AlertDialogComponent {
       showDenyButton: true,
       verticalButtons: true,
       fullWidthButtons: true,
-      confirmText: 'Confirm Action',
-      cancelText: 'Maybe Later',
-      denyText: 'Never',
+      buttons: {
+        confirm: { text: 'Confirm Action' },
+        cancel: { text: 'Maybe Later' },
+        deny: { text: 'Never' },
+      },
       width: '350px',
     });
   }
@@ -489,7 +501,9 @@ export class AlertDialogComponent {
       timer: 8000,
       timerProgressBar: true,
       showConfirmButton: true,
-      confirmText: 'Proceed Now',
+      buttons: {
+        confirm: { text: 'Proceed Now' },
+      },
       animation: 'fade',
     });
   }
@@ -580,8 +594,10 @@ export class AlertDialogComponent {
       type: 'info',
       showConfirmButton: true,
       showCancelButton: true,
-      confirmText: 'Open Alert',
-      cancelText: 'Close',
+      buttons: {
+        confirm: { text: 'Open Alert' },
+        cancel: { text: 'Close' },
+      },
       width: '500px',
       position: 'center-start',
       disableClose: true,
@@ -596,7 +612,9 @@ export class AlertDialogComponent {
         message: 'This alert should appear ON TOP of the previous dialog with correct z-index!',
         type: 'success',
         showConfirmButton: true,
-        confirmText: 'Perfect!',
+        buttons: {
+          confirm: { text: 'Perfect!' },
+        },
         width: '450px',
         position: 'center-end',
         animation: 'bounce',
@@ -615,7 +633,9 @@ export class AlertDialogComponent {
       message: 'This is the default behavior. Opening another alert will close this one.',
       type: 'info',
       showConfirmButton: true,
-      confirmText: 'Open Another',
+      buttons: {
+        confirm: { text: 'Open Another' },
+      },
       allowMultiple: false, // Explícitamente false (aunque es el default)
     });
 
@@ -709,7 +729,9 @@ export class AlertDialogComponent {
         allowMultiple: false, // Esto cerrará todos los alerts anteriores
         position: 'center',
         showConfirmButton: true,
-        confirmText: 'Got it!',
+        buttons: {
+          confirm: { text: 'Got it!' },
+        },
       });
     }, 3000);
   }

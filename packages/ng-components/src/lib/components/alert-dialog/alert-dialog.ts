@@ -22,7 +22,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { AlertDialogOptions } from '../../services';
+import { AlertDialogOptions, ButtonConfig } from '../../services';
 import { NgClass } from '@angular/common';
 import { Button } from '../button/button';
 import { ButtonVariant, MaterialButtonStyle } from '@acontplus/ui-kit';
@@ -49,7 +49,7 @@ type ButtonType = 'confirm' | 'cancel' | 'deny';
   changeDetection: ChangeDetectionStrategy.Default,
   styles: [
     `
-      .alert-dialog {
+      .acp-alert-dialog {
         position: relative;
         overflow: hidden;
         padding: 0;
@@ -67,14 +67,14 @@ type ButtonType = 'confirm' | 'cancel' | 'deny';
         position: relative;
       }
 
-      .acp-alert-header .alert-dialog-icon {
+      .acp-alert-header .acp-alert-dialog-icon {
         margin: 0;
         flex-shrink: 0;
         margin-top: 4px; /* Alinear con el texto del título */
       }
 
       /* ===== TITLE ===== */
-      .alert-dialog-title {
+      .acp-alert-dialog-title {
         margin: 0 0 12px 0;
         font-size: 20px;
         font-weight: 600;
@@ -84,11 +84,11 @@ type ButtonType = 'confirm' | 'cancel' | 'deny';
       }
 
       /* ===== CONTENT ===== */
-      .alert-dialog-content {
+      .acp-alert-dialog-content {
         /* Sin padding/margin - mat-dialog-content ya los maneja */
         text-align: left;
 
-        .alert-message {
+        .acp-alert-message {
           margin: 0;
           font-size: 16px;
           line-height: 1.4;
@@ -97,24 +97,24 @@ type ButtonType = 'confirm' | 'cancel' | 'deny';
       }
 
       /* ===== ACTIONS ===== */
-      .alert-dialog-actions {
+      .acp-alert-dialog-actions {
         margin: 24px 24px 24px 24px;
         padding: 0;
         gap: 12px;
       }
 
       /* Reverse buttons - solo cambiar el orden, mat-dialog-actions maneja align */
-      .alert-dialog-actions.reverse-buttons {
+      .acp-alert-dialog-actions.reverse-buttons {
         flex-direction: row-reverse;
       }
 
       /* Vertical buttons */
-      .alert-dialog-actions.vertical-buttons {
+      .acp-alert-dialog-actions.vertical-buttons {
         flex-direction: column;
         align-items: stretch;
       }
 
-      .alert-dialog-actions.vertical-buttons.reverse-buttons {
+      .acp-alert-dialog-actions.vertical-buttons.reverse-buttons {
         flex-direction: column-reverse;
       }
 
@@ -143,11 +143,11 @@ type ButtonType = 'confirm' | 'cancel' | 'deny';
       /* ===== LAYOUTS ===== */
 
       /* Modern Layout - Icon a la izquierda */
-      .alert-dialog.modern-layout {
+      .acp-alert-dialog.modern-layout {
         .acp-alert-header {
           padding: 24px 24px 0 24px;
 
-          .alert-dialog-icon {
+          .acp-alert-dialog-icon {
             margin-right: 16px;
 
             .icon-large {
@@ -160,14 +160,14 @@ type ButtonType = 'confirm' | 'cancel' | 'deny';
       }
 
       /* ===== ICON POSITIONS ===== */
-      .alert-dialog.icon-center {
+      .acp-alert-dialog.icon-center {
         .acp-alert-header {
           flex-direction: column;
           text-align: center;
           align-items: center;
           padding: 24px 24px 16px 24px;
 
-          .alert-dialog-icon {
+          .acp-alert-dialog-icon {
             margin: 0 0 16px 0;
           }
 
@@ -178,19 +178,19 @@ type ButtonType = 'confirm' | 'cancel' | 'deny';
           }
         }
 
-        .alert-dialog-title,
-        .alert-dialog-content {
+        .acp-alert-dialog-title,
+        .acp-alert-dialog-content {
           text-align: center;
         }
       }
 
-      .alert-dialog.icon-top {
+      .acp-alert-dialog.icon-top {
         .acp-alert-header {
           flex-direction: column;
           align-items: flex-start;
           padding: 24px 24px 16px 24px;
 
-          .alert-dialog-icon {
+          .acp-alert-dialog-icon {
             margin: 0 0 16px 0;
           }
 
@@ -203,27 +203,27 @@ type ButtonType = 'confirm' | 'cancel' | 'deny';
       }
 
       /* ===== CONTENT ALIGNMENT ===== */
-      .alert-dialog.content-left {
-        .alert-dialog-title,
-        .alert-dialog-content {
+      .acp-alert-dialog.content-left {
+        .acp-alert-dialog-title,
+        .acp-alert-dialog-content {
           text-align: left;
         }
       }
 
-      .alert-dialog.content-center {
+      .acp-alert-dialog.content-center {
         .acp-alert-header {
           justify-content: center;
         }
 
-        .alert-dialog-title,
-        .alert-dialog-content {
+        .acp-alert-dialog-title,
+        .acp-alert-dialog-content {
           text-align: center;
         }
       }
 
-      .alert-dialog.content-right {
-        .alert-dialog-title,
-        .alert-dialog-content {
+      .acp-alert-dialog.content-right {
+        .acp-alert-dialog-title,
+        .acp-alert-dialog-content {
           text-align: right;
         }
       }
@@ -274,34 +274,34 @@ type ButtonType = 'confirm' | 'cancel' | 'deny';
       }
 
       /* ===== LEGACY STYLES ===== */
-      .alert-dialog-image {
+      .acp-alert-dialog-image {
         margin: 1rem auto;
         display: flex;
         justify-content: center;
         align-items: center;
       }
 
-      .alert-dialog-image img {
+      .acp-alert-dialog-image img {
         max-width: 100%;
         border-radius: 8px;
       }
 
-      .alert-input-field {
+      .acp-alert-input-field {
         width: 100%;
         margin-top: 1rem;
       }
 
-      .confirm-button,
-      .cancel-button,
-      .deny-button {
+      .acp-confirm-button,
+      .acp-cancel-button,
+      .acp-deny-button {
         min-width: 100px;
       }
 
-      .cancel-button {
+      .acp-cancel-button {
         color: #333;
       }
 
-      .alert-dialog-footer {
+      .acp-alert-dialog-footer {
         margin: 0 24px 24px 24px;
         padding-top: 1rem;
         border-top: 1px solid #e0e0e0;
@@ -541,9 +541,13 @@ export class AlertDialog implements OnInit, OnDestroy {
     });
   }
 
+  private getButtonConfig(buttonType: ButtonType): ButtonConfig {
+    return this.data.buttons?.[buttonType] || {};
+  }
+
   getButtonVariant(buttonType: ButtonType): ButtonVariant {
-    const variant = (this.data as any)[`${buttonType}ButtonVariant`] as ButtonVariant | undefined;
-    if (variant) return variant;
+    const config = this.getButtonConfig(buttonType);
+    if (config.variant) return config.variant;
 
     // Default variants based on button type and alert type
     if (buttonType === 'confirm') {
@@ -573,8 +577,8 @@ export class AlertDialog implements OnInit, OnDestroy {
   }
 
   getButtonIcon(buttonType: ButtonType): string {
-    const icon = (this.data as any)[`${buttonType}ButtonIcon`] as string | undefined;
-    if (icon) return icon;
+    const config = this.getButtonConfig(buttonType);
+    if (config.icon) return config.icon;
 
     // Default icons based on button type
     switch (buttonType) {
@@ -590,8 +594,35 @@ export class AlertDialog implements OnInit, OnDestroy {
   }
 
   getButtonStyle(buttonType: ButtonType): MaterialButtonStyle {
-    const style = (this.data as any)[`${buttonType}ButtonStyle`] as MaterialButtonStyle | undefined;
-    return style || 'elevated';
+    const config = this.getButtonConfig(buttonType);
+    return config.style || 'elevated';
+  }
+
+  getButtonText(buttonType: ButtonType): string {
+    const config = this.getButtonConfig(buttonType);
+    if (config.text) return config.text;
+
+    // Default text based on button type
+    switch (buttonType) {
+      case 'confirm':
+        return 'OK';
+      case 'cancel':
+        return 'Cancelar';
+      case 'deny':
+        return 'No';
+      default:
+        return 'OK';
+    }
+  }
+
+  getButtonDisabled(buttonType: ButtonType): boolean {
+    const config = this.getButtonConfig(buttonType);
+    return config.disabled || false;
+  }
+
+  getButtonFocus(buttonType: ButtonType): boolean {
+    const config = this.getButtonConfig(buttonType);
+    return config.focus || buttonType === 'confirm';
   }
 
   getActionsAlignment(): 'start' | 'center' | 'end' {
@@ -698,8 +729,8 @@ export class AlertDialog implements OnInit, OnDestroy {
   }
 
   private getButtonColor(buttonType: ButtonType, isBackground = false): any {
-    const colorKey = `${buttonType}ButtonColor` as keyof AlertDialogOptions;
-    const color = this.data[colorKey] as string | undefined;
+    const config = this.getButtonConfig(buttonType);
+    const color = config.color;
 
     if (!color) {
       return buttonType === 'confirm' ? 'primary' : undefined;

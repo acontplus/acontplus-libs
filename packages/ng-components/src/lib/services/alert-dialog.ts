@@ -18,6 +18,16 @@ export type AlertPosition =
   | 'bottom-start'
   | 'bottom-end';
 
+export interface ButtonConfig {
+  text?: string;
+  icon?: string;
+  variant?: ButtonVariant;
+  style?: MaterialButtonStyle;
+  color?: ThemePalette | string;
+  disabled?: boolean;
+  focus?: boolean;
+}
+
 export interface AlertDialogOptions {
   // ===== Content and Appearance =====
   title?: string;
@@ -71,45 +81,14 @@ export interface AlertDialogOptions {
   allowMultiple?: boolean; // Permitir múltiples alerts abiertos simultáneamente (por defecto false)
 
   // ===== Button Configuration =====
-  // - Visibility
+  buttons?: {
+    confirm?: ButtonConfig;
+    cancel?: ButtonConfig;
+    deny?: ButtonConfig;
+  };
   showConfirmButton?: boolean;
   showCancelButton?: boolean;
   showDenyButton?: boolean;
-
-  // - Labels
-  confirmText?: string;
-  cancelText?: string;
-  denyText?: string;
-
-  // - Icons
-  confirmButtonIcon?: string;
-  cancelButtonIcon?: string;
-  denyButtonIcon?: string;
-
-  // - Variants (using ButtonVariant from ui-kit)
-  confirmButtonVariant?: ButtonVariant;
-  cancelButtonVariant?: ButtonVariant;
-  denyButtonVariant?: ButtonVariant;
-
-  // - Styles (elevated, flat, etc.)
-  confirmButtonStyle?: MaterialButtonStyle;
-  cancelButtonStyle?: MaterialButtonStyle;
-  denyButtonStyle?: MaterialButtonStyle;
-
-  // - Colors (Material palette or hex)
-  confirmButtonColor?: ThemePalette | string;
-  cancelButtonColor?: ThemePalette | string;
-  denyButtonColor?: ThemePalette | string;
-
-  // - States
-  disableConfirmButton?: boolean;
-  disableCancelButton?: boolean;
-  disableDenyButton?: boolean;
-
-  // - Focus Management
-  focusConfirm?: boolean;
-  focusCancel?: boolean;
-  focusDeny?: boolean;
 
   // ===== Loading States =====
   processing?: boolean;
@@ -179,16 +158,17 @@ export class AlertDialogService {
     showConfirmButton: true,
     showCancelButton: false,
     showDenyButton: false,
-    confirmText: 'OK',
-    cancelText: 'Cancelar',
-    denyText: 'No',
+    buttons: {
+      confirm: { text: 'OK', focus: true },
+      cancel: { text: 'Cancelar' },
+      deny: { text: 'No' },
+    },
     disableClose: false,
     closeOnBackdropClick: true,
     allowEscapeKey: true,
     allowEnterKey: true,
     timerProgressBar: false,
     reverseButtons: false,
-    focusConfirm: true,
     scrollbarPadding: true,
     position: 'center',
     draggable: false,
@@ -228,16 +208,17 @@ export class AlertDialogService {
       showConfirmButton: true,
       showCancelButton: false,
       showDenyButton: false,
-      confirmText: 'OK',
-      cancelText: 'Cancelar',
-      denyText: 'No',
+      buttons: {
+        confirm: { text: 'OK', focus: true },
+        cancel: { text: 'Cancelar' },
+        deny: { text: 'No' },
+      },
       disableClose: false,
       closeOnBackdropClick: true,
       allowEscapeKey: true,
       allowEnterKey: true,
       timerProgressBar: false,
       reverseButtons: false,
-      focusConfirm: true,
       scrollbarPadding: true,
       position: 'center',
       draggable: false,
@@ -248,6 +229,10 @@ export class AlertDialogService {
       iconPosition: 'left',
       contentAlignment: 'left',
       actionsAlignment: 'end',
+      showCloseButton: true,
+      closeButtonPosition: 'top-right',
+      animation: 'fade',
+      animationDuration: 300,
     };
   }
 
@@ -279,7 +264,7 @@ export class AlertDialogService {
       backdropClass: mergedOptions.backdropClass,
       position,
       closeOnNavigation: true,
-      autoFocus: mergedOptions.focusConfirm !== false,
+      autoFocus: mergedOptions.buttons?.confirm?.focus !== false,
       restoreFocus: true,
       hasBackdrop: true,
     });
@@ -430,8 +415,11 @@ export class AlertDialogService {
       ...opts,
       type: 'question',
       showCancelButton: true,
-      confirmText: opts.confirmText || 'Sí',
-      cancelText: opts.cancelText || 'No',
+      buttons: {
+        confirm: { text: 'Sí', ...opts.buttons?.confirm },
+        cancel: { text: 'No', ...opts.buttons?.cancel },
+        ...opts.buttons,
+      },
     });
   }
 
@@ -464,9 +452,11 @@ export class AlertDialogService {
       ...opts,
       type: 'delete',
       showCancelButton: true,
-      confirmText: opts.confirmText || 'Eliminar',
-      cancelText: opts.cancelText || 'Cancelar',
-      confirmButtonVariant: 'danger',
+      buttons: {
+        confirm: { text: 'Eliminar', variant: 'danger', ...opts.buttons?.confirm },
+        cancel: { text: 'Cancelar', ...opts.buttons?.cancel },
+        ...opts.buttons,
+      },
     });
   }
 
@@ -531,34 +521,34 @@ export class AlertDialogService {
   }
 
   private getPanelClasses(options: AlertDialogOptions): string[] {
-    const classes = ['alert-dialog-container'];
+    const classes = ['acp-alert-dialog-container'];
 
     if (options.customClass) {
       classes.push(options.customClass);
     }
 
     if (options.draggable) {
-      classes.push('draggable-dialog');
+      classes.push('acp-draggable-dialog');
     }
 
     // Agregar clases para layout
     if (options.layout) {
-      classes.push(`layout-${options.layout}`);
+      classes.push(`acp-layout-${options.layout}`);
     }
 
     // Agregar clases para posición de icono
     if (options.iconPosition) {
-      classes.push(`icon-${options.iconPosition}`);
+      classes.push(`acp-icon-${options.iconPosition}`);
     }
 
     // Agregar clases para alineación de contenido
     if (options.contentAlignment) {
-      classes.push(`content-${options.contentAlignment}`);
+      classes.push(`acp-content-${options.contentAlignment}`);
     }
 
     // Agregar clase para animación
     if (options.animation) {
-      classes.push(`animation-${options.animation}`);
+      classes.push(`acp-animation-${options.animation}`);
     }
 
     if (options.panelClass) {

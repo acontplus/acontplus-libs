@@ -1,0 +1,388 @@
+<div class="demo-container">
+  <mat-card class="demo-card">
+    <mat-card-header>
+      <mat-card-title>🔔 Notification Service Demo</mat-card-title>
+      <mat-card-subtitle>Comprehensive Angular Notification System</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <!-- Configuration Panel -->
+      <div class="config-panel">
+        <h3>🛠️ Configuration</h3>
+        <div class="config-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>Provider</mat-label>
+            <mat-select [(value)]="selectedProvider" (selectionChange)="onProviderChange()">
+              @for (provider of providers; track provider.value) {
+              <mat-option [value]="provider.value"> {{ provider.label }} </mat-option>
+              }
+            </mat-select>
+            <mat-hint>{{ getCurrentProviderInfo()?.description }}</mat-hint>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Custom Title</mat-label>
+            <input matInput [(ngModel)]="customTitle" placeholder="Enter custom title" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Custom Message</mat-label>
+            <textarea
+              matInput
+              [(ngModel)]="customMessage"
+              placeholder="Enter custom message"
+              rows="2"
+            ></textarea>
+          </mat-form-field>
+
+          <!-- Snackbar Position Configuration (only show when snackbar is selected) -->
+          @if (selectedProvider === 'snackbar') {
+          <div class="snackbar-config-section">
+            <h4>Snackbar Configuration</h4>
+
+            <div class="position-config">
+              <mat-form-field appearance="outline">
+                <mat-label>Vertical Position</mat-label>
+                <mat-select [(value)]="selectedVerticalPosition">
+                  @for (position of verticalPositions; track position.value) {
+                  <mat-option [value]="position.value">{{ position.label }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Horizontal Position</mat-label>
+                <mat-select [(value)]="selectedHorizontalPosition">
+                  @for (position of horizontalPositions; track position.value) {
+                  <mat-option [value]="position.value">{{ position.label }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="feature-toggles">
+              <mat-slide-toggle [(ngModel)]="showIcon">Show Icon</mat-slide-toggle>
+              <mat-slide-toggle [(ngModel)]="showCloseIcon">Show Close Button</mat-slide-toggle>
+              <mat-slide-toggle [(ngModel)]="showProgressBar">Show Progress Bar</mat-slide-toggle>
+            </div>
+          </div>
+          }
+
+          <div class="timer-config">
+            <mat-slide-toggle [(ngModel)]="showTimer">Auto-close Timer</mat-slide-toggle>
+            @if (showTimer) {
+            <mat-form-field appearance="outline">
+              <mat-label>Duration (ms)</mat-label>
+              <input matInput type="number" [(ngModel)]="timerDuration" min="1000" max="10000" />
+            </mat-form-field>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabbed Interface -->
+      <mat-tab-group animationDuration="300ms">
+        <!-- Basic Notifications Tab -->
+        <mat-tab label="Basic Notifications">
+          <div class="tab-content">
+            <h3>Basic Notification Types</h3>
+            <div class="button-grid">
+              <button mat-raised-button color="primary" (click)="showSuccess()">✅ Success</button>
+              <button mat-raised-button color="warn" (click)="showError()">❌ Error</button>
+              <button mat-raised-button class="warning-button" (click)="showWarning()">
+                ⚠️ Warning
+              </button>
+              <button mat-raised-button color="accent" (click)="showInfo()">ℹ️ Info</button>
+            </div>
+
+            <h3>Custom Configuration</h3>
+            <div class="button-grid">
+              <button mat-raised-button color="primary" (click)="showCustomNotification()">
+                🎨 Show Custom Notification
+              </button>
+            </div>
+          </div>
+        </mat-tab>
+
+        <!-- Predefined Messages Tab -->
+        <mat-tab label="Predefined Messages">
+          <div class="tab-content">
+            <h3>Success Messages</h3>
+            <div class="button-grid">
+              <button
+                mat-raised-button
+                color="primary"
+                (click)="showPredefinedMessage('success', 'SUCCESS.SAVE')"
+              >
+                💾 Save Success
+              </button>
+              <button
+                mat-raised-button
+                color="primary"
+                (click)="showPredefinedMessage('success', 'SUCCESS.DELETE')"
+              >
+                🗑️ Delete Success
+              </button>
+              <button
+                mat-raised-button
+                color="primary"
+                (click)="showPredefinedMessage('success', 'SUCCESS.UPDATE')"
+              >
+                📝 Update Success
+              </button>
+            </div>
+
+            <h3>Error Messages</h3>
+            <div class="button-grid">
+              <button
+                mat-raised-button
+                color="warn"
+                (click)="showPredefinedMessage('error', 'ERROR.SAVE')"
+              >
+                💾❌ Save Error
+              </button>
+              <button
+                mat-raised-button
+                color="warn"
+                (click)="showPredefinedMessage('error', 'ERROR.DELETE')"
+              >
+                🗑️❌ Delete Error
+              </button>
+              <button
+                mat-raised-button
+                color="warn"
+                (click)="showPredefinedMessage('error', 'ERROR.UPDATE')"
+              >
+                📝❌ Update Error
+              </button>
+              <button
+                mat-raised-button
+                color="warn"
+                (click)="showPredefinedMessage('error', 'ERROR.NETWORK')"
+              >
+                🌐❌ Network Error
+              </button>
+            </div>
+
+            <h3>Warning Messages</h3>
+            <div class="button-grid">
+              <button
+                mat-raised-button
+                class="warning-button"
+                (click)="showPredefinedMessage('warning', 'WARNING.SESSION_EXPIRING')"
+              >
+                ⏰ Session Warning
+              </button>
+            </div>
+
+            <!-- Predefined Messages Reference -->
+            <div class="messages-reference">
+              <h4>Available Predefined Messages</h4>
+              <div class="messages-chips">
+                @for (msg of predefinedMessages; track msg.key) {
+                <mat-chip> <strong>{{ msg.key }}:</strong> {{ msg.value }} </mat-chip>
+                }
+              </div>
+            </div>
+          </div>
+        </mat-tab>
+
+        <!-- Quick Methods Tab -->
+        <mat-tab label="Quick Methods">
+          <div class="tab-content">
+            <h3>Quick Success Methods</h3>
+            <div class="button-grid">
+              <button mat-raised-button color="primary" (click)="showQuickSave('success')">
+                💾✅ Quick Save Success
+              </button>
+              <button mat-raised-button color="primary" (click)="showQuickDelete('success')">
+                🗑️✅ Quick Delete Success
+              </button>
+              <button mat-raised-button color="primary" (click)="showQuickUpdate('success')">
+                📝✅ Quick Update Success
+              </button>
+            </div>
+
+            <h3>Quick Error Methods</h3>
+            <div class="button-grid">
+              <button mat-raised-button color="warn" (click)="showQuickSave('error')">
+                💾❌ Quick Save Error
+              </button>
+              <button mat-raised-button color="warn" (click)="showQuickDelete('error')">
+                🗑️❌ Quick Delete Error
+              </button>
+              <button mat-raised-button color="warn" (click)="showQuickUpdate('error')">
+                📝❌ Quick Update Error
+              </button>
+            </div>
+
+            <h3>Utility Methods</h3>
+            <div class="button-grid">
+              <button mat-raised-button color="warn" (click)="showNetworkError()">
+                🌐❌ Network Error
+              </button>
+              <button mat-raised-button class="warning-button" (click)="showSessionWarning()">
+                ⏰ Session Warning
+              </button>
+            </div>
+          </div>
+        </mat-tab>
+
+        <!-- Confirmations Tab -->
+        <mat-tab label="Confirmations">
+          <div class="tab-content">
+            <h3>Confirmation Dialogs</h3>
+            <div class="button-grid">
+              <button mat-raised-button color="warn" (click)="showSimpleConfirmation()">
+                ❓ Simple Confirmation
+              </button>
+              <button mat-raised-button color="accent" (click)="showAdvancedConfirmation()">
+                🔄 Advanced Confirmation
+              </button>
+            </div>
+
+            <div class="info-panel">
+              <h4>ℹ️ About Confirmations</h4>
+              <p>
+                Confirmation dialogs are only available with SweetAlert2 provider. They return a
+                promise with the user's choice.
+              </p>
+              <ul>
+                <li><strong>Simple:</strong> Yes/No confirmation</li>
+                <li><strong>Advanced:</strong> Save/Don't Save/Cancel options</li>
+              </ul>
+            </div>
+          </div>
+        </mat-tab>
+
+        <!-- Provider Specific Tab -->
+        <mat-tab label="Provider Specific">
+          <div class="tab-content">
+            <h3>Toastr Positions Demo</h3>
+            <div class="button-grid">
+              <button mat-raised-button (click)="showToastrPositions()">
+                📍 Show All Toastr Positions
+              </button>
+            </div>
+
+            <h3>Snackbar Positions Demo</h3>
+            <div class="button-grid">
+              <button mat-raised-button (click)="showSnackbarPositions()">
+                📍 Show All Snackbar Positions
+              </button>
+              <button mat-raised-button color="primary" (click)="showSnackbarFeatures()">
+                ✨ Show Snackbar Features
+              </button>
+              <button mat-raised-button (click)="showAccessibilityDemo()">
+                ♿ Accessibility Demo
+              </button>
+            </div>
+
+            <h3>SweetAlert2 Variations</h3>
+            <div class="button-grid">
+              <button mat-raised-button (click)="showSweetAlertVariations()">
+                🎭 Show All SweetAlert2 Types
+              </button>
+            </div>
+          </div>
+        </mat-tab>
+
+        <!-- Advanced Demos Tab -->
+        <mat-tab label="Advanced Demos">
+          <div class="tab-content">
+            <h3>Complex Scenarios</h3>
+            <div class="button-grid">
+              <button mat-raised-button color="primary" (click)="showSequentialDemo()">
+                🔄 Sequential Providers Demo
+              </button>
+              <button mat-raised-button color="accent" (click)="showWorkflowDemo()">
+                🏗️ Workflow Demo
+              </button>
+            </div>
+
+            <h3>Modal + Notifications Integration</h3>
+            <div class="button-grid">
+              <button mat-raised-button color="primary" (click)="showModalWithNotifications()">
+                🪟 Modal with Notifications
+              </button>
+              <button mat-raised-button color="accent" (click)="showModalWithConfirmations()">
+                🪟❓ Modal with Confirmations
+              </button>
+            </div>
+
+            <div class="info-panel">
+              <h4>🚀 Advanced Features</h4>
+              <ul>
+                <li>
+                  <strong>Sequential Demo:</strong> Shows notifications using different providers in
+                  sequence
+                </li>
+                <li>
+                  <strong>Workflow Demo:</strong> Demonstrates a multi-step process with
+                  confirmations
+                </li>
+                <li>
+                  <strong>Modal Integration:</strong> Shows how notifications work inside modal
+                  dialogs
+                </li>
+                <li>
+                  <strong>Modal Confirmations:</strong> Demonstrates confirmation dialogs triggered
+                  from within modals
+                </li>
+              </ul>
+            </div>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+
+      <!-- Provider Information Panel -->
+      <div class="provider-info">
+        <h3>📋 Current Provider: {{ getCurrentProviderInfo()?.label }}</h3>
+        <div class="provider-details">
+          <p>
+            <strong>{{ getCurrentProviderInfo()?.label }}:</strong> {{
+            getCurrentProviderInfo()?.description }}
+          </p>
+
+          @switch (selectedProvider) { @case ('sweetalert') {
+          <div class="features-list">
+            <h4>✨ Features:</h4>
+            <ul>
+              <li>Rich customization options</li>
+              <li>Built-in animations and themes</li>
+              <li>Input prompts support</li>
+              <li>Confirmation dialogs with multiple buttons</li>
+              <li>Timer and progress bar</li>
+              <li>HTML content support</li>
+            </ul>
+          </div>
+          } @case ('toastr') {
+          <div class="features-list">
+            <h4>✨ Features:</h4>
+            <ul>
+              <li>Multiple position options (8 positions)</li>
+              <li>Progress bar support</li>
+              <li>Auto-close timers</li>
+              <li>Click to close functionality</li>
+              <li>Lightweight and fast</li>
+              <li>Stacking notifications</li>
+            </ul>
+          </div>
+          } @case ('snackbar') {
+          <div class="features-list">
+            <h4>✨ Features:</h4>
+            <ul>
+              <li>Material Design compliant</li>
+              <li>Accessible by default (ARIA)</li>
+              <li>Position control (9 positions)</li>
+              <li>Action buttons support</li>
+              <li>Consistent with Material theme</li>
+              <li>Mobile-friendly design</li>
+            </ul>
+          </div>
+          } }
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

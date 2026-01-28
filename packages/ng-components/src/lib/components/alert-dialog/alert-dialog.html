@@ -1,7 +1,6 @@
 <div
   class="alert-dialog"
   [class.modern-layout]="data.layout === 'modern'"
-  [class.toast-layout]="data.layout === 'toast'"
   [class.icon-left]="data.iconPosition === 'left'"
   [class.icon-center]="data.iconPosition === 'center'"
   [class.icon-top]="data.iconPosition === 'top'"
@@ -12,13 +11,8 @@
   [attr.aria-describedby]="data.ariaDescribedBy"
 >
   <!-- Timer Progress Bar -->
-  @if (data.timer && (data.timerProgressBar || data.progressBar || data.layout === 'toast')) {
-  <mat-progress-bar
-    mode="determinate"
-    [value]="timerProgress"
-    class="timer-progress"
-    [class.toast-progress]="data.layout === 'toast'"
-  >
+  @if (data.timer && data.timerProgressBar) {
+  <mat-progress-bar mode="determinate" [value]="timerProgress" class="timer-progress">
   </mat-progress-bar>
   }
 
@@ -35,18 +29,6 @@
     @if (data.type || data.icon) {
     <div class="alert-dialog-icon" [ngClass]="'icon-' + (data.type || 'custom')">
       <mat-icon class="icon-large" [style.color]="data.iconColor"> {{ getIconName() }} </mat-icon>
-    </div>
-    }
-
-    <!-- Toast Content (solo para modo toast) -->
-    @if (data.layout === 'toast') {
-    <!-- Title y Message en línea para toast -->
-    <div class="toast-content">
-      @if (data.title) {
-      <span class="toast-title" #dialogTitle>{{ data.title }}</span>
-      } @if (data.message) {
-      <span class="toast-message">{{ data.message }}</span>
-      }
     </div>
     }
 
@@ -73,18 +55,6 @@
     </div>
     }
 
-    <!-- Toast Content (solo para modo toast) -->
-    @if (data.layout === 'toast') {
-    <!-- Title y Message en línea para toast -->
-    <div class="toast-content">
-      @if (data.title) {
-      <span class="toast-title" #dialogTitle>{{ data.title }}</span>
-      } @if (data.message) {
-      <span class="toast-message">{{ data.message }}</span>
-      }
-    </div>
-    }
-
     <!-- Close Button -->
     @if (data.showCloseButton) {
     <button
@@ -101,8 +71,7 @@
   </div>
   }
 
-  <!-- Content (solo para modo normal, no toast) -->
-  @if (data.layout !== 'toast') {
+  <!-- Content -->
   <mat-dialog-content class="alert-dialog-content">
     <!-- Title -->
     @if (data.title) {
@@ -163,11 +132,9 @@
     </mat-form-field>
     }
   </mat-dialog-content>
-  }
 
-  <!-- Actions (solo para modo normal, no toast) -->
-  @if (data.layout !== 'toast' && (data.showConfirmButton !== false || data.showCancelButton ||
-  data.showDenyButton)) {
+  <!-- Actions -->
+  @if (data.showConfirmButton !== false || data.showCancelButton || data.showDenyButton) {
   <mat-dialog-actions
     class="alert-dialog-actions"
     [class.reverse-buttons]="data.reverseButtons"

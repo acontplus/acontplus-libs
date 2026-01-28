@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-export type DialogType = 'normal' | 'alert' | 'toast';
+export type DialogType = 'normal' | 'alert';
 
 /**
  * Servicio centralizado para manejar z-index de todos los diálogos
@@ -15,14 +15,13 @@ export class DialogZIndexService {
   private static readonly Z_INDEX_RANGES = {
     normal: { base: 1000, current: 1000 }, // Diálogos normales: 1000-1999
     alert: { base: 2000, current: 2000 }, // AlertDialogs: 2000-2999 (siempre encima)
-    toast: { base: 3000, current: 3000 }, // Toasts: 3000-3999 (máxima prioridad)
   };
 
   private static readonly Z_INDEX_INCREMENT = 10;
 
   /**
    * Obtiene el siguiente z-index disponible para un tipo específico de diálogo
-   * @param type Tipo de diálogo (normal, alert, toast)
+   * @param type Tipo de diálogo (normal, alert)
    * @returns El próximo z-index a usar
    */
   getNextZIndex(type: DialogType = 'normal'): number {
@@ -86,24 +85,9 @@ export class DialogZIndexService {
           // Agregar atributo data para debugging
           pane.setAttribute('data-dialog-type', type);
           pane.setAttribute('data-z-index', targetZIndex.toString());
-
-          // Para toasts, agregar clase especial para styling
-          if (type === 'toast') {
-            pane.classList.add('toast-overlay');
-            // Los toasts no deben bloquear interacciones
-            pane.style.pointerEvents = 'none';
-            // Pero el contenido del toast sí debe ser clickeable
-            const dialogContainer = pane.querySelector(
-              '.mat-mdc-dialog-container, .mat-dialog-container',
-            );
-            if (dialogContainer) {
-              (dialogContainer as HTMLElement).style.pointerEvents = 'auto';
-            }
-          }
         }
 
-        // Los toasts no tienen backdrop, pero si existe, configurarlo
-        if (backdrop && type !== 'toast') {
+        if (backdrop) {
           backdrop.style.zIndex = (targetZIndex + 1).toString();
         }
       }
@@ -155,34 +139,5 @@ export class DialogZIndexService {
         }
       }
     }, 0);
-  }
-
-  /**
-   * Obtiene todos los toasts activos
-   * @returns Array de elementos de toast activos
-   */
-  getActiveToasts(): HTMLElement[] {
-    return Array.from(document.querySelectorAll('.cdk-overlay-pane[data-dialog-type="toast"]'));
-  }
-
-  /**
-   * Cierra todos los toasts activos
-   */
-  closeAllToasts(): void {
-    const toasts = this.getActiveToasts();
-    toasts.forEach(toast => {
-      const closeButton = toast.querySelector('[mat-dialog-close], .toast-close-button');
-      if (closeButton) {
-        (closeButton as HTMLElement).click();
-      }
-    });
-  }
-
-  /**
-   * Obtiene el número de toasts activos
-   * @returns Número de toasts actualmente visibles
-   */
-  getActiveToastCount(): number {
-    return this.getActiveToasts().length;
   }
 }

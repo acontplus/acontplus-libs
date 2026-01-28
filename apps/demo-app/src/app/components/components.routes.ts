@@ -66,10 +66,16 @@ export const routes = [
         loadChildren: () => import('./popover/popover').then(m => m.routes),
       },
 
+      // Notifications & Alerts
       {
         path: 'alert-dialog',
         loadComponent: () =>
           import('./alert-dialog/alert-dialog').then(m => m.AlertDialogComponent),
+      },
+      {
+        path: 'notification-demo',
+        loadComponent: () =>
+          import('./notification-demo/notification-demo').then(m => m.NotificationDemoComponent),
       },
 
       // Theming

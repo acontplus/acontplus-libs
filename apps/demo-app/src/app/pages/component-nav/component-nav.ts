@@ -82,23 +82,27 @@ export const COMPONENTS_MENU: ComponentCategory[] = [
   {
     id: 'drawer',
     name: 'Drawer',
-    summary:
-      'Advanced data grid with Material table integration, signals, and modern Angular patterns.',
-    category: 'Data Tables',
+    summary: 'Slide-out navigation drawer component with Material Design.',
+    category: 'Layout',
   },
   {
     id: 'popover',
     name: 'Popover',
-    summary:
-      'Advanced data grid with Material table integration, signals, and modern Angular patterns.',
-    category: 'Popover',
+    summary: 'Contextual overlay component for displaying additional content.',
+    category: 'Layout',
   },
   {
     id: 'alert-dialog',
     name: 'Alert Dialog',
+    summary: 'Beautiful, customizable alert dialogs with SweetAlert2 integration.',
+    category: 'Notifications & Alerts',
+  },
+  {
+    id: 'notification-demo',
+    name: 'Notification Service',
     summary:
-      'Advanced data grid with Material table integration, signals, and modern Angular patterns.',
-    category: 'Alert Dialog',
+      'Comprehensive notification system with multiple providers (SweetAlert2, Toastr, Snackbar).',
+    category: 'Notifications & Alerts',
   },
   {
     id: 'tabulator-table',

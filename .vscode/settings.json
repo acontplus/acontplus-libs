@@ -21,5 +21,6 @@
     }
   ],
   "files.eol": "\n",
-  "nxConsole.generateAiAgentRules": true
+  "nxConsole.generateAiAgentRules": true,
+  "html.autoClosingTags": false
 }

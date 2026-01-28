@@ -159,63 +159,6 @@ type ButtonType = 'confirm' | 'cancel' | 'deny';
         }
       }
 
-      /* Toast Layout */
-      .alert-dialog.toast-layout {
-        border-radius: 8px;
-
-        .acp-alert-header {
-          padding: 16px;
-          align-items: center;
-          gap: 12px;
-
-          .alert-dialog-icon {
-            margin: 0;
-            flex-shrink: 0;
-
-            .icon-large {
-              font-size: 24px;
-              width: 24px;
-              height: 24px;
-            }
-          }
-
-          .toast-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-            min-width: 0; /* Permite que el texto se trunque si es necesario */
-
-            .toast-title {
-              font-size: 14px;
-              font-weight: 600;
-              line-height: 1.2;
-              color: #1a1a1a;
-              margin: 0;
-            }
-
-            .toast-message {
-              font-size: 13px;
-              line-height: 1.3;
-              color: #666;
-              margin: 0;
-            }
-          }
-
-          .close-button {
-            margin: 0;
-            flex-shrink: 0;
-          }
-        }
-
-        /* Ocultar contenido normal en modo toast */
-
-        .alert-dialog-content,
-        .alert-dialog-actions {
-          display: none;
-        }
-      }
-
       /* ===== ICON POSITIONS ===== */
       .alert-dialog.icon-center {
         .acp-alert-header {
@@ -293,11 +236,6 @@ type ButtonType = 'confirm' | 'cancel' | 'deny';
         right: 0;
         height: 4px;
         z-index: 5;
-        border-radius: 0;
-      }
-
-      .timer-progress.toast-progress {
-        height: 3px;
         border-radius: 0;
       }
 
@@ -409,20 +347,6 @@ type ButtonType = 'confirm' | 'cancel' | 'deny';
         animation: zoomIn 0.3s ease-out;
       }
 
-      /* ===== TOAST MODE STYLES ===== */
-      :host ::ng-deep .toast-mode .mat-mdc-dialog-container {
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        max-width: 400px;
-        animation: slideInRight 0.3s ease-out;
-      }
-
-      :host ::ng-deep .layout-toast .mat-mdc-dialog-container {
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        max-width: 400px;
-      }
-
       /* ===== KEYFRAMES ===== */
       @keyframes fadeIn {
         from {
@@ -440,17 +364,6 @@ type ButtonType = 'confirm' | 'cancel' | 'deny';
         }
         to {
           transform: translateY(0);
-          opacity: 1;
-        }
-      }
-
-      @keyframes slideInRight {
-        from {
-          transform: translateX(100%);
-          opacity: 0;
-        }
-        to {
-          transform: translateX(0);
           opacity: 1;
         }
       }
@@ -784,52 +697,43 @@ export class AlertDialog implements OnInit, OnDestroy {
     }
   }
 
-  getConfirmColor(): any {
-    if (!this.data.confirmButtonColor) return 'primary';
-    if (['primary', 'accent', 'warn'].includes(this.data.confirmButtonColor)) {
-      return this.data.confirmButtonColor;
+  private getButtonColor(buttonType: ButtonType, isBackground = false): any {
+    const colorKey = `${buttonType}ButtonColor` as keyof AlertDialogOptions;
+    const color = this.data[colorKey] as string | undefined;
+
+    if (!color) {
+      return buttonType === 'confirm' ? 'primary' : undefined;
     }
-    return undefined;
+
+    const materialColors = ['primary', 'accent', 'warn'];
+    if (isBackground) {
+      return materialColors.includes(color) ? undefined : color;
+    }
+    return materialColors.includes(color) ? color : undefined;
+  }
+
+  getConfirmColor(): any {
+    return this.getButtonColor('confirm');
   }
 
   getCancelColor(): any {
-    if (!this.data.cancelButtonColor) return undefined;
-    if (['primary', 'accent', 'warn'].includes(this.data.cancelButtonColor)) {
-      return this.data.cancelButtonColor;
-    }
-    return undefined;
+    return this.getButtonColor('cancel');
   }
 
   getDenyColor(): any {
-    if (!this.data.denyButtonColor) return undefined;
-    if (['primary', 'accent', 'warn'].includes(this.data.denyButtonColor)) {
-      return this.data.denyButtonColor;
-    }
-    return undefined;
+    return this.getButtonColor('deny');
   }
 
   getConfirmBackgroundColor(): string | undefined {
-    if (!this.data.confirmButtonColor) return undefined;
-    if (['primary', 'accent', 'warn'].includes(this.data.confirmButtonColor)) {
-      return undefined;
-    }
-    return this.data.confirmButtonColor;
+    return this.getButtonColor('confirm', true);
   }
 
   getCancelBackgroundColor(): string | undefined {
-    if (!this.data.cancelButtonColor) return undefined;
-    if (['primary', 'accent', 'warn'].includes(this.data.cancelButtonColor)) {
-      return undefined;
-    }
-    return this.data.cancelButtonColor;
+    return this.getButtonColor('cancel', true);
   }
 
   getDenyBackgroundColor(): string | undefined {
-    if (!this.data.denyButtonColor) return undefined;
-    if (['primary', 'accent', 'warn'].includes(this.data.denyButtonColor)) {
-      return undefined;
-    }
-    return this.data.denyButtonColor;
+    return this.getButtonColor('deny', true);
   }
 
   // ===== CDK DRAG FUNCTIONALITY =====

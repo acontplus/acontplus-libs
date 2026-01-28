@@ -36,7 +36,7 @@ export const ACP_POPOVER_DEFAULT_OPTIONS = new InjectionToken<AcpPopoverDefaultO
   {
     providedIn: 'root',
     factory: () => ({
-      backdropClass: 'cdk-overlay-transparent-backdrop',
+      backdropClass: 'cdk-overlay-dark-backdrop',
     }),
   },
 );

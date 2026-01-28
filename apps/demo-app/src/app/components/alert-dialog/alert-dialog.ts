@@ -166,33 +166,7 @@ export class AlertDialogComponent {
   }
 
   /* ======================================================
-   * 5. TOAST NOTIFICATIONS
-   * ====================================================== */
-
-  showSuccessToast() {
-    this.alert.toast({
-      title: 'Success!',
-      message: 'Your changes have been saved',
-      type: 'success',
-      position: 'top-end',
-      timer: 3000,
-      showConfirmButton: false,
-    });
-  }
-
-  showErrorToast() {
-    this.alert.toast({
-      title: 'Error!',
-      message: 'Failed to save changes',
-      type: 'error',
-      position: 'top-end',
-      timer: 5000,
-      showConfirmButton: true,
-    });
-  }
-
-  /* ======================================================
-   * 6. CUSTOM COMPONENT DIALOG
+   * 5. CUSTOM COMPONENT DIALOG
    * ====================================================== */
 
   async showCustomComponent() {
@@ -224,7 +198,7 @@ export class AlertDialogComponent {
   }
 
   /* ======================================================
-   * 7. GLOBAL / ADVANCED CONFIGURATION
+   * 6. GLOBAL / ADVANCED CONFIGURATION
    * ====================================================== */
 
   async showGlobalDefaultsExample() {
@@ -243,7 +217,7 @@ export class AlertDialogComponent {
   }
 
   /* ======================================================
-   * 8. MODERN LAYOUT & DELETE DIALOGS
+   * 7. MODERN LAYOUT & DELETE DIALOGS
    * ====================================================== */
 
   async showModernLayout() {
@@ -291,75 +265,7 @@ export class AlertDialogComponent {
   }
 
   /* ======================================================
-   * 9. TOAST NOTIFICATIONS
-   * ====================================================== */
-
-  showToastSuccess() {
-    this.alert.fire({
-      title: 'Profile updated successfully',
-      type: 'success',
-      position: 'top-end',
-      timer: 4000,
-      progressBar: true,
-      showCloseButton: true,
-      animation: 'slide',
-    });
-  }
-
-  showToastError() {
-    this.alert.fire({
-      title: 'Connection failed',
-      message: 'Please check your internet connection and try again.',
-      type: 'error',
-      position: 'top-end',
-      timer: 5000,
-      progressBar: true,
-      showCloseButton: true,
-    });
-  }
-
-  showToastInfo() {
-    this.alert.fire({
-      title: 'New update available',
-      message: 'Version 2.1.0 is now available for download.',
-      type: 'info',
-      position: 'bottom-start',
-      timer: 6000,
-      progressBar: true,
-      showCloseButton: true,
-      showConfirmButton: true,
-      confirmText: 'Update Now',
-    });
-  }
-
-  showToastWarning() {
-    this.alert.fire({
-      title: 'Storage almost full',
-      message: 'You have used 90% of your storage space.',
-      type: 'warning',
-      position: 'top-start',
-      timer: 7000,
-      progressBar: true,
-      showCloseButton: true,
-    });
-  }
-
-  showToastDelete() {
-    this.alert.fire({
-      title: 'File deleted',
-      message: 'document.pdf has been moved to trash.',
-      type: 'delete',
-      position: 'bottom-start',
-      timer: 5000,
-      progressBar: true,
-      showCloseButton: true,
-      showConfirmButton: true,
-      confirmText: 'Undo',
-    });
-  }
-
-  /* ======================================================
-   * 10. DRAGGABLE DIALOGS
+   * 8. DRAGGABLE DIALOGS
    * ====================================================== */
 
   async showDraggableDialog() {
@@ -395,7 +301,7 @@ export class AlertDialogComponent {
   }
 
   /* ======================================================
-   * 11. LAYOUT VARIATIONS
+   * 9. LAYOUT VARIATIONS
    * ====================================================== */
 
   async showDefaultLayout() {
@@ -452,7 +358,7 @@ export class AlertDialogComponent {
   }
 
   /* ======================================================
-   * 12. ANIMATION EXAMPLES
+   * 10. ANIMATION EXAMPLES
    * ====================================================== */
 
   async showFadeAnimation() {
@@ -500,7 +406,7 @@ export class AlertDialogComponent {
   }
 
   /* ======================================================
-   * 13. BUTTON VARIATIONS
+   * 11. BUTTON VARIATIONS
    * ====================================================== */
 
   async showButtonVariants() {
@@ -560,7 +466,7 @@ export class AlertDialogComponent {
   }
 
   /* ======================================================
-   * 14. TIMER AND PROGRESS EXAMPLES
+   * 12. TIMER AND PROGRESS EXAMPLES
    * ====================================================== */
 
   async showTimerWithProgress() {
@@ -589,7 +495,7 @@ export class AlertDialogComponent {
   }
 
   /* ======================================================
-   * 15. POSITIONING EXAMPLES
+   * 13. POSITIONING EXAMPLES
    * ====================================================== */
 
   async showTopPosition() {
@@ -633,7 +539,7 @@ export class AlertDialogComponent {
   }
 
   /* ======================================================
-   * 16. MULTI STEP PROCESS
+   * 14. MULTI STEP PROCESS
    * ====================================================== */
 
   async showMultiStepProcess() {
@@ -663,7 +569,7 @@ export class AlertDialogComponent {
   }
 
   /* ======================================================
-   * 17. Z-INDEX TESTING (Dialog + Alert)
+   * 15. Z-INDEX TESTING (Dialog + Alert)
    * ====================================================== */
 
   async showZIndexTest() {
@@ -699,7 +605,7 @@ export class AlertDialogComponent {
   }
 
   /* ======================================================
-   * 18. MULTIPLE ALERTS TESTING
+   * 16. MULTIPLE ALERTS TESTING
    * ====================================================== */
 
   async showSingleAlertMode() {

@@ -1,0 +1,304 @@
+/* Snackbar Theme Styles with Maximum Specificity */
+
+/* Base styles for all snackbars - targeting the overlay container directly */
+.cdk-overlay-container .cdk-overlay-pane .mat-mdc-snack-bar-container.acontplus-snackbar {
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  font-family: inherit !important;
+  min-width: 300px !important;
+  position: relative !important;
+  overflow: hidden !important;
+
+  .mdc-snackbar__surface {
+    border-radius: 8px !important;
+    min-width: 300px !important;
+    position: relative !important;
+    overflow: hidden !important;
+  }
+}
+
+/* Additional targeting for Material 17+ and fallback */
+.cdk-overlay-container .mat-mdc-snack-bar-container.acontplus-snackbar {
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  font-family: inherit !important;
+  min-width: 300px !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+/* Fallback for older versions */
+.cdk-overlay-container .acontplus-snackbar .mat-mdc-snack-bar-container {
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  font-family: inherit !important;
+  min-width: 300px !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+/* Success Snackbar - Maximum specificity */
+.cdk-overlay-container
+  .cdk-overlay-pane
+  .mat-mdc-snack-bar-container.acontplus-snackbar.acontplus-snackbar-success {
+  background-color: #4caf50 !important;
+  color: white !important;
+
+  .mdc-snackbar__surface {
+    background-color: #4caf50 !important;
+    color: white !important;
+  }
+
+  .mdc-snackbar__label,
+  .mat-mdc-snack-bar-label {
+    color: white !important;
+  }
+
+  .snackbar-action,
+  .mat-mdc-snack-bar-action,
+  .mat-mdc-button {
+    color: rgba(255, 255, 255, 0.9) !important;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1) !important;
+    }
+  }
+}
+
+/* Error Snackbar - Maximum specificity */
+.cdk-overlay-container
+  .cdk-overlay-pane
+  .mat-mdc-snack-bar-container.acontplus-snackbar.acontplus-snackbar-error {
+  background-color: #f44336 !important;
+  color: white !important;
+
+  .mdc-snackbar__surface {
+    background-color: #f44336 !important;
+    color: white !important;
+  }
+
+  .mdc-snackbar__label,
+  .mat-mdc-snack-bar-label {
+    color: white !important;
+  }
+
+  .snackbar-action,
+  .mat-mdc-snack-bar-action,
+  .mat-mdc-button {
+    color: rgba(255, 255, 255, 0.9) !important;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1) !important;
+    }
+  }
+}
+
+/* Warning Snackbar - Maximum specificity */
+.cdk-overlay-container
+  .cdk-overlay-pane
+  .mat-mdc-snack-bar-container.acontplus-snackbar.acontplus-snackbar-warning {
+  background-color: #ff9800 !important;
+  color: white !important;
+
+  .mdc-snackbar__surface {
+    background-color: #ff9800 !important;
+    color: white !important;
+  }
+
+  .mdc-snackbar__label,
+  .mat-mdc-snack-bar-label {
+    color: white !important;
+  }
+
+  .snackbar-action,
+  .mat-mdc-snack-bar-action,
+  .mat-mdc-button {
+    color: rgba(255, 255, 255, 0.9) !important;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1) !important;
+    }
+  }
+}
+
+/* Info Snackbar - Maximum specificity */
+.cdk-overlay-container
+  .cdk-overlay-pane
+  .mat-mdc-snack-bar-container.acontplus-snackbar.acontplus-snackbar-info {
+  background-color: #2196f3 !important;
+  color: white !important;
+
+  .mdc-snackbar__surface {
+    background-color: #2196f3 !important;
+    color: white !important;
+  }
+
+  .mdc-snackbar__label,
+  .mat-mdc-snack-bar-label {
+    color: white !important;
+  }
+
+  .snackbar-action,
+  .mat-mdc-snack-bar-action,
+  .mat-mdc-button {
+    color: rgba(255, 255, 255, 0.9) !important;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1) !important;
+    }
+  }
+}
+
+/* Ensure icon colors are visible with maximum specificity */
+.cdk-overlay-container
+  .cdk-overlay-pane
+  .mat-mdc-snack-bar-container.acontplus-snackbar-success
+  .snackbar-icon
+  mat-icon {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.cdk-overlay-container
+  .cdk-overlay-pane
+  .mat-mdc-snack-bar-container.acontplus-snackbar-error
+  .snackbar-icon
+  mat-icon {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.cdk-overlay-container
+  .cdk-overlay-pane
+  .mat-mdc-snack-bar-container.acontplus-snackbar-warning
+  .snackbar-icon
+  mat-icon {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.cdk-overlay-container
+  .cdk-overlay-pane
+  .mat-mdc-snack-bar-container.acontplus-snackbar-info
+  .snackbar-icon
+  mat-icon {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Dark theme support with maximum specificity */
+@media (prefers-color-scheme: dark) {
+  .cdk-overlay-container
+    .cdk-overlay-pane
+    .mat-mdc-snack-bar-container.acontplus-snackbar.acontplus-snackbar-success {
+    background-color: #388e3c !important;
+
+    .mdc-snackbar__surface {
+      background-color: #388e3c !important;
+    }
+  }
+
+  .cdk-overlay-container
+    .cdk-overlay-pane
+    .mat-mdc-snack-bar-container.acontplus-snackbar.acontplus-snackbar-error {
+    background-color: #d32f2f !important;
+
+    .mdc-snackbar__surface {
+      background-color: #d32f2f !important;
+    }
+  }
+
+  .cdk-overlay-container
+    .cdk-overlay-pane
+    .mat-mdc-snack-bar-container.acontplus-snackbar.acontplus-snackbar-warning {
+    background-color: #f57c00 !important;
+
+    .mdc-snackbar__surface {
+      background-color: #f57c00 !important;
+    }
+  }
+
+  .cdk-overlay-container
+    .cdk-overlay-pane
+    .mat-mdc-snack-bar-container.acontplus-snackbar.acontplus-snackbar-info {
+    background-color: #1976d2 !important;
+
+    .mdc-snackbar__surface {
+      background-color: #1976d2 !important;
+    }
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .cdk-overlay-container .cdk-overlay-pane .mat-mdc-snack-bar-container.acontplus-snackbar {
+    border: 2px solid currentColor !important;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .cdk-overlay-container .cdk-overlay-pane .mat-mdc-snack-bar-container.acontplus-snackbar {
+    transition: none !important;
+  }
+}
+
+/* Additional fallback rules for broader compatibility */
+
+/* Success - Additional selectors */
+.cdk-overlay-container .mat-mdc-snack-bar-container.acontplus-snackbar-success {
+  background-color: #4caf50 !important;
+  color: white !important;
+}
+
+.cdk-overlay-container .acontplus-snackbar-success .mat-mdc-snack-bar-container {
+  background-color: #4caf50 !important;
+  color: white !important;
+}
+
+/* Error - Additional selectors */
+.cdk-overlay-container .mat-mdc-snack-bar-container.acontplus-snackbar-error {
+  background-color: #f44336 !important;
+  color: white !important;
+}
+
+.cdk-overlay-container .acontplus-snackbar-error .mat-mdc-snack-bar-container {
+  background-color: #f44336 !important;
+  color: white !important;
+}
+
+/* Warning - Additional selectors */
+.cdk-overlay-container .mat-mdc-snack-bar-container.acontplus-snackbar-warning {
+  background-color: #ff9800 !important;
+  color: white !important;
+}
+
+.cdk-overlay-container .acontplus-snackbar-warning .mat-mdc-snack-bar-container {
+  background-color: #ff9800 !important;
+  color: white !important;
+}
+
+/* Info - Additional selectors */
+.cdk-overlay-container .mat-mdc-snack-bar-container.acontplus-snackbar-info {
+  background-color: #2196f3 !important;
+  color: white !important;
+}
+
+.cdk-overlay-container .acontplus-snackbar-info .mat-mdc-snack-bar-container {
+  background-color: #2196f3 !important;
+  color: white !important;
+}
+
+/* Force override any Material theme colors */
+.cdk-overlay-container [class*='acontplus-snackbar-'] {
+  .mat-mdc-snack-bar-container {
+    background: inherit !important;
+    color: inherit !important;
+  }
+
+  .mdc-snackbar__surface {
+    background: inherit !important;
+    color: inherit !important;
+  }
+
+  .mdc-snackbar__label,
+  .mat-mdc-snack-bar-label {
+    color: inherit !important;
+  }
+}

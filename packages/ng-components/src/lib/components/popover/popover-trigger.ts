@@ -314,9 +314,18 @@ export class AcpPopoverTrigger implements AfterContentInit, OnDestroy {
     const overlayConfig = overlayRef.getConfig();
 
     this._setPosition(overlayConfig.positionStrategy as FlexibleConnectedPositionStrategy);
+
+    // Configure backdrop based on trigger event and user preference
     if (this.popover.triggerEvent === 'click') {
       overlayConfig.hasBackdrop = this.popover.hasBackdrop ?? true;
+      overlayConfig.backdropClass = this.popover.backdropClass;
+    } else if (this.popover.triggerEvent === 'hover') {
+      // For hover events, backdrop must be disabled to prevent flickering
+      // The backdrop interferes with mouse events and causes infinite open/close cycles
+      overlayConfig.hasBackdrop = false;
+      // Note: User's hasBackdrop setting is ignored for hover to prevent UX issues
     }
+
     overlayRef.attach(this._getPortal());
 
     if (this.popover.lazyContent) {

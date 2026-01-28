@@ -36,7 +36,7 @@ export interface AlertDialogOptions {
   backdropClass?: string;
 
   // ===== Layout Configuration =====
-  layout?: 'default' | 'modern' | 'toast'; // Nuevo: tipo de layout
+  layout?: 'default' | 'modern'; // Tipo de layout
   iconPosition?: 'left' | 'center' | 'top'; // Posición del icono
   contentAlignment?: 'left' | 'center' | 'right'; // Alineación del contenido
   actionsAlignment?: 'start' | 'center' | 'end'; // Alineación específica de los botones
@@ -51,17 +51,13 @@ export interface AlertDialogOptions {
   animation?: 'fade' | 'slide' | 'bounce' | 'zoom' | 'none';
   animationDuration?: number; // en milisegundos
 
-  // ===== Toast Mode =====
-  autoClose?: boolean; // Auto cerrar en modo toast
-  progressBar?: boolean; // Barra de progreso en modo toast
-
   // ===== Custom Component Support =====
   component?: Type<any>;
   componentProps?: Record<string, any>;
 
   // ===== Z-Index and Priority =====
   forceToTop?: boolean; // Forzar que este diálogo esté siempre encima de todos
-  dialogType?: DialogType; // Tipo de diálogo para manejo de z-index (normal, alert, toast)
+  dialogType?: DialogType; // Tipo de diálogo para manejo de z-index (normal, alert)
   verticalButtons?: boolean;
   fullWidthButtons?: boolean;
   reverseButtons?: boolean;
@@ -199,7 +195,6 @@ export class AlertDialogService {
     allowMultiple: false, // Por defecto no permitir múltiples alerts
     forceToTop: true, // Por defecto los alerts siempre van encima
     dialogType: 'alert', // Por defecto usar el tipo alert (z-index alto)
-    // Nuevas opciones por defecto
     layout: 'modern',
     iconPosition: 'left',
     contentAlignment: 'left',
@@ -208,8 +203,6 @@ export class AlertDialogService {
     closeButtonPosition: 'top-right',
     animation: 'fade',
     animationDuration: 300,
-    autoClose: true,
-    progressBar: true,
   };
 
   /**
@@ -269,30 +262,8 @@ export class AlertDialogService {
       this.closeAllAlertDialogs();
     }
 
-    // Configuración especial para modo toast
-    if (mergedOptions.layout === 'toast') {
-      mergedOptions.width = mergedOptions.width || '350px';
-      mergedOptions.showConfirmButton = mergedOptions.showConfirmButton ?? false;
-      mergedOptions.timer = mergedOptions.timer || 4000;
-      mergedOptions.timerProgressBar = mergedOptions.progressBar ?? true;
-
-      // Si no se especificó position, usar por defecto para toasts
-      if (!mergedOptions.position) {
-        mergedOptions.position = 'top-end'; // Por defecto top-right para toasts
-      }
-
-      mergedOptions.disableClose = false;
-      mergedOptions.animation = mergedOptions.animation || 'slide';
-      mergedOptions.dialogType = 'toast'; // Los toasts usan el z-index más alto
-      // Configuración específica para toasts no-intrusivos
-      mergedOptions.closeOnBackdropClick = false; // No hay backdrop en toasts
-      mergedOptions.allowEscapeKey = false; // ESC no debe cerrar toasts
-      mergedOptions.allowMultiple = true; // Permitir múltiples toasts
-    }
-
     // Determinar el tipo de diálogo para z-index
-    const dialogType: DialogType =
-      mergedOptions.dialogType || (mergedOptions.layout === 'toast' ? 'toast' : 'alert');
+    const dialogType: DialogType = mergedOptions.dialogType || 'alert';
 
     // Calcular posición del diálogo
     const position = this.getDialogPosition(mergedOptions.position || 'center');
@@ -310,7 +281,7 @@ export class AlertDialogService {
       closeOnNavigation: true,
       autoFocus: mergedOptions.focusConfirm !== false,
       restoreFocus: true,
-      hasBackdrop: mergedOptions.layout !== 'toast', // Los toasts NO tienen backdrop
+      hasBackdrop: true,
     });
 
     // Trackear este AlertDialog
@@ -500,33 +471,6 @@ export class AlertDialogService {
   }
 
   /**
-   * Toast notification (auto-cierre, posición personalizada, no-intrusivo)
-   */
-  toast(options: string | AlertDialogOptions): Promise<AlertDialogResult> {
-    const opts = typeof options === 'string' ? { message: options } : options;
-
-    return this.fire({
-      // Valores por defecto que pueden ser sobrescritos
-      timer: 3000,
-      showConfirmButton: false,
-      position: 'bottom-start', // Valor por defecto
-      width: '350px',
-      layout: 'toast', // Usar layout en lugar de toastMode
-      dialogType: 'toast',
-      forceToTop: false,
-      allowMultiple: true,
-      disableClose: true,
-      closeOnBackdropClick: false,
-      allowEscapeKey: false,
-      allowEnterKey: false,
-      autoClose: true,
-      progressBar: true,
-      // Los valores del usuario sobrescriben los por defecto
-      ...opts,
-    });
-  }
-
-  /**
    * Alerta crítica que siempre aparece encima de todo
    */
   critical(options: string | Omit<AlertDialogOptions, 'forceToTop'>): Promise<AlertDialogResult> {
@@ -571,20 +515,6 @@ export class AlertDialogService {
     this.openAlertDialogs = [];
   }
 
-  /**
-   * Cerrar solo los toasts activos (mantener otros diálogos abiertos)
-   */
-  closeAllToasts(): void {
-    this.zIndexService.closeAllToasts();
-  }
-
-  /**
-   * Obtener el número de toasts activos
-   */
-  getActiveToastCount(): number {
-    return this.zIndexService.getActiveToastCount();
-  }
-
   private getDialogPosition(position: AlertPosition): any {
     const positions: Record<AlertPosition, any> = {
       top: { top: '20px' },
@@ -624,11 +554,6 @@ export class AlertDialogService {
     // Agregar clases para alineación de contenido
     if (options.contentAlignment) {
       classes.push(`content-${options.contentAlignment}`);
-    }
-
-    // Agregar clase para modo toast
-    if (options.layout === 'toast') {
-      classes.push('toast-mode');
     }
 
     // Agregar clase para animación

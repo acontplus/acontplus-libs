@@ -7,6 +7,18 @@
   border-radius: 16px;
 }
 
+// Dark theme overrides
+body.dark-theme,
+[data-theme='dark'] {
+  .acp-alert-dialog-title {
+    color: var(--mat-sys-on-surface, #e6e0e9);
+  }
+
+  .acp-alert-message {
+    color: var(--mat-sys-on-surface-variant, #cac4d0);
+  }
+}
+
 /* ===== ALERT HEADER ===== */
 .acp-alert-header {
   display: flex;
@@ -26,7 +38,6 @@
   font-size: 1rem;
   font-weight: 600;
   line-height: 1.2;
-  color: #1a1a1a;
   text-align: left;
 }
 
@@ -39,7 +50,7 @@
     margin: 0;
     font-size: 16px;
     line-height: 1.4;
-    color: #666;
+    color: var(--mat-sys-on-surface-variant, #666);
   }
 }
 
@@ -246,27 +257,55 @@
 
 /* ===== ICON COLORS ===== */
 .icon-success mat-icon {
-  color: #10b981;
+  color: var(--mat-sys-success, #10b981);
 }
 
 .icon-error mat-icon {
-  color: #ef4444;
+  color: var(--mat-sys-error, #ef4444);
 }
 
 .icon-warning mat-icon {
-  color: #f59e0b;
+  color: var(--mat-sys-warning, #f59e0b);
 }
 
 .icon-info mat-icon {
-  color: #3b82f6;
+  color: var(--mat-sys-primary, #3b82f6);
 }
 
 .icon-question mat-icon {
-  color: #8b5cf6;
+  color: var(--mat-sys-secondary, #8b5cf6);
 }
 
 .icon-delete mat-icon {
-  color: #ef4444;
+  color: var(--mat-sys-error, #ef4444);
+}
+
+// Dark theme icon color adjustments
+body.dark-theme,
+[data-theme='dark'] {
+  .icon-success mat-icon {
+    color: var(--mat-sys-success, #34d399);
+  }
+
+  .icon-error mat-icon {
+    color: var(--mat-sys-error, #f87171);
+  }
+
+  .icon-warning mat-icon {
+    color: var(--mat-sys-warning, #fbbf24);
+  }
+
+  .icon-info mat-icon {
+    color: var(--mat-sys-primary, #60a5fa);
+  }
+
+  .icon-question mat-icon {
+    color: var(--mat-sys-secondary, #a78bfa);
+  }
+
+  .icon-delete mat-icon {
+    color: var(--mat-sys-error, #f87171);
+  }
 }
 
 /* ===== LEGACY STYLES ===== */
@@ -294,15 +333,15 @@
 }
 
 .cancel-button {
-  color: #333;
+  color: var(--mat-sys-on-surface, #333);
 }
 
 .alert-dialog-footer {
   margin: 0 24px 24px 24px;
   padding-top: 1rem;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid var(--mat-sys-outline-variant, #e0e0e0);
   font-size: 0.875rem;
-  color: #666;
+  color: var(--mat-sys-on-surface-variant, #666);
 }
 
 /* Drag functionality styles */

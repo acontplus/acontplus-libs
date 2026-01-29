@@ -1,6 +1,3 @@
-/* Snackbar Theme Styles with Maximum Specificity */
-
-/* Base styles for all snackbars - targeting the overlay container directly */
 .cdk-overlay-container .cdk-overlay-pane .mat-mdc-snack-bar-container.acontplus-snackbar {
   border-radius: 8px !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
@@ -17,7 +14,6 @@
   }
 }
 
-/* Additional targeting for Material 17+ and fallback */
 .cdk-overlay-container .mat-mdc-snack-bar-container.acontplus-snackbar {
   border-radius: 8px !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
@@ -27,7 +23,6 @@
   overflow: hidden !important;
 }
 
-/* Fallback for older versions */
 .cdk-overlay-container .acontplus-snackbar .mat-mdc-snack-bar-container {
   border-radius: 8px !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;

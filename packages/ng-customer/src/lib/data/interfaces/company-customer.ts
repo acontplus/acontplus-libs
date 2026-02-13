@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { CompanyCustomerFormDataResult } from '../models';
 
-export interface ICompanyCustomerService {
+export interface ICompanyCustomerHttp {
   getFormData(): Observable<any>;
   list(params: any): Observable<{ data: any[]; pagination: { totalRecords: number } }>;
   create(customer: any): Observable<any>;

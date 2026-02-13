@@ -8,7 +8,9 @@
     "@angular/common": "^21.0.0",
     "@angular/core": "^21.0.0",
     "@angular/material": "^21.0.0",
-    "tabulator-tables": "^6.3.1"
+    "tabulator-tables": "^6.3.1",
+    "@formkit/tempo": "1.0.0",
+    "ngx-datex": "1.0.5"
   },
   "sideEffects": true,
   "main": "fesm2022/acontplus-ng-components.mjs",

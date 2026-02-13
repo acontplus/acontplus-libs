@@ -1,14 +1,14 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
-import { ICompanyCustomerService } from '../interfaces/company-customer';
+import { ICompanyCustomerHttp } from '../interfaces/company-customer';
 import { CompanyCustomerDefaultMapper } from '../mappers/company-customer-default-mapper';
 import { COMPANY_CUSTOMER_MAPPER } from '../customer-token';
 
 @Injectable({
   providedIn: 'root',
 })
-export class CompanyCustomerHttp implements ICompanyCustomerService {
+export class CompanyCustomerHttp implements ICompanyCustomerHttp {
   private apiUrl = '/FactElect/CompanyCustomer/';
   private http = inject(HttpClient);
   private mapper =

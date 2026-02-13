@@ -17,10 +17,10 @@ export interface CompanyCustomerListDto {
 }
 
 export class CompanyCustomerFormDataResult {
-  tipoIdentificacion: [] = [];
+  identificationTypes: any[] = [];
   tipoContribuyentes: [] = [];
   tiempoCreditos: [] = [];
-  ciudades: [] = [];
+  cities: any[] = [];
   tiposCliente: [] = [];
   empresas: [] = [];
   cargos: [] = [];

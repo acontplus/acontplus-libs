@@ -4,12 +4,12 @@ import { Observable, of } from 'rxjs';
 import {
   COMPANY_CUSTOMER_MAPPER,
   CompanyCustomerDefaultMapper,
-  ICompanyCustomerService,
+  ICompanyCustomerHttp,
 } from '@acontplus/ng-customer';
 import { map } from 'rxjs/operators';
 
 @Injectable()
-export class PosCompanyCustomerService implements ICompanyCustomerService {
+export class PosCompanyCustomerService implements ICompanyCustomerHttp {
   getFormData(): Observable<any> {
     throw new Error('Method not implemented.');
   }

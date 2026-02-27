@@ -2,12 +2,13 @@ import { AdvancedDialogService, Button, DataGrid, DataGridColumn } from '@acontp
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { CompanyCustomerCreate } from '../company-customer-create/company-customer-create';
 import { COMPANY_CUSTOMER_HTTP_TOKEN, CompanyCustomerList } from '@acontplus/ng-customer';
+import { AcpAlert } from '@acontplus/ng-components';
 
 @Component({
   selector: 'app-company-customer-example',
   templateUrl: './app.html',
   styleUrl: './app.scss',
-  imports: [DataGrid, Button, CompanyCustomerList],
+  imports: [DataGrid, Button, CompanyCustomerList, AcpAlert],
 })
 export class App implements OnInit {
   dgSvc = inject(AdvancedDialogService);

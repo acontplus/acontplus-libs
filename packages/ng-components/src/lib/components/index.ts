@@ -1,3 +1,4 @@
+export * from './alert';
 export * from './cards';
 export * from './dialog-wrapper';
 export * from './dynamic-select';

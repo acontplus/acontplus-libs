@@ -1,6 +1,5 @@
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   ViewEncapsulation,
   WritableSignal,
@@ -8,7 +7,6 @@ import {
   input,
   output,
   signal,
-  inject,
 } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 
@@ -32,8 +30,6 @@ export type AcpAlertType = 'default' | 'info' | 'success' | 'warning' | 'danger'
   imports: [MatIconButton],
 })
 export class AcpAlert {
-  private _changeDetectorRef = inject(ChangeDetectorRef);
-
   /** Signal to control visibility */
   visible: WritableSignal<boolean> = signal(true);
 
@@ -62,12 +58,10 @@ export class AcpAlert {
   /** Programmatically show the alert */
   show(): void {
     this.visible.set(true);
-    this._changeDetectorRef.markForCheck();
   }
 
   _onClosed(): void {
     this.visible.set(false);
-    this._changeDetectorRef.markForCheck();
     this.closed.emit(this);
   }
 }

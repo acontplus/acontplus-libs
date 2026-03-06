@@ -6,15 +6,10 @@ export class CompanyCustomerDefaultMapper implements ICompanyCustomerMapper {
     const result = new CompanyCustomerFormDataResult();
     if (response.code === '1') {
       const mainData = JSON.parse(response.payload as string);
-      let cities: any[] = [];
-      let identificationTypes: any[] = [];
-      if (Array.isArray(mainData)) {
-        cities = mainData[3];
-        identificationTypes = mainData[0];
-      } else {
-        cities = mainData.cities;
-        identificationTypes = mainData.identificationTypes;
-      }
+      const cities: any[] = Array.isArray(mainData) ? mainData[3] : mainData.cities;
+      const identificationTypes: any[] = Array.isArray(mainData)
+        ? mainData[0]
+        : mainData.identificationTypes;
       console.log(mainData);
       result.identificationTypes = identificationTypes.map(item => ({
         id: item.idTipoIdentificacion,

@@ -108,14 +108,9 @@ export class CompanyCustomerForm implements OnInit {
   ngOnInit(): void {
     this.buildForm();
     this.loadFormData().subscribe(response => {
-      let mainDataForm = {} as CompanyCustomerFormDataResult;
-      // const dataCompanyCustomer = {} as any;
-      if (Array.isArray(response)) {
-        mainDataForm = response[0].data;
-        // dataCompanyCustomer = response[1];
-      } else {
-        mainDataForm = response;
-      }
+      const mainDataForm: CompanyCustomerFormDataResult = Array.isArray(response)
+        ? response[0].data
+        : response;
       console.log(response);
 
       this.identificationTypes.set(mainDataForm.identificationTypes);

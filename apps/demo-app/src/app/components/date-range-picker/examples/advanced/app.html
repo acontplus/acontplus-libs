@@ -17,6 +17,22 @@
           <h4>Fechas</h4>
           <div class="config-row">
             <mat-form-field appearance="outline">
+              <mat-label>Formato de Fecha</mat-label>
+              <mat-select [ngModel]="dateFormat()" (ngModelChange)="dateFormat.set($event)">
+                <mat-option value="DD/MM/YYYY">DD/MM/YYYY (Español - 25/12/2024)</mat-option>
+                <mat-option value="MM/DD/YYYY">MM/DD/YYYY (Americano - 12/25/2024)</mat-option>
+                <mat-option value="YYYY-MM-DD">YYYY-MM-DD (ISO - 2024-12-25)</mat-option>
+                <mat-option value="DD-MM-YYYY">DD-MM-YYYY (Guiones - 25-12-2024)</mat-option>
+                <mat-option value="DD.MM.YYYY">DD.MM.YYYY (Puntos - 25.12.2024)</mat-option>
+                <mat-option value="YYYY/MM/DD">YYYY/MM/DD (Japonés - 2024/12/25)</mat-option>
+                <mat-option value="DD MMM YYYY">DD MMM YYYY (Texto - 25 Dic 2024)</mat-option>
+                <mat-option value="MMM DD, YYYY">MMM DD, YYYY (Inglés - Dec 25, 2024)</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="config-row">
+            <mat-form-field appearance="outline">
               <mat-label>Fecha Inicio</mat-label>
               <input
                 matInput
@@ -127,6 +143,21 @@
           <h4>Configuración de Tiempo</h4>
           <div class="config-row">
             <mat-form-field appearance="outline">
+              <mat-label>Formato de Tiempo</mat-label>
+              <mat-select
+                [ngModel]="timeFormat()"
+                (ngModelChange)="timeFormat.set($event)"
+                [disabled]="!timePicker()"
+              >
+                <mat-option value="HH:mm">HH:mm (24h - 14:30)</mat-option>
+                <mat-option value="hh:mm A">hh:mm A (12h - 02:30 PM)</mat-option>
+                <mat-option value="HH:mm:ss">HH:mm:ss (24h con segundos - 14:30:45)</mat-option>
+                <mat-option value="hh:mm:ss A"
+                  >hh:mm:ss A (12h con segundos - 02:30:45 PM)</mat-option
+                >
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
               <mat-label>Incremento (minutos)</mat-label>
               <input
                 matInput
@@ -137,6 +168,8 @@
                 max="60"
               />
             </mat-form-field>
+          </div>
+          <div class="config-row">
             <mat-form-field appearance="outline">
               <mat-label>Posición del Checkbox</mat-label>
               <mat-select
@@ -217,15 +250,14 @@
         <!-- DateRangePicker con configuración dinámica -->
         <div class="picker-container">
           <acp-date-range-picker
+            [timePicker]="timePicker()"
             [options]="pickerOptions()"
             [showCheckbox]="true"
             [checkboxChecked]="isSelected"
-            [checkboxReadonly]="false"
             [checkboxPosition]="checkboxPosition()"
             [showCalendarButton]="true"
             [inputReadonly]="false"
             label="Configuración Personalizada"
-            hint="Ajusta las opciones en el panel izquierdo"
             placeholderText="Selecciona fechas con configuración personalizada"
             (dateRangeSelected)="onDateRangeSelected($event)"
             (checkboxChange)="onCheckboxChange($event)"
@@ -237,12 +269,22 @@
           <h4>Resultado de la Selección:</h4>
           <div class="result-display">
             <div class="result-item">
+              <strong>Formato configurado:</strong>
+              <span>{{ timePicker() ? dateFormat() + ' ' + timeFormat() : dateFormat() }}</span>
+            </div>
+            <div class="result-item">
               <strong>Fecha inicio:</strong>
-              <span>{{ selectedStartDate | date:'dd/MM/yyyy HH:mm' }}</span>
+              <span
+                >{{ selectedStartDate | date:(timePicker() ? 'dd/MM/yyyy HH:mm:ss' : 'dd/MM/yyyy')
+                }}</span
+              >
             </div>
             <div class="result-item">
               <strong>Fecha fin:</strong>
-              <span>{{ selectedEndDate | date:'dd/MM/yyyy HH:mm' }}</span>
+              <span
+                >{{ selectedEndDate | date:(timePicker() ? 'dd/MM/yyyy HH:mm:ss' : 'dd/MM/yyyy')
+                }}</span
+              >
             </div>
             <div class="result-item">
               <strong>Etiqueta:</strong>
@@ -258,9 +300,21 @@
         <!-- Configuración para Copiar -->
         <div class="config-copy-section">
           <h4>Tu Configuración para Copiar:</h4>
+          @if (timePicker()) {
+
+          <div class="format-info">
+            <mat-icon>info</mat-icon>
+            <span>
+              <strong>Formato combinado:</strong>
+              Cuando el time picker está habilitado, el formato final es:
+              <code>{{ dateFormat() }} {{ timeFormat() }}</code>
+            </span>
+          </div>
+          }
+
           <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Código HTML</mat-label>
-            <textarea matInput readonly [value]="getConfigurationCode()" rows="15"></textarea>
+            <mat-label>Código HTML y Configuración</mat-label>
+            <textarea matInput readonly [value]="getConfigurationCode()" rows="20"></textarea>
           </mat-form-field>
         </div>
       </div>

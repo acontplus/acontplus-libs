@@ -28,14 +28,13 @@ export class CustomerSriService implements ICustomerSriService {
     const idNumber = new IdentificationNumberVo(identificationNumber);
     const id = idNumber.getId();
 
-    let endpoint = '';
-    if (idNumber.isValidRuc()) {
-      endpoint = `GetRucSRI?Ruc=${id}`;
-    } else if (idNumber.isValidCedula()) {
-      endpoint = `GetCedulaSri?Ruc=${id}`;
-    } else {
-      throw new Error('Número de identificación inválido para SRI');
-    }
+    const endpoint = idNumber.isValidRuc()
+      ? `GetRucSRI?Ruc=${id}`
+      : idNumber.isValidCedula()
+        ? `GetCedulaSri?Ruc=${id}`
+        : (() => {
+            throw new Error('Número de identificación inválido para SRI');
+          })();
 
     // Returning Observable instead of Promise to be more Angular-idiomatic
     return this.http.get<any>(`${this.url}${endpoint}`).pipe(

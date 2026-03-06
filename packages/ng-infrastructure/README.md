@@ -260,27 +260,6 @@ export class BusinessService {
 }
 ```
 
-### Tenant Service
-
-Multi-tenant application support.
-
-```typescript
-import { TenantInfo } from '@acontplus/ng-infrastructure';
-
-@Injectable({ providedIn: 'root' })
-export class MultiTenantService {
-  constructor(private tenantInfo: TenantInfo) {}
-
-  getCurrentTenant(): string {
-    return this.tenantInfo.getTenantId();
-  }
-
-  setTenant(tenantId: string): void {
-    this.tenantInfo.setTenantId(tenantId);
-  }
-}
-```
-
 ## Use Cases (CQRS Pattern)
 
 ### Base Use Case

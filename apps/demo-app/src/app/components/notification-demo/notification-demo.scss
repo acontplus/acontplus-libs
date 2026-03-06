@@ -1,0 +1,494 @@
+.demo-container {
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.demo-card {
+  margin-bottom: 20px;
+
+  mat-card-header {
+    margin-bottom: 20px;
+
+    mat-card-title {
+      font-size: 28px;
+      font-weight: 600;
+      color: #1976d2;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    mat-card-subtitle {
+      font-size: 16px;
+      color: #666;
+      margin-top: 8px;
+    }
+  }
+}
+
+.config-panel {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 24px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 20px;
+    font-weight: 600;
+  }
+}
+
+.config-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  align-items: start;
+
+  .timer-config {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    mat-slide-toggle {
+      margin-bottom: 8px;
+
+      ::ng-deep .mdc-switch {
+        --mdc-switch-selected-track-color: #1976d2;
+        --mdc-switch-selected-handle-color: #1976d2;
+      }
+    }
+  }
+}
+
+// Tab content styling
+.tab-content {
+  padding: 24px 0;
+}
+
+h3 {
+  color: #333;
+  font-size: 20px;
+  font-weight: 600;
+  margin: 30px 0 20px 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #e0e0e0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  &:first-of-type {
+    margin-top: 0;
+  }
+}
+
+h4 {
+  color: #555;
+  font-size: 16px;
+  font-weight: 600;
+  margin: 20px 0 12px 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.button-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 30px;
+
+  button {
+    height: 48px;
+    font-weight: 500;
+    text-transform: none;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    &.warning-button {
+      background-color: #ff9800 !important;
+      color: white !important;
+
+      &:hover {
+        background-color: #f57c00 !important;
+      }
+    }
+  }
+}
+
+// Info panels
+.info-panel {
+  background: #e8f4fd;
+  padding: 20px;
+  border-radius: 8px;
+  margin: 20px 0;
+  border-left: 4px solid #2196f3;
+
+  h4 {
+    margin-top: 0;
+    color: #1565c0;
+  }
+
+  p {
+    margin-bottom: 12px;
+    color: #333;
+    line-height: 1.5;
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 20px;
+    color: #555;
+
+    li {
+      margin-bottom: 6px;
+      line-height: 1.4;
+
+      strong {
+        color: #1565c0;
+      }
+    }
+  }
+}
+
+.provider-info {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 24px;
+  border-radius: 12px;
+  margin-top: 30px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+
+  h3 {
+    margin-top: 0;
+    margin-bottom: 16px;
+    color: white;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+    font-size: 18px;
+  }
+
+  .provider-details {
+    p {
+      margin-bottom: 16px;
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 400;
+      line-height: 1.5;
+    }
+
+    .features-list {
+      h4 {
+        color: rgba(255, 255, 255, 0.95);
+        margin-bottom: 12px;
+      }
+
+      ul {
+        margin: 0;
+        padding-left: 20px;
+        color: rgba(255, 255, 255, 0.85);
+
+        li {
+          margin-bottom: 6px;
+          line-height: 1.4;
+        }
+      }
+    }
+  }
+}
+
+// Messages reference
+.messages-reference {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 20px;
+  border: 1px solid #e9ecef;
+
+  h4 {
+    margin-top: 0;
+    color: #495057;
+  }
+}
+
+.messages-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  mat-chip {
+    background-color: #e3f2fd !important;
+    color: #1565c0 !important;
+    font-size: 12px;
+
+    strong {
+      color: #0d47a1 !important;
+    }
+  }
+}
+
+// Tab group customization
+::ng-deep .mat-mdc-tab-group {
+  .mat-mdc-tab-header {
+    border-bottom: 2px solid #e0e0e0;
+  }
+
+  .mat-mdc-tab {
+    min-width: 120px;
+
+    .mdc-tab__text-label {
+      font-weight: 500;
+    }
+  }
+
+  .mat-mdc-tab-body-wrapper {
+    padding-top: 0;
+  }
+}
+
+// Form field customization
+mat-form-field {
+  width: 100%;
+
+  .mat-mdc-form-field-subscript-wrapper {
+    margin-top: 4px;
+  }
+
+  .mat-mdc-form-field-hint {
+    font-size: 12px;
+    color: #666;
+  }
+}
+
+// Custom button colors
+button[color='primary'] {
+  background-color: #1976d2 !important;
+  color: white !important;
+
+  &:hover {
+    background-color: #1565c0 !important;
+  }
+}
+
+button[color='warn'] {
+  background-color: #d32f2f !important;
+  color: white !important;
+
+  &:hover {
+    background-color: #c62828 !important;
+  }
+}
+
+button[color='accent'] {
+  background-color: #7b1fa2 !important;
+  color: white !important;
+
+  &:hover {
+    background-color: #6a1b9a !important;
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .demo-container {
+    padding: 12px;
+  }
+
+  .config-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .button-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .demo-card {
+    mat-card-header {
+      mat-card-title {
+        font-size: 24px;
+      }
+
+      mat-card-subtitle {
+        font-size: 14px;
+      }
+    }
+  }
+
+  .config-panel {
+    padding: 16px;
+  }
+
+  .provider-info {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .demo-container {
+    padding: 8px;
+  }
+
+  .button-grid button {
+    height: 44px;
+    font-size: 13px;
+  }
+
+  .messages-chips {
+    mat-chip {
+      font-size: 11px;
+    }
+  }
+}
+
+// Animation for buttons
+@keyframes buttonPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.button-grid button:hover {
+  animation: buttonPulse 0.3s ease-in-out;
+}
+
+// Loading state for buttons (if needed)
+.button-loading {
+  opacity: 0.7;
+  pointer-events: none;
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    margin: auto;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+// Snackbar configuration section
+.snackbar-config-section {
+  background: #f0f8ff;
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 16px;
+  border: 1px solid #b3d9ff;
+  grid-column: 1 / -1; // Span full width in grid
+
+  h4 {
+    margin-top: 0;
+    margin-bottom: 16px;
+    color: #1565c0;
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    &::before {
+      content: '⚙️';
+      font-size: 18px;
+    }
+  }
+
+  .position-config {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+
+    mat-form-field {
+      .mat-mdc-form-field-subscript-wrapper {
+        margin-top: 2px;
+      }
+    }
+  }
+
+  .feature-toggles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+
+    mat-slide-toggle {
+      ::ng-deep {
+        .mdc-switch {
+          --mdc-switch-selected-track-color: #1976d2;
+          --mdc-switch-selected-handle-color: #1976d2;
+          --mdc-switch-unselected-track-color: #e0e0e0;
+          --mdc-switch-unselected-handle-color: #fafafa;
+        }
+
+        .mdc-form-field {
+          color: #333;
+          font-weight: 500;
+        }
+      }
+
+      &:hover {
+        ::ng-deep .mdc-switch:not(.mdc-switch--disabled) {
+          --mdc-switch-unselected-handle-color: #f5f5f5;
+        }
+      }
+    }
+  }
+
+  // Responsive adjustments
+  @media (max-width: 768px) {
+    padding: 16px;
+
+    .position-config {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .feature-toggles {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+  }
+}
+
+// Enhanced config grid to accommodate new section
+.config-grid {
+  .snackbar-config-section {
+    // Ensure it spans full width on larger screens
+    @media (min-width: 769px) {
+      grid-column: 1 / -1;
+    }
+  }
+}

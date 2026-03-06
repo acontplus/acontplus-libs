@@ -13,7 +13,6 @@
         [checkboxChecked]="isSelected"
         [checkboxPosition]="checkboxPosition"
         label="Seleccionar rango de fechas"
-        hint="Usa los rangos predefinidos o selecciona fechas personalizadas"
         placeholderText="Selecciona un rango de fechas"
         calendarIcon="date_range"
         (dateRangeSelected)="onDateRangeSelected($event)"
@@ -26,15 +25,15 @@
         <div class="result-grid">
           <div class="result-item">
             <strong>Fecha inicio:</strong>
-            <span>{{ selectedStartDate | date:'dd/MM/yyyy' }}</span>
+            <span>{{ selectedStartDate() | date:'dd/MM/yyyy' }}</span>
           </div>
           <div class="result-item">
             <strong>Fecha fin:</strong>
-            <span>{{ selectedEndDate | date:'dd/MM/yyyy' }}</span>
+            <span>{{ selectedEndDate() | date:'dd/MM/yyyy' }}</span>
           </div>
           <div class="result-item">
             <strong>Etiqueta:</strong>
-            <span>{{ selectedLabel || 'Personalizado' }}</span>
+            <span>{{ selectedLabel() || 'Personalizado' }}</span>
           </div>
           <div class="result-item">
             <strong>Seleccionado:</strong>

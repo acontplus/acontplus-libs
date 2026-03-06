@@ -1,0 +1,9 @@
+<p>
+  El <code>acp-popover</code> es un componente que muestra contenido en un panel superpuesto que
+  puede activarse mediante eventos hover o click. Soporta varias opciones de posicionamiento y
+  proporciona configuración flexible para diferentes casos de uso.
+</p>
+@if (route.data | async; as data) { @for (exampleData of data["examples"]; track exampleData) {
+<app-doc-heading [text]="exampleData.title"></app-doc-heading>
+<app-example-viewer [exampleData]="exampleData"></app-example-viewer>
+} }

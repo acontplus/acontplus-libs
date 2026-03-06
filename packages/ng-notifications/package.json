@@ -1,13 +1,13 @@
 {
   "name": "@acontplus/ng-notifications",
-  "version": "2.0.2",
+  "version": "2.0.5",
   "description": "Comprehensive Angular notification system with toast notifications (ngx-toastr), alerts (SweetAlert2), snackbars, theme detection, notification providers, and configurable styling. Supports multiple notification types with Angular Material integration.",
   "peerDependencies": {
     "@acontplus/ui-kit": "^1.0.2",
     "@angular/common": "^21.0.0",
     "@angular/core": "^21.0.0",
     "@angular/material": "^21.0.0",
-    "ngx-toastr": "^19.1.0",
+    "ngx-toastr": "^20.0.0",
     "sweetalert2": "^11.26.2",
     "rxjs": "^7.8.2"
   },
@@ -55,12 +55,12 @@
   "author": "Ivan Paz <ifer343@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Acontplus-S-A-S/acontplus-libs/issues"
+    "url": "https://github.com/acontplus/acontplus-libs/issues"
   },
-  "homepage": "https://github.com/Acontplus-S-A-S/acontplus-libs#readme",
+  "homepage": "https://github.com/acontplus/acontplus-libs#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Acontplus-S-A-S/acontplus-libs.git"
+    "url": "git+https://github.com/acontplus/acontplus-libs.git"
   },
   "release": {
     "branches": [

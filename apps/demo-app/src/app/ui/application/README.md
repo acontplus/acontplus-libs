@@ -120,7 +120,7 @@ export class MockApplicationService {
     /* Material Design modules */
   ],
   templateUrl: './application.component.html',
-  styleUrls: ['./application.component.scss'],
+  styleUrls: ['./application.component.styles'],
 })
 export class ApplicationComponent implements OnInit, OnDestroy {
   // Comprehensive application management interface

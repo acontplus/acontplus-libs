@@ -5,6 +5,9 @@
 @use './styles/reboot';
 @use 'highlight.js/styles/github-dark.css';
 @use 'node_modules/bootstrap/dist/css/bootstrap.min.css';
+
+// Import notification styles
+@import '../../../packages/ng-notifications/src/styles/snackbar-themes.scss';
 $config: (
   color: (
     primary: mat.$azure-palette,

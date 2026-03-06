@@ -1,0 +1,120 @@
+<div class="demo-popover">
+  <div class="demo-controls">
+    <form [formGroup]="popoverForm" class="controls-form">
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Trigger Event</mat-label>
+          <mat-select formControlName="triggerEvent">
+            @for (event of triggerEvents; track event) {
+            <mat-option [value]="event"> {{ event }} </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Position</mat-label>
+          <mat-select formControlName="position" [compareWith]="comparePositions">
+            @for (pos of positions; track pos.value) {
+            <mat-option [value]="pos.value"> {{ pos.label }} </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Enter Delay (ms)</mat-label>
+          <input matInput type="number" formControlName="enterDelay" min="0" max="5000" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Leave Delay (ms)</mat-label>
+          <input matInput type="number" formControlName="leaveDelay" min="0" max="5000" />
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>X Offset (px)</mat-label>
+          <input matInput type="number" formControlName="xOffset" min="-100" max="100" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Y Offset (px)</mat-label>
+          <input matInput type="number" formControlName="yOffset" min="-100" max="100" />
+        </mat-form-field>
+      </div>
+
+      <div class="form-row checkboxes">
+        <mat-checkbox formControlName="hideArrow">Hide Arrow</mat-checkbox>
+        <mat-checkbox formControlName="closeOnPanelClick">Close on Panel Click</mat-checkbox>
+        <mat-checkbox formControlName="closeOnBackdropClick">Close on Backdrop Click</mat-checkbox>
+      </div>
+
+      <div class="form-row checkboxes">
+        <mat-checkbox formControlName="hasBackdrop">Has Backdrop</mat-checkbox>
+        <mat-checkbox formControlName="focusTrapEnabled">Focus Trap Enabled</mat-checkbox>
+      </div>
+    </form>
+  </div>
+
+  <div class="demo-content">
+    <div class="popover-demo-area">
+      <button
+        mat-raised-button
+        color="primary"
+        [acpPopoverTriggerFor]="configPopover"
+        [triggerEvent]="config.triggerEvent"
+        (popoverOpened)="onPopoverOpened()"
+        (popoverClosed)="onPopoverClosed()"
+      >
+        {{ config.triggerEvent === 'hover' ? 'Hover me' : 'Click me' }}
+      </button>
+
+      <acp-popover
+        #configPopover="acpPopover"
+        [triggerEvent]="config.triggerEvent"
+        [position]="config.position"
+        [enterDelay]="config.enterDelay"
+        [leaveDelay]="config.leaveDelay"
+        [xOffset]="config.xOffset"
+        [yOffset]="config.yOffset"
+        [hideArrow]="config.hideArrow"
+        [closeOnPanelClick]="config.closeOnPanelClick"
+        [closeOnBackdropClick]="config.closeOnBackdropClick"
+        [hasBackdrop]="config.hasBackdrop"
+        [focusTrapEnabled]="config.focusTrapEnabled"
+      >
+        <div class="popover-content">
+          <h4>Popover Content</h4>
+          <p>This is a configurable popover example.</p>
+          <p>Current settings:</p>
+          <ul>
+            <li>Trigger: {{ config.triggerEvent }}</li>
+            <li>Position: {{ config.position[0] }} {{ config.position[1] }}</li>
+            <li>Enter Delay: {{ config.enterDelay }}ms</li>
+            <li>Leave Delay: {{ config.leaveDelay }}ms</li>
+          </ul>
+          @if (config.closeOnPanelClick) {
+          <button mat-button color="accent">Click to close</button>
+          }
+        </div>
+      </acp-popover>
+    </div>
+
+    <div class="demo-info">
+      <h3>Configuration</h3>
+      <p>Use the controls above to configure the popover behavior and appearance.</p>
+      <ul>
+        <li><strong>Trigger Event:</strong> How the popover is activated (hover or click)</li>
+        <li><strong>Position:</strong> Where the popover appears relative to the trigger</li>
+        <li><strong>Delays:</strong> Time before showing/hiding the popover</li>
+        <li><strong>Offsets:</strong> Fine-tune positioning with pixel adjustments</li>
+        <li><strong>Arrow:</strong> Toggle the popover's pointing arrow</li>
+        <li><strong>Click Behaviors:</strong> Control how clicking closes the popover</li>
+        <li><strong>Backdrop:</strong> Add an overlay behind the popover</li>
+        <li><strong>Focus Trap:</strong> Keep keyboard focus within the popover</li>
+      </ul>
+    </div>
+  </div>
+</div>

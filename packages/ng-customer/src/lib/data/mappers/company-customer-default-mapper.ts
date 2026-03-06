@@ -1,33 +1,42 @@
-import { CompanyCustomerFormDataResult, ICompanyCustomerMapper } from '@acontplus/ng-customer';
+import { CompanyCustomerFormDataResult } from './../models';
+import { ICompanyCustomerMapper } from './../interfaces';
 
 export class CompanyCustomerDefaultMapper implements ICompanyCustomerMapper {
   toModelFormData(response: any): any {
     const result = new CompanyCustomerFormDataResult();
     if (response.code === '1') {
       const mainData = JSON.parse(response.payload as string);
+      const cities: any[] = Array.isArray(mainData) ? mainData[3] : mainData.cities;
+      const identificationTypes: any[] = Array.isArray(mainData)
+        ? mainData[0]
+        : mainData.identificationTypes;
       console.log(mainData);
-      result.tipoIdentificacion = mainData[0];
+      result.identificationTypes = identificationTypes.map(item => ({
+        id: item.idTipoIdentificacion,
+        code: item.codigo,
+        value: item.descripcion,
+        sriCode: item.codigoSri,
+      }));
       result.tipoContribuyentes = mainData[1];
       result.tiempoCreditos = mainData[2] || [];
-      const ciudades = mainData[3];
 
-      result.ciudades = ciudades.reduce((acc: any, ciudade: any) => {
+      result.cities = cities.reduce((acc: any, ciudade: any) => {
         const dataExists = acc.find((c: any) => c.idProvincia === ciudade.idProvincia);
         if (!dataExists) {
           acc.push({
-            idProvincia: ciudade.idProvincia,
-            nombre: ciudade.provincia,
-            ciudades: [
+            id: ciudade.idProvincia,
+            value: ciudade.provincia,
+            cities: [
               {
-                idCiudad: ciudade.idCiudad,
-                nombre: ciudade.ciudad,
+                id: ciudade.idCiudad,
+                value: ciudade.ciudad,
               },
             ],
           });
         } else {
-          dataExists.ciudades.push({
-            idCiudad: ciudade.idCiudad,
-            nombre: ciudade.ciudad,
+          dataExists.cities.push({
+            id: ciudade.idCiudad,
+            value: ciudade.ciudad,
           });
         }
         return acc;

@@ -34,7 +34,7 @@ participating in this project.
    ```
 4. **Set up the upstream remote**:
    ```bash
-   git remote add upstream https://github.com/Acontplus-S-A-S/acontplus-libs.git
+   git remote add upstream https://github.com/acontplus/acontplus-libs.git
    ```
 
 ## Development Workflow

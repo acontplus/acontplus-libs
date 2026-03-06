@@ -237,14 +237,8 @@ export class CustomerAddEditComponent implements OnInit {
   ngOnInit(): void {
     try {
       this.getLoadData().subscribe(response => {
-        let mainDataForm = {} as any;
-        let dataCompanyCustomer = {} as any;
-        if (Array.isArray(response)) {
-          mainDataForm = response[0].data;
-          dataCompanyCustomer = response[1];
-        } else {
-          mainDataForm = response.data;
-        }
+        const mainDataForm = Array.isArray(response) ? response[0].data : response.data;
+        const dataCompanyCustomer = Array.isArray(response) ? response[1] : null;
 
         this.tiposIdentificacion.set(mainDataForm.tipoIdentificacion);
         this.tiemposCredito.set(mainDataForm.tiempoCreditos);
@@ -316,15 +310,17 @@ export class CustomerAddEditComponent implements OnInit {
         } else {
           this.title = 'Editar Cliente';
           this.btnText.set('Actualizar');
-          this.emails = dataCompanyCustomer.correos;
-          this.telephones = dataCompanyCustomer.telefonos;
-          this.placas.set(dataCompanyCustomer.placas);
-          const { dataInfoCred, ...rest } = dataCompanyCustomer;
-          this.customerForm.patchValue(rest);
-          if (dataInfoCred) {
-            this.customerForm.get('dataInfoCred')?.patchValue(dataInfoCred);
+          if (dataCompanyCustomer) {
+            this.emails = dataCompanyCustomer.correos;
+            this.telephones = dataCompanyCustomer.telefonos;
+            this.placas.set(dataCompanyCustomer.placas);
+            const { dataInfoCred, ...rest } = dataCompanyCustomer;
+            this.customerForm.patchValue(rest);
+            if (dataInfoCred) {
+              this.customerForm.get('dataInfoCred')?.patchValue(dataInfoCred);
+            }
+            this.updateFormControlNumeroIdentificacion(rest.codigoSri);
           }
-          this.updateFormControlNumeroIdentificacion(rest.codigoSri);
         }
       });
     } catch {

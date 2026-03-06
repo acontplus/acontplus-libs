@@ -1,0 +1,108 @@
+<div class="demo-container">
+  <mat-card class="demo-card">
+    <mat-card-header>
+      <mat-card-title>🎨 Alert Dialog Demo</mat-card-title>
+      <mat-card-subtitle>Angular + Material Design</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <!-- 1. Basic Alerts -->
+      <h3>1. Basic Alerts</h3>
+      <div class="button-grid">
+        <button mat-raised-button color="primary" (click)="showSuccess()">Success Alert</button>
+        <button mat-raised-button color="warn" (click)="showError()">Error Alert</button>
+        <button mat-raised-button color="accent" (click)="showInfo()">Info Alert</button>
+      </div>
+
+      <!-- 2. Confirmation Dialogs -->
+      <h3>2. Confirmation Dialogs</h3>
+      <div class="button-grid">
+        <button mat-raised-button color="warn" (click)="showConfirm()">Confirm Dialog</button>
+        <button mat-raised-button color="accent" (click)="showDenyConfirm()">
+          Save/Discard Dialog
+        </button>
+      </div>
+
+      <!-- 3. Input Prompts -->
+      <h3>3. Input Prompts</h3>
+      <div class="button-grid">
+        <button mat-raised-button (click)="showTextPrompt()">Text Input</button>
+        <button mat-raised-button (click)="showEmailPrompt()">Email Input</button>
+      </div>
+
+      <!-- 4. Advanced Usage -->
+      <h3>4. Advanced Usage</h3>
+      <div class="button-grid">
+        <button mat-raised-button (click)="showHtmlContent()">HTML Content</button>
+        <button mat-raised-button (click)="showImageDialog()">Image Dialog</button>
+        <button mat-raised-button (click)="showCustomComponent()">Custom Component</button>
+      </div>
+
+      <!-- 5. Layout Variations -->
+      <h3>5. Layout Variations</h3>
+      <div class="button-grid">
+        <button mat-raised-button (click)="showDefaultLayout()">Default Layout</button>
+        <button mat-raised-button (click)="showModernLayoutLeft()">Modern Left</button>
+        <button mat-raised-button (click)="showModernLayoutCenter()">Modern Center</button>
+        <button mat-raised-button (click)="showModernLayoutRight()">Modern Right</button>
+      </div>
+
+      <!-- 6. Animation Examples -->
+      <h3>6. Animation Examples</h3>
+      <div class="button-grid">
+        <button mat-raised-button (click)="showFadeAnimation()">Fade</button>
+        <button mat-raised-button (click)="showSlideAnimation()">Slide</button>
+        <button mat-raised-button (click)="showBounceAnimation()">Bounce</button>
+        <button mat-raised-button (click)="showZoomAnimation()">Zoom</button>
+      </div>
+
+      <!-- 7. Button Variations -->
+      <h3>7. Button Variations</h3>
+      <div class="button-grid">
+        <button mat-raised-button (click)="showButtonVariants()">Button Variants</button>
+        <button mat-raised-button (click)="showButtonIcons()">Buttons with Icons</button>
+        <button mat-raised-button (click)="showVerticalButtons()">Vertical Buttons</button>
+      </div>
+
+      <!-- 8. Timer and Progress -->
+      <h3>8. Timer and Progress</h3>
+      <div class="button-grid">
+        <button mat-raised-button (click)="showTimerWithProgress()">Auto-close Timer</button>
+        <button mat-raised-button (click)="showTimerWithButton()">Timer with Action</button>
+      </div>
+
+      <!-- 9. Positioning -->
+      <h3>9. Positioning</h3>
+      <div class="button-grid">
+        <button mat-raised-button (click)="showTopPosition()">Top</button>
+        <button mat-raised-button (click)="showBottomPosition()">Bottom</button>
+        <button mat-raised-button (click)="showTopStartPosition()">Top-Left</button>
+        <button mat-raised-button (click)="showBottomEndPosition()">Bottom-Right</button>
+      </div>
+
+      <!-- 10. Advanced Examples -->
+      <h3>10. Advanced Examples</h3>
+      <div class="button-grid">
+        <button mat-raised-button (click)="showMultiStepProcess()">Multi-step Process</button>
+        <button mat-raised-button (click)="showDraggableDialog()">Draggable Dialog</button>
+        <button mat-raised-button (click)="showDraggableWithCustomHandle()">
+          Custom Drag Handle
+        </button>
+        <button mat-raised-button (click)="showGlobalDefaultsExample()">Global Defaults</button>
+        <button mat-raised-button color="accent" (click)="showZIndexTest()">Z-Index Test</button>
+      </div>
+
+      <!-- 11. Multiple Alerts Testing -->
+      <h3>11. Multiple Alerts Control</h3>
+      <div class="button-grid">
+        <button mat-raised-button color="primary" (click)="showSingleAlertMode()">
+          Single Alert Mode (Default)
+        </button>
+        <button mat-raised-button color="accent" (click)="showMultipleAlertsMode()">
+          Multiple Alerts Mode
+        </button>
+        <button mat-raised-button color="warn" (click)="showMixedMode()">Mixed Mode Demo</button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

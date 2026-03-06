@@ -23,6 +23,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { CustomerValidators } from '../../../utils/customer.validators';
 import {
   CompanyCustomerFormConfig,
+  CompanyCustomerFormDataResult,
   CreditFieldsConfig,
   Customer,
   FieldConfig,
@@ -30,6 +31,7 @@ import {
 import { MAIN_APP_COMPANY_CUSTOMER_CONFIG } from '../../../config';
 import { MatButtonModule } from '@angular/material/button';
 import { forkJoin, from } from 'rxjs';
+import { SRI_DOCUMENT_TYPE } from '@acontplus/core';
 
 @Component({
   selector: 'acp-company-customer-form',
@@ -57,7 +59,6 @@ export class CompanyCustomerForm implements OnInit {
   showButtons = input(true);
   submitted = output<any>();
   cancelled = output<void>();
-  readonly panelOpenState = signal(false);
   private fb = inject(FormBuilder);
 
   config =
@@ -79,7 +80,7 @@ export class CompanyCustomerForm implements OnInit {
   tiemposCredito = signal<any[]>([]);
   tipoContribuyentes = signal<any[]>([]);
   tiposCliente = signal<any[]>([]);
-  tiposIdentificacion = signal<any[]>([]);
+  identificationTypes = signal<{ id: number; value: string; code: string; sriCode: string }[]>([]);
   formasPagoSri = signal<any[]>([]);
   placas = signal<any[]>([]);
   ciudades = signal<any[]>([]);
@@ -89,8 +90,6 @@ export class CompanyCustomerForm implements OnInit {
 
   maritalStatuses = signal<any[]>([]);
   housingTypes = signal<any[]>([]);
-
-  showRefresh = signal(true);
 
   setStep(index: number) {
     this.step.set(index);
@@ -109,11 +108,45 @@ export class CompanyCustomerForm implements OnInit {
   ngOnInit(): void {
     this.buildForm();
     this.loadFormData().subscribe(response => {
+      const mainDataForm: CompanyCustomerFormDataResult = Array.isArray(response)
+        ? response[0].data
+        : response;
       console.log(response);
+
+      this.identificationTypes.set(mainDataForm.identificationTypes);
+      /*  this.tiemposCredito.set(mainDataForm.tiempoCreditos);
+      this.tipoContribuyentes.set(mainDataForm.tipoContribuyentes);
+      this.formasPagoSri.set(mainDataForm.formasPagoSri);
+      this.tiposCliente.set(mainDataForm.tiposCliente);
+      this.ciudades.set(mainDataForm.ciudades);
+      this.cargos.set(mainDataForm.cargos);
+      this.empresas.set(mainDataForm.empresas);
+      this.employees.set(mainDataForm.employees);
+      this.maritalStatuses.set(mainDataForm.maritalStatuses);
+      this.housingTypes.set(mainDataForm.housingTypes);*/
+
+      if (this.mode() === 'create') {
+        const dataIdentificacion = this.identificationTypes().find(
+          ti => ti.sriCode === SRI_DOCUMENT_TYPE.RUC,
+        );
+
+        if (dataIdentificacion) {
+          this.form.patchValue({
+            idTipoIdentificacion: dataIdentificacion.id,
+          });
+          //  this.setIdentificationTypeChange(dataIdentificacion.codigoSri);
+        }
+
+        if (this.tiemposCredito().length > 0) {
+          this.form.patchValue({
+            idTiempoCredito: this.tiemposCredito()[0].id,
+          });
+        }
+      }
     });
-    if (this.customer) {
+    /*  if (this.customer) {
       this.patchFormValue(this.customer());
-    }
+    }*/
   }
 
   private getDefaultConfig(): CompanyCustomerFormConfig {

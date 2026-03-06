@@ -1,28 +1,29 @@
 # DateRangePicker
 
-Un componente Angular que envuelve la librería `datex-ui` para proporcionar un selector de rango de fechas potente y fácil de usar con integración completa a Angular Material.
+Un componente Angular que utiliza la librería `ngx-datex` para proporcionar un selector de rango de fechas potente y fácil de usar con integración completa a Angular Material.
 
 ## Características
 
 - ✅ **Integración con Angular Forms**: Soporte completo para Reactive Forms y Template-driven Forms
 - ✅ **Control de Valor Personalizado**: Implementa `ControlValueAccessor` para integración perfecta
-- ✅ **Angular Material Integration**: Implementa `MatFormFieldControl` para integración nativa
-- ✅ **Temas Predefinidos**: Bootstrap, Material Design y tema por defecto
+- ✅ **Angular Material Integration**: Integración nativa con Material Design
+- ✅ **Temas Predefinidos**: Material Design y temas personalizables
 - ✅ **Rangos Predefinidos**: Incluye rangos en español por defecto
-- ✅ **Configuración Flexible**: Más de 20 opciones de configuración
+- ✅ **Configuración Flexible**: Múltiples opciones de configuración
 - ✅ **Eventos Personalizados**: Eventos detallados para todas las interacciones
 - ✅ **TypeScript Genérico**: Tipado completo con soporte para salida como string o Date
 - ✅ **Standalone Component**: Compatible con Angular 17+ standalone components
 - ✅ **Signals API**: Usa la nueva API de signals de Angular para mejor rendimiento
 - ✅ **Checkbox Integration**: Soporte opcional para checkbox integrado
 - ✅ **Formkit Tempo**: Utiliza @formkit/tempo para manejo avanzado de fechas
+- ✅ **Time Picker**: Soporte para selección de fecha y hora
 
 ## Instalación
 
-El componente está incluido en el paquete `@acontplus/ng-components` y requiere `datex-ui` y `@formkit/tempo` como dependencias.
+El componente está incluido en el paquete `@acontplus/ng-components` y requiere `ngx-datex` y `@formkit/tempo` como dependencias.
 
 ```bash
-npm install datex-ui @formkit/tempo
+npm install ngx-datex @formkit/tempo
 ```
 
 ## Rangos Predefinidos
@@ -78,10 +79,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     <acp-date-range-picker
       label="Período de Reporte"
       appearance="outline"
-      hint="Selecciona el rango de fechas para el reporte"
       placeholderText="dd/mm/yyyy - dd/mm/yyyy"
       [showCheckbox]="true"
-      checkboxAriaLabel="Incluir en reporte"
       (dateRangeSelected)="onDateSelected($event)"
       (checkboxChange)="onCheckboxChange($event)"
     >
@@ -184,9 +183,7 @@ export class DateOutputComponent {
 | Propiedad         | Tipo                               | Valor por Defecto               | Descripción                        |
 | ----------------- | ---------------------------------- | ------------------------------- | ---------------------------------- |
 | `placeholderText` | `InputSignal<string>`              | `'Seleccionar rango de fechas'` | Texto del placeholder              |
-| `label`           | `InputSignal<string \| undefined>` | `undefined`                     | Etiqueta del campo                 |
-| `hint`            | `InputSignal<string \| undefined>` | `undefined`                     | Texto de ayuda                     |
-| `errorMessage`    | `InputSignal<string \| undefined>` | `undefined`                     | Mensaje de error                   |
+| `label`           | `InputSignal<string>`              | `''`                            | Etiqueta del campo                 |
 | `appearance`      | `InputSignal<'fill' \| 'outline'>` | `'outline'`                     | Apariencia del Material Form Field |
 | `isDisabled`      | `InputSignal<boolean>`             | `false`                         | Deshabilitar el componente         |
 | `inputReadonly`   | `InputSignal<boolean>`             | `false`                         | Campo de solo lectura              |
@@ -200,13 +197,11 @@ export class DateOutputComponent {
 
 ### Funcionalidad de Checkbox
 
-| Propiedad           | Tipo                                | Valor por Defecto    | Descripción                 |
-| ------------------- | ----------------------------------- | -------------------- | --------------------------- |
-| `showCheckbox`      | `InputSignal<boolean>`              | `false`              | Mostrar checkbox            |
-| `checkboxChecked`   | `InputSignal<boolean>`              | `false`              | Estado inicial del checkbox |
-| `checkboxReadonly`  | `InputSignal<boolean>`              | `false`              | Checkbox de solo lectura    |
-| `checkboxAriaLabel` | `InputSignal<string>`               | `'Toggle selection'` | Etiqueta ARIA del checkbox  |
-| `checkboxPosition`  | `InputSignal<'prefix' \| 'suffix'>` | `'suffix'`           | Posición del checkbox       |
+| Propiedad          | Tipo                                | Valor por Defecto | Descripción           |
+| ------------------ | ----------------------------------- | ----------------- | --------------------- |
+| `showCheckbox`     | `InputSignal<boolean>`              | `false`           | Mostrar checkbox      |
+| `checkboxChecked`  | `ModelSignal<boolean>`              | `false`           | Estado del checkbox   |
+| `checkboxPosition` | `InputSignal<'prefix' \| 'suffix'>` | `'suffix'`        | Posición del checkbox |
 
 ## Eventos (Output Signals)
 
@@ -253,32 +248,32 @@ this.picker.focus();          // Enfocar el input
 
 ## Temas
 
-### Temas Predefinidos
+### Tema Material (por defecto)
 
 ```typescript
-// Tema Bootstrap
-<acp-date-range-picker [options]="{ presetTheme: 'bootstrap' }">
+// El tema Material Light está configurado por defecto
+<acp-date-range-picker [options]="{}">
 
-// Tema Material (por defecto)
-<acp-date-range-picker [options]="{ presetTheme: 'material' }">
+// O explícitamente
+import { MATERIAL_LIGHT_THEME } from '@acontplus/ng-components';
 
-// Tema por defecto
-<acp-date-range-picker [options]="{ presetTheme: 'default' }">
+const materialOptions: DateRangePickerOptions = {
+  theme: MATERIAL_LIGHT_THEME
+};
+
+<acp-date-range-picker [options]="materialOptions">
 ```
 
 ### Tema Personalizado
 
 ```typescript
-const customTheme = {
-  primaryColor: '#ff6b6b',
-  backgroundColor: '#ffffff',
-  selectedColor: '#ff6b6b',
-  rangeColor: '#ffe0e0',
-  borderRadius: '8px'
+import { NgxDatexTheme } from '@acontplus/ng-components';
+
+const customTheme: NgxDatexTheme = {
+  // Propiedades del tema personalizado según ngx-datex
 };
 
 const customOptions: DateRangePickerOptions = {
-  presetTheme: 'custom',
   theme: customTheme
 };
 
@@ -287,21 +282,23 @@ const customOptions: DateRangePickerOptions = {
 
 ## Estilos
 
-El componente utiliza los estilos integrados de `datex-ui`. Los estilos se aplican automáticamente cuando se usa el componente.
+El componente utiliza los estilos integrados de `ngx-datex`. Los estilos se aplican automáticamente cuando se usa el componente.
 
 Si necesitas personalizar los estilos, puedes usar las propiedades de tema disponibles o aplicar CSS personalizado al selector `acp-date-range-picker`:
 
 ```scss
 // Ejemplo de personalización CSS
 acp-date-range-picker {
-  input {
-    border: 2px solid #007bff;
-    border-radius: 8px;
-    padding: 12px;
+  ngx-datex {
+    input {
+      border: 2px solid #007bff;
+      border-radius: 8px;
+      padding: 12px;
 
-    &:focus {
-      border-color: #0056b3;
-      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+      &:focus {
+        border-color: #0056b3;
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+      }
     }
   }
 }
@@ -315,7 +312,8 @@ acp-date-range-picker {
 const timePickerOptions: DateRangePickerOptions = {
   timePicker: true,
   timePicker24Hour: true,
-  timePickerSeconds: true
+  timePickerSeconds: true,
+  timePickerIncrement: 5
 };
 
 <acp-date-range-picker
@@ -358,7 +356,6 @@ const rangeOptions: DateRangePickerOptions = {
     <acp-date-range-picker
       label="Rango de Fechas del Reporte"
       [showCheckbox]="true"
-      checkboxAriaLabel="Incluir en el reporte mensual"
       checkboxPosition="prefix"
       [checkboxChecked]="includeInReport()"
       (dateRangeSelected)="onDateSelected($event)"
@@ -450,8 +447,8 @@ export class SignalExampleComponent {
 
 - Angular 17+
 - TypeScript 5.0+
-- datex-ui 1.1.11+
-- @formkit/tempo 0.1.2+
+- ngx-datex 1.0.0+
+- @formkit/tempo 1.0.0+
 - Angular Material 17+
 
 ## Dependencias
@@ -459,8 +456,8 @@ export class SignalExampleComponent {
 ```json
 {
   "dependencies": {
-    "datex-ui": "^1.1.11",
-    "@formkit/tempo": "^0.1.2"
+    "ngx-datex": "^1.0.0",
+    "@formkit/tempo": "^1.0.0"
   },
   "peerDependencies": {
     "@angular/core": "^17.0.0",

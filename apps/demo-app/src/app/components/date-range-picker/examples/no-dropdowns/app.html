@@ -29,18 +29,18 @@
             <div class="info-content">
               <strong>Selección:</strong>
               <span
-                >{{ selectedStartDate | date:'dd/MM/yyyy' }} - {{ selectedEndDate |
+                >{{ selectedStartDate() | date:'dd/MM/yyyy' }} - {{ selectedEndDate() |
                 date:'dd/MM/yyyy' }}</span
               >
             </div>
           </div>
-          @if (selectedLabel) {
+          @if (selectedLabel()) {
 
           <div class="info-item">
             <mat-icon>label</mat-icon>
             <div class="info-content">
               <strong>Etiqueta:</strong>
-              <span>{{ selectedLabel }}</span>
+              <span>{{ selectedLabel() }}</span>
             </div>
           </div>
           }
@@ -57,7 +57,7 @@
   autoApply: false,
   linkedCalendars: true,
   alwaysShowCalendars: true,
-  theme: BOOTSTRAP_THEME,
+  theme: MATERIAL_LIGHT_THEME,
   ranges: {{'{'}}{{'{'}}
     'Hoy': [today, today],
     'Ayer': [yesterday, yesterday],

@@ -64,7 +64,7 @@ const companyCustomerBasicExampleConfig = {
       filecontent: appTs,
     },
     {
-      file: 'app.scss',
+      file: 'app.styles',
       content: hljs.highlightAuto(appScss).value,
       filecontent: appScss,
     },

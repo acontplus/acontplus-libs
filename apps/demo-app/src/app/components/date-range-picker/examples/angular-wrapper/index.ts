@@ -7,7 +7,7 @@ const appHtml = `<div class="angular-wrapper-demo">
   <h3>Componente Angular para DateRangePicker</h3>
   <p>
     Este ejemplo muestra cómo usar el componente Angular <code>acp-date-range-picker</code>
-    que envuelve la librería <code>datex-ui</code>.
+    que utiliza la librería <code>ngx-datex</code>.
   </p>
 
   <!-- Form Integration Example -->
@@ -97,7 +97,7 @@ import { DateRangePicker } from '@acontplus/ng-components';
   standalone: true,
   imports: [DateRangePicker, ReactiveFormsModule],
   templateUrl: './app.html',
-  styleUrl: './app.scss',
+  styleUrl: './app.styles',
 })
 export class DateRangePickerAngularWrapperExample {
   // Form integration example
@@ -298,7 +298,7 @@ export const dateRangePickerAngularWrapperExampleConfig = {
       filecontent: { default: appTs },
     },
     {
-      file: 'app.scss',
+      file: 'app.styles',
       content: hljs.highlightAuto(appScss).value,
       filecontent: { default: appScss },
     },

@@ -1,6 +1,6 @@
 import { InjectionToken } from '@angular/core';
 import {
-  ICompanyCustomerService,
+  ICompanyCustomerHttp,
   ICustomerSriService,
   ICompanyCustomerMapper,
   CompanyCustomerFormConfig,
@@ -18,6 +18,6 @@ export const COMPANY_CUSTOMER_FORM_CONFIG = new InjectionToken<CompanyCustomerFo
   'COMPANY_CUSTOMER_FORM_CONFIG',
 );
 
-export const COMPANY_CUSTOMER_HTTP_TOKEN = new InjectionToken<ICompanyCustomerService>(
+export const COMPANY_CUSTOMER_HTTP_TOKEN = new InjectionToken<ICompanyCustomerHttp>(
   'COMPANY_CUSTOMER_HTTP_TOKEN',
 );

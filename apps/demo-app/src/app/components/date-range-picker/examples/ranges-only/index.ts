@@ -12,12 +12,7 @@ const appHtml = `<mat-card class="example-card">
     <div class="example-container">
       <!-- Componente DateRangePicker -->
       <acp-date-range-picker
-        [autoApply]="true"
-        [alwaysShowCalendars]="false"
-        [showCustomRangeLabel]="true"
-        [theme]="MATERIAL_THEME"
-        [ranges]="ranges"
-        [locale]="SPANISH_LOCALE"
+        [options]="rangesOnlyOptions"
         placeholderText="Elige un rango predefinido"
         (dateRangeSelected)="onDateRangeSelected($event)"
       ></acp-date-range-picker>
@@ -26,18 +21,18 @@ const appHtml = `<mat-card class="example-card">
         <h4>Rango seleccionado:</h4>
         <div class="range-info">
           <mat-chip-set>
-            <mat-chip color="primary" selected>{{ selectedLabel || 'Personalizado' }}</mat-chip>
+            <mat-chip color="primary" selected>{{ selectedLabel() || 'Personalizado' }}</mat-chip>
           </mat-chip-set>
 
           <div class="date-range">
             <div class="date-item">
               <span class="label">Desde:</span>
-              <span class="value">{{ selectedStartDate | date:'dd/MM/yyyy' }}</span>
+              <span class="value">{{ selectedStartDate() | date:'dd/MM/yyyy' }}</span>
             </div>
             <div class="date-separator">→</div>
             <div class="date-item">
               <span class="label">Hasta:</span>
-              <span class="value">{{ selectedEndDate | date:'dd/MM/yyyy' }}</span>
+              <span class="value">{{ selectedEndDate() | date:'dd/MM/yyyy' }}</span>
             </div>
           </div>
         </div>
@@ -51,8 +46,7 @@ const appHtml = `<mat-card class="example-card">
       <pre><code>{{'{'}}{{'{'}}
   autoApply: true,
   alwaysShowCalendars: false,
-  showCustomRangeLabel: true,
-  theme: MATERIAL_THEME,
+  theme: MATERIAL_LIGHT_THEME,
   ranges: {{'{'}}{{'{'}}
     'Hoy': [today, today],
     'Ayer': [yesterday, yesterday],
@@ -66,13 +60,19 @@ const appHtml = `<mat-card class="example-card">
   </mat-card-actions>
 </mat-card>`;
 
-const appTs = `import { Component, AfterViewInit } from '@angular/core';
+const appTs = `import { Component, AfterViewInit, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
-import { DateRangePicker, SPANISH_LOCALE, MATERIAL_THEME } from '@acontplus/ng-components';
+import {
+  DateRangePicker,
+  DateRangePickerOptions,
+  DateRangeValue,
+  SPANISH_LOCALE,
+  MATERIAL_LIGHT_THEME
+} from '@acontplus/ng-components';
 import { addDay } from '@formkit/tempo';
 
 @Component({
@@ -89,30 +89,35 @@ import { addDay } from '@formkit/tempo';
   ],
 })
 export class RangesOnlyApp implements AfterViewInit {
-  selectedStartDate: Date = new Date();
-  selectedEndDate: Date = new Date();
-  selectedLabel: string | null = null;
+  selectedStartDate = signal<Date>(new Date());
+  selectedEndDate = signal<Date>(new Date());
+  selectedLabel = signal<string | null>(null);
 
-  // Expose constants for template
-  SPANISH_LOCALE = SPANISH_LOCALE;
-  MATERIAL_THEME = MATERIAL_THEME;
+  // Configuración del picker
+  rangesOnlyOptions: DateRangePickerOptions = {
+    autoApply: true,
+    alwaysShowCalendars: false,
+    theme: MATERIAL_LIGHT_THEME,
+    ranges: this.getRanges(),
+    locale: SPANISH_LOCALE,
+  };
 
   ngAfterViewInit() {
-    // No longer needed - Angular component handles initialization
     const today = new Date();
-    this.selectedStartDate = today;
-    this.selectedEndDate = today;
-    this.selectedLabel = 'Hoy';
+    this.selectedStartDate.set(today);
+    this.selectedEndDate.set(today);
+    this.selectedLabel.set('Hoy');
   }
 
-  onDateRangeSelected(event: { startDate: Date; endDate: Date; label?: string }) {
-    this.selectedStartDate = event.startDate;
-    this.selectedEndDate = event.endDate;
-    this.selectedLabel = event.label || null;
+  onDateRangeSelected(event: DateRangeValue<false> | null) {
+    if (event && event.from && event.to) {
+      this.selectedStartDate.set(event.from);
+      this.selectedEndDate.set(event.to);
+      this.selectedLabel.set(event.label || null);
+    }
   }
 
-  // Configuration for the Angular component
-  get ranges(): Record<string, [Date, Date]> {
+  private getRanges(): Record<string, [Date, Date]> {
     const today = new Date();
     const yesterday = addDay(today, -1);
     const last3Days = addDay(today, -3);
@@ -179,7 +184,7 @@ const dateRangePickerRangesOnlyExampleConfig = {
       filecontent: { default: appTs },
     },
     {
-      file: 'app.scss',
+      file: 'app.styles',
       content: hljs.highlightAuto(appScss).value,
       filecontent: { default: appScss },
     },

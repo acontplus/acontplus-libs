@@ -9,7 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { MatSelectModule } from '@angular/material/select';
-import { Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { WhatsAppMessagingFacade } from '../../facades/whatsapp.facade';
 import { ReportFacade } from '../../facades/report.facade';
 import { ReportParamsBuilder } from '../../builders/report-params.builder';
@@ -194,12 +194,13 @@ export class WhatsAppSender implements OnInit {
     const docData = this.config!.documentData!;
 
     // Construir opciones de reporte
-    const reportOptions = ReportParamsBuilder.build(docData, 'pdf', true);
+    const reportOptions = ReportParamsBuilder.build({
+      codeReport: docData.codDoc,
+      data: docData,
+      format: 'pdf',
+    });
 
-    const reportResult = this.reportFacade.generate(reportOptions);
-
-    // Manejar el caso donde generate puede retornar void
-    return reportResult || throwError(() => new Error('No se pudo generar el reporte'));
+    return this.reportFacade.generate(reportOptions);
   }
 
   private processReportFile(response: any): { file: File; fileName: string } {

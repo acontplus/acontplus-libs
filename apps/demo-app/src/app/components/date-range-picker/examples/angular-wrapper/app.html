@@ -1,8 +1,8 @@
 <div class="angular-wrapper-demo">
   <h3>Componente Angular para DateRangePicker</h3>
   <p>
-    Este ejemplo muestra cómo usar el componente Angular <code>DateRangePicker</code> que envuelve
-    la librería <code>datex-ui</code>.
+    Este ejemplo muestra cómo usar el componente Angular <code>DateRangePicker</code> que utiliza la
+    librería <code>ngx-datex</code>.
   </p>
 
   <!-- Form Integration Example -->
@@ -16,10 +16,6 @@
           [options]="basicOptions"
           placeholderText="Seleccionar rango básico"
           (dateRangeSelected)="onDateRangeSelected($event)"
-          (pickerShow)="onPickerShow()"
-          (pickerHide)="onPickerHide()"
-          (pickerApply)="onPickerApply()"
-          (pickerCancel)="onPickerCancel()"
         >
         </acp-date-range-picker>
       </div>
@@ -93,10 +89,7 @@
       <h5>Eventos:</h5>
       <ul>
         <li><code>(dateRangeSelected)</code> - Cuando se selecciona un rango</li>
-        <li><code>(pickerShow)</code> - Cuando se muestra el picker</li>
-        <li><code>(pickerHide)</code> - Cuando se oculta el picker</li>
-        <li><code>(pickerApply)</code> - Cuando se aplica la selección</li>
-        <li><code>(pickerCancel)</code> - Cuando se cancela la selección</li>
+        <li><code>(checkboxChange)</code> - Cuando cambia el estado del checkbox</li>
       </ul>
     </div>
   </div>

@@ -73,22 +73,6 @@ export class DateRangePickerAngularWrapperExample {
     console.log('Rango seleccionado:', event);
   }
 
-  onPickerShow() {
-    // Handle picker show
-  }
-
-  onPickerHide() {
-    // Handle picker hide
-  }
-
-  onPickerApply() {
-    // Handle picker apply
-  }
-
-  onPickerCancel() {
-    // Handle picker cancel
-  }
-
   // Form value display
   get formValue() {
     return JSON.stringify(this.dateForm.value, null, 2);

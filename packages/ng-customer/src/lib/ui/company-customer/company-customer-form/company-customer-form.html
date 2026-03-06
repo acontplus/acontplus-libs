@@ -23,8 +23,8 @@
                 formControlName="idTipoIdentificacion"
                 (selectionChange)="identificationTypeChange($event)"
               >
-                @for (item of tiposIdentificacion(); track $index) {
-                <mat-option [value]="item.idTipoIdentificacion">{{ item.descripcion }}</mat-option>
+                @for (item of identificationTypes(); track $index) {
+                <mat-option [value]="item.id">{{ item.value }}</mat-option>
                 }
               </mat-select>
               @if (form.get('idTipoIdentificacion')?.invalid &&

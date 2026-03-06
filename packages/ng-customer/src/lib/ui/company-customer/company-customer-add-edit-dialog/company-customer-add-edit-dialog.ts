@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { CompanyCustomerForm } from '@acontplus/ng-customer';
+import { CompanyCustomerForm } from './../company-customer-form';
 import { MatDialogContent, MatDialogActions, MatDialogRef } from '@angular/material/dialog';
 import { Button } from '@acontplus/ng-components';
 

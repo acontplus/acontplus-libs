@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { DatePipe, JsonPipe } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
@@ -8,7 +8,9 @@ import { MatChipsModule } from '@angular/material/chips';
 import {
   DateRangePicker,
   DateRangePickerOptions,
-  SPANISH_LOCALE_WITH_TIME,
+  DateRangeValue,
+  SPANISH_LOCALE,
+  MATERIAL_LIGHT_THEME,
 } from '@acontplus/ng-components';
 
 @Component({
@@ -33,12 +35,9 @@ export class DateTimeApp {
     endDate: new Date(),
   });
 
-  selectedStartDate: Date = new Date();
-  selectedEndDate: Date = new Date();
-  selectedLabel: string | null = 'Hoy';
-
-  // Locale con formato de tiempo
-  localeWithTime = SPANISH_LOCALE_WITH_TIME;
+  selectedStartDate = signal<Date>(new Date());
+  selectedEndDate = signal<Date>(new Date());
+  selectedLabel = signal<string | null>('Hoy');
 
   // Rangos predefinidos
   ranges = {
@@ -49,25 +48,24 @@ export class DateTimeApp {
 
   // Configuración del picker
   dateTimeOptions: DateRangePickerOptions = {
-    locale: this.localeWithTime,
+    locale: SPANISH_LOCALE,
+    theme: MATERIAL_LIGHT_THEME,
     timePicker: true,
     timePicker24Hour: true,
-    timePickerIncrement: 1,
-    timePickerSeconds: false,
+    timePickerSeconds: true,
+    timePickerIncrement: 15,
     ranges: this.ranges,
     autoApply: false,
     showDropdowns: true,
     linkedCalendars: true,
     alwaysShowCalendars: true,
-    opens: 'right',
-    drops: 'down',
-    presetTheme: 'default',
   };
 
-  onDateRangeSelected(event: { from: Date | string; to: Date | string; label?: string }) {
-    // Convert to Date objects if they come as strings
-    this.selectedStartDate = typeof event.from === 'string' ? new Date(event.from) : event.from;
-    this.selectedEndDate = typeof event.to === 'string' ? new Date(event.to) : event.to;
-    this.selectedLabel = event.label || null;
+  onDateRangeSelected(event: DateRangeValue<false> | null) {
+    if (event && event.from && event.to) {
+      this.selectedStartDate.set(event.from);
+      this.selectedEndDate.set(event.to);
+      this.selectedLabel.set(event.label || null);
+    }
   }
 }

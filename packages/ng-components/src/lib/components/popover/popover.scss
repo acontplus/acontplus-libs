@@ -1,0 +1,266 @@
+/* stylelint-disable keyframes-name-pattern */
+@use 'sass:map';
+@use '../../styles/token-utils';
+
+// Theme variables for popover
+:root {
+  --acp-popover-container-shape: var(--mat-sys-corner-medium, 12px);
+  --acp-popover-background-color: var(--mat-sys-surface-container, #f3f3f3);
+  --acp-popover-text-color: var(--mat-sys-on-surface, #1d1b20);
+  --acp-popover-outline-color: var(--mat-sys-outline, #79747e);
+}
+
+// Dark theme overrides
+body.dark-theme,
+[data-theme='dark'] {
+  --acp-popover-background-color: var(--mat-sys-surface-container, #2d2d2d);
+  --acp-popover-text-color: var(--mat-sys-on-surface, #e6e0e9);
+  --acp-popover-outline-color: var(--mat-sys-outline, #938f99);
+}
+
+// Fallback tokens for popover
+$fallbacks: (
+  popover-container-shape: var(--acp-popover-container-shape, 12px),
+  popover-background-color: var(--acp-popover-background-color, #f3f3f3),
+  popover-text-color: var(--acp-popover-text-color, #1d1b20),
+  popover-outline-color: var(--acp-popover-outline-color, #79747e),
+);
+
+$arrow-size: 1em; // 16px default
+
+@keyframes _acp-popover-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes _acp-popover-exit {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+.acp-popover-panel {
+  position: relative;
+  max-height: calc(100vh - 48px);
+  padding: 8px;
+  font-size: inherit; // It can change the arrow size
+  outline: 0;
+  animation: _acp-popover-enter 120ms cubic-bezier(0, 0, 0.2, 1);
+  border-radius: map.get($fallbacks, popover-container-shape);
+  background-color: map.get($fallbacks, popover-background-color);
+  color: map.get($fallbacks, popover-text-color);
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    box-shadow 0.3s ease;
+
+  &.acp-popover-panel-exit-animation {
+    animation: _acp-popover-exit 100ms 25ms linear forwards;
+  }
+
+  &.acp-popover-panel-animations-disabled {
+    animation: none;
+  }
+
+  &.acp-popover-panel-animating {
+    pointer-events: none;
+
+    // &:has(.acp-popover-content:empty) {
+    //   display: none;
+    // }
+  }
+
+  &[class*='acp-popover-below'] {
+    margin-top: calc(#{$arrow-size * 0.5} + 2px);
+  }
+
+  &[class*='acp-popover-above'] {
+    margin-bottom: calc(#{$arrow-size * 0.5} + 2px);
+  }
+
+  &[class*='acp-popover-before'] {
+    margin-right: calc(#{$arrow-size * 0.5} + 2px);
+
+    [dir='rtl'] & {
+      margin-right: auto;
+      margin-left: calc(#{$arrow-size * 0.5} + 2px);
+    }
+  }
+
+  &[class*='acp-popover-after'] {
+    margin-left: calc(#{$arrow-size * 0.5} + 2px);
+
+    [dir='rtl'] & {
+      margin-left: auto;
+      margin-right: calc(#{$arrow-size * 0.5} + 2px);
+    }
+  }
+
+  &.acp-popover-panel-without-arrow {
+    margin: 0;
+  }
+}
+
+.acp-popover-direction-arrow {
+  position: absolute;
+
+  &::before,
+  &::after {
+    position: absolute;
+    display: inline-block;
+    content: '';
+    border-width: $arrow-size * 0.5;
+    border-style: solid;
+  }
+
+  &::before {
+    border-color: map.get($fallbacks, popover-outline-color);
+  }
+
+  &::after {
+    border-width: calc(#{$arrow-size * 0.5} - 1px);
+    border-color: map.get($fallbacks, popover-background-color);
+  }
+}
+
+// Arrow up and down
+
+[class*='acp-popover-below'],
+[class*='acp-popover-above'] {
+  .acp-popover-direction-arrow {
+    width: $arrow-size;
+
+    &::before,
+    &::after {
+      border-left-color: transparent;
+      border-right-color: transparent;
+    }
+
+    &::after {
+      left: 1px;
+
+      [dir='rtl'] & {
+        right: 1px;
+        left: auto;
+      }
+    }
+  }
+}
+
+[class*='acp-popover-below'] {
+  .acp-popover-direction-arrow {
+    top: 0;
+
+    &::before,
+    &::after {
+      bottom: 0;
+      border-top-width: 0;
+    }
+  }
+}
+
+[class*='acp-popover-above'] {
+  .acp-popover-direction-arrow {
+    bottom: 0;
+
+    &::before,
+    &::after {
+      top: 0;
+      border-bottom-width: 0;
+    }
+  }
+}
+
+// Arrow left and right
+
+[class*='acp-popover-before'],
+[class*='acp-popover-after'] {
+  .acp-popover-direction-arrow {
+    height: $arrow-size;
+
+    &::before,
+    &::after {
+      border-top-color: transparent;
+      border-bottom-color: transparent;
+    }
+
+    &::after {
+      top: 1px;
+    }
+  }
+}
+
+[class*='acp-popover-before'] {
+  .acp-popover-direction-arrow {
+    right: 0;
+
+    &::before,
+    &::after {
+      left: 0;
+      border-right-width: 0;
+    }
+
+    [dir='rtl'] & {
+      right: auto;
+      left: 0;
+
+      &::before,
+      &::after {
+        left: auto;
+        right: 0;
+        border-left-width: 0;
+      }
+
+      &::before {
+        border-right-width: $arrow-size * 0.5;
+      }
+
+      &::after {
+        border-right-width: calc(#{$arrow-size * 0.5} - 1px);
+      }
+    }
+  }
+}
+
+[class*='acp-popover-after'] {
+  .acp-popover-direction-arrow {
+    left: 0;
+
+    &::before,
+    &::after {
+      right: 0;
+      border-left-width: 0;
+    }
+
+    [dir='rtl'] & {
+      left: auto;
+      right: 0;
+
+      &::before,
+      &::after {
+        right: auto;
+        left: 0;
+        border-right-width: 0;
+      }
+
+      &::before {
+        border-left-width: $arrow-size * 0.5;
+      }
+
+      &::after {
+        border-left-width: calc(#{$arrow-size * 0.5} - 1px);
+      }
+    }
+  }
+}

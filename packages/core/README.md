@@ -88,17 +88,17 @@ const finalPrice = pricingCalc.calculateTotal(items, discounts, taxes);
 ### Value Objects
 
 ```typescript
-import { Money, EntityId, IdentificationNumber, AuthTokens } from '@acontplus/core';
+import { MoneyVo, EntityIdVo, IdentificationNumberVo, AuthTokens } from '@acontplus/core';
 
 // Money value object for financial calculations
-const price = new Money(99.99, 'USD');
-const discountedPrice = price.subtract(new Money(10.0, 'USD'));
+const price = new MoneyVo(99.99, 'USD');
+const discountedPrice = price.subtract(new MoneyVo(10.0, 'USD'));
 
 // Entity ID for domain entities
-const customerId = new EntityId(12345);
+const customerId = new EntityIdVo('12345');
 
 // Identification number with validation
-const ecuadorianId = new IdentificationNumber('1234567890');
+const ecuadorianId = new IdentificationNumberVo('1234567890');
 
 // Authentication tokens
 const tokens = new AuthTokens('access_token', 'refresh_token');
@@ -166,11 +166,20 @@ class CreateCustomerUseCase extends UseCase<CreateCustomerRequest, Customer> {
 ### Constants
 
 ```typescript
-import { APP_CONSTANTS } from '@acontplus/core';
+import {
+  SRI_DOCUMENT_TYPE,
+  SRI_DOCUMENT_TYPE_CUSTOM,
+  SEPARATOR_KEY_CODE,
+  SEPARADORES_REGEX,
+} from '@acontplus/core';
 
-// Application constants
-const maxRetries = APP_CONSTANTS.MAX_RETRY_ATTEMPTS;
-const timeout = APP_CONSTANTS.DEFAULT_TIMEOUT;
+// SRI document type constants
+const invoiceType = SRI_DOCUMENT_TYPE.FACTURA;
+const customType = SRI_DOCUMENT_TYPE_CUSTOM.PROFORMA;
+
+// Separator constants
+const separatorCode = SEPARATOR_KEY_CODE.DASH;
+const separatorPattern = SEPARADORES_REGEX;
 ```
 
 ### Environment Configuration

@@ -28,33 +28,28 @@ pnpm add @acontplus/ng-customer
 ### 1. Import Components
 
 ```typescript
-import { CustomerCard, CustomerAddEditComponent } from '@acontplus/ng-customer';
+import {
+  CompanyCustomerList,
+  CompanyCustomerForm,
+  CustomerAddEditComponent,
+  CompanyCustomerAddEditDialog,
+  CompanyCustomerAddEditDirective,
+} from '@acontplus/ng-customer';
 
 @Component({
   selector: 'app-customers',
-  imports: [CustomerCard],
+  imports: [CompanyCustomerList],
   template: `
-    <acp-customer-card
-      [customer]="customer"
-      (editCustomer)="onEdit($event)"
-      (deleteCustomer)="onDelete($event)"
-    >
-    </acp-customer-card>
+    <acp-company-customer-list (editCustomer)="onEdit($event)" (deleteCustomer)="onDelete($event)">
+    </acp-company-customer-list>
   `,
 })
 export class CustomersComponent {
-  customer: CustomerListItemDto = {
-    idCliente: 1,
-    businessName: 'Acme Corp',
-    email: 'contact@acme.com',
-    phone: '123-456-7890',
-  };
-
-  onEdit(customer: CustomerListItemDto) {
+  onEdit(customer: any) {
     // Handle edit action
   }
 
-  onDelete(customer: CustomerListItemDto) {
+  onDelete(customer: any) {
     // Handle delete action
   }
 }
@@ -64,14 +59,14 @@ export class CustomersComponent {
 
 ```typescript
 import { MatDialog } from '@angular/material/dialog';
-import { CustomerAddEditComponent } from '@acontplus/ng-customer';
+import { CompanyCustomerAddEditDialog } from '@acontplus/ng-customer';
 
 @Component({...})
 export class CustomerListComponent {
   constructor(private dialog: MatDialog) {}
 
   openCustomerDialog(customer?: any) {
-    const dialogRef = this.dialog.open(CustomerAddEditComponent, {
+    const dialogRef = this.dialog.open(CompanyCustomerAddEditDialog, {
       width: '800px',
       data: {
         id: customer?.id || 0,

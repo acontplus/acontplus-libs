@@ -1,6 +1,6 @@
 {
   "name": "@acontplus/utils",
-  "version": "1.0.11",
+  "version": "1.1.0",
   "description": "Comprehensive utility library with converters (color, decimal, JSON), formatters (date, number, string), validators (regex, parameter), helpers (array, object, field), error handling, and type definitions for TypeScript applications.",
   "type": "module",
   "main": "./src/index.js",
@@ -52,12 +52,12 @@
   "author": "Ivan Paz <ifer343@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Acontplus-S-A-S/acontplus-libs/issues"
+    "url": "https://github.com/acontplus/acontplus-libs/issues"
   },
-  "homepage": "https://github.com/Acontplus-S-A-S/acontplus-libs#readme",
+  "homepage": "https://github.com/acontplus/acontplus-libs#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Acontplus-S-A-S/acontplus-libs.git"
+    "url": "git+https://github.com/acontplus/acontplus-libs.git"
   },
   "publishConfig": {
     "access": "public",

@@ -224,15 +224,15 @@ export class LocalStorageTokenRepository implements AuthTokenRepository {
 
 ### BaseRepository
 
-Abstract base repository with common CRUD operations.
+Interface for common CRUD operations.
 
 ```typescript
-export abstract class BaseRepository<T, ID> {
-  abstract findById(id: ID): Promise<T | null>;
-  abstract findAll(): Promise<T[]>;
-  abstract create(entity: Omit<T, 'id'>): Promise<T>;
-  abstract update(id: ID, entity: Partial<T>): Promise<T>;
-  abstract delete(id: ID): Promise<void>;
+export interface BaseRepository<TEntity = any, TId = number> {
+  findById(id: TId): Observable<TEntity>;
+  findAll(): Observable<TEntity[]>;
+  create(entity: Omit<TEntity, 'id'>): Observable<TEntity>;
+  update(id: TId, entity: Partial<TEntity>): Observable<TEntity>;
+  delete(id: TId): Observable<void>;
 }
 ```
 
@@ -242,6 +242,7 @@ export abstract class BaseRepository<T, ID> {
 import { BaseRepository } from '@acontplus/ng-config';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 interface User {
   id: number;
@@ -250,45 +251,49 @@ interface User {
 }
 
 @Injectable({ providedIn: 'root' })
-export class UserRepository extends BaseRepository<User, number> {
-  constructor(private http: HttpClient) {
-    super();
+export class UserRepository implements BaseRepository<User, number> {
+  constructor(private http: HttpClient) {}
+
+  findById(id: number): Observable<User> {
+    return this.http.get<User>(`/api/users/${id}`);
   }
 
-  async findById(id: number): Promise<User | null> {
-    return this.http.get<User>(`/api/users/${id}`).toPromise() || null;
+  findAll(): Observable<User[]> {
+    return this.http.get<User[]>('/api/users');
   }
 
-  async findAll(): Promise<User[]> {
-    return this.http.get<User[]>('/api/users').toPromise() || [];
+  create(user: Omit<User, 'id'>): Observable<User> {
+    return this.http.post<User>('/api/users', user);
   }
 
-  async create(user: Omit<User, 'id'>): Promise<User> {
-    return this.http.post<User>('/api/users', user).toPromise() as Promise<User>;
+  update(id: number, user: Partial<User>): Observable<User> {
+    return this.http.put<User>(`/api/users/${id}`, user);
   }
 
-  async update(id: number, user: Partial<User>): Promise<User> {
-    return this.http.put<User>(`/api/users/${id}`, user).toPromise() as Promise<User>;
-  }
-
-  async delete(id: number): Promise<void> {
-    await this.http.delete(`/api/users/${id}`).toPromise();
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`/api/users/${id}`);
   }
 }
 ```
 
 ## Configuration Constants
 
-### Authentication Constants
+### Authentication API
 
 ```typescript
-import { AUTH_CONSTANTS, CONFIG_CONSTANTS } from '@acontplus/ng-config';
+import { AUTH_API } from '@acontplus/ng-config';
 
-// Authentication configuration
-const tokenExpiry = AUTH_CONSTANTS.TOKEN_EXPIRY_TIME;
-const refreshThreshold = AUTH_CONSTANTS.REFRESH_THRESHOLD;
+// Authentication API paths
+const authPath = AUTH_API.AUTH; // 'auth/'
+```
 
-// Application configuration
-const apiTimeout = CONFIG_CONSTANTS.DEFAULT_API_TIMEOUT;
-const retryAttempts = CONFIG_CONSTANTS.MAX_RETRY_ATTEMPTS;
+### Default Configuration
+
+```typescript
+import { DEFAULT_CONFIG } from '@acontplus/ng-config';
+
+// Full application defaults
+const apiTimeout = DEFAULT_CONFIG.apiTimeout; // 30000
+const retryAttempts = DEFAULT_CONFIG.retryAttempts; // 2
+const enableCorrelationTracking = DEFAULT_CONFIG.enableCorrelationTracking; // true
 ```

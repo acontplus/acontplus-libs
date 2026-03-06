@@ -477,4 +477,4 @@ ng-common/
 ## Soporte
 
 Para reportar problemas o solicitar nuevas funcionalidades, visita:
-https://github.com/Acontplus-S-A-S/acontplus-libs/issues
+https://github.com/acontplus/acontplus-libs/issues

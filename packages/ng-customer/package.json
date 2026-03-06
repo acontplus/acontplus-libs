@@ -1,6 +1,6 @@
 {
   "name": "@acontplus/ng-customer",
-  "version": "2.0.3",
+  "version": "2.1.0",
   "description": "Angular customer management module following clean architecture principles. Provides customer UI components, business logic, and integrates with notification systems for comprehensive customer relationship management.",
   "peerDependencies": {
     "@angular/common": "^21.0.0",
@@ -43,12 +43,12 @@
   "author": "Emilio Senguana <sengua2017@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Acontplus-S-A-S/acontplus-libs/issues"
+    "url": "https://github.com/acontplus/acontplus-libs/issues"
   },
-  "homepage": "https://github.com/Acontplus-S-A-S/acontplus-libs#readme",
+  "homepage": "https://github.com/acontplus/acontplus-libs#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Acontplus-S-A-S/acontplus-libs.git"
+    "url": "git+https://github.com/acontplus/acontplus-libs.git"
   },
   "release": {
     "branches": [

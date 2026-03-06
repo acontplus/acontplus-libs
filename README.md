@@ -11,6 +11,9 @@ for enterprise applications.
   patterns
 - **[ng-auth](packages/ng-auth/README.md)**: Angular authentication module with
   JWT token management, route guards, URL redirection, and session handling
+- **[ng-common](packages/ng-common/README.md)**: Common Angular services for
+  WhatsApp Cloud API, report generation, and printing with clean architecture
+  facades
 - **[ng-components](packages/ng-components/README.md)**: Angular Material UI
   components including cards, tables, dialogs, theme toggle, and styling
   utilities
@@ -46,6 +49,8 @@ for enterprise applications.
   guidelines
 - **[Development Setup](docs/linting-and-formatting-setup.md)** - Code quality
   tools and configuration
+- **[Workspace Setup](docs/workspace-setup.md)** - pnpm workspace configuration
+  and node_modules structure
 
 ## 🚀 Quick Start
 
@@ -58,7 +63,7 @@ for enterprise applications.
 
 ```bash
 # Clone the repository
-git clone https://github.com/Acontplus-S-A-S/acontplus-libs.git
+git clone https://github.com/acontplus/acontplus-libs.git
 cd acontplus-libs
 
 # Install dependencies
@@ -593,7 +598,7 @@ for details.
 ## 🆘 Support
 
 - **Issues**:
-  [GitHub Issues](https://github.com/Acontplus-S-A-S/acontplus-libs/issues)
+  [GitHub Issues](https://github.com/acontplus/acontplus-libs/issues)
 - **Documentation**: See links in the Documentation section above
 - **Contact**: [Ivan Paz](https://github.com/iferpaz7)
 
@@ -917,7 +922,7 @@ for details.
 ## 🆘 Support
 
 - **Issues**:
-  [GitHub Issues](https://github.com/Acontplus-S-A-S/acontplus-libs/issues)
+  [GitHub Issues](https://github.com/acontplus/acontplus-libs/issues)
 - **Documentation**: See links in the Documentation section above
 - **Contact**: [Ivan Paz](https://github.com/iferpaz7)
 

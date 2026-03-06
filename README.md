@@ -11,6 +11,9 @@ for enterprise applications.
   patterns
 - **[ng-auth](packages/ng-auth/README.md)**: Angular authentication module with
   JWT token management, route guards, URL redirection, and session handling
+- **[ng-common](packages/ng-common/README.md)**: Common Angular services for
+  WhatsApp Cloud API, report generation, and printing with clean architecture
+  facades
 - **[ng-components](packages/ng-components/README.md)**: Angular Material UI
   components including cards, tables, dialogs, theme toggle, and styling
   utilities

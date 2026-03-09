@@ -3,3 +3,4 @@ export * from './interfaces';
 export * from './mappers';
 export * from './models';
 export * from './customer-token';
+export * from './customer-constants';

@@ -6,7 +6,7 @@ import { CustomerCreateUpdateMapper } from '../mappers/customer-create-update-ma
 import { CustomerSearch } from '../../domain/models/customer-search';
 import { CompanySearchMapper } from '../mappers/company-search-mapper';
 import { ApiResponse, HttpClientFactory, PagedResult } from '@acontplus/core';
-import { CUSTOMER_API } from '../constants/customer.constants';
+import { CUSTOMER_API } from '../../data/customer-constants';
 
 export class CustomerHttpRepository implements CustomerRepository {
   private get http() {

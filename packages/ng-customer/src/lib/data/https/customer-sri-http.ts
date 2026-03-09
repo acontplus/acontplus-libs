@@ -1,10 +1,11 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { ApiResponse, IdentificationNumberVo } from '@acontplus/core';
-import { CustomerSri } from '../models/customer-sri.model';
-import { CUSTOMER_API } from '../../infrastructure/constants/customer.constants'; // Adjust path if needed
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable, map } from 'rxjs';
+
+import { ApiResponse } from '@acontplus/core';
+import { CustomerSri, CustomerSriRequest } from '../models/customer-sri.model';
+import { CUSTOMER_API, EcuadorIdType } from '..';
+import { EcuadorIdValidator } from './../../utils';
 
 @Injectable({
   providedIn: 'root',
@@ -12,43 +13,67 @@ import { CUSTOMER_API } from '../../infrastructure/constants/customer.constants'
 export class CustomerSriHttp {
   private http = inject(HttpClient);
 
-  private get url() {
-    // If CUSTOMER_API is not available, I might need to check where it is.
-    // I'll assume the import above is correct for now.
+  private get url(): string {
     return `${CUSTOMER_API.BILLING}/Consultas/`;
   }
 
-  getById(identificationNumber: string): Observable<ApiResponse<CustomerSri>> {
-    const idNumber = new IdentificationNumberVo(identificationNumber);
-    const id = idNumber.getId();
+  getByIdentification(request: CustomerSriRequest): Observable<ApiResponse<CustomerSri>> {
+    const id = request.identificationNumber.trim();
 
-    const endpoint = idNumber.isValidRuc()
-      ? `GetRucSRI?Ruc=${id}`
-      : idNumber.isValidCedula()
-        ? `GetCedulaSri?Ruc=${id}`
-        : (() => {
-            throw new Error('Número de identificación inválido para SRI');
-          })();
+    if (!EcuadorIdValidator.isValid(id)) {
+      throw new Error('Número de identificación inválido');
+    }
 
-    // Returning Observable instead of Promise to be more Angular-idiomatic
-    return this.http.get<any>(`${this.url}${endpoint}`).pipe(
+    const type = EcuadorIdValidator.getType(id);
+
+    const endpoint = type === EcuadorIdType.RUC ? 'GetRucSRI' : 'GetCedulaSri';
+
+    // Creamos HttpParams y agregamos sriOnly si viene
+    let params = new HttpParams().set('Ruc', id);
+    if (request.sriOnly !== undefined) {
+      params = params.set('SriOnly', String(request.sriOnly));
+    }
+
+    return this.http.get<any>(`${this.url}${endpoint}`, { params }).pipe(
       map(response => {
-        const idCard = response.numeroRuc ? response.numeroRuc : response.identificacion;
-        const businessName = response.razonSocial ? response.razonSocial : response.nombreCompleto;
+        let idCard: string;
+        let businessName: string;
+        let address: string | undefined;
+        let phone: string | undefined;
+        let email: string | undefined;
+
+        if (response.contribuyente) {
+          // caso sriOnly = true
+          idCard = response.contribuyente.numeroRuc;
+          businessName = response.contribuyente.razonSocial;
+          address = response.contribuyente.direccion;
+          // si necesitas otros campos como phone/email, puede que no existan en SRI
+          phone = undefined;
+          email = undefined;
+        } else {
+          // caso normal
+          idCard = response.numeroRuc ?? response.identificacion;
+          businessName = response.razonSocial ?? response.nombreCompleto;
+          address = response.direccion;
+          phone = response.telefono;
+          email = response.email;
+        }
+
         const data: CustomerSri = {
-          phone: response.telefono,
-          email: response.email,
           idCard,
           businessName,
-          address: response.direccion,
+          address,
+          phone,
+          email,
         };
+
         return {
           status: response.error ? 'warning' : 'success',
           code: response.error ? 'EXTERNAL_API_ERROR' : 'SUCCESS',
           data,
           message: response.error ?? 'External API call completed',
           timestamp: new Date().toISOString(),
-        } as ApiResponse<any>;
+        } as ApiResponse<CustomerSri>;
       }),
     );
   }

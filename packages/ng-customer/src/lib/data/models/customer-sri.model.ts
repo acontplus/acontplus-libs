@@ -1,7 +1,12 @@
 export interface CustomerSri {
-  phone: string;
-  email: string;
+  phone?: string;
+  email?: string;
   idCard: string;
   businessName: string;
-  address: string;
+  address?: string;
+}
+
+export interface CustomerSriRequest {
+  identificationNumber: string;
+  sriOnly?: boolean; // opcional
 }

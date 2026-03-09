@@ -35,7 +35,7 @@ import {
 } from '@acontplus/core';
 import { CustomerUseCase } from '../../../application/use-cases/customer-use-case';
 import { CUSTOMER_SRI_SERVICE } from '../../../data/customer-token';
-import { CustomerSriService } from '../../../data/https/customer-sri.service';
+import { CustomerSriService } from '../../../data/https/customer-sri-http';
 import { CustomerHttpRepository } from '../../../infrastructure/repositories/customer-http-repository';
 
 @Component({

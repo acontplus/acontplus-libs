@@ -1,3 +1,3 @@
 export const CUSTOMER_API = {
-  BILLING: 'customers',
+  BILLING: 'factelect',
 };

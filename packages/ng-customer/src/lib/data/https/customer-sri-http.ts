@@ -5,18 +5,12 @@ import { map } from 'rxjs/operators';
 import { ApiResponse, IdentificationNumberVo } from '@acontplus/core';
 import { CustomerSri } from '../models/customer-sri.model';
 import { CUSTOMER_API } from '../../infrastructure/constants/customer.constants'; // Adjust path if needed
-import { ICustomerSriService } from '../interfaces/customer-sri';
 
 @Injectable({
   providedIn: 'root',
 })
-export class CustomerSriService implements ICustomerSriService {
+export class CustomerSriHttp {
   private http = inject(HttpClient);
-
-  // Assuming CUSTOMER_API.BILLING is accessible or I should hardcode/move constants.
-  // The original file used '../constants/customer.constants' which was relative to infrastructure/repositories
-  // So it was packages/ng-customer/src/lib/infrastructure/constants/customer.constants
-  // From here (customer-sri/data-access) it is ../../infrastructure/constants/customer.constants
 
   private get url() {
     // If CUSTOMER_API is not available, I might need to check where it is.

@@ -1,14 +1,5 @@
 import { InjectionToken } from '@angular/core';
-import {
-  ICompanyCustomerHttp,
-  ICustomerSriService,
-  ICompanyCustomerMapper,
-  CompanyCustomerFormConfig,
-} from './index';
-
-export const CUSTOMER_SRI_HTTP_TOKEN = new InjectionToken<ICustomerSriService>(
-  'CUSTOMER_SRI_HTTP_TOKEN',
-);
+import { ICompanyCustomerHttp, ICompanyCustomerMapper, CompanyCustomerFormConfig } from './index';
 
 export const COMPANY_CUSTOMER_MAPPER = new InjectionToken<ICompanyCustomerMapper>(
   'COMPANY_CUSTOMER_MAPPER',

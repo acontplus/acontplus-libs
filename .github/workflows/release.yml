@@ -65,7 +65,10 @@ jobs:
           echo "npm version: $(npm --version)"
 
           # Remove auth token so npm falls through to OIDC
-          sed -i '/_authToken/d' "$NPM_CONFIG_USERCONFIG" 2>/dev/null || true
+          # Remove auth token so npm falls through to OIDC
+          if [ -n "$NPM_CONFIG_USERCONFIG" ] && [ -f "$NPM_CONFIG_USERCONFIG" ]; then
+            sed -i '/_authToken/d' "$NPM_CONFIG_USERCONFIG"
+          fi
 
           published=0
           skipped=0

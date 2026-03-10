@@ -56,7 +56,17 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
           HUSKY: '0'
 
-      # Trusted publishing: uses OIDC (id-token: write) instead of NPM_TOKEN
-      # Provenance attestations are generated automatically via OIDC
+      # Exchange GitHub OIDC token for a short-lived npm publish token.
+      # pnpm doesn't support OIDC natively (only npm CLI 11.5.1+ does),
+      # so we do the exchange manually and set NODE_AUTH_TOKEN.
+      - name: Authenticate with npm via OIDC
+        run: |
+          OIDC_TOKEN=$(curl -sS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=npm:registry.npmjs.org" | jq -r '.value')
+          NPM_TOKEN=$(curl -sS -X POST "https://registry.npmjs.org/-/npm/v1/security/oidc/token" \
+            -H "Content-Type: application/json" \
+            -d "{\"token\": \"${OIDC_TOKEN}\"}" | jq -r '.token')
+          echo "NODE_AUTH_TOKEN=${NPM_TOKEN}" >> $GITHUB_ENV
+
       - name: Publish to npm
         run: pnpm exec nx release publish

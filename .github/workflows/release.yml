@@ -18,6 +18,7 @@ jobs:
     # Only run on merged PRs (not direct pushes)
     if: github.event.head_commit.message != ''
     runs-on: ubuntu-latest
+    environment: npm-publish
     steps:
       - uses: actions/checkout@v4
         with:
@@ -31,7 +32,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 22.14
           cache: 'pnpm'
           registry-url: 'https://registry.npmjs.org'
 
@@ -51,11 +52,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build all packages
-        run: pnpm exec nx run-many -t build --projects=core,utils,ui-kit,ng-common,ng-config,ng-notifications,ng-components,ng-customer,ng-infrastructure,ng-auth
-
+      # Trusted publishing: uses OIDC (id-token: write) instead of NPM_TOKEN
+      # Provenance attestations are generated automatically via OIDC
       - name: Publish to npm
         run: pnpm exec nx release publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_CONFIG_PROVENANCE: true

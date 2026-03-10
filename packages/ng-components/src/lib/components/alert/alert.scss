@@ -1,81 +1,49 @@
-:root {
-  --acp-alert-outline: var(--mat-sys-outline-variant);
-  --acp-alert-background: var(--mat-sys-surface-container);
-  --acp-alert-text: var(--mat-sys-on-surface);
-  --acp-alert-shape: 8px;
-
-  --acp-alert-info-outline: #42a5f5;
-  --acp-alert-info-background: #e3f2fd;
-  --acp-alert-info-text: #0d47a1;
-
-  --acp-alert-success-outline: #66bb6a;
-  --acp-alert-success-background: #f1f8e9;
-  --acp-alert-success-text: #1b5e20;
-
-  --acp-alert-warning-outline: #ffa726;
-  --acp-alert-warning-background: #fff8e1;
-  --acp-alert-warning-text: #e65100;
-
-  --acp-alert-danger-outline: #ef5350;
-  --acp-alert-danger-background: #ffebee;
-  --acp-alert-danger-text: #b71c1c;
-}
-
-.dark-theme {
-  --acp-alert-outline: var(--mat-sys-outline-variant);
-  --acp-alert-background: var(--mat-sys-surface-container);
-  --acp-alert-text: var(--mat-sys-on-surface);
-
-  --acp-alert-info-outline: #1976d2;
-  --acp-alert-info-background: #0d47a1;
-  --acp-alert-info-text: #e3f2fd;
-
-  --acp-alert-success-outline: #388e3c;
-  --acp-alert-success-background: #1b5e20;
-  --acp-alert-success-text: #f1f8e9;
-
-  --acp-alert-warning-outline: #f57c00;
-  --acp-alert-warning-background: #e65100;
-  --acp-alert-warning-text: #fff8e1;
-
-  --acp-alert-danger-outline: #d32f2f;
-  --acp-alert-danger-background: #b71c1c;
-  --acp-alert-danger-text: #ffebee;
-}
-
+@use '../../styles/elevation' as elevation;
+@use './m3-alert';
 .acp-alert {
   position: relative;
   display: block;
   padding: 0.75rem 1rem;
   margin-bottom: 1rem;
   line-height: 1.5;
-  border: 1px solid var(--acp-alert-outline);
-  border-radius: var(--acp-alert-shape);
-  background-color: var(--acp-alert-background);
-  color: var(--acp-alert-text);
+  border: 1px solid var(--acp-alert-outline-color);
+  border-radius: var(--acp-alert-container-shape);
+  background-color: var(--acp-alert-background-color);
+  color: var(--acp-alert-text-color);
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease;
 
   &.acp-alert-info {
-    border-color: var(--acp-alert-info-outline);
-    background-color: var(--acp-alert-info-background);
-    color: var(--acp-alert-info-text);
+    border-color: var(--acp-alert-info-outline-color);
+    background-color: var(--acp-alert-info-background-color);
+    color: var(--acp-alert-info-text-color);
   }
 
   &.acp-alert-success {
-    border-color: var(--acp-alert-success-outline);
-    background-color: var(--acp-alert-success-background);
-    color: var(--acp-alert-success-text);
+    border-color: var(--acp-alert-success-outline-color);
+    background-color: var(--acp-alert-success-background-color);
+    color: var(--acp-alert-success-text-color);
   }
 
   &.acp-alert-warning {
-    border-color: var(--acp-alert-warning-outline);
-    background-color: var(--acp-alert-warning-background);
-    color: var(--acp-alert-warning-text);
+    border-color: var(--acp-alert-warning-outline-color);
+    background-color: var(--acp-alert-warning-background-color);
+    color: var(--acp-alert-warning-text-color);
   }
 
   &.acp-alert-danger {
-    border-color: var(--acp-alert-danger-outline);
-    background-color: var(--acp-alert-danger-background);
-    color: var(--acp-alert-danger-text);
+    border-color: var(--acp-alert-danger-outline-color);
+    background-color: var(--acp-alert-danger-background-color);
+    color: var(--acp-alert-danger-text-color);
+  }
+
+  // Generate elevation classes (mat-elevation-z0 to mat-elevation-z24)
+  @for $i from 0 through 24 {
+    &.mat-elevation-z#{$i} {
+      @include elevation.elevation($i);
+    }
   }
 }
 
@@ -92,6 +60,14 @@
   [dir='rtl'] & {
     right: auto;
     left: 0;
+  }
+
+  button {
+    transition: opacity 0.2s ease;
+
+    &:hover {
+      opacity: 0.7;
+    }
   }
 }
 

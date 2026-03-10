@@ -248,6 +248,32 @@ this.notificationService.success({
 });
 ```
 
+## CDK Overlay Configuration
+
+SweetAlert2 and ngx-toastr use the Angular CDK overlay internally. To prevent
+conflicts with the native Popover API (which can cause z-index and positioning
+issues), disable it globally:
+
+```typescript
+import { OVERLAY_DEFAULT_CONFIG } from '@angular/cdk/overlay';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    {
+      provide: OVERLAY_DEFAULT_CONFIG,
+      useValue: { usePopover: false },
+    },
+    provideNotifications({
+      defaultProvider: 'sweetalert',
+    }),
+  ],
+};
+```
+
+> **Why?** The native Popover API can interfere with how SweetAlert2 modals and
+> toastr overlays are stacked. Setting `usePopover: false` forces the CDK to use
+> the traditional overlay strategy, ensuring correct rendering.
+
 ## Advanced Usage
 
 ### Lifecycle Callbacks

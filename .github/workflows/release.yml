@@ -57,12 +57,18 @@ jobs:
           HUSKY: '0'
 
       # npm CLI handles OIDC trusted publishing natively with --provenance.
-      # pnpm doesn't support OIDC, so we publish each package directly with npm.
-      # Clear the _authToken from .npmrc so npm falls through to OIDC.
+      # Node 22 ships npm 10.x which lacks OIDC support; npm 11.5.1+ is required.
       - name: Publish to npm
         run: |
-          # Remove auth token so npm uses OIDC for authentication
-          sed -i '/_authToken/d' "$NPM_CONFIG_USERCONFIG" 2>/dev/null || true
+          # Install npm with native OIDC trusted publishing support
+          npm install -g npm@11
+          echo "npm version: $(npm --version)"
+
+          # Remove auth token so npm falls through to OIDC
+          # Remove auth token so npm falls through to OIDC
+          if [ -n "$NPM_CONFIG_USERCONFIG" ] && [ -f "$NPM_CONFIG_USERCONFIG" ]; then
+            sed -i '/_authToken/d' "$NPM_CONFIG_USERCONFIG"
+          fi
 
           published=0
           skipped=0
@@ -74,7 +80,7 @@ jobs:
               pkg_version=$(node -p "require('./$dir/package.json').version")
               echo "::group::Publishing $pkg_name@$pkg_version"
 
-              if npm publish "$dir" --provenance --access public 2>&1; then
+              if npm publish "$dir" --provenance --access public; then
                 echo "✓ Published $pkg_name@$pkg_version"
                 published=$((published + 1))
               else

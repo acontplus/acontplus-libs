@@ -80,7 +80,7 @@ jobs:
               pkg_version=$(node -p "require('./$dir/package.json').version")
               echo "::group::Publishing $pkg_name@$pkg_version"
 
-              if npm publish "$dir" --provenance --access public 2>&1; then
+              if npm publish "$dir" --provenance --access public; then
                 echo "✓ Published $pkg_name@$pkg_version"
                 published=$((published + 1))
               else

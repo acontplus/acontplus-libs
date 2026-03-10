@@ -60,8 +60,7 @@
     "url": "git+https://github.com/acontplus/acontplus-libs.git"
   },
   "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
+    "access": "public"
   },
   "peerDependencies": {
     "decimal.js": "^10.6.0",

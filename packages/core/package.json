@@ -68,8 +68,7 @@
     "url": "git+https://github.com/acontplus/acontplus-libs.git"
   },
   "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
+    "access": "public"
   },
   "release": {
     "branches": [

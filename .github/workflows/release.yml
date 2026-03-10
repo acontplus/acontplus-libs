@@ -56,17 +56,44 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
           HUSKY: '0'
 
-      # Exchange GitHub OIDC token for a short-lived npm publish token.
-      # pnpm doesn't support OIDC natively (only npm CLI 11.5.1+ does),
-      # so we do the exchange manually and set NODE_AUTH_TOKEN.
-      - name: Authenticate with npm via OIDC
-        run: |
-          OIDC_TOKEN=$(curl -sS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=npm:registry.npmjs.org" | jq -r '.value')
-          NPM_TOKEN=$(curl -sS -X POST "https://registry.npmjs.org/-/npm/v1/security/oidc/token" \
-            -H "Content-Type: application/json" \
-            -d "{\"token\": \"${OIDC_TOKEN}\"}" | jq -r '.token')
-          echo "NODE_AUTH_TOKEN=${NPM_TOKEN}" >> $GITHUB_ENV
-
+      # npm CLI handles OIDC trusted publishing natively with --provenance.
+      # pnpm doesn't support OIDC, so we publish each package directly with npm.
+      # Clear the _authToken from .npmrc so npm falls through to OIDC.
       - name: Publish to npm
-        run: pnpm exec nx release publish
+        run: |
+          # Remove auth token so npm uses OIDC for authentication
+          sed -i '/_authToken/d' "$NPM_CONFIG_USERCONFIG" 2>/dev/null || true
+
+          published=0
+          skipped=0
+          failed=0
+
+          for dir in dist/packages/*/; do
+            if [ -f "$dir/package.json" ]; then
+              pkg_name=$(node -p "require('./$dir/package.json').name")
+              pkg_version=$(node -p "require('./$dir/package.json').version")
+              echo "::group::Publishing $pkg_name@$pkg_version"
+
+              if npm publish "$dir" --provenance --access public 2>&1; then
+                echo "✓ Published $pkg_name@$pkg_version"
+                published=$((published + 1))
+              else
+                exit_code=$?
+                # Exit code 0 or already-published (409/403) are acceptable
+                if npm view "$pkg_name@$pkg_version" version 2>/dev/null; then
+                  echo "⊘ Skipped $pkg_name@$pkg_version (already published)"
+                  skipped=$((skipped + 1))
+                else
+                  echo "✗ Failed to publish $pkg_name@$pkg_version"
+                  failed=$((failed + 1))
+                fi
+              fi
+              echo "::endgroup::"
+            fi
+          done
+
+          echo ""
+          echo "Summary: $published published, $skipped skipped, $failed failed"
+          if [ "$failed" -gt 0 ]; then
+            exit 1
+          fi

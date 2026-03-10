@@ -1,3 +1,9 @@
+## 2.0.13 (2026-03-10)
+
+### 🧱 Updated Dependencies
+
+- Updated ng-notifications to 2.0.6
+
 ## 2.0.11 (2026-03-10)
 
 ### 🧱 Updated Dependencies

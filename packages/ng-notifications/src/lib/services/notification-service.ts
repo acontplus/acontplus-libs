@@ -47,6 +47,10 @@ export class NotificationService {
     return this.config.defaultProvider;
   }
 
+  isProvider(provider: NotificationProvider): boolean {
+    return this.providers.get(provider) === this.currentProvider;
+  }
+
   setProvider(provider: NotificationProvider): void {
     const providerInstance = this.providers.get(provider);
     if (providerInstance) {

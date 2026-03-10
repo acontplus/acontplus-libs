@@ -6,8 +6,8 @@ export class CompanyCustomerDefaultMapper implements ICompanyCustomerMapper {
     const result = new CompanyCustomerFormDataResult();
     if (response.code === '1') {
       const mainData = JSON.parse(response.payload as string);
-      let cities: any[] = [];
-      let identificationTypes: any[] = [];
+      let cities: any[];
+      let identificationTypes: any[];
       if (Array.isArray(mainData)) {
         cities = mainData[3];
         identificationTypes = mainData[0];

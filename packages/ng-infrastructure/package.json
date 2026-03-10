@@ -1,6 +1,6 @@
 {
   "name": "@acontplus/ng-infrastructure",
-  "version": "2.0.12",
+  "version": "2.0.13",
   "description": "Angular infrastructure library implementing clean architecture patterns with HTTP interceptors, repository implementations, adapters, dependency injection providers, and core infrastructure services for enterprise applications.",
   "peerDependencies": {
     "@acontplus/core": "^1.1.4",
@@ -24,8 +24,7 @@
     "node": ">=18.0.0"
   },
   "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
+    "access": "public"
   },
   "keywords": [
     "acontplus",

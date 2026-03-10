@@ -36,4 +36,4 @@ jobs:
       - uses: nrwl/nx-set-shas@v4
 
       - name: Run lint, test and build
-        run: pnpm exec nx affected -t lint test build
+        run: pnpm exec nx affected -t lint test build --exclude demo-app

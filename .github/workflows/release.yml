@@ -51,10 +51,25 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Version, Changelog & Tag
-        run: pnpm exec nx release --skip-publish
+        id: version
+        run: |
+          pnpm exec nx release --skip-publish 2>&1 | tee /tmp/nx-release.log
+          # Check if nx release created any new commits
+          if git diff --name-only HEAD~1 HEAD 2>/dev/null | grep -q "package.json\|CHANGELOG"; then
+            echo "changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "changes=false" >> $GITHUB_OUTPUT
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
           HUSKY: '0'
+
+      - name: Push version commits and tags
+        if: steps.version.outputs.changes == 'true'
+        run: |
+          git push origin main --follow-tags
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 
       - name: Publish to npm
         env:

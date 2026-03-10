@@ -57,11 +57,14 @@ jobs:
           HUSKY: '0'
 
       # npm CLI handles OIDC trusted publishing natively with --provenance.
-      # pnpm doesn't support OIDC, so we publish each package directly with npm.
-      # Clear the _authToken from .npmrc so npm falls through to OIDC.
+      # Node 22 ships npm 10.x which lacks OIDC support; npm 11.5.1+ is required.
       - name: Publish to npm
         run: |
-          # Remove auth token so npm uses OIDC for authentication
+          # Install npm with native OIDC trusted publishing support
+          npm install -g npm@11
+          echo "npm version: $(npm --version)"
+
+          # Remove auth token so npm falls through to OIDC
           sed -i '/_authToken/d' "$NPM_CONFIG_USERCONFIG" 2>/dev/null || true
 
           published=0

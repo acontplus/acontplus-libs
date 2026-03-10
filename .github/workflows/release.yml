@@ -37,7 +37,9 @@ jobs:
         with:
           node-version: 22.14
           cache: 'pnpm'
-          registry-url: 'https://registry.npmjs.org'
+          # Do NOT set registry-url here — it creates .npmrc with
+          # _authToken=${NODE_AUTH_TOKEN} placeholder that blocks
+          # npm 11's native OIDC trusted publishing flow.
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -61,14 +63,21 @@ jobs:
       - name: Publish to npm
         run: |
           # Install npm with native OIDC trusted publishing support
-          npm install -g npm@11
+          npm install -g npm@latest
           echo "npm version: $(npm --version)"
 
-          # Remove auth token so npm falls through to OIDC
-          # Remove auth token so npm falls through to OIDC
-          if [ -n "$NPM_CONFIG_USERCONFIG" ] && [ -f "$NPM_CONFIG_USERCONFIG" ]; then
-            sed -i '/_authToken/d' "$NPM_CONFIG_USERCONFIG"
-          fi
+          # Defensive: remove any _authToken lines from .npmrc files
+          # that would cause npm to skip OIDC and fail with ENEEDAUTH
+          for npmrc in "$HOME/.npmrc" ".npmrc" "${NPM_CONFIG_USERCONFIG:-}"; do
+            if [ -n "$npmrc" ] && [ -f "$npmrc" ]; then
+              echo "Cleaning _authToken from $npmrc"
+              sed -i '/_authToken/d' "$npmrc"
+            fi
+          done
+
+          # Verify OIDC prerequisites
+          echo "ACTIONS_ID_TOKEN_REQUEST_URL is set: ${ACTIONS_ID_TOKEN_REQUEST_URL:+yes}"
+          npm config list
 
           published=0
           skipped=0

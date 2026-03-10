@@ -40,6 +40,13 @@ export class NotificationService {
       this.providers.get(this.config.defaultProvider) || this.sweetAlertProvider;
   }
 
+  getProvider(): NotificationProvider {
+    for (const [key, value] of this.providers) {
+      if (value === this.currentProvider) return key;
+    }
+    return this.config.defaultProvider;
+  }
+
   setProvider(provider: NotificationProvider): void {
     const providerInstance = this.providers.get(provider);
     if (providerInstance) {

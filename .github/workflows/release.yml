@@ -37,9 +37,7 @@ jobs:
         with:
           node-version: 22.14
           cache: 'pnpm'
-          # Do NOT set registry-url here — it creates .npmrc with
-          # _authToken=${NODE_AUTH_TOKEN} placeholder that blocks
-          # npm 11's native OIDC trusted publishing flow.
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -58,27 +56,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
           HUSKY: '0'
 
-      # npm CLI handles OIDC trusted publishing natively with --provenance.
-      # Node 22 ships npm 10.x which lacks OIDC support; npm 11.5.1+ is required.
       - name: Publish to npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          # Install npm with native OIDC trusted publishing support
-          npm install -g npm@latest
-          echo "npm version: $(npm --version)"
-
-          # Defensive: remove any _authToken lines from .npmrc files
-          # that would cause npm to skip OIDC and fail with ENEEDAUTH
-          for npmrc in "$HOME/.npmrc" ".npmrc" "${NPM_CONFIG_USERCONFIG:-}"; do
-            if [ -n "$npmrc" ] && [ -f "$npmrc" ]; then
-              echo "Cleaning _authToken from $npmrc"
-              sed -i '/_authToken/d' "$npmrc"
-            fi
-          done
-
-          # Verify OIDC prerequisites
-          echo "ACTIONS_ID_TOKEN_REQUEST_URL is set: ${ACTIONS_ID_TOKEN_REQUEST_URL:+yes}"
-          npm config list
-
           published=0
           skipped=0
           failed=0
@@ -94,7 +75,6 @@ jobs:
                 published=$((published + 1))
               else
                 exit_code=$?
-                # Exit code 0 or already-published (409/403) are acceptable
                 if npm view "$pkg_name@$pkg_version" version 2>/dev/null; then
                   echo "⊘ Skipped $pkg_name@$pkg_version (already published)"
                   skipped=$((skipped + 1))

@@ -20,11 +20,14 @@ jobs:
     runs-on: ubuntu-latest
     environment: npm-publish
     steps:
+      # RELEASE_TOKEN (PAT) is required to push version commits and tags
+      # to main, which is protected and requires PRs for normal pushes.
+      # The PAT owner must be added to bypass_pull_request_allowances.
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           filter: tree:0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.RELEASE_TOKEN }}
 
       - uses: pnpm/action-setup@v4
         with:
@@ -50,7 +53,7 @@ jobs:
       - name: Version, Changelog & Tag
         run: pnpm exec nx release --skip-publish
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
           HUSKY: '0'
 
       # Trusted publishing: uses OIDC (id-token: write) instead of NPM_TOKEN

@@ -8,7 +8,7 @@ import {
   HttpRequest,
 } from '@angular/common/http';
 import { catchError, throwError, switchMap, Observable } from 'rxjs';
-
+import { v4 as uuidv4 } from 'uuid';
 import { AUTH_TOKEN, ENVIRONMENT } from '@acontplus/ng-config';
 import { TenantInfo } from '../services/tenant-info';
 import { CorrelationInfo } from '../services/correlation-info';
@@ -133,9 +133,9 @@ export const httpContextInterceptor: HttpInterceptorFn = (req, next) => {
   // ── Header construction ──────────────────────────────────────────────────
   const correlationId = config.enableCorrelationTracking
     ? correlationService.getOrCreateCorrelationId()
-    : crypto.randomUUID();
+    : uuidv4();
   const tenantId = tenantService.getTenantId();
-  const requestId = crypto.randomUUID();
+  const requestId = uuidv4();
 
   const headers: Record<string, string> = {
     [config.requestIdHeader]: requestId,

@@ -453,6 +453,9 @@ importers:
       '@angular/core':
         specifier: ^21.0.0
         version: 21.2.1(@angular/compiler@21.2.1)(rxjs@7.8.2)(zone.js@0.16.1)
+      uuid:
+        specifier: 13.0.0
+        version: 13.0.0
 
   packages/ng-notifications:
     dependencies:

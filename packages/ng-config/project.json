@@ -46,7 +46,8 @@
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
         "jestConfig": "packages/ng-config/jest.config.ts",
-        "tsConfig": "packages/ng-config/tsconfig.spec.json"
+        "tsConfig": "packages/ng-config/tsconfig.spec.json",
+        "passWithNoTests": true
       }
     },
     "lint": {

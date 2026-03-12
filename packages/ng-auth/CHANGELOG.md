@@ -1,3 +1,9 @@
+## 2.1.12 (2026-03-12)
+
+### 🧱 Updated Dependencies
+
+- Updated ng-infrastructure to 2.0.14
+
 ## 2.1.11 (2026-03-10)
 
 ### 🧱 Updated Dependencies

@@ -1,3 +1,14 @@
+## 2.0.14 (2026-03-12)
+
+### 🩹 Fixes
+
+- disable retry logic in api-interceptor ([#102](https://github.com/acontplus/acontplus-libs/pull/102))
+
+### ❤️ Thank You
+
+- Emilio Senguana @senguanasoft
+- iferpaz7 @iferpaz7
+
 ## 2.0.13 (2026-03-10)
 
 ### 🧱 Updated Dependencies

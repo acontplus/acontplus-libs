@@ -7,12 +7,12 @@ import {
   HttpContextToken,
 } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { catchError, switchMap, of, timer, retry, throwError, Observable } from 'rxjs';
+import { catchError, switchMap, of, throwError, Observable } from 'rxjs';
 import { ApiResponse } from '@acontplus/core';
 import { NotificationService } from '@acontplus/ng-notifications';
 import { AUTH_TOKEN } from '@acontplus/ng-config';
 
-const RETRY_COUNT = 2;
+//const RETRY_COUNT = 2;
 
 // ---------------------------------------------------------------------------
 // HTTP Context Tokens
@@ -45,22 +45,22 @@ export const apiInterceptor: HttpInterceptorFn = (req, next) => {
   return next(modifiedReq).pipe(
     // Retry only on network errors or 5xx — never on 4xx client errors.
     // Shows toast + updates spinner message so the user knows what is happening.
-    retry({
-      count: RETRY_COUNT,
-      delay: (error: HttpErrorResponse, attempt) => {
-        const isRetryable = error.status === 0 || (error.status >= 500 && error.status < 600);
-        if (!isRetryable) throw error; // 4xx — bubble up immediately, no retry
+    // retry({
+    //   count: RETRY_COUNT,
+    //   delay: (error: HttpErrorResponse, attempt) => {
+    //     const isRetryable = error.status === 0 || (error.status >= 500 && error.status < 600);
+    //     if (!isRetryable) throw error; // 4xx — bubble up immediately, no retry
 
-        // Toast informa al usuario
-        toastr.warning({
-          message: `Reintentando solicitud (${attempt} de ${RETRY_COUNT})...`,
-          title: 'Conexión inestable',
-          config: { duration: 2500 },
-        });
+    //     // Toast informa al usuario
+    //     toastr.warning({
+    //       message: `Reintentando solicitud (${attempt} de ${RETRY_COUNT})...`,
+    //       title: 'Conexión inestable',
+    //       config: { duration: 2500 },
+    //     });
 
-        return timer(1000 * attempt); // attempt 1 → 1 s, attempt 2 → 2 s
-      },
-    }),
+    //     return timer(1000 * attempt);
+    //   },
+    // }),
 
     // Handle successful responses via switchMap so we can return an Observable
     // (needed to properly throw ApiResponse errors into the RxJS stream).

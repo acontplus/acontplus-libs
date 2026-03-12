@@ -47,7 +47,8 @@
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
         "jestConfig": "packages/ng-notifications/jest.config.ts",
-        "tsConfig": "packages/ng-notifications/tsconfig.spec.json"
+        "tsConfig": "packages/ng-notifications/tsconfig.spec.json",
+        "passWithNoTests": true
       }
     },
     "lint": {

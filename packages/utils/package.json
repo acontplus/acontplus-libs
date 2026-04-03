@@ -18,8 +18,7 @@
     "README.md"
   ],
   "scripts": {
-    "build": "nx build utils",
-    "test": "nx test utils"
+    "build": "nx build utils"
   },
   "keywords": [
     "acontplus",

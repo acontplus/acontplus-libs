@@ -173,8 +173,14 @@ export const httpContextInterceptor: HttpInterceptorFn = (req, next) => {
     headers[key] = value;
   });
 
-  // Content-Type for mutation requests (do not override if already set)
-  if (['POST', 'PUT', 'PATCH'].includes(req.method) && !req.headers.has('Content-Type')) {
+  // Content-Type for mutation requests (do not override if already set).
+  // Only set application/json when the body is JSON-serializable.
+  // Binary types (FormData, Blob, ArrayBuffer, etc.) need the browser to set Content-Type.
+  if (
+    ['POST', 'PUT', 'PATCH'].includes(req.method) &&
+    !req.headers.has('Content-Type') &&
+    isJsonBody(req.body)
+  ) {
     headers['Content-Type'] = 'application/json';
   }
 
@@ -332,6 +338,22 @@ function handleContextError(error: HttpErrorResponse, ctx: ErrorContext) {
 // ---------------------------------------------------------------------------
 // Public types
 // ---------------------------------------------------------------------------
+
+function isJsonBody(body: unknown): boolean {
+  if (body === null || body === undefined) return true;
+  if (typeof body === 'string' || typeof body === 'number' || typeof body === 'boolean')
+    return true;
+  if (Array.isArray(body)) return true;
+  if (
+    typeof body === 'object' &&
+    !(body instanceof FormData) &&
+    !(body instanceof Blob) &&
+    !(body instanceof ArrayBuffer) &&
+    !(body instanceof URLSearchParams)
+  )
+    return true;
+  return false;
+}
 
 export interface HttpRequestLog {
   method: string;

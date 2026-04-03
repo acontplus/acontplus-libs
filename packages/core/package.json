@@ -23,8 +23,7 @@
     "README.md"
   ],
   "scripts": {
-    "build": "nx build core",
-    "test": "nx test core"
+    "build": "nx build core"
   },
   "keywords": [
     "acontplus",

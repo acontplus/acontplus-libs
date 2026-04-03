@@ -18,8 +18,7 @@
     "README.md"
   ],
   "scripts": {
-    "build": "nx build ui-kit",
-    "test": "nx test ui-kit"
+    "build": "nx build ui-kit"
   },
   "keywords": [
     "acontplus",

@@ -1,3 +1,9 @@
+## 2.1.15 (2026-04-03)
+
+### 🧱 Updated Dependencies
+
+- Updated ng-infrastructure to 2.0.16
+
 ## 2.1.14 (2026-04-03)
 
 This was a version bump only for ng-auth to align it with other projects, there were no code changes.

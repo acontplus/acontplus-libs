@@ -1,3 +1,14 @@
+## 2.0.16 (2026-04-03)
+
+### 🩹 Fixes
+
+- **ng-infrastructure:** remove duplicate setTenant method in TenantInfo ([#106](https://github.com/acontplus/acontplus-libs/pull/106))
+
+### ❤️ Thank You
+
+- Christian Zarate
+- iferpaz7 @iferpaz7
+
 ## 2.0.15 (2026-04-03)
 
 ### 🩹 Fixes

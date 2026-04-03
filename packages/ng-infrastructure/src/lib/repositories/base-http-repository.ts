@@ -9,11 +9,13 @@ export abstract class BaseHttpRepository {
   protected abstract config: RepositoryConfig; // Abstract property
 
   protected buildUrl(path = ''): string {
-    const baseUrl = this.config.baseUrl || '/api';
+    const baseUrl = (this.config.baseUrl || '/api').replace(/\/+$/, '');
     const version = this.config.version ? `/v${this.config.version}` : '';
-    const endpoint = path ? `${this.config.endpoint}/${path}` : this.config.endpoint;
+    const endpoint = path
+      ? `${this.config.endpoint}/${path}`.replace(/\/+/g, '/')
+      : this.config.endpoint;
 
-    return `${baseUrl}${version}/${endpoint}`.replace(/\/+/g, '/');
+    return `${baseUrl}${version}/${endpoint.replace(/^\/+/, '')}`;
   }
 
   protected get<T>(path = '', params?: Record<string, string | number | boolean>): Observable<T> {

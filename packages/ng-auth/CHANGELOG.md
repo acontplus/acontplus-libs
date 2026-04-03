@@ -1,3 +1,7 @@
+## 2.1.14 (2026-04-03)
+
+This was a version bump only for ng-auth to align it with other projects, there were no code changes.
+
 ## 2.1.13 (2026-04-03)
 
 ### 🧱 Updated Dependencies

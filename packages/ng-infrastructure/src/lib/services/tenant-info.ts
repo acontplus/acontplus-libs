@@ -29,10 +29,6 @@ export class TenantInfo {
     localStorage.setItem('tenantId', tenantId);
   }
 
-  setTenant(tenantId: string): void {
-    this.setTenantId(tenantId);
-  }
-
   handleForbidden(): void {
     this.logger.error('Access forbidden for tenant:', this.tenantId);
     // Redirect to tenant selection or show error message

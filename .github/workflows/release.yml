@@ -71,9 +71,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 
-      - name: Build libraries
-        run: pnpm exec nx run-many -t build --exclude demo-app --parallel=3
-
       - name: Publish to npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

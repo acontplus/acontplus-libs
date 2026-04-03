@@ -93,17 +93,11 @@ export const apiInterceptor: HttpInterceptorFn = (req, next) => {
 function standardizeApiResponse(body: unknown): ApiResponse<unknown> {
   if (isValidApiResponse(body)) return body;
 
-  // Raw object without ApiResponse wrapper
-  if (body !== null && body !== undefined && typeof body === 'object' && !('status' in body)) {
+  // Wrap any non-null/undefined body (including objects with non-standard status fields)
+  if (body !== null && body !== undefined) {
     return wrapSuccess(body);
   }
 
-  // Primitive value
-  if (body !== null && body !== undefined && typeof body !== 'object') {
-    return wrapSuccess(body);
-  }
-
-  // null / undefined
   return wrapSuccess(undefined);
 }
 

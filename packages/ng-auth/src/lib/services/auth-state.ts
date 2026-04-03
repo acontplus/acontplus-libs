@@ -1,7 +1,7 @@
 // src/lib/services/auth-state.ts
 import { Injectable, inject, signal, OnDestroy, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, of, tap, catchError, throwError } from 'rxjs';
+import { Observable, of, tap, catchError, throwError, finalize } from 'rxjs';
 import { AuthRepository } from '../domain/repositories/auth-repository';
 import { AuthTokenRepositoryImpl } from '../repositories/auth-token-repository-impl';
 import { AuthUrlRedirect } from './auth-url-redirect';
@@ -73,11 +73,10 @@ export class AuthState implements OnDestroy {
         this.setAuthenticated(tokens, request.rememberMe ?? false);
         this.urlRedirectService.redirectToIntendedUrl('/');
       }),
-      tap({ finalize: () => this._isLoading.set(false) }),
       catchError((error) => {
-        this._isLoading.set(false);
         return throwError(() => error);
       }),
+      finalize(() => this._isLoading.set(false)),
     );
   }
 
@@ -93,11 +92,10 @@ export class AuthState implements OnDestroy {
         this._emailVerified.set(false); // New users need email verification
         this.router.navigate(['/']);
       }),
-      tap({ finalize: () => this._isLoading.set(false) }),
       catchError((error) => {
-        this._isLoading.set(false);
         return throwError(() => error);
       }),
+      finalize(() => this._isLoading.set(false)),
     );
   }
 
@@ -169,11 +167,10 @@ export class AuthState implements OnDestroy {
     this._isLoading.set(true);
 
     return this.authRepository.forgotPassword(request).pipe(
-      tap({ finalize: () => this._isLoading.set(false) }),
       catchError((error) => {
-        this._isLoading.set(false);
         return throwError(() => error);
       }),
+      finalize(() => this._isLoading.set(false)),
     );
   }
 
@@ -185,11 +182,10 @@ export class AuthState implements OnDestroy {
 
     return this.authRepository.resetPassword(request).pipe(
       tap(() => this.router.navigate([`/${this.environment.loginRoute}`])),
-      tap({ finalize: () => this._isLoading.set(false) }),
       catchError((error) => {
-        this._isLoading.set(false);
         return throwError(() => error);
       }),
+      finalize(() => this._isLoading.set(false)),
     );
   }
 
@@ -200,11 +196,10 @@ export class AuthState implements OnDestroy {
     this._isLoading.set(true);
 
     return this.authRepository.changePassword(request).pipe(
-      tap({ finalize: () => this._isLoading.set(false) }),
       catchError((error) => {
-        this._isLoading.set(false);
         return throwError(() => error);
       }),
+      finalize(() => this._isLoading.set(false)),
     );
   }
 
@@ -220,11 +215,10 @@ export class AuthState implements OnDestroy {
 
     return this.authRepository.verifyEmail(request).pipe(
       tap(() => this._emailVerified.set(true)),
-      tap({ finalize: () => this._isLoading.set(false) }),
       catchError((error) => {
-        this._isLoading.set(false);
         return throwError(() => error);
       }),
+      finalize(() => this._isLoading.set(false)),
     );
   }
 
@@ -235,11 +229,10 @@ export class AuthState implements OnDestroy {
     this._isLoading.set(true);
 
     return this.authRepository.resendVerificationEmail(request).pipe(
-      tap({ finalize: () => this._isLoading.set(false) }),
       catchError((error) => {
-        this._isLoading.set(false);
         return throwError(() => error);
       }),
+      finalize(() => this._isLoading.set(false)),
     );
   }
 
@@ -254,11 +247,10 @@ export class AuthState implements OnDestroy {
     this._isLoading.set(true);
 
     return this.authRepository.setupMfa().pipe(
-      tap({ finalize: () => this._isLoading.set(false) }),
       catchError((error) => {
-        this._isLoading.set(false);
         return throwError(() => error);
       }),
+      finalize(() => this._isLoading.set(false)),
     );
   }
 
@@ -274,11 +266,10 @@ export class AuthState implements OnDestroy {
         this._mfaRequired.set(false);
         this.urlRedirectService.redirectToIntendedUrl('/');
       }),
-      tap({ finalize: () => this._isLoading.set(false) }),
       catchError((error) => {
-        this._isLoading.set(false);
         return throwError(() => error);
       }),
+      finalize(() => this._isLoading.set(false)),
     );
   }
 
@@ -289,11 +280,10 @@ export class AuthState implements OnDestroy {
     this._isLoading.set(true);
 
     return this.authRepository.disableMfa(code).pipe(
-      tap({ finalize: () => this._isLoading.set(false) }),
       catchError((error) => {
-        this._isLoading.set(false);
         return throwError(() => error);
       }),
+      finalize(() => this._isLoading.set(false)),
     );
   }
 
@@ -324,11 +314,10 @@ export class AuthState implements OnDestroy {
         this.setAuthenticated(tokens, true);
         this.urlRedirectService.redirectToIntendedUrl('/');
       }),
-      tap({ finalize: () => this._isLoading.set(false) }),
       catchError((error) => {
-        this._isLoading.set(false);
         return throwError(() => error);
       }),
+      finalize(() => this._isLoading.set(false)),
     );
   }
 
@@ -349,11 +338,10 @@ export class AuthState implements OnDestroy {
     this._isLoading.set(true);
 
     return this.authRepository.discoverDomain({ email }).pipe(
-      tap({ finalize: () => this._isLoading.set(false) }),
       catchError((error) => {
-        this._isLoading.set(false);
         return throwError(() => error);
       }),
+      finalize(() => this._isLoading.set(false)),
     );
   }
 

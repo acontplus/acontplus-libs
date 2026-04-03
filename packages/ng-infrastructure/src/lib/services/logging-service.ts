@@ -13,10 +13,7 @@ export class LoggingService {
       // Production logging (e.g., to external service)
       this.logToExternalService(level, message, context);
     } else {
-      // Development logging - only log in development mode
-      if (!this.environment.isProduction) {
-        console[level](`[${level.toUpperCase()}] ${message}`, context);
-      }
+      console[level](`[${level.toUpperCase()}] ${message}`, context);
     }
   }
 

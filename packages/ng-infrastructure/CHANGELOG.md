@@ -1,3 +1,13 @@
+## 2.0.15 (2026-04-03)
+
+### 🩹 Fixes
+
+- **ng-infrastructure:** remove redundant condition in logging-service ([3643f5f](https://github.com/acontplus/acontplus-libs/commit/3643f5f))
+
+### ❤️ Thank You
+
+- iferpaz7 @iferpaz7
+
 ## 2.0.14 (2026-03-12)
 
 ### 🩹 Fixes

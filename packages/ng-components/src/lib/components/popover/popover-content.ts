@@ -4,12 +4,12 @@ import {
   ChangeDetectorRef,
   Directive,
   DOCUMENT,
+  inject,
   InjectionToken,
   Injector,
   OnDestroy,
   TemplateRef,
   ViewContainerRef,
-  inject,
 } from '@angular/core';
 import { Subject } from 'rxjs';
 
@@ -20,23 +20,14 @@ import { Subject } from 'rxjs';
  */
 export const ACP_POPOVER_CONTENT = new InjectionToken<AcpPopoverContent>('AcpPopoverContent');
 
-/**
- * Base class for popover content that provides common functionality.
- *
- * This abstract class handles the attachment and detachment of popover content
- * using Angular CDK portals. It manages the DOM manipulation required to display
- * popover content in an overlay.
- *
- * @docs-private
- */
 @Directive()
 export abstract class _AcpPopoverContentBase implements OnDestroy {
-  private _template = inject(TemplateRef<any>);
+  private _template = inject(TemplateRef);
   private _appRef = inject(ApplicationRef);
   private _injector = inject(Injector);
   private _viewContainerRef = inject(ViewContainerRef);
   private _document = inject(DOCUMENT);
-  private _changeDetectorRef = inject(ChangeDetectorRef, { optional: true });
+  private _changeDetectorRef = inject(ChangeDetectorRef);
 
   private _portal!: TemplatePortal<any>;
   private _outlet!: DomPortalOutlet;
@@ -46,7 +37,6 @@ export abstract class _AcpPopoverContentBase implements OnDestroy {
 
   /**
    * Attaches the content with a particular context.
-   * @param context Context data to pass to the template
    * @docs-private
    */
   attach(context: any = {}) {
@@ -76,17 +66,13 @@ export abstract class _AcpPopoverContentBase implements OnDestroy {
     // by Angular. This causes the `@ContentChildren` for popover items within the popover to
     // not be updated by Angular. By explicitly marking for check here, we tell Angular that
     // it needs to check for new popover items and update the `@ContentChild` in `AcpPopover`.
-    // @breaking-change 9.0.0 Make change detector ref required
-    if (this._changeDetectorRef) {
-      this._changeDetectorRef.markForCheck();
-    }
-
+    this._changeDetectorRef.markForCheck();
     this._portal.attach(this._outlet, context);
     this._attached.next();
   }
 
   /**
-   * Detaches the content from the DOM.
+   * Detaches the content.
    * @docs-private
    */
   detach() {
@@ -95,10 +81,6 @@ export abstract class _AcpPopoverContentBase implements OnDestroy {
     }
   }
 
-  /**
-   * Lifecycle hook called when the component is destroyed.
-   * Cleans up the portal outlet to prevent memory leaks.
-   */
   ngOnDestroy() {
     if (this._outlet) {
       this._outlet.dispose();
@@ -108,25 +90,9 @@ export abstract class _AcpPopoverContentBase implements OnDestroy {
 
 /**
  * Popover content that will be rendered lazily once the popover is opened.
- *
- * This directive allows you to define content that should be rendered inside
- * a popover panel. The content is only created when the popover is actually
- * opened, which can improve performance for complex content.
- *
- * @example
- * ```html
- * <ng-template acpPopoverContent>
- *   <div>This content will be shown in the popover</div>
- * </ng-template>
- * ```
  */
 @Directive({
   selector: 'ng-template[acpPopoverContent]',
-  standalone: true,
   providers: [{ provide: ACP_POPOVER_CONTENT, useExisting: AcpPopoverContent }],
 })
-export class AcpPopoverContent extends _AcpPopoverContentBase {
-  constructor() {
-    super();
-  }
-}
+export class AcpPopoverContent extends _AcpPopoverContentBase {}

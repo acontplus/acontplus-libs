@@ -36,7 +36,7 @@ export const ACP_POPOVER_DEFAULT_OPTIONS = new InjectionToken<AcpPopoverDefaultO
   {
     providedIn: 'root',
     factory: () => ({
-      backdropClass: 'cdk-overlay-dark-backdrop',
+      backdropClass: 'cdk-overlay-transparent-backdrop',
     }),
   },
 );
@@ -141,7 +141,6 @@ export class AcpPopover implements AcpPopoverPanel, OnInit, OnDestroy {
   private _elevationPrefix = 'mat-elevation-z';
   private _baseElevation: number | null = null;
   private _exitFallbackTimeout: ReturnType<typeof setTimeout> | undefined;
-  private _mouseleaveTimer: ReturnType<typeof setTimeout> | undefined;
 
   /** Whether animations are currently disabled. */
   protected _animationsDisabled = _animationsDisabled();
@@ -283,31 +282,8 @@ export class AcpPopover implements AcpPopoverPanel, OnInit, OnDestroy {
   }
   private _previousPanelClass?: string;
 
-  /**
-   * This method takes classes set on the host acp-popover element and applies them on the
-   * popover template that displays in the overlay container. Otherwise, it's difficult
-   * to style the containing popover from outside the component.
-   * @deprecated Use `panelClass` instead.
-   * @breaking-change 8.0.0
-   */
-  @Input()
-  get classList(): string {
-    return this.panelClass;
-  }
-  set classList(classes: string) {
-    this.panelClass = classes;
-  }
-
   /** Event emitted when the popover is closed. */
   @Output() closed = new EventEmitter<PopoverCloseReason>();
-
-  /**
-   * Programmatically closes the popover.
-   * @param reason Optional reason for closing
-   */
-  close(reason?: PopoverCloseReason): void {
-    this.closed.emit(reason || 'programmatic');
-  }
 
   /** @docs-private */
   @ViewChild(TemplateRef) templateRef!: TemplateRef<any>;
@@ -320,28 +296,16 @@ export class AcpPopover implements AcpPopoverPanel, OnInit, OnDestroy {
 
   readonly panelId = `acp-popover-panel-${popoverPanelUid++}`;
 
-  /**
-   * Lifecycle hook called when the component is initialized.
-   * Sets up the initial position classes for the popover.
-   */
   ngOnInit() {
     this.setPositionClasses();
   }
 
-  /**
-   * Lifecycle hook called when the component is destroyed.
-   * Cleans up subscriptions and timers.
-   */
   ngOnDestroy() {
     this.closed.complete();
     clearTimeout(this._exitFallbackTimeout);
-    clearTimeout(this._mouseleaveTimer);
   }
 
-  /**
-   * Handle a keyboard event from the popover, delegating to the appropriate action.
-   * @param event The keyboard event to handle
-   */
+  /** Handle a keyboard event from the popover, delegating to the appropriate action. */
   _handleKeydown(event: KeyboardEvent) {
     const keyCode = event.keyCode;
 
@@ -355,45 +319,31 @@ export class AcpPopover implements AcpPopoverPanel, OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Close popover on click if `closeOnPanelClick` is true.
-   */
+  /** Close popover on click if `closeOnPanelClick` is true. */
   _handleClick() {
     if (this.closeOnPanelClick) {
       this.closed.emit('click');
     }
   }
 
-  /**
-   * Disables close of popover when leaving trigger element and mouse over the popover.
-   */
+  /** Disables close of popover when leaving trigger element and mouse over the popover. */
   _handleMouseOver() {
     if (this.triggerEvent === 'hover') {
-      // Cancel any pending close timer
-      if (this._mouseleaveTimer) {
-        clearTimeout(this._mouseleaveTimer);
-        this._mouseleaveTimer = undefined;
-      }
       this.closeDisabled = true;
     }
   }
 
-  /**
-   * Enables close of popover when mouse leaving popover element.
-   */
+  /** Enables close of popover when mouse leaving popover element. */
   _handleMouseLeave() {
     if (this.triggerEvent === 'hover') {
-      this._mouseleaveTimer = setTimeout(() => {
+      setTimeout(() => {
         this.closeDisabled = false;
         this.closed.emit();
       }, this.leaveDelay);
     }
   }
 
-  /**
-   * Sets the current styles for the popover to allow for dynamically changing settings.
-   * @param pos The position to set styles for, defaults to current position
-   */
+  /** Sets the current styles for the popover to allow for dynamically changing settings. */
   setCurrentStyles(pos = this.position) {
     const left =
       pos[1] === 'after'
@@ -423,7 +373,6 @@ export class AcpPopover implements AcpPopoverPanel, OnInit, OnDestroy {
   /**
    * It's necessary to set position-based classes to ensure the popover panel animation
    * folds out from the correct direction.
-   * @param pos The position to set classes for, defaults to current position
    */
   setPositionClasses(pos = this.position): void {
     this._classList = {
@@ -445,10 +394,7 @@ export class AcpPopover implements AcpPopoverPanel, OnInit, OnDestroy {
     this._changeDetectorRef.markForCheck();
   }
 
-  /**
-   * Sets the popover-panel's elevation.
-   * Applies Material Design elevation classes based on the base elevation level.
-   */
+  /** Sets the popover-panel's elevation. */
   setElevation(): void {
     // The base elevation depends on which version of the spec
     // we're running so we have to resolve it at runtime.
@@ -479,10 +425,7 @@ export class AcpPopover implements AcpPopoverPanel, OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Callback that is invoked when the panel animation completes.
-   * @param state The animation state that completed
-   */
+  /** Callback that is invoked when the panel animation completes. */
   protected _onAnimationDone(state: string) {
     const isExit = state === EXIT_ANIMATION;
 
@@ -496,20 +439,12 @@ export class AcpPopover implements AcpPopoverPanel, OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Callback that is invoked when the panel animation starts.
-   * @param state The animation state that started
-   */
   protected _onAnimationStart(state: string) {
     if (state === ENTER_ANIMATION || state === EXIT_ANIMATION) {
       this._isAnimating = true;
     }
   }
 
-  /**
-   * Sets the open state of the popover and manages animations.
-   * @param isOpen Whether the popover should be open
-   */
   _setIsOpen(isOpen: boolean) {
     this._panelAnimationState = isOpen ? 'enter' : 'void';
 

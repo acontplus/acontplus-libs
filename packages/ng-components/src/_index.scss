@@ -5,7 +5,8 @@
   drawer-typography, drawer-density, drawer-base, drawer-overrides;
 @forward './lib/components/grid/grid-theme' as grid-* show grid-theme, grid-color, grid-typography,
   grid-density, grid-base, grid-overrides;
-
+@forward './lib/components/popover/popover-theme' as popover-* show popover-theme, popover-color,
+  popover-typography, popover-density, popover-base, popover-overrides;
 @forward './core/theming/definition' show define-theme, define-colors, define-typography,
   define-density;
 @forward './core/theming/color-api-backwards-compatibility' show

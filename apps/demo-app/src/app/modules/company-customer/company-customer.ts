@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Routes } from '@angular/router';
 import { companyCustomerBasicExampleConfig } from './example';
 import { AsyncPipe } from '@angular/common';
@@ -8,6 +8,7 @@ import { ExampleViewer } from '../../shared/example-viewer/example-viewver';
 @Component({
   selector: 'app-company-customer',
   imports: [DocHeading, ExampleViewer, AsyncPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './company-customer.html',
 })
 export class CompanyCustomer {

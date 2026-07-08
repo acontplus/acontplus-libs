@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { DateRangePicker, DateRangePickerOptions, DateRangeValue } from '@acontplus/ng-components';
 
@@ -7,6 +7,7 @@ import { DateRangePicker, DateRangePickerOptions, DateRangeValue } from '@acontp
   standalone: true,
   imports: [DateRangePicker, ReactiveFormsModule],
   templateUrl: './app.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './app.scss',
 })
 export class DateRangePickerAngularWrapperExample {

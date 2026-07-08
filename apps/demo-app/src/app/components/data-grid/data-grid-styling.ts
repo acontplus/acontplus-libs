@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 import { MatCardModule } from '@angular/material/card';
 import { DocHeading } from '../../shared/doc-heading/doc-heading';
@@ -78,6 +78,7 @@ import { CodeExample } from '../../shared/code-example/code-example';
       <app-code-example [code]="scssCustomizationCode" [language]="'styles'" />
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [
     `
       .docs-component-viewer-content {

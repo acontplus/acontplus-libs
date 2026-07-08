@@ -12,6 +12,7 @@ import {
   OnDestroy,
   viewChild,
   ViewEncapsulation,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { Subject, takeUntil, debounceTime, Observable, of } from 'rxjs';
 
@@ -46,6 +47,7 @@ import { AutocompleteWrapperService } from '../../services';
   ],
   templateUrl: './autocomplete-wrapper.html',
   styleUrl: './autocomplete-wrapper.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
 export class ReusableAutocompleteComponent implements OnInit, OnDestroy {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 import { Button } from '@acontplus/ng-components';
 import { REPORT_FORMAT } from '@acontplus/ui-kit';
@@ -140,6 +140,7 @@ import { CodeExample } from '../../shared/code-example/code-example';
       <app-code-example [code]="disabledButtonsCode" [language]="'typescript'" />
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [
     `
       .docs-component-viewer-content {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { DocHeading } from '../../shared/doc-heading/doc-heading';
 
 @Component({
@@ -10,6 +10,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
       <p>More examples coming soon...</p>
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [
     `
       .docs-component-viewer-content {

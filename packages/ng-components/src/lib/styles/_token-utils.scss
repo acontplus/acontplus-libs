@@ -60,7 +60,7 @@
     $sys-fallback: _create-var($sys-fallback, $fallback);
   }
 
-  @return _create-var(--mtx-#{$token}, $sys-fallback);
+  @return _create-var(--acp-#{$token}, $sys-fallback);
 }
 
 // Outputs a map of token values as CSS variable definitions.
@@ -68,7 +68,7 @@
   @include mat.private-current-selector-or-root() {
     @each $key, $value in $tokens {
       @if $value != null {
-        --mtx-#{$key}: #{$value};
+        --acp-#{$key}: #{$value};
       }
     }
   }

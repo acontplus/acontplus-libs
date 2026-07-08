@@ -1,0 +1,57 @@
+@use 'sass:map';
+@use '@angular/material' as mat;
+@use '../../core/tokens/token-utils';
+@use './m3-alert';
+
+@mixin base($theme) {
+  $tokens: map.get(m3-alert.get-tokens($theme), base);
+
+  @include token-utils.values($tokens);
+}
+
+@mixin color($theme) {
+  $tokens: map.get(m3-alert.get-tokens($theme), color);
+
+  @include token-utils.values($tokens);
+}
+
+@mixin typography($theme) {
+  $tokens: map.get(m3-alert.get-tokens($theme), typography);
+
+  @include token-utils.values($tokens);
+}
+
+@mixin density($theme) {
+  $tokens: map.get(m3-alert.get-tokens($theme), density);
+
+  @include token-utils.values($tokens);
+}
+
+/// Defines the tokens that will be available in the `overrides` mixin and for docs extraction.
+@function _define-overrides() {
+  @return ((namespace: alert, tokens: token-utils.get-overrides(m3-alert.get-tokens(), alert)));
+}
+
+@mixin overrides($tokens: ()) {
+  @include token-utils.batch-create-token-values($tokens, _define-overrides());
+}
+
+@mixin theme($theme, $color-variant: null) {
+  @if mat.get-theme-version($theme) == 1 {
+    @include base($theme);
+    @include color($theme);
+    @include density($theme);
+    @include typography($theme);
+  } @else {
+    @include base($theme);
+    @if mat.theme-has($theme, color) {
+      @include color($theme);
+    }
+    @if mat.theme-has($theme, density) {
+      @include density($theme);
+    }
+    @if mat.theme-has($theme, typography) {
+      @include typography($theme);
+    }
+  }
+}

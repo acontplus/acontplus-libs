@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -254,7 +254,6 @@ interface DemoData {
                 [data]="demoData"
                 [columns]="basicColumns"
                 [cellSelectable]="true"
-                (cellClick)="onCellClick($event)"
                 (cellSelectedChange)="onCellSelectedChange($event)"
               />
               @if (lastCellClick()) {
@@ -299,6 +298,7 @@ interface DemoData {
       </mat-tab-group>
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [
     `
       .demo-container {

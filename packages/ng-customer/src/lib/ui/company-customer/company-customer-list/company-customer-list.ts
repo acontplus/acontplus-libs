@@ -1,4 +1,4 @@
-import { Component, inject, input, signal, OnInit } from '@angular/core';
+import { Component, inject, input, signal, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { DataGridColumn, DataGrid, Button } from '@acontplus/ng-components';
 import { isValidField } from '@acontplus/utils';
 import { CompanyCustomerAddEditDirective } from './../../directives';
@@ -13,6 +13,7 @@ import { MatMenuModule } from '@angular/material/menu';
 @Component({
   selector: 'acp-company-customer-list',
   templateUrl: './company-customer-list.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     DataGrid,
     MatFormFieldModule,

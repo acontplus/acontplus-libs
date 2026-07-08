@@ -1,4 +1,4 @@
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, Input, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 /* Angular Material */
@@ -17,6 +17,7 @@ import { AlertDialogService } from '@acontplus/ng-components';
   standalone: true,
   templateUrl: './alert-dialog.html',
   styleUrls: ['./alert-dialog.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, MatCardModule, MatButtonModule],
 })
 export class AlertDialogComponent {
@@ -751,6 +752,7 @@ interface CustomDialogData {
   selector: 'app-custom-dialog-content',
   standalone: true,
   imports: [CommonModule, MatListModule],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <div class="p-4">
       <p>Hello, {{ data.name }}!</p>

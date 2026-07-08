@@ -1,5 +1,5 @@
 // apps/demo-app/src/app/pages/auth/auth.page.ts
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { Login, AuthState } from '@acontplus/ng-auth';
 import { Router } from '@angular/router';
 
@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
       <acp-login title="Acontplus Demo" [showRegisterButton]="true" [showRememberMe]="true" />
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [
     `
       .auth-page {

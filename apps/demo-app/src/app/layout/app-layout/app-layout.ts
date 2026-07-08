@@ -1,4 +1,4 @@
-import { Component, HostBinding, OnInit, inject } from '@angular/core';
+import { Component, HostBinding, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
 import { ComponentPageTitleService } from '../../shared/services/page-title';
@@ -7,6 +7,7 @@ import { ComponentPageTitleService } from '../../shared/services/page-title';
   selector: 'app-homepage',
   templateUrl: './app-layout.html',
   styleUrls: ['./app-layout.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatButtonModule, RouterLink],
 })
 export class AppLayout implements OnInit {

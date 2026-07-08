@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 import { ThemeToggle } from '@acontplus/ng-components';
 import { MatCardModule } from '@angular/material/card';
@@ -58,6 +58,7 @@ import { CodeExample } from '../../shared/code-example/code-example';
       <app-code-example [code]="usageCode" [language]="'typescript'" />
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [
     `
       .docs-component-viewer-content {

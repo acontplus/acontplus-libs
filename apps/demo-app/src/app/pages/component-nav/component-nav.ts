@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { MatListModule } from '@angular/material/list';
 import { Params, RouterLink, RouterLinkActive } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -38,6 +38,12 @@ export const COMPONENTS_MENU: ComponentCategory[] = [
   },
 
   // Buttons & Indicators
+  {
+    id: 'alert',
+    name: 'Alert',
+    summary: 'Flexible alert component with multiple types and dismissible option.',
+    category: 'Buttons & Indicators',
+  },
   {
     id: 'button',
     name: 'Button',
@@ -139,6 +145,7 @@ export const COMPONENTS_MENU: ComponentCategory[] = [
       </mat-nav-list>
     </div>
   </div>`,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatListModule, RouterLinkActive, RouterLink],
 })
 export class ComponentNav {

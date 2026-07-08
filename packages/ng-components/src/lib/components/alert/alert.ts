@@ -1,12 +1,13 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
+  EventEmitter,
+  Input,
+  Output,
   ViewEncapsulation,
-  WritableSignal,
-  OutputEmitterRef,
-  input,
-  output,
-  signal,
+  booleanAttribute,
+  inject,
 } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 
@@ -17,11 +18,8 @@ export type AcpAlertType = 'default' | 'info' | 'success' | 'warning' | 'danger'
   exportAs: 'acpAlert',
   host: {
     '[class]': 'hostClassList',
-    '[class.acp-alert-dismissible]': 'dismissible()',
-    '[class.acp-alert-hidden]': '!visible()',
-    '[attr.role]': 'visible() ? "alert" : null',
-    '[attr.aria-live]': 'type() === "danger" ? "assertive" : "polite"',
-    '[attr.aria-atomic]': 'true',
+    '[class.acp-alert-dismissible]': 'dismissible',
+    role: 'alert',
   },
   templateUrl: './alert.html',
   styleUrl: './alert.scss',
@@ -30,38 +28,26 @@ export type AcpAlertType = 'default' | 'info' | 'success' | 'warning' | 'danger'
   imports: [MatIconButton],
 })
 export class AcpAlert {
-  /** Signal to control visibility */
-  visible: WritableSignal<boolean> = signal(true);
-
-  /** The alert's type. Can be `default`, `info`, `success`, `warning` or `danger`. */
-  type = input<AcpAlertType>('default');
-
-  /** Whether to display an inline close button. */
-  dismissible = input(false, { transform: (value: unknown) => value === '' || value === true });
-
-  /** The alert's elevation (0~24). */
-  elevation = input(0, { transform: (value: unknown) => Number(value) || 0 });
-
-  /** Event emitted when the alert closed. */
-  closed: OutputEmitterRef<AcpAlert> = output<AcpAlert>();
+  private _changeDetectorRef = inject(ChangeDetectorRef);
 
   get hostClassList() {
-    const clampedElevation = Math.max(0, Math.min(24, this.elevation()));
-    return `acp-alert acp-alert-${this.type()} mat-elevation-z${clampedElevation}`;
+    return `acp-alert acp-alert-${this.type} mat-elevation-z${this.elevation}`;
   }
 
-  /** Programmatically close the alert */
-  close(): void {
-    this._onClosed();
-  }
+  /** The alert's type. Can be `default`, `info`, `success`, `warning` or `danger`. */
+  @Input() type: AcpAlertType = 'default';
 
-  /** Programmatically show the alert */
-  show(): void {
-    this.visible.set(true);
-  }
+  /** Whether to display an inline close button. */
+  @Input({ transform: booleanAttribute }) dismissible = false;
+
+  /** The alert's elevation (0~24). */
+  @Input() elevation = 0;
+
+  /** Event emitted when the alert closed. */
+  @Output() closed = new EventEmitter<AcpAlert>();
 
   _onClosed(): void {
-    this.visible.set(false);
+    this._changeDetectorRef.markForCheck();
     this.closed.emit(this);
   }
 }

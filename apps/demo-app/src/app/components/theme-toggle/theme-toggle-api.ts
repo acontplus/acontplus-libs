@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { DocHeading } from '../../shared/doc-heading/doc-heading';
 import { MatCardModule } from '@angular/material/card';
 
@@ -101,6 +101,7 @@ import { MatCardModule } from '@angular/material/card';
       </mat-card>
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [
     `
       .docs-component-viewer-content {

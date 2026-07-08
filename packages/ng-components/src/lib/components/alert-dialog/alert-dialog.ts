@@ -46,7 +46,7 @@ type ButtonType = 'confirm' | 'cancel' | 'deny';
     Button,
   ],
   templateUrl: 'alert-dialog.html',
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [
     `
       .acp-alert-dialog {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -18,6 +18,7 @@ import { Button } from '@acontplus/ng-components';
     Button,
   ],
   templateUrl: './number-utils-demo.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './number-utils-demo.component.scss',
 })
 export class NumberUtilsDemoComponent {

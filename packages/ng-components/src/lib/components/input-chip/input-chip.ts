@@ -1,4 +1,10 @@
-import { Component, inject, input, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  inject,
+  input,
+  ViewEncapsulation,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import {
   MatChipEditedEvent,
   MatChipGrid,
@@ -16,6 +22,7 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
   imports: [MatFormField, MatLabel, MatChipRow, MatIcon, MatHint, MatChipGrid, MatChipInput],
   templateUrl: './input-chip.html',
   styleUrl: './input-chip.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
 export class InputChip {

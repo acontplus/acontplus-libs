@@ -25,6 +25,10 @@ export const routes = [
 
       // Buttons & Indicators
       {
+        path: 'alert',
+        loadChildren: () => import('./alert/alert.routes').then(m => m.routes),
+      },
+      {
         path: 'button',
         loadChildren: () => import('./button/button.routes').then(m => m.routes),
       },

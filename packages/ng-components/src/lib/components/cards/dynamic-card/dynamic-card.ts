@@ -1,4 +1,11 @@
-import { Component, input, output, booleanAttribute, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  input,
+  output,
+  booleanAttribute,
+  ViewEncapsulation,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -14,6 +21,7 @@ import { MatIconModule } from '@angular/material/icon';
   imports: [MatCardModule, MatButtonModule, MatIconModule],
   templateUrl: './dynamic-card.html',
   styleUrl: './dynamic-card.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
 export class DynamicCard {

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 
 import { SvgIcon, IconRegistryService } from '@acontplus/ng-components';
 import { MatCardModule } from '@angular/material/card';
@@ -101,6 +101,7 @@ import { CodeExample } from '../../shared/code-example/code-example';
       <app-code-example [code]="registryCode" [language]="'typescript'" />
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [
     `
       .docs-component-viewer-content {

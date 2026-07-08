@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { CompanyCustomerForm } from '@acontplus/ng-customer';
 
 @Component({
   selector: 'app-company-customer-create',
   imports: [CompanyCustomerForm],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './company-customer-list.html',
 })
 export class CompanyCustomerList {

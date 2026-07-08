@@ -1,4 +1,12 @@
-import { Component, computed, effect, inject, input, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  ViewEncapsulation,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import type { SafeHtml } from '@angular/platform-browser';
 import { IconRegistryService } from '../icon-registry.service';
 import { DEFAULT_ICONS, FALLBACK_ICON } from '@acontplus/ui-kit';
@@ -8,6 +16,7 @@ import { DEFAULT_ICONS, FALLBACK_ICON } from '@acontplus/ui-kit';
   imports: [],
   templateUrl: './svg-icon.html',
   styleUrl: './svg-icon.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
 export class SvgIcon {

@@ -12,5 +12,10 @@
   "dest": "../../dist/packages/ng-components",
   "lib": {
     "entryFile": "src/index.ts"
+  },
+  "exports": {
+    ".": {
+      "sass": "./_index.scss"
+    }
   }
 }

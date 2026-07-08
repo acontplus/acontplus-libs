@@ -1,3 +1,11 @@
+@forward './lib/components/alert/alert-theme' as alert-* show alert-theme, alert-color,
+  alert-typography, alert-density, alert-base, alert-overrides;
+
+@forward './lib/components/drawer/drawer-theme' as drawer-* show drawer-theme, drawer-color,
+  drawer-typography, drawer-density, drawer-base, drawer-overrides;
+@forward './lib/components/grid/grid-theme' as grid-* show grid-theme, grid-color, grid-typography,
+  grid-density, grid-base, grid-overrides;
+
 @forward './core/theming/definition' show define-theme, define-colors, define-typography,
   define-density;
 @forward './core/theming/color-api-backwards-compatibility' show

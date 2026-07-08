@@ -1,11 +1,11 @@
 // Import all the theming functionality.
 @use '@angular/material' as mat;
-@use '../components/data-grid/alert-theme';
+@use './../../lib/components/alert/alert-theme';
 // @use '../../button/button-theme';
 // @use '../../colorpicker/colorpicker-theme';
 // @use '../../datetimepicker/datetimepicker-theme';
-// @use '../../drawer/drawer-theme';
-@use '../components/data-grid/grid-theme';
+@use './../../lib/components/drawer/drawer-theme';
+@use './../../lib/components/data-grid/grid-theme';
 // @use '../../loader/loader-theme';
 // @use '../../popover/popover-theme';
 // @use '../../progress/progress-theme';
@@ -15,11 +15,11 @@
 
 // Create a theme.
 @mixin all-component-themes($theme) {
-  // @include alert-theme.theme($theme);
+  @include alert-theme.theme($theme);
   // @include button-theme.theme($theme);
   // @include colorpicker-theme.theme($theme);
   // @include datetimepicker-theme.theme($theme);
-  // @include drawer-theme.theme($theme);
+  @include drawer-theme.theme($theme);
   @include grid-theme.theme($theme);
   // @include loader-theme.theme($theme);
   // @include popover-theme.theme($theme);
@@ -30,11 +30,11 @@
 }
 
 @mixin all-component-bases($theme) {
-  // @include alert-theme.base($theme);
+  @include alert-theme.base($theme);
   // @include button-theme.base($theme);
   // @include colorpicker-theme.base($theme);
   // @include datetimepicker-theme.base($theme);
-  // @include drawer-theme.base($theme);
+  @include drawer-theme.base($theme);
   @include grid-theme.base($theme);
   // @include loader-theme.base($theme);
   // @include popover-theme.base($theme);

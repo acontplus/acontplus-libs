@@ -1,9 +1,9 @@
 @use 'sass:map';
-@use '../../../core/style/elevation';
-@use '../../../core/tokens/m3-utils';
-@use '../../../core/tokens/m3';
+@use './../../../core/style/elevation';
+@use './../../../core/tokens/m3-utils';
+@use './../../../core/tokens/m3';
 
-/// Generates custom tokens for the acp-drawer.
+/// Generates custom tokens for the mtx-drawer.
 @function get-tokens($theme: m3.$sys-theme) {
   $system: m3-utils.get-system($theme);
 

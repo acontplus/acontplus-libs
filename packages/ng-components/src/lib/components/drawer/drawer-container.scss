@@ -1,7 +1,7 @@
 /* stylelint-disable keyframes-name-pattern */
 @use '@angular/cdk' as cdk;
 @use '@angular/material' as mat;
-@use '../../../core/tokens/token-utils';
+@use './../../../core/tokens/token-utils';
 @use './m3-drawer';
 
 $fallbacks: m3-drawer.get-tokens();

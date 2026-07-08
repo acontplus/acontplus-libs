@@ -1,39 +1,39 @@
 @use 'sass:map';
 @use '@angular/material' as mat;
-@use '../../../core/tokens/token-utils';
-@use './m3-alert';
+@use './../../../core/tokens/token-utils';
+@use './m3-drawer';
 
 @mixin base($theme) {
-  $tokens: map.get(m3-alert.get-tokens($theme), base);
+  $tokens: map.get(m3-drawer.get-tokens($theme), base);
 
   @include token-utils.values($tokens);
 }
 
 @mixin color($theme) {
-  $tokens: map.get(m3-alert.get-tokens($theme), color);
+  $tokens: map.get(m3-drawer.get-tokens($theme), color);
 
   @include token-utils.values($tokens);
 }
 
 @mixin typography($theme) {
-  $tokens: map.get(m3-alert.get-tokens($theme), typography);
+  $tokens: map.get(m3-drawer.get-tokens($theme), typography);
 
   @include token-utils.values($tokens);
 }
 
 @mixin density($theme) {
-  $tokens: map.get(m3-alert.get-tokens($theme), density);
+  $tokens: map.get(m3-drawer.get-tokens($theme), density);
 
   @include token-utils.values($tokens);
 }
 
 /// Defines the tokens that will be available in the `overrides` mixin and for docs extraction.
 @function _define-overrides() {
-  @return ((namespace: alert, tokens: token-utils.get-overrides(m3-alert.get-tokens(), alert)));
+  @return ((namespace: drawer, tokens: token-utils.get-overrides(m3-drawer.get-tokens(), drawer)));
 }
 
 @mixin overrides($tokens: ()) {
-  @include token-utils.batch-create-token-values($tokens, _define-overrides());
+  @include token-utils.batch-create-token-values($tokens, _define-overrides()...);
 }
 
 @mixin theme($theme, $color-variant: null) {

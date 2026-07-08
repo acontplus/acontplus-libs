@@ -2,11 +2,11 @@
 @use 'sass:map';
 @use 'sass:meta';
 @use '@angular/material' as mat;
-// @use '../../alert/m3-alert';
+@use '../../../../lib/components/alert/m3-alert';
 // @use '../../colorpicker/m3-colorpicker';
 // @use '../../datetimepicker/m3-datetimepicker';
-// @use '../../drawer/m3-drawer';
-// @use '../../grid/m3-grid';
+@use '../../../../lib/components/drawer/m3-drawer';
+@use '../../../../lib/components/grid/m3-grid';
 // @use '../../loader/m3-loader';
 // @use '../../popover/m3-popover';
 // @use '../../progress/m3-progress';

@@ -1,10 +1,10 @@
 @use '@angular/material' as mat;
-// @use '../../alert/alert-theme';
+@use './../../lib/components/alert/alert-theme';
 // @use '../../button/button-theme';
 // @use '../../colorpicker/colorpicker-theme';
 // @use '../../datetimepicker/datetimepicker-theme';
-// @use '../../drawer/drawer-theme';
-@use '../../grid/grid-theme';
+@use './../../lib/components/drawer/drawer-theme';
+@use './../../lib/components/grid/grid-theme';
 // @use '../../loader/loader-theme';
 // @use '../../popover/popover-theme';
 // @use '../../progress/progress-theme';
@@ -18,11 +18,11 @@
     @error 'No density configuration specified.';
   }
 
-  // @include alert-theme.density($theme);
+  @include alert-theme.density($theme);
   // @include button-theme.density($theme);
   // @include colorpicker-theme.density($theme);
   // @include datetimepicker-theme.density($theme);
-  // @include drawer-theme.density($theme);
+  @include drawer-theme.density($theme);
   @include grid-theme.density($theme);
   // @include loader-theme.density($theme);
   // @include popover-theme.density($theme);

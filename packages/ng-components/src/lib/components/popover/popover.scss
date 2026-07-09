@@ -1,30 +1,7 @@
 /* stylelint-disable keyframes-name-pattern */
-@use 'sass:map';
-@use '../../styles/token-utils';
-
-// Theme variables for popover
-:root {
-  --acp-popover-container-shape: var(--mat-sys-corner-medium, 12px);
-  --acp-popover-background-color: var(--mat-sys-surface-container, #f3f3f3);
-  --acp-popover-text-color: var(--mat-sys-on-surface, #1d1b20);
-  --acp-popover-outline-color: var(--mat-sys-outline, #79747e);
-}
-
-// Dark theme overrides
-body.dark-theme,
-[data-theme='dark'] {
-  --acp-popover-background-color: var(--mat-sys-surface-container, #2d2d2d);
-  --acp-popover-text-color: var(--mat-sys-on-surface, #e6e0e9);
-  --acp-popover-outline-color: var(--mat-sys-outline, #938f99);
-}
-
-// Fallback tokens for popover
-$fallbacks: (
-  popover-container-shape: var(--acp-popover-container-shape, 12px),
-  popover-background-color: var(--acp-popover-background-color, #f3f3f3),
-  popover-text-color: var(--acp-popover-text-color, #1d1b20),
-  popover-outline-color: var(--acp-popover-outline-color, #79747e),
-);
+@use './../../../core/tokens/token-utils';
+@use './m3-popover';
+$fallbacks: m3-popover.get-tokens();
 
 $arrow-size: 1em; // 16px default
 
@@ -57,13 +34,9 @@ $arrow-size: 1em; // 16px default
   font-size: inherit; // It can change the arrow size
   outline: 0;
   animation: _acp-popover-enter 120ms cubic-bezier(0, 0, 0.2, 1);
-  border-radius: map.get($fallbacks, popover-container-shape);
-  background-color: map.get($fallbacks, popover-background-color);
-  color: map.get($fallbacks, popover-text-color);
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease,
-    box-shadow 0.3s ease;
+  border-radius: token-utils.slot(popover-container-shape, $fallbacks);
+  background-color: token-utils.slot(popover-background-color, $fallbacks);
+  color: token-utils.slot(popover-text-color, $fallbacks);
 
   &.acp-popover-panel-exit-animation {
     animation: _acp-popover-exit 100ms 25ms linear forwards;
@@ -125,12 +98,12 @@ $arrow-size: 1em; // 16px default
   }
 
   &::before {
-    border-color: map.get($fallbacks, popover-outline-color);
+    border-color: token-utils.slot(popover-outline-color, $fallbacks);
   }
 
   &::after {
     border-width: calc(#{$arrow-size * 0.5} - 1px);
-    border-color: map.get($fallbacks, popover-background-color);
+    border-color: token-utils.slot(popover-background-color, $fallbacks);
   }
 }
 

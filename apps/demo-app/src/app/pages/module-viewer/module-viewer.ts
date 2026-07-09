@@ -1,4 +1,10 @@
-import { Component, OnDestroy, ViewEncapsulation, inject } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  ViewEncapsulation,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { MatTabsModule } from '@angular/material/tabs';
 import {
   ActivatedRoute,
@@ -126,6 +132,7 @@ import { ComponentPageTitleService } from '../../shared/services/page-title';
     }
   `,
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatTabsModule, RouterLinkActive, RouterLink, RouterOutlet],
 })
 export class ModuleViewer implements OnDestroy {

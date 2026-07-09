@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CompanyCustomerForm } from './../company-customer-form';
 import { MatDialogContent, MatDialogActions, MatDialogRef } from '@angular/material/dialog';
 import { Button } from '@acontplus/ng-components';
@@ -6,6 +6,7 @@ import { Button } from '@acontplus/ng-components';
 @Component({
   selector: 'acp-company-customer-add-edit-dialog',
   imports: [CompanyCustomerForm, MatDialogContent, MatDialogActions, Button],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './company-customer-add-edit-dialog.html',
 })
 export class CompanyCustomerAddEditDialog {

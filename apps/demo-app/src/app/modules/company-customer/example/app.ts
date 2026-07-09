@@ -1,5 +1,5 @@
 import { AdvancedDialogService, Button, DataGrid, DataGridColumn } from '@acontplus/ng-components';
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CompanyCustomerCreate } from '../company-customer-create/company-customer-create';
 import { COMPANY_CUSTOMER_HTTP_TOKEN, CompanyCustomerList } from '@acontplus/ng-customer';
 import { AcpAlert } from '@acontplus/ng-components';
@@ -8,6 +8,7 @@ import { AcpAlert } from '@acontplus/ng-components';
   selector: 'app-company-customer-example',
   templateUrl: './app.html',
   styleUrl: './app.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [DataGrid, Button, CompanyCustomerList, AcpAlert],
 })
 export class App implements OnInit {

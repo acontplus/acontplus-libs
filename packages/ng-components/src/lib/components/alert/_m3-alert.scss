@@ -1,57 +1,72 @@
-// Theme variables for alert component
-:root {
-  // Default alert
-  --acp-alert-outline-color: var(--mat-sys-outline-variant, #c4c7c5);
-  --acp-alert-background-color: var(--mat-sys-surface-container, #f3edf7);
-  --acp-alert-text-color: var(--mat-sys-on-surface, #1d1b20);
-  --acp-alert-container-shape: var(--mat-sys-corner-small, 8px);
+@use 'sass:map';
+@use '@angular/material' as mat;
+@use '../../../core/tokens/m3-utils';
+@use '../../../core/tokens/m3';
 
-  // Info alert
-  --acp-alert-info-outline-color: #42a5f5;
-  --acp-alert-info-background-color: #e3f2fd;
-  --acp-alert-info-text-color: #0d47a1;
+@function get-tokens($theme: m3.$sys-theme) {
+  $system: m3-utils.get-system($theme);
+  $is-dark: map.get($system, md-sys-type) == dark;
 
-  // Success alert
-  --acp-alert-success-outline-color: #66bb6a;
-  --acp-alert-success-background-color: #f1f8e9;
-  --acp-alert-success-text-color: #1b5e20;
+  $tokens: (
+    base: (
+      alert-container-shape: map.get($system, corner-small),
+    ),
+    color: (
+      alert-outline-color: map.get($system, outline-variant),
+      alert-background-color: map.get($system, surface-container),
+      alert-text-color: map.get($system, on-surface),
+      alert-info-outline-color: light-dark(
+          map.get(mat.$azure-palette, 80),
+          map.get(mat.$azure-palette, 40)
+        ),
+      alert-info-background-color: light-dark(
+          map.get(mat.$azure-palette, 90),
+          map.get(mat.$azure-palette, 20)
+        ),
+      alert-info-text-color: light-dark(
+          map.get(mat.$azure-palette, 20),
+          map.get(mat.$azure-palette, 90)
+        ),
+      alert-success-outline-color: light-dark(
+          map.get(mat.$green-palette, 80),
+          map.get(mat.$green-palette, 40)
+        ),
+      alert-success-background-color: light-dark(
+          map.get(mat.$green-palette, 95),
+          map.get(mat.$green-palette, 20)
+        ),
+      alert-success-text-color: light-dark(
+          map.get(mat.$green-palette, 20),
+          map.get(mat.$green-palette, 95)
+        ),
+      alert-warning-outline-color: light-dark(
+          map.get(mat.$yellow-palette, 80),
+          map.get(mat.$yellow-palette, 40)
+        ),
+      alert-warning-background-color: light-dark(
+          map.get(mat.$yellow-palette, 98),
+          map.get(mat.$yellow-palette, 20)
+        ),
+      alert-warning-text-color: light-dark(
+          map.get(mat.$yellow-palette, 20),
+          map.get(mat.$yellow-palette, 98)
+        ),
+      alert-danger-outline-color: light-dark(
+          map.get(mat.$red-palette, 80),
+          map.get(mat.$red-palette, 40)
+        ),
+      alert-danger-background-color: light-dark(
+          map.get(mat.$red-palette, 90),
+          map.get(mat.$red-palette, 20)
+        ),
+      alert-danger-text-color: light-dark(
+          map.get(mat.$red-palette, 20),
+          map.get(mat.$red-palette, 90)
+        ),
+    ),
+    typography: (),
+    density: (),
+  );
 
-  // Warning alert
-  --acp-alert-warning-outline-color: #ffa726;
-  --acp-alert-warning-background-color: #fff8e1;
-  --acp-alert-warning-text-color: #e65100;
-
-  // Danger alert
-  --acp-alert-danger-outline-color: #ef5350;
-  --acp-alert-danger-background-color: #ffebee;
-  --acp-alert-danger-text-color: #b71c1c;
-}
-
-// Dark theme overrides
-body.dark-theme,
-[data-theme='dark'] {
-  // Default alert
-  --acp-alert-outline-color: var(--mat-sys-outline-variant, #444746);
-  --acp-alert-background-color: var(--mat-sys-surface-container, #1d1b20);
-  --acp-alert-text-color: var(--mat-sys-on-surface, #e6e0e9);
-
-  // Info alert
-  --acp-alert-info-outline-color: #1976d2;
-  --acp-alert-info-background-color: #0d47a1;
-  --acp-alert-info-text-color: #e3f2fd;
-
-  // Success alert
-  --acp-alert-success-outline-color: #388e3c;
-  --acp-alert-success-background-color: #1b5e20;
-  --acp-alert-success-text-color: #f1f8e9;
-
-  // Warning alert
-  --acp-alert-warning-outline-color: #f57c00;
-  --acp-alert-warning-background-color: #e65100;
-  --acp-alert-warning-text-color: #fff8e1;
-
-  // Danger alert
-  --acp-alert-danger-outline-color: #d32f2f;
-  --acp-alert-danger-background-color: #b71c1c;
-  --acp-alert-danger-text-color: #ffebee;
+  @return $tokens;
 }

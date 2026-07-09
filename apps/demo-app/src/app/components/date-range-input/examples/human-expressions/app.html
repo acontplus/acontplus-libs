@@ -1,0 +1,54 @@
+<mat-card class="example-card">
+  <mat-card-header>
+    <mat-card-title>Date Range Input con Expresiones Humanas</mat-card-title>
+    <mat-card-subtitle>Ejemplo mostrando expresiones legibles por humanos</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="example-container">
+      <!-- Componente Date Range Input con expresiones humanas -->
+      <acp-date-range-input
+        inputLabel="Selecciona un rango de fechas"
+        [dateFormat]="'dd/MM/yyyy'"
+        [displaySelectedExpression]="true"
+        (dateSelectionChanged)="onDateSelectionChanged($event)"
+      ></acp-date-range-input>
+
+      <!-- Resultado de la selección -->
+      <div class="result-display">
+        <h4>Resultado de la selección:</h4>
+        <div class="result-grid">
+          <div class="result-item">
+            <strong>Fecha inicio:</strong>
+            <span>{{ selectedStartDate | date:'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="result-item">
+            <strong>Fecha fin:</strong>
+            <span>{{ selectedEndDate | date:'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="result-item">
+            <strong>Expresión inicio:</strong>
+            <span>{{ startExpr || 'N/A' }}</span>
+          </div>
+          <div class="result-item">
+            <strong>Expresión fin:</strong>
+            <span>{{ endExpr || 'N/A' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <h4>Expresiones humanas:</h4>
+        <p>
+          Cuando se seleccionan opciones predefinidas, el input muestra expresiones legibles como:
+        </p>
+        <ul>
+          <li><code>now - now</code> para "Hoy"</li>
+          <li><code>now-1d - now-1d</code> para "Ayer"</li>
+          <li><code>now-7d - now</code> para "Últimos 7 días"</li>
+          <li><code>now-30d - now</code> para "Últimos 30 días"</li>
+        </ul>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

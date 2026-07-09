@@ -1,6 +1,14 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { AsyncPipe } from '@angular/common';
-import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation, inject } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  ViewEncapsulation,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { MatDrawerToggleResult, MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { ActivatedRoute, Params, RouterOutlet } from '@angular/router';
 import { Observable, Subscription, combineLatest } from 'rxjs';
@@ -17,6 +25,7 @@ const SMALL_WIDTH_BREAKPOINT = 959;
   templateUrl: 'component-sidenav.html',
   styleUrl: 'component-sidenav.scss',
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatSidenavModule, ComponentNav, ComponentPageHeader, RouterOutlet, AsyncPipe],
 })
 export class ComponentSidenav implements OnInit, OnDestroy {

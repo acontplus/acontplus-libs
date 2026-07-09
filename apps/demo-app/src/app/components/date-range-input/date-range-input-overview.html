@@ -1,0 +1,11 @@
+<app-doc-heading>Date Range Input</app-doc-heading>
+
+<p>
+  A comprehensive date range picker component with support for predefined date ranges, custom
+  calendar selection, and human-readable date expressions.
+</p>
+
+@if (route.data | async; as data) { @for (exampleData of data["examples"]; track exampleData) {
+<app-doc-heading [text]="exampleData.title"></app-doc-heading>
+<app-example-viewer [exampleData]="exampleData"></app-example-viewer>
+} }

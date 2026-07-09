@@ -1,5 +1,5 @@
 // src/lib/ui/oauth-callback/oauth-callback.ts
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -56,6 +56,7 @@ import { SocialProvider } from '../../domain/models/auth';
       }
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [
     `
       .oauth-callback-container {

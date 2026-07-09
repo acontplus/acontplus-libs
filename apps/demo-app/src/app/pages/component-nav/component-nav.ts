@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { MatListModule } from '@angular/material/list';
 import { Params, RouterLink, RouterLinkActive } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -36,8 +36,21 @@ export const COMPONENTS_MENU: ComponentCategory[] = [
     summary: 'Modern TypeScript date range picker with @formkit/tempo integration.',
     category: 'Form Controls',
   },
+  {
+    id: 'date-range-input',
+    name: 'Date Range Input',
+    summary:
+      'Comprehensive date range picker with predefined options and human-readable expressions.',
+    category: 'Form Controls',
+  },
 
   // Buttons & Indicators
+  {
+    id: 'alert',
+    name: 'Alert',
+    summary: 'Flexible alert component with multiple types and dismissible option.',
+    category: 'Buttons & Indicators',
+  },
   {
     id: 'button',
     name: 'Button',
@@ -92,12 +105,6 @@ export const COMPONENTS_MENU: ComponentCategory[] = [
     category: 'Layout',
   },
   {
-    id: 'alert-dialog',
-    name: 'Alert Dialog',
-    summary: 'Beautiful, customizable alert dialogs with SweetAlert2 integration.',
-    category: 'Notifications & Alerts',
-  },
-  {
     id: 'notification-demo',
     name: 'Notification Service',
     summary:
@@ -139,6 +146,7 @@ export const COMPONENTS_MENU: ComponentCategory[] = [
       </mat-nav-list>
     </div>
   </div>`,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatListModule, RouterLinkActive, RouterLink],
 })
 export class ComponentNav {

@@ -22,8 +22,16 @@ export const routes = [
         path: 'date-range-picker',
         loadChildren: () => import('./date-range-picker/date-range-picker').then(m => m.routes),
       },
+      {
+        path: 'date-range-input',
+        loadChildren: () => import('./date-range-input/date-range-input').then(m => m.routes),
+      },
 
       // Buttons & Indicators
+      {
+        path: 'alert',
+        loadChildren: () => import('./alert/alert.routes').then(m => m.routes),
+      },
       {
         path: 'button',
         loadChildren: () => import('./button/button.routes').then(m => m.routes),
@@ -67,11 +75,6 @@ export const routes = [
       },
 
       // Notifications & Alerts
-      {
-        path: 'alert-dialog',
-        loadComponent: () =>
-          import('./alert-dialog/alert-dialog').then(m => m.AlertDialogComponent),
-      },
       {
         path: 'notification-demo',
         loadComponent: () =>

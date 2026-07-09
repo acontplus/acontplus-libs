@@ -1,4 +1,10 @@
-import { Component, input, output, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  input,
+  output,
+  ViewEncapsulation,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { MatButton, MatFabButton, MatIconButton, MatMiniFabButton } from '@angular/material/button';
 import { NgClass, NgTemplateOutlet } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
@@ -22,6 +28,7 @@ import {
   ],
   templateUrl: './button.html',
   styleUrl: './button.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
 export class Button {

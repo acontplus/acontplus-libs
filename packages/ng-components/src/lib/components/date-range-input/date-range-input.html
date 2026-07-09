@@ -1,0 +1,224 @@
+<!--
+  AcpDateRangeInput Component Template
+  @author AcontPlus S.A.S
+  @version 1.0.0
+
+  Comprehensive date range picker with predefined options, custom calendar selection,
+  and support for human-readable date expressions.
+-->
+<div class="date-picker-main ndp-main" cdkOverlayOrigin #trigger>
+  <mat-form-field
+    class="w-full"
+    [class]="{ 'display-hidden': isShowStaticDefaultOptions }"
+    (click)="toggleDateOptionSelectionList($event)"
+  >
+    <mat-label (click)="toggleDateOptionSelectionList($event)">{{ inputLabel }}</mat-label>
+    <input
+      matInput
+      #dateInput
+      class="cursor-pointer"
+      id="date-input-field"
+      (input)="onMainInputChange(dateInput)"
+    />
+    <ng-container matSuffix>
+      @if (showClearButton() && !!dateInput.value) {
+      <button
+        mat-icon-button
+        class="cursor-pointer pe-0 ps-0"
+        matTooltip="Clear"
+        (click)="clearSelection($event)"
+      >
+        <mat-icon>clear</mat-icon>
+      </button>
+      } @if (showCalendarIcon()) {
+      <button mat-icon-button class="cursor-pointer">
+        <mat-icon>date_range</mat-icon>
+      </button>
+      } @if (showRangeRequired()) {
+      <button
+        mat-icon-button
+        class="cursor-pointer"
+        [class.checked]="isRangeRequired()"
+        (click)="toggleRangeSelection($event)"
+        matTooltip="Rango de fechas obligatorio"
+      >
+        <mat-icon [color]="isRangeRequired() ? 'accent' : ''">
+          {{ isRangeRequired() ? 'check_box' : 'check_box_outline_blank' }}
+        </mat-icon>
+      </button>
+      }
+    </ng-container>
+  </mat-form-field>
+
+  @if (dateDropDownOptions.length && isShowStaticDefaultOptions) {
+  <ng-container
+    *ngTemplateOutlet="
+        dateOptionList;
+        context: {
+          $implicit: visibleOptions(),
+          dateInput: dateInput,
+          optionId: staticOptionId,
+          className: 'w-full custom-ckd-container ndp-cdk-container range-input',
+        }
+      "
+  />
+  }
+
+  <ng-template
+    cdkConnectedOverlay
+    [cdkConnectedOverlayHasBackdrop]="true"
+    [cdkConnectedOverlayBackdropClass]="'cdk-overlay-transparent-backdrop'"
+    [cdkConnectedOverlayOrigin]="trigger"
+    [cdkConnectedOverlayOpen]="isDateOptionList"
+    [cdkConnectedOverlayPush]="cdkConnectedOverlayPush"
+    [cdkConnectedOverlayOffsetX]="listCdkConnectedOverlayOffsetX"
+    [cdkConnectedOverlayOffsetY]="listCdkConnectedOverlayOffsetY"
+    (backdropClick)="isDateOptionList = false"
+  >
+    @if (dateDropDownOptions.length && !isShowStaticDefaultOptions) {
+    <ng-container
+      *ngTemplateOutlet="
+          dateOptionList;
+          context: {
+            $implicit: visibleOptions(),
+            dateInput: dateInput,
+            optionId: dynamicOptionId,
+            className: 'w-full custom-ckd-container ndp-cdk-container range-input',
+          }
+        "
+    />
+    }
+  </ng-template>
+
+  <ng-template
+    cdkConnectedOverlay
+    [cdkConnectedOverlayHasBackdrop]="true"
+    [cdkConnectedOverlayBackdropClass]="'cdk-overlay-transparent-backdrop'"
+    [cdkConnectedOverlayOrigin]="trigger"
+    [cdkConnectedOverlayOpen]="isCustomRange"
+    [cdkConnectedOverlayPush]="cdkConnectedOverlayPush"
+    [cdkConnectedOverlayPositions]="cdkConnectedOverlayPositions"
+    [cdkConnectedOverlayOffsetX]="cdkConnectedOverlayOffsetX"
+    [cdkConnectedOverlayOffsetY]="cdkConnectedOverlayOffsetY"
+    (backdropClick)="isCustomRange = false"
+  >
+    <div
+      class="custom-ckd-container ndp-cdk-container custom-calendar-container ndp-calendar-container"
+      [class]="{ 'without-default-opt': hideDefaultOptions }"
+    >
+      <div class="row-1">
+        @if (!hideDefaultOptions) {
+        <div class="pt-custom column-1">
+          <ng-container
+            *ngTemplateOutlet="
+                dateOptionList;
+                context: {
+                  $implicit: visibleOptions(),
+                  dateInput: dateInput,
+                }
+              "
+          />
+        </div>
+        <div class="ndp-column-separator"></div>
+        }
+        <div class="mt-2 column-2">
+          <acp-date-range-calendar
+            [selectedDates]="selectedDates"
+            #calendar
+            [minDate]="minDate"
+            [maxDate]="maxDate"
+            (selectedDatesChange)="onCalendarSelectionChange($event)"
+          />
+        </div>
+      </div>
+      <div class="row-2 br-top">
+        <div class="footer-content ndp-footer-content">
+          @if (enableEditableDates) {
+          <form class="ndp-date-inputs" [formGroup]="editableForm">
+            <mat-form-field class="ndp-date-field" subscriptSizing="dynamic">
+              <mat-label>Start</mat-label>
+              <input
+                matInput
+                formControlName="start"
+                placeholder="e.g. now-7d"
+                (blur)="commitEditableDates(calendar)"
+                (keydown.enter)="applyEditableDates(dateInput, calendar)"
+              />
+              @if (editableForm.controls.start.hasError('required')) {
+              <mat-error>Required</mat-error>
+              } @else if (editableForm.controls.start.hasError('invalidDate')) {
+              <mat-error>Invalid date or expression</mat-error>
+              }
+            </mat-form-field>
+            <mat-form-field class="ndp-date-field" subscriptSizing="dynamic">
+              <mat-label>End</mat-label>
+              <input
+                matInput
+                formControlName="end"
+                placeholder="e.g. now"
+                (blur)="commitEditableDates(calendar)"
+                (keydown.enter)="applyEditableDates(dateInput, calendar)"
+              />
+              @if (editableForm.controls.end.hasError('required')) {
+              <mat-error>Required</mat-error>
+              } @else if (editableForm.controls.end.hasError('invalidDate')) {
+              <mat-error>Invalid date or expression</mat-error>
+              } @else if (editableForm.hasError('rangeOrder')) {
+              <mat-error>Start must be before end</mat-error>
+              }
+            </mat-form-field>
+          </form>
+          } @else {
+          <span id="range-label-text" class="ndp-range-label-text">
+            {{ calendar?.selectedDates?.start | date: dateFormat }} @if
+            (calendar?.selectedDates?.end) {
+            <span> - {{ calendar.selectedDates?.end | date: dateFormat }} </span>
+            }
+          </span>
+          }
+          <div class="buttons">
+            <acp-button
+              type="button"
+              variant="danger"
+              matStyle="filled"
+              (handleClick)="isCustomRange = false"
+              >Cancelar</acp-button
+            >
+            <acp-button
+              type="button"
+              variant="primary"
+              matStyle="filled"
+              [class.disabled]="
+                enableEditableDates
+                  ? editableForm.invalid
+                  : !(calendar?.selectedDates?.start && calendar?.selectedDates?.end)
+              "
+              (handleClick)="
+                enableEditableDates && commitEditableDates(calendar);
+                updateCustomRange(dateInput, calendar.selectedDates)
+              "
+            >
+              &nbsp;Aplicar&nbsp;
+            </acp-button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</div>
+
+<ng-template
+  #dateOptionList
+  let-options
+  let-input="dateInput"
+  let-optionId="optionId"
+  let-className="className"
+>
+  <mat-action-list [ngClass]="className" [id]="optionId">
+    @for (option of options; track option.optionLabel) {
+    <mat-list-item [activated]="option.isSelected" (click)="updateSelection(option, input)">
+      {{ option.optionLabel }}
+    </mat-list-item>
+    }
+  </mat-action-list>
+</ng-template>

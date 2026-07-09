@@ -30,7 +30,7 @@ and this project adheres to
   company customer add/edit dialog, customer validators, and form components
 - **ng-auth**: Multi-tenant OAuth / Enterprise SSO support, CSRF interceptor,
   OAuth callback component, domain discovery
-- **ng-components**: DateRangePicker, DataGrid, AlertDialog, Drawer, Popover,
+- **ng-components**: DateRangePicker, DataGrid, Drawer, Popover,
   AutocompleteWrapper components
 - **ng-common**: WhatsApp Cloud API facade, report generation facade, printer
   facade, builders and utilities

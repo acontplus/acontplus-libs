@@ -6,6 +6,7 @@ import {
   ChangeDetectorRef,
   inject,
   viewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -49,6 +50,7 @@ import { PaginationParams, PagedResult } from '@acontplus/core';
     Button,
   ],
   templateUrl: './user.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./user.component.scss'],
 })
 export class UserComponent implements OnInit, AfterViewInit {

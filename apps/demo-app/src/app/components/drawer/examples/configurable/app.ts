@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -12,6 +12,7 @@ import { DrawerPosition, AcpDrawer, AcpDrawerRef } from '@acontplus/ng-component
   selector: 'app-drawer-configurable-example',
   templateUrl: './app.html',
   styleUrl: './app.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     FormsModule,
     MatRadioModule,
@@ -76,6 +77,7 @@ export class App {
       flex-grow: 1;
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatIconModule, MatButtonModule],
 })
 export class DrawerConfigurableOverviewDrawer {

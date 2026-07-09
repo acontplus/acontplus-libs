@@ -1,5 +1,5 @@
 // src/app/pages/oauth-demo/oauth-demo.page.ts
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -250,6 +250,7 @@ import { environment } from '../../../environments/environment';
       </mat-card>
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [
     `
       .oauth-demo-container {

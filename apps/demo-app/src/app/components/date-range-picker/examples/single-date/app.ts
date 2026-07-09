@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { DatePipe, JsonPipe } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
@@ -16,6 +16,7 @@ import {
   selector: 'app-date-range-picker-single-date-example',
   templateUrl: './app.html',
   styleUrl: './app.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     DatePipe,
     JsonPipe,

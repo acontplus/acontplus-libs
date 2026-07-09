@@ -16,6 +16,7 @@
     "build": {
       "executor": "@nx/angular:package",
       "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
+      "defaultConfiguration": "production",
       "options": {
         "project": "packages/ng-common/ng-package.json"
       },
@@ -24,8 +25,7 @@
           "tsConfig": "packages/ng-common/tsconfig.lib.prod.json"
         },
         "development": {}
-      },
-      "defaultConfiguration": "production"
+      }
     },
     "publish": {
       "executor": "nx:run-commands",
@@ -39,9 +39,6 @@
       "options": {
         "packageRoot": "dist/{projectRoot}"
       }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
     }
   }
 }

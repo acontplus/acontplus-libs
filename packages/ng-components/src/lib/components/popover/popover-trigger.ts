@@ -50,56 +50,9 @@ export const ACP_POPOVER_SCROLL_STRATEGY = new InjectionToken<() => ScrollStrate
   },
 );
 
-/**
- * This directive is intended to be used in conjunction with an `acp-popover` tag. It is
- * responsible for toggling the display of the provided popover instance.
- *
- * The trigger handles various events (click, hover) and manages the popover's lifecycle,
- * including opening, closing, positioning, and focus management.
- *
- * ## Basic Usage
- * @example
- * ```html
- * <acp-popover #popover="acpPopover">
- *   <div>Popover content</div>
- * </acp-popover>
- *
- * <button [acpPopoverTriggerFor]="popover">
- *   Show popover
- * </button>
- * ```
- *
- * ## Programmatic Control
- * @example
- * ```html
- * <acp-popover #popover="acpPopover">
- *   <div>Popover content</div>
- * </acp-popover>
- *
- * <button [acpPopoverTriggerFor]="popover" #trigger="acpPopoverTrigger">
- *   Toggle popover
- * </button>
- *
- * <!-- Programmatic control -->
- * <button (click)="trigger.openPopover()">Open</button>
- * <button (click)="trigger.closePopover()">Close</button>
- * <button (click)="trigger.closePopoverWithReason('manual')">Close with reason</button>
- * <button (click)="trigger.togglePopover()">Toggle</button>
- * ```
- *
- * ## Custom Target
- * @example
- * ```html
- * <div acpPopoverTarget #target="acpPopoverTarget">Target element</div>
- * <button [acpPopoverTriggerFor]="popover" [targetElement]="target">
- *   Trigger (popover appears at target)
- * </button>
- * ```
- */
 @Directive({
-  selector: '[acpPopoverTriggerFor]',
+  selector: '[acp-popover-trigger-for], [acpPopoverTriggerFor]',
   exportAs: 'acpPopoverTrigger',
-  standalone: true,
   host: {
     'aria-haspopup': 'true',
     '[attr.aria-expanded]': 'popoverOpen',
@@ -129,7 +82,6 @@ export class AcpPopoverTrigger implements AfterContentInit, OnDestroy {
   private _closingActionsSubscription = Subscription.EMPTY;
   private _scrollStrategy = inject(ACP_POPOVER_SCROLL_STRATEGY);
   private _mouseoverTimer: any;
-  private _mouseleaveTimer: any;
 
   // Tracking input type is necessary so it's possible to only auto-focus
   // the first item of the list when the popover is opened via the keyboard
@@ -171,19 +123,11 @@ export class AcpPopoverTrigger implements AfterContentInit, OnDestroy {
   /** Event emitted when the associated popover is closed. */
   @Output() popoverClosed = new EventEmitter<void>();
 
-  /**
-   * Lifecycle hook called after content initialization.
-   * Validates the popover reference and sets up initial configuration.
-   */
   ngAfterContentInit() {
     this._checkPopover();
     this._setCurrentConfig();
   }
 
-  /**
-   * Lifecycle hook called when the component is destroyed.
-   * Cleans up subscriptions and overlay references.
-   */
   ngOnDestroy() {
     this._halt = true;
     this._positionSubscription.unsubscribe();
@@ -191,26 +135,12 @@ export class AcpPopoverTrigger implements AfterContentInit, OnDestroy {
     this._popoverCloseSubscription.unsubscribe();
     this._closingActionsSubscription.unsubscribe();
 
-    if (this._mouseoverTimer) {
-      clearTimeout(this._mouseoverTimer);
-      this._mouseoverTimer = null;
-    }
-
-    if (this._mouseleaveTimer) {
-      clearTimeout(this._mouseleaveTimer);
-      this._mouseleaveTimer = null;
-    }
-
     if (this._overlayRef) {
       this._overlayRef.dispose();
       this._overlayRef = null;
     }
   }
 
-  /**
-   * Sets the current configuration for the popover.
-   * Updates trigger event and applies current styles.
-   */
   private _setCurrentConfig() {
     if (this.triggerEvent) {
       this.popover.triggerEvent = this.triggerEvent;
@@ -229,20 +159,14 @@ export class AcpPopoverTrigger implements AfterContentInit, OnDestroy {
     return this._dir && this._dir.value === 'rtl' ? 'rtl' : 'ltr';
   }
 
-  /**
-   * Handles mouse click on the trigger.
-   * @param _event The mouse event
-   */
+  /** Handles mouse click on the trigger. */
   _handleClick(_event: MouseEvent): void {
     if (this.popover.triggerEvent === 'click') {
       this.togglePopover();
     }
   }
 
-  /**
-   * Handles mouse enter on the trigger.
-   * @param _event The mouse event
-   */
+  /** Handles mouse enter on the trigger. */
   _handleMouseEnter(_event: MouseEvent): void {
     this._halt = false;
 
@@ -253,10 +177,7 @@ export class AcpPopoverTrigger implements AfterContentInit, OnDestroy {
     }
   }
 
-  /**
-   * Handles mouse leave on the trigger.
-   * @param _event The mouse event
-   */
+  /** Handles mouse leave on the trigger. */
   _handleMouseLeave(_event: MouseEvent): void {
     if (this.popover.triggerEvent === 'hover') {
       if (this._mouseoverTimer) {
@@ -265,7 +186,7 @@ export class AcpPopoverTrigger implements AfterContentInit, OnDestroy {
       }
 
       if (this._popoverOpen) {
-        this._mouseleaveTimer = setTimeout(() => {
+        setTimeout(() => {
           if (!this.popover.closeDisabled) {
             this.closePopover();
           }
@@ -314,18 +235,9 @@ export class AcpPopoverTrigger implements AfterContentInit, OnDestroy {
     const overlayConfig = overlayRef.getConfig();
 
     this._setPosition(overlayConfig.positionStrategy as FlexibleConnectedPositionStrategy);
-
-    // Configure backdrop based on trigger event and user preference
     if (this.popover.triggerEvent === 'click') {
       overlayConfig.hasBackdrop = this.popover.hasBackdrop ?? true;
-      overlayConfig.backdropClass = this.popover.backdropClass;
-    } else if (this.popover.triggerEvent === 'hover') {
-      // For hover events, backdrop must be disabled to prevent flickering
-      // The backdrop interferes with mouse events and causes infinite open/close cycles
-      overlayConfig.hasBackdrop = false;
-      // Note: User's hasBackdrop setting is ignored for hover to prevent UX issues
     }
-
     overlayRef.attach(this._getPortal());
 
     if (this.popover.lazyContent) {
@@ -348,14 +260,6 @@ export class AcpPopoverTrigger implements AfterContentInit, OnDestroy {
   }
 
   /**
-   * Programmatically closes the popover with a specific reason.
-   * @param reason The reason for closing
-   */
-  closePopoverWithReason(reason: PopoverCloseReason): void {
-    this.popover.closed.emit(reason);
-  }
-
-  /**
    * Focuses the popover trigger.
    * @param origin Source of the popover trigger's focus.
    */
@@ -375,15 +279,10 @@ export class AcpPopoverTrigger implements AfterContentInit, OnDestroy {
       return;
     }
 
-    // Clear the timeouts for hover events.
+    // Clear the timeout for hover event.
     if (this._mouseoverTimer) {
       clearTimeout(this._mouseoverTimer);
       this._mouseoverTimer = null;
-    }
-
-    if (this._mouseleaveTimer) {
-      clearTimeout(this._mouseleaveTimer);
-      this._mouseleaveTimer = null;
     }
 
     const popover = this.popover;
@@ -436,7 +335,7 @@ export class AcpPopoverTrigger implements AfterContentInit, OnDestroy {
   }
 
   /**
-   * This method checks that a valid instance of AcpPopover has been passed into
+   * This method checks that a valid instance of MdPopover has been passed into
    * `acpPopoverTriggerFor`. If not, an exception is thrown.
    */
   private _checkPopover() {

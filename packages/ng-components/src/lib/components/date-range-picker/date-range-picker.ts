@@ -11,6 +11,7 @@ import {
   model,
   OutputEmitterRef,
   WritableSignal,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Subject } from 'rxjs';
@@ -84,6 +85,7 @@ function formatDateToString(date: Date): string {
       multi: true,
     },
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <ngx-datex
       [(ngModel)]="dateRangeValue"

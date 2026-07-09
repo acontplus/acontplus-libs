@@ -1,5 +1,5 @@
 // apps/demo-app/src/app/pages/dashboard/dashboard.page.ts
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 
 import { Router, RouterLink } from '@angular/router';
 import { AuthState } from '@acontplus/ng-auth';
@@ -59,6 +59,7 @@ import { MatCardModule } from '@angular/material/card';
       </mat-card>
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [
     `
       .dashboard-page {

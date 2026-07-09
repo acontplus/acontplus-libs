@@ -12,10 +12,12 @@
     }
   },
   "tags": ["npm:public", "npm:acontplus", "npm:angular", "npm:infrastructure"],
+  "implicitDependencies": ["ng-config"],
   "targets": {
     "build": {
       "executor": "@nx/angular:package",
       "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
+      "defaultConfiguration": "production",
       "options": {
         "project": "packages/ng-infrastructure/ng-package.json",
         "tsConfig": "packages/ng-infrastructure/tsconfig.lib.json"
@@ -25,8 +27,7 @@
           "tsConfig": "packages/ng-infrastructure/tsconfig.lib.prod.json"
         },
         "development": {}
-      },
-      "defaultConfiguration": "production"
+      }
     },
     "publish": {
       "executor": "nx:run-commands",
@@ -40,10 +41,6 @@
       "options": {
         "packageRoot": "dist/{projectRoot}"
       }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
     }
-  },
-  "implicitDependencies": ["ng-config"]
+  }
 }

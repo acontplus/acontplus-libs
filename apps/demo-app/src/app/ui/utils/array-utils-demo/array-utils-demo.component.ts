@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -23,6 +23,7 @@ import { Button } from '@acontplus/ng-components';
     Button,
   ],
   templateUrl: './array-utils-demo.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './array-utils-demo.component.scss',
 })
 export class ArrayUtilsDemoComponent {

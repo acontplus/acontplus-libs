@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
@@ -19,6 +19,7 @@ import { Button } from '@acontplus/ng-components';
     Button,
   ],
   templateUrl: './date-utils-demo.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './date-utils-demo.component.scss',
 })
 export class DateUtilsDemoComponent {

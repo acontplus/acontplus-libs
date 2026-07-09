@@ -7,6 +7,7 @@ import {
   ViewChild,
   ViewContainerRef,
   inject,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -33,6 +34,7 @@ export interface ExampleType {
   // templateUrl: './example-viewer.html',
   templateUrl: './example-viewer.html',
   styleUrl: './example-viewer.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatIconButton, MatTooltipModule, MatIconModule, MatTabsModule],
 })
 export class ExampleViewer implements OnInit, OnDestroy {

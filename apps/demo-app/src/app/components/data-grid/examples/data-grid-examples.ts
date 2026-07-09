@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -217,7 +217,6 @@ interface DemoData {
             [data]="demoData.slice(0, 5)"
             [columns]="basicColumns"
             [cellSelectable]="true"
-            (cellClick)="onCellClick($event)"
           />
           @if (lastCellClick()) {
             <p class="cell-info">Last cell clicked: {{ lastCellClick() }}</p>
@@ -244,6 +243,7 @@ interface DemoData {
       <app-code-example [code]="keyboardNavCode" [language]="'html'" />
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [
     `
       .docs-component-viewer-content {

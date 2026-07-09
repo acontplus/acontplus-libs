@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { MatListModule } from '@angular/material/list';
 import { Params, RouterLink, RouterLinkActive } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -44,6 +44,7 @@ export const MODULES_MENU: ModuleCategory[] = [
       </mat-nav-list>
     </div>
   </div>`,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatListModule, RouterLinkActive, RouterLink],
 })
 export class ModuleNav {

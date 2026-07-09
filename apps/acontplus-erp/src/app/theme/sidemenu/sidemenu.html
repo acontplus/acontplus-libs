@@ -4,13 +4,18 @@
 />
 
 <ng-template #menuTpl let-menuList="menuList" let-parentRoute="parentRoute" let-level="level">
-  <ul navAccordion class="matero-sidemenu level-{{ level }}" [class.submenu]="level > 0">
+  <ul appNavAccordion class="matero-sidemenu level-{{ level }}" [class.submenu]="level > 0">
     @for (menuItem of menuList; track $index) {
       <ng-template
         [ngxPermissionsOnly]="$safeNavigationMigration(menuItem.permissions?.only)"
         [ngxPermissionsExcept]="$safeNavigationMigration(menuItem.permissions?.except)"
       >
-        <li class="menu-item" navAccordionItem [route]="menuItem.route" routerLinkActive="active">
+        <li
+          class="menu-item"
+          appNavAccordionItem
+          [route]="menuItem.route"
+          routerLinkActive="active"
+        >
           @if (menuItem.type === 'link') {
             <a
               class="menu-heading"
@@ -40,7 +45,7 @@
             </a>
           }
           @if (menuItem.type === 'sub') {
-            <button navAccordionToggle class="menu-heading menu-toggle" matRipple>
+            <button appNavAccordionToggle class="menu-heading menu-toggle" matRipple>
               <ng-container
                 [ngTemplateOutlet]="linkTypeTpl"
                 [ngTemplateOutletContext]="{ item: menuItem, level: level }"

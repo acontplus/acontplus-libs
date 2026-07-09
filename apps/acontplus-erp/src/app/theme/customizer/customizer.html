@@ -22,12 +22,7 @@
     </div>
     <h3 class="f-w-400">Header</h3>
     <div class="m-l-8">
-      <mat-slide-toggle
-        formControlName="showHeader"
-        [appDisableControl]="isHeaderPosAbove || isNavPosTop"
-      >
-        Visible
-      </mat-slide-toggle>
+      <mat-slide-toggle formControlName="showHeader"> Visible </mat-slide-toggle>
       <h4 class="f-w-400">Position</h4>
       <mat-radio-group formControlName="headerPos">
         <mat-radio-button class="m-x-4" value="above" [disabled]="!isShowHeader || isNavPosTop">

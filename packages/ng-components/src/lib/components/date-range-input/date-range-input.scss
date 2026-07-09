@@ -1,0 +1,194 @@
+/**
+ * AcpDateRangeInput Component Styles
+ * @author AcontPlus S.A.S
+ * @version 1.0.0
+ *
+ * Styling for the comprehensive date range picker component.
+ * Uses Material Design 3 theming system with CSS custom properties.
+ */
+
+@use '@angular/material' as mat;
+
+// Disable Backdrop css
+::ng-deep.cdk-overlay-dark-backdrop {
+  background: none;
+}
+
+mat-list-item.mat-mdc-list-item {
+  height: 40px;
+}
+
+// Make the selected (activated) option clearly visible - the M3 theme leaves
+// the activated state of an action-list item unstyled. Consumers can override
+// via the --ndp-selected-option-bg custom property.
+mat-list-item.mdc-list-item--activated {
+  background-color: var(
+    --ndp-selected-option-bg,
+    var(--mat-sys-secondary-container, rgba(0, 0, 0, 0.08))
+  );
+}
+
+::ng-deep.cdk-overlay-pane:has(.custom-ckd-container),
+::ng-deep.cdk-overlay-pane:has(.ndp-cdk-container) {
+  width: 100%;
+  background-color: var(--mat-sys-surface-container);
+  max-height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-width: 700px;
+  margin-top: -22px;
+  border: 1px solid var(--mat-sys-surface-container);
+}
+
+::ng-deep.cdk-overlay-pane:has(.range-input) {
+  max-width: 250px;
+}
+
+.br-top {
+  border-top: 1px solid var(--mat-sys-surface-container);
+}
+
+.br-right {
+  border-right: 1px solid var(--mat-sys-surface-container);
+}
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.mat-button,
+.mdc-button {
+  font-family: var(--mat-list-list-item-label-text-font);
+  line-height: var(--mat-list-list-item-label-text-line-height);
+  font-size: var(--mat-list-list-item-label-text-size);
+  font-weight: var(--mat-list-list-item-label-text-weight);
+  letter-spacing: var(--mat-list-list-item-label-text-tracking);
+}
+
+.w-full {
+  width: 100%;
+}
+
+.display-hidden {
+  display: none;
+}
+
+.custom-calendar-container,
+.ndp-calendar-container {
+  width: 100%;
+}
+
+.row-1,
+.row-2 {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+// Flex layout lets the divider between the columns stretch to the row's
+// full height automatically (align-items: stretch), so differing column
+// heights never leave a gap.
+.row-1 {
+  display: flex;
+  align-items: stretch;
+}
+
+.row-2 {
+  padding: 16px;
+}
+
+// Full-height divider between the options column and the calendar.
+// As a flex child it stretches to the row height with no positioning hacks.
+.ndp-column-separator {
+  flex: 0 0 1px;
+  background-color: var(--mat-sys-surface-container);
+}
+
+.footer-content,
+.ndp-footer-content {
+  align-items: center;
+  display: flex;
+  text-align: right;
+  justify-content: end;
+  gap: 16px; // Gap between label and buttons
+  text-overflow: ellipsis;
+
+  .buttons {
+    display: flex;
+    gap: 8px; // Gap between buttons
+  }
+}
+
+// Editable start/end inputs shown in the footer when enableEditableDates is on.
+.ndp-date-inputs {
+  display: flex;
+  gap: 8px;
+  margin-right: auto; // keep the inputs left, push the buttons to the right
+  align-items: flex-start; // don't stretch one field to match the other's error height
+}
+
+.ndp-date-field {
+  width: 150px;
+}
+
+.column-1 {
+  flex: 0 0 25%;
+  overflow: auto;
+}
+
+.column-2 {
+  flex: 1 1 auto;
+  min-width: 0; // allow the calendar column to shrink below its content size
+}
+
+// When default options are hidden, column-1 and the separator aren't
+// rendered, so column-2's `flex: 1 1 auto` fills the row on its own.
+.without-default-opt {
+  .column-1 {
+    display: none;
+  }
+}
+
+@media (max-width: 400px) {
+  .footer-content,
+  .ndp-footer-content {
+    display: block;
+
+    .buttons {
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+  }
+
+  #range-label-text {
+    margin-right: 1.5rem;
+  }
+}
+
+@media (max-width: 650px) {
+  // Stack the columns; align-items: stretch then makes each full width.
+  .row-1 {
+    flex-direction: column;
+  }
+
+  .column-1 {
+    flex-basis: auto;
+  }
+
+  .column-separator {
+    display: none;
+  }
+}
+
+.pe-0 {
+  padding-right: 0;
+}
+
+.ps-0 {
+  padding-left: 0;
+}
+
+button.checked {
+  color: var(--mat-sys-primary);
+  border-radius: 4px;
+}

@@ -9,6 +9,7 @@
     "build": {
       "executor": "@angular/build:application",
       "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
       "options": {
         "outputPath": "dist/apps/demo-app",
         "browser": "apps/demo-app/src/main.ts",
@@ -46,12 +47,17 @@
           "extractLicenses": false,
           "sourceMap": true
         }
-      },
-      "defaultConfiguration": "production"
+      }
     },
     "serve": {
       "continuous": true,
       "executor": "@angular/build:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "ssl": true,
+        "sslCert": "./ssl/server.crt",
+        "sslKey": "./ssl/server.key"
+      },
       "configurations": {
         "production": {
           "buildTarget": "demo-app:build:production"
@@ -59,12 +65,6 @@
         "development": {
           "buildTarget": "demo-app:build:development"
         }
-      },
-      "defaultConfiguration": "development",
-      "options": {
-        "ssl": true,
-        "sslCert": "./ssl/server.crt",
-        "sslKey": "./ssl/server.key"
       }
     },
     "extract-i18n": {
@@ -72,9 +72,6 @@
       "options": {
         "buildTarget": "demo-app:build"
       }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
     },
     "serve-static": {
       "continuous": true,
@@ -85,6 +82,10 @@
         "staticFilePath": "dist/apps/demo-app/browser",
         "spa": true
       }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
     }
   }
 }

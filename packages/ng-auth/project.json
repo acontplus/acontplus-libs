@@ -12,10 +12,12 @@
     }
   },
   "tags": ["npm:public", "npm:acontplus", "npm:angular", "npm:authentication"],
+  "implicitDependencies": ["ng-infrastructure", "ng-config"],
   "targets": {
     "build": {
       "executor": "@nx/angular:package",
       "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
+      "defaultConfiguration": "production",
       "options": {
         "project": "packages/ng-auth/ng-package.json"
       },
@@ -24,8 +26,7 @@
           "tsConfig": "packages/ng-auth/tsconfig.lib.prod.json"
         },
         "development": {}
-      },
-      "defaultConfiguration": "production"
+      }
     },
     "publish": {
       "executor": "nx:run-commands",
@@ -39,10 +40,6 @@
       "options": {
         "packageRoot": "dist/{projectRoot}"
       }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
     }
-  },
-  "implicitDependencies": ["ng-infrastructure", "ng-config"]
+  }
 }

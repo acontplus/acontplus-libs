@@ -9,6 +9,7 @@
     "build": {
       "executor": "@angular/build:application",
       "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
       "options": {
         "outputPath": "dist/apps/acontplus-erp",
         "browser": "apps/acontplus-erp/src/main.ts",
@@ -43,12 +44,17 @@
           "extractLicenses": false,
           "sourceMap": true
         }
-      },
-      "defaultConfiguration": "production"
+      }
     },
     "serve": {
       "continuous": true,
       "executor": "@angular/build:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "ssl": true,
+        "sslCert": "./ssl/server.crt",
+        "sslKey": "./ssl/server.key"
+      },
       "configurations": {
         "production": {
           "buildTarget": "acontplus-erp:build:production"
@@ -56,24 +62,13 @@
         "development": {
           "buildTarget": "acontplus-erp:build:development"
         }
-      },
-      "defaultConfiguration": "development",
-      "options": {
-        "ssl": true,
-        "sslCert": "./ssl/server.crt",
-        "sslKey": "./ssl/server.key"
       }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
     },
     "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
-      "options": {
-        "jestConfig": "apps/acontplus-erp/jest.config.cts",
-        "tsConfig": "apps/acontplus-erp/tsconfig.spec.json"
-      }
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectRoot}",
+        "{workspaceRoot}\\coverage\\apps\\acontplus-erp"
+      ]
     },
     "serve-static": {
       "continuous": true,

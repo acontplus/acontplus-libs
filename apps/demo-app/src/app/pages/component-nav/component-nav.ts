@@ -36,6 +36,13 @@ export const COMPONENTS_MENU: ComponentCategory[] = [
     summary: 'Modern TypeScript date range picker with @formkit/tempo integration.',
     category: 'Form Controls',
   },
+  {
+    id: 'date-range-input',
+    name: 'Date Range Input',
+    summary:
+      'Comprehensive date range picker with predefined options and human-readable expressions.',
+    category: 'Form Controls',
+  },
 
   // Buttons & Indicators
   {
@@ -96,12 +103,6 @@ export const COMPONENTS_MENU: ComponentCategory[] = [
     name: 'Popover',
     summary: 'Contextual overlay component for displaying additional content.',
     category: 'Layout',
-  },
-  {
-    id: 'alert-dialog',
-    name: 'Alert Dialog',
-    summary: 'Beautiful, customizable alert dialogs with SweetAlert2 integration.',
-    category: 'Notifications & Alerts',
   },
   {
     id: 'notification-demo',

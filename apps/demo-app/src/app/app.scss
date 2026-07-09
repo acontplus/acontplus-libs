@@ -42,12 +42,6 @@ app-root > router-outlet + app-module-sidenav {
 
 // Dialog z-index management
 .cdk-overlay-container {
-  .cdk-overlay-pane {
-    &.alert-dialog-container {
-      z-index: 1050 !important;
-    }
-  }
-
   .cdk-overlay-backdrop {
     z-index: 1040 !important;
   }

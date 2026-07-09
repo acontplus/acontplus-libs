@@ -1,0 +1,33 @@
+<!--
+ * AcpDateRangeCalendar Component Template
+ *
+ * Dual-calendar view for date range selection with navigation controls.
+ * @author AcontPlus S.A.S
+ * @version 2.0.0
+ -->
+<div class="calendar-container">
+  <div class="first-view">
+    <mat-calendar
+      id="firstCalendarView"
+      #firstCalendarView
+      [startAt]="firstViewStartDate()"
+      [selected]="selectedDates"
+      (selectedChange)="updateDateRangeSelection($event)"
+      (monthSelected)="monthSelected('firstCalendarView')"
+      [minDate]="minDate"
+      [maxDate]="maxDate"
+    />
+  </div>
+  <div class="second-view">
+    <mat-calendar
+      id="secondCalendarView"
+      #secondCalendarView
+      [startAt]="secondViewStartDate()"
+      [minDate]="secondViewMinDate()"
+      [maxDate]="maxDate"
+      [selected]="selectedDates"
+      (selectedChange)="updateDateRangeSelection($event)"
+      (monthSelected)="monthSelected('secondCalendarView')"
+    />
+  </div>
+</div>

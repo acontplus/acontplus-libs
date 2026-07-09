@@ -16,6 +16,11 @@
   "main": "fesm2022/acontplus-ng-components.mjs",
   "module": "fesm2022/acontplus-ng-components.mjs",
   "typings": "index.d.ts",
+  "exports": {
+    ".": {
+      "sass": "./src/_index.scss"
+    }
+  },
   "files": [
     "index.d.ts",
     "*.d.ts",

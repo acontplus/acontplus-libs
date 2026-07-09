@@ -1,11 +1,12 @@
 import { DataGrid, DataGridColumn } from '@acontplus/ng-components';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { EXAMPLE_DATA } from '../../data';
 
 @Component({
   selector: 'app-data-grid-basic-example',
   templateUrl: './app.html',
   styleUrl: './app.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [DataGrid],
 })
 export class App {

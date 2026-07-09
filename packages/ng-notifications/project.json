@@ -11,12 +11,13 @@
       "fallbackCurrentVersionResolver": "disk"
     }
   },
-  "implicitDependencies": ["ui-kit"],
   "tags": [],
+  "implicitDependencies": ["ui-kit"],
   "targets": {
     "build": {
       "executor": "@nx/angular:package",
       "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
+      "defaultConfiguration": "production",
       "options": {
         "project": "packages/ng-notifications/ng-package.json",
         "tsConfig": "packages/ng-notifications/tsconfig.lib.json"
@@ -26,8 +27,7 @@
           "tsConfig": "packages/ng-notifications/tsconfig.lib.prod.json"
         },
         "development": {}
-      },
-      "defaultConfiguration": "production"
+      }
     },
     "publish": {
       "executor": "nx:run-commands",
@@ -41,9 +41,6 @@
       "options": {
         "packageRoot": "dist/{projectRoot}"
       }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
     }
   }
 }

@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CompanyCustomerForm } from '@acontplus/ng-customer';
 import { MatDialogContent, MatDialogActions, MatDialogRef } from '@angular/material/dialog';
 import { Button } from '@acontplus/ng-components';
@@ -6,6 +6,7 @@ import { Button } from '@acontplus/ng-components';
 @Component({
   selector: 'app-company-customer-create',
   imports: [CompanyCustomerForm, MatDialogContent, MatDialogActions, Button],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './company-customer-create.html',
 })
 export class CompanyCustomerCreate {

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Params, RouterLink } from '@angular/router';
 import { Observable, Subscription, combineLatest } from 'rxjs';
 import { COMPONENTS_MENU, ComponentCategory } from '../component-nav/component-nav';
@@ -13,6 +13,7 @@ interface ComponentGroup {
   selector: 'app-component-category-list',
   templateUrl: './component-category-list.html',
   styleUrl: './component-category-list.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterLink],
 })
 export class ComponentCategoryList implements OnInit, OnDestroy {

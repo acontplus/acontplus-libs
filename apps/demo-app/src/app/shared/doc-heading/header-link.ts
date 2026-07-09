@@ -1,5 +1,12 @@
 import { PlatformLocation } from '@angular/common';
-import { Component, Input, OnInit, ViewEncapsulation, inject } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  ViewEncapsulation,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
@@ -16,6 +23,7 @@ import { MatIconModule } from '@angular/material/icon';
   `,
   styleUrls: ['./header-link.scss'],
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatIconModule],
 })
 export class HeaderLink implements OnInit {

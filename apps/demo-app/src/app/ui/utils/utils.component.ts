@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { DecimalDemoComponent } from './decimal-demo/decimal-demo.component';
 @Component({
@@ -6,6 +6,7 @@ import { DecimalDemoComponent } from './decimal-demo/decimal-demo.component';
   imports: [DecimalDemoComponent],
   templateUrl: './utils.component.html',
   styleUrl: './utils.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideNativeDateAdapter()],
 })
 export class UtilsComponent {}

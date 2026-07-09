@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
@@ -32,6 +32,7 @@ import { Button } from '@acontplus/ng-components';
     JsonPipe,
     Button,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './decimal-demo.component.html',
 })
 export class DecimalDemoComponent {

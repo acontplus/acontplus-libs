@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Routes } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
 import { DocHeading } from '../../shared/doc-heading/doc-heading';
@@ -8,6 +8,7 @@ import { notificationBasicExampleConfig } from './notification-example';
 @Component({
   selector: 'app-notifications',
   imports: [DocHeading, ExampleViewer, AsyncPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './notifications.html',
 })
 export class Notifications {

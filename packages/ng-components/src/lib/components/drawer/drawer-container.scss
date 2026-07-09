@@ -1,41 +1,10 @@
 /* stylelint-disable keyframes-name-pattern */
 @use '@angular/cdk' as cdk;
-@use 'sass:map';
-@use '../../styles/token-utils';
+@use '@angular/material' as mat;
+@use './../../../core/tokens/token-utils';
+@use './m3-drawer';
 
-// Theme variables for drawer
-:root {
-  --acp-drawer-container-background-color: var(--mat-sys-surface-container-low, #f7f2fa);
-  --acp-drawer-container-text-color: var(--mat-sys-on-surface, #1d1b20);
-  --acp-drawer-container-elevation-shadow: var(
-    --mat-sys-elevation-level2,
-    0px 2px 4px rgba(0, 0, 0, 0.14)
-  );
-  --acp-drawer-container-shape: var(--mat-sys-corner-large, 16px);
-}
-
-// Dark theme overrides
-body.dark-theme,
-[data-theme='dark'] {
-  --acp-drawer-container-background-color: var(--mat-sys-surface-container-low, #1d1b1e);
-  --acp-drawer-container-text-color: var(--mat-sys-on-surface, #e6e0e9);
-  --acp-drawer-container-elevation-shadow: var(
-    --mat-sys-elevation-level2,
-    0px 1px 2px rgba(0, 0, 0, 0.3),
-    0px 2px 6px 2px rgba(0, 0, 0, 0.15)
-  );
-}
-
-// Fallback tokens for drawer
-$fallbacks: (
-  drawer-container-background-color: var(--acp-drawer-container-background-color, #f7f2fa),
-  drawer-container-text-color: var(--acp-drawer-container-text-color, #1d1b20),
-  drawer-container-elevation-shadow: var(
-      --acp-drawer-container-elevation-shadow,
-      0px 2px 4px rgba(0, 0, 0, 0.14)
-    ),
-  drawer-container-shape: var(--acp-drawer-container-shape, 16px),
-);
+$fallbacks: m3-drawer.get-tokens();
 
 @keyframes _acp-drawer-enter {
   from {
@@ -68,47 +37,17 @@ $fallbacks: (
   overflow: auto;
   outline: 0;
   box-sizing: border-box;
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease,
-    box-shadow 0.3s ease;
 
   // We don't use this, but it's useful for consumers to position
-  // elements (e.g. close buttons) inside the drawer.
+  // elements (e.g. close buttons) inside the bottom sheet.
   position: relative;
-  background-color: map.get($fallbacks, drawer-container-background-color);
-  color: map.get($fallbacks, drawer-container-text-color);
-  box-shadow: map.get($fallbacks, drawer-container-elevation-shadow);
+  background-color: token-utils.slot(drawer-container-background-color, $fallbacks);
+  color: token-utils.slot(drawer-container-text-color, $fallbacks);
+  box-shadow: token-utils.slot(drawer-container-elevation-shadow, $fallbacks);
 
   @include cdk.high-contrast(active, off) {
     outline: 1px solid;
   }
-
-  // Full screen mode
-  &.acp-drawer-fullscreen {
-    width: 100vw !important;
-    height: 100vh !important;
-    max-width: none !important;
-    max-height: none !important;
-    border-radius: 0 !important;
-
-    // Remove all border radius in fullscreen
-    &.acp-drawer-top,
-    &.acp-drawer-right,
-    &.acp-drawer-bottom,
-    &.acp-drawer-left {
-      border-radius: 0 !important;
-    }
-  }
-}
-
-// Dark theme fallbacks when Material tokens are not present.
-:root.dark-theme .acp-drawer-container,
-body.dark-theme .acp-drawer-container {
-  background-color: var(--mat-sys-surface-container-low, #121212);
-  color: var(--mat-sys-on-surface, #e6e1e5);
-  // Keep elevation variable if available; otherwise use a softer shadow for dark mode.
-  box-shadow: var(--mat-sys-elevation-level2, 0px 2px 4px rgba(0, 0, 0, 0.6));
 }
 
 .acp-drawer-container-animations-enabled {
@@ -138,21 +77,21 @@ body.dark-theme .acp-drawer-container {
 }
 
 .acp-drawer-right {
-  border-top-left-radius: map.get($fallbacks, drawer-container-shape);
-  border-bottom-left-radius: map.get($fallbacks, drawer-container-shape);
+  border-top-left-radius: token-utils.slot(drawer-container-shape, $fallbacks);
+  border-bottom-left-radius: token-utils.slot(drawer-container-shape, $fallbacks);
 }
 
 .acp-drawer-left {
-  border-top-right-radius: map.get($fallbacks, drawer-container-shape);
-  border-bottom-right-radius: map.get($fallbacks, drawer-container-shape);
+  border-top-right-radius: token-utils.slot(drawer-container-shape, $fallbacks);
+  border-bottom-right-radius: token-utils.slot(drawer-container-shape, $fallbacks);
 }
 
 .acp-drawer-bottom {
-  border-top-left-radius: map.get($fallbacks, drawer-container-shape);
-  border-top-right-radius: map.get($fallbacks, drawer-container-shape);
+  border-top-left-radius: token-utils.slot(drawer-container-shape, $fallbacks);
+  border-top-right-radius: token-utils.slot(drawer-container-shape, $fallbacks);
 }
 
 .acp-drawer-top {
-  border-bottom-left-radius: map.get($fallbacks, drawer-container-shape);
-  border-bottom-right-radius: map.get($fallbacks, drawer-container-shape);
+  border-bottom-left-radius: token-utils.slot(drawer-container-shape, $fallbacks);
+  border-bottom-right-radius: token-utils.slot(drawer-container-shape, $fallbacks);
 }

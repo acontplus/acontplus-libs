@@ -14,7 +14,7 @@ export class DialogZIndexService {
   // Rangos de z-index por tipo de diálogo
   private static readonly Z_INDEX_RANGES = {
     normal: { base: 1000, current: 1000 }, // Diálogos normales: 1000-1999
-    alert: { base: 2000, current: 2000 }, // AlertDialogs: 2000-2999 (siempre encima)
+    alert: { base: 2000, current: 2000 }, // Diálogos de alerta: 2000-2999 (siempre encima)
   };
 
   private static readonly Z_INDEX_INCREMENT = 10;

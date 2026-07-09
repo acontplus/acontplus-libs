@@ -1,6 +1,6 @@
 import { DecimalPipe } from '@angular/common';
 // Remove PricingCalculator import since it doesn't exist in core
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -20,6 +20,7 @@ import { Button } from '@acontplus/ng-components';
     Button,
   ],
   templateUrl: './pricing-demo.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './pricing-demo.component.scss',
 })
 export class PricingDemoComponent {

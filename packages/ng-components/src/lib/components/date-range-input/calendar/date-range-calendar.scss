@@ -1,0 +1,29 @@
+/**
+ * AcpDateRangeCalendar Component Styles
+ *
+ * Styling for the dual-calendar view with responsive layout.
+ * @author AcontPlus S.A.S
+ * @version 2.0.0
+ */
+.mat-calendar {
+  min-width: 250px;
+}
+
+.calendar-container {
+  width: 100%;
+  display: flex;
+}
+
+.first-view,
+.second-view {
+  flex: 1 1 50%;
+  min-width: 0; /* allow each calendar to shrink within its half */
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 490px) {
+  /* Stack the two calendar views; align-items: stretch makes each full width. */
+  .calendar-container {
+    flex-direction: column;
+  }
+}

@@ -6,6 +6,7 @@ import {
   ChangeDetectorRef,
   inject,
   viewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -64,6 +65,7 @@ interface ProductFilters {
     Button,
   ],
   templateUrl: './product.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './product.component.scss',
 })
 export class ProductComponent implements OnInit, AfterViewInit {

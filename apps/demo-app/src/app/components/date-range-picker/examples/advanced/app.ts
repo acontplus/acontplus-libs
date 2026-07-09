@@ -1,4 +1,4 @@
-import { Component, signal, computed, model } from '@angular/core';
+import { Component, signal, computed, model, ChangeDetectionStrategy } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -19,6 +19,7 @@ import {
   selector: 'app-date-range-picker-advanced-example',
   templateUrl: './app.html',
   styleUrl: './app.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     DatePipe,
     FormsModule,

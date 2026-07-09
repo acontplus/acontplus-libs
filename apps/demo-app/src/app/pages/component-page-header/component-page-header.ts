@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Output, inject, ChangeDetectionStrategy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ComponentPageTitleService } from '../../shared/services/page-title';
@@ -20,6 +20,7 @@ import { ComponentPageTitleService } from '../../shared/services/page-title';
       background: var(--mat-sys-primary-container);
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatButtonModule, MatIconModule],
 })
 export class ComponentPageHeader {

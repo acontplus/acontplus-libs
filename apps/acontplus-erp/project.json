@@ -1,0 +1,84 @@
+{
+  "name": "acontplus-erp",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "app",
+  "sourceRoot": "apps/acontplus-erp/src",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@angular/build:application",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/apps/acontplus-erp",
+        "browser": "apps/acontplus-erp/src/main.ts",
+        "tsConfig": "apps/acontplus-erp/tsconfig.app.json",
+        "inlineStyleLanguage": "scss",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/acontplus-erp/public"
+          }
+        ],
+        "styles": ["apps/acontplus-erp/src/styles.scss"]
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "2mb",
+              "maximumError": "2.5mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "12kb",
+              "maximumError": "16kb"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true
+        }
+      }
+    },
+    "serve": {
+      "continuous": true,
+      "executor": "@angular/build:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "ssl": true,
+        "sslCert": "./ssl/server.crt",
+        "sslKey": "./ssl/server.key"
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "acontplus-erp:build:production"
+        },
+        "development": {
+          "buildTarget": "acontplus-erp:build:development"
+        }
+      }
+    },
+    "test": {
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectRoot}",
+        "{workspaceRoot}\\coverage\\apps\\acontplus-erp"
+      ]
+    },
+    "serve-static": {
+      "continuous": true,
+      "executor": "@nx/web:file-server",
+      "options": {
+        "buildTarget": "acontplus-erp:build",
+        "port": 4200,
+        "staticFilePath": "dist/apps/acontplus-erp/browser",
+        "spa": true
+      }
+    }
+  }
+}

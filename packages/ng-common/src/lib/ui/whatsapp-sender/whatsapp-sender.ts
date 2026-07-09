@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, Input, signal } from '@angular/core';
+import { Component, OnInit, inject, Input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
@@ -39,6 +39,7 @@ export interface WhatsAppSendConfig {
   selector: 'acp-whatsapp-sender',
   templateUrl: './whatsapp-sender.html',
   styleUrls: ['./whatsapp-sender.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     CommonModule,
     ReactiveFormsModule,

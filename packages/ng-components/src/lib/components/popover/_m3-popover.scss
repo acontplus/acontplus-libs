@@ -1,0 +1,24 @@
+@use 'sass:map';
+@use '../../../core/tokens/m3-utils';
+@use '../../../core/tokens/m3';
+
+@function get-tokens($theme: m3.$sys-theme) {
+  $system: m3-utils.get-system($theme);
+  $tokens: (
+    base: (
+      popover-container-shape: map.get($system, corner-extra-small),
+      // Note that this uses a value, rather than a computed box-shadow, because we use
+      // the value at runtime to determine which shadow to set based on the popover's depth.
+      popover-base-elevation-level: 2,
+    ),
+    color: (
+      popover-outline-color: map.get($system, surface-container),
+      popover-background-color: map.get($system, surface-container),
+      popover-text-color: map.get($system, on-surface),
+    ),
+    typography: (),
+    density: (),
+  );
+
+  @return $tokens;
+}

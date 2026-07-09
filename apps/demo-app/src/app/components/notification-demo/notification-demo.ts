@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 /* Angular Material */
@@ -26,6 +26,7 @@ import { AdvancedDialogService } from '@acontplus/ng-components';
   standalone: true,
   templateUrl: './notification-demo.html',
   styleUrls: ['./notification-demo.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     CommonModule,
     MatCardModule,
@@ -733,6 +734,7 @@ interface ModalData {
       <button mat-raised-button color="primary" (click)="onSave()">Save</button>
     </mat-dialog-actions>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [
     `
       .modal-demo {
@@ -913,6 +915,7 @@ export class ModalNotificationDemoComponent {
       </mat-dialog-actions>
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [
     `
       .modal-demo {

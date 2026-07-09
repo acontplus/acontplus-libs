@@ -1,0 +1,24 @@
+@use 'sass:map';
+@use './../../../core/style/elevation';
+@use './../../../core/tokens/m3-utils';
+@use './../../../core/tokens/m3';
+
+/// Generates custom tokens for the mtx-drawer.
+@function get-tokens($theme: m3.$sys-theme) {
+  $system: m3-utils.get-system($theme);
+
+  $tokens: (
+    base: (
+      drawer-container-shape: map.get($system, corner-large),
+      drawer-container-elevation-shadow: elevation.get-box-shadow(2),
+    ),
+    color: (
+      drawer-container-background-color: map.get($system, surface),
+      drawer-container-text-color: map.get($system, on-surface-variant),
+    ),
+    typography: (),
+    density: (),
+  );
+
+  @return $tokens;
+}

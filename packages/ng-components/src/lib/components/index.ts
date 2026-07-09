@@ -13,4 +13,4 @@ export * from './data-grid';
 export * from './date-range-picker';
 export * from './drawer';
 export * from './popover';
-export * from './alert-dialog';
+export * from './date-range-input';

@@ -1,4 +1,11 @@
-import { Component, ViewChild, TemplateRef, AfterViewInit, signal } from '@angular/core';
+import {
+  Component,
+  ViewChild,
+  TemplateRef,
+  AfterViewInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Login } from '@acontplus/ng-auth';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -17,6 +24,7 @@ import { MatOptionModule } from '@angular/material/core';
     ReactiveFormsModule,
   ],
   templateUrl: './auth-layout.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './auth-layout.component.scss',
 })
 export class AuthLayoutComponent implements AfterViewInit {

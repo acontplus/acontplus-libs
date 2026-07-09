@@ -8,6 +8,7 @@ import {
   ViewEncapsulation,
   input,
   output,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 
 import {
@@ -50,6 +51,7 @@ Tabulator.registerModule([
   imports: [],
   templateUrl: './tabulator-table.html',
   styleUrls: ['./tabulator-table.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })
 export class TabulatorTable implements OnChanges, AfterViewInit, OnDestroy {

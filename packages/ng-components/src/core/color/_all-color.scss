@@ -1,0 +1,16 @@
+@use '@angular/material' as mat;
+@use '../theming/all-theme';
+
+// Includes all of the color styles.
+@mixin all-component-colors($theme) {
+  @if not mat.theme-has($theme, color) {
+    @error 'No color configuration specified.';
+  }
+
+  @include all-theme.all-component-themes(mat.theme-remove($theme, base, typography, density));
+}
+
+// @deprecated Use `all-component-colors`.
+@mixin material-extensions-color($theme) {
+  @include all-component-colors($theme);
+}

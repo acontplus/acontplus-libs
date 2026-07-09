@@ -1,0 +1,677 @@
+<!-- Progress bar-->
+@if (loading) {
+<div class="acp-grid-progress">
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+</div>
+}
+
+<!-- Toolbar -->
+@if (showToolbar) {
+<div class="acp-grid-toolbar">
+  <div class="acp-grid-toolbar-content">
+    @if (toolbarTemplate) {
+    <ng-template [ngTemplateOutlet]="toolbarTemplate"></ng-template>
+    } @else { @if (toolbarTitle) {
+    <div class="acp-grid-toolbar-title">{{ toolbarTitle }}</div>
+    } }
+  </div>
+  <div class="acp-grid-toolbar-actions">
+    @if (showColumnMenuButton) {
+    <acp-grid-column-menu
+      [columns]="columns"
+      [buttonText]="columnMenuButtonText"
+      [buttonType]="columnMenuButtonType"
+      [buttonColor]="columnMenuButtonColor"
+      [buttonClass]="columnMenuButtonClass"
+      [buttonIcon]="columnMenuButtonIcon"
+      [buttonFontIcon]="columnMenuButtonFontIcon"
+      [buttonSvgIcon]="columnMenuButtonSvgIcon"
+      [selectable]="columnHideable"
+      [selectableChecked]="columnHideableChecked"
+      [sortable]="columnSortable"
+      [pinnable]="columnPinnable"
+      [showHeader]="showColumnMenuHeader"
+      [headerText]="columnMenuHeaderText"
+      [headerTemplate]="columnMenuHeaderTemplate"
+      [showFooter]="showColumnMenuFooter"
+      [footerText]="columnMenuFooterText"
+      [footerTemplate]="columnMenuFooterTemplate"
+      [pinOptions]="columnPinOptions"
+      (columnChange)="_onColumnChange($event)"
+    ></acp-grid-column-menu>
+    }
+  </div>
+</div>
+}
+
+<div class="acp-grid-main acp-grid-layout">
+  <!-- Table content -->
+  <div class="acp-grid-content acp-grid-layout">
+    <div #tableContainer class="mat-table-container" [class.mat-table-with-data]="!_hasNoResult">
+      @if (!columnResizable) {
+      <table
+        mat-table
+        [class.mat-table-hover]="rowHover"
+        [class.mat-table-striped]="rowStriped"
+        [class.mat-table-expandable]="expandable"
+        [dataSource]="dataSource"
+        [multiTemplateDataRows]="expandable"
+        matSort
+        [matSortActive]="sortActive"
+        [matSortDirection]="sortDirection"
+        [matSortDisableClear]="sortDisableClear"
+        [matSortDisabled]="sortDisabled"
+        [matSortStart]="sortStart"
+        (matSortChange)="_onSortChange($event)"
+        [trackBy]="trackBy"
+      >
+        @if (rowSelectable && !hideRowSelectionCheckbox) {
+        <ng-container matColumnDef="acpGridCheckboxColumnDef">
+          <th mat-header-cell *matHeaderCellDef class="acp-grid-checkbox-cell">
+            @if (multiSelectable) {
+            <mat-checkbox
+              [checked]="rowSelection.hasValue() && _isAllSelected()"
+              [indeterminate]="rowSelection.hasValue() && !_isAllSelected()"
+              (change)="$event ? _toggleMasterCheckbox() : null"
+            ></mat-checkbox>
+            }
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let row; let index = index; let dataIndex = dataIndex"
+            class="acp-grid-checkbox-cell"
+          >
+            @if ( !( rowSelectionFormatter.hideCheckbox && rowSelectionFormatter.hideCheckbox(row,
+            _getIndex(index, dataIndex)) ) ) {
+            <mat-checkbox
+              [disabled]="
+                      rowSelectionFormatter.disabled &&
+                      rowSelectionFormatter.disabled(row, _getIndex(index, dataIndex))
+                    "
+              [checked]="rowSelection.isSelected(row)"
+              (click)="$event.stopPropagation()"
+              (change)="$event ? _toggleNormalCheckbox(row) : null"
+            ></mat-checkbox>
+            }
+          </td>
+          <td mat-footer-cell *matFooterCellDef class="acp-grid-checkbox-cell"></td>
+        </ng-container>
+        } @for (col of columns; track col.field) {
+        <ng-container
+          [matColumnDef]="col.field"
+          [sticky]="col.pinned === 'left'"
+          [stickyEnd]="col.pinned === 'right'"
+        >
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            [class]="col | colClass"
+            [class.mat-table-sticky-left]="col.pinned === 'left'"
+            [class.mat-table-sticky-right]="col.pinned === 'right'"
+            [style.width]="col.width"
+            [style.min-width]="col.width"
+            [style.left]="col.left"
+            [style.right]="col.right"
+          >
+            <div class="mat-header-cell-inner">
+              @if (headerTemplate | isTemplateRef) {
+              <ng-template
+                [ngTemplateOutlet]="$any(headerTemplate)"
+                [ngTemplateOutletContext]="{ $implicit: col, colDef: col }"
+              ></ng-template>
+              } @else { @if ( $safeNavigationMigration($any(headerTemplate)?.[col.field]) |
+              isTemplateRef ) {
+              <ng-template
+                [ngTemplateOutlet]="$any(headerTemplate)[col.field]"
+                [ngTemplateOutletContext]="{ $implicit: col, colDef: col }"
+              ></ng-template>
+              } @else {
+              <div
+                [mat-sort-header]="col.sortProp?.id || col.field"
+                [disabled]="!col.sortable"
+                [disableClear]="col.sortProp?.disableClear ?? sortDisableClear"
+                [arrowPosition]="$safeNavigationMigration(col.sortProp?.arrowPosition)!"
+                [start]="$safeNavigationMigration(col.sortProp?.start)!"
+              >
+                @if (col.showExpand) {
+                <span class="acp-grid-expansion-placeholder"></span>
+                }
+                <span>{{ col.header | toObservable | async }}</span>
+                @if (col.sortable) {
+                <svg
+                  class="acp-grid-icon mat-sort-header-icon"
+                  viewBox="0 0 24 24"
+                  width="24px"
+                  height="24px"
+                  fill="currentColor"
+                  focusable="false"
+                >
+                  <path d="M3,13H15V11H3M3,6V8H21V6M3,18H9V16H3V18Z" />
+                </svg>
+                }
+              </div>
+              <ng-template
+                [ngTemplateOutlet]="headerExtraTplBase"
+                [ngTemplateOutletContext]="{ $implicit: headerExtraTemplate, colDef: col }"
+              ></ng-template>
+              } }
+            </div>
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let row; let index = index; let dataIndex = dataIndex"
+            [class]="
+                  col
+                    | colClass
+                      : row
+                      : rowChangeRecord
+                      : $safeNavigationMigration(rowChangeRecord?.currentValue)
+                "
+            [class.mat-table-sticky-left]="col.pinned === 'left'"
+            [class.mat-table-sticky-right]="col.pinned === 'right'"
+            [style.width]="col.width"
+            [style.min-width]="col.width"
+            [style.left]="col.left"
+            [style.right]="col.right"
+            acpGridSelectableCell
+            [cellSelectable]="cellSelectable"
+            (cellSelectedChange)="_selectCell($event, row, col)"
+          >
+            @if (cellTemplate | isTemplateRef) {
+            <ng-template
+              [ngTemplateOutlet]="$any(cellTemplate)"
+              [ngTemplateOutletContext]="{
+                      $implicit: row,
+                      rowData: row,
+                      index: _getIndex(index, dataIndex),
+                      colDef: col,
+                    }"
+            ></ng-template>
+            } @else { @if ($safeNavigationMigration($any(cellTemplate)?.[col.field]) |
+            isTemplateRef) {
+            <ng-template
+              [ngTemplateOutlet]="$any(cellTemplate)[col.field]"
+              [ngTemplateOutletContext]="{
+                        $implicit: row,
+                        rowData: row,
+                        index: _getIndex(index, dataIndex),
+                        colDef: col,
+                      }"
+            ></ng-template>
+            } @else { @if (col.cellTemplate) {
+            <ng-template
+              [ngTemplateOutlet]="col.cellTemplate!"
+              [ngTemplateOutletContext]="{
+                          $implicit: row,
+                          rowData: row,
+                          index: _getIndex(index, dataIndex),
+                          colDef: col,
+                        }"
+            ></ng-template>
+            } @else { @if (col.showExpand) {
+            <button
+              class="acp-grid-row-expand-button"
+              matIconButton
+              acpGridExpansionToggle
+              type="button"
+              [(opened)]="expansionRowStates[dataIndex].expanded"
+              (toggleChange)="_onExpansionChange($event, row, col, dataIndex)"
+            >
+              <svg
+                class="acp-grid-icon acp-grid-row-expand-icon"
+                viewBox="0 0 24 24"
+                width="24px"
+                height="24px"
+                fill="currentColor"
+                focusable="false"
+              >
+                <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+              </svg>
+            </button>
+            }
+            <acp-grid-cell
+              [rowData]="row"
+              [colDef]="col"
+              [placeholder]="emptyValuePlaceholder"
+              (rowDataChange)="_onRowDataChange($event)"
+            ></acp-grid-cell>
+            } } }
+          </td>
+          <td
+            mat-footer-cell
+            *matFooterCellDef
+            [class.mat-table-sticky-left]="col.pinned === 'left'"
+            [class.mat-table-sticky-right]="col.pinned === 'right'"
+            [style.width]="col.width"
+            [style.min-width]="col.width"
+            [style.left]="col.left"
+            [style.right]="col.right"
+          >
+            @if (col.showExpand) {
+            <span class="acp-grid-expansion-placeholder"></span>
+            } @if (summaryTemplate | isTemplateRef) {
+            <ng-template
+              [ngTemplateOutlet]="$any(summaryTemplate)"
+              [ngTemplateOutletContext]="{ $implicit: col, colDef: col, data: data }"
+            ></ng-template>
+            } @else { @if ( $safeNavigationMigration($any(summaryTemplate)?.[col.field]) |
+            isTemplateRef ) {
+            <ng-template
+              [ngTemplateOutlet]="$any(summaryTemplate)[col.field]"
+              [ngTemplateOutletContext]="{
+                        $implicit: _getColData(data, col),
+                        colData: _getColData(data, col),
+                        colDef: col,
+                      }"
+            ></ng-template>
+            } @else {
+            <acp-grid-cell
+              [summary]="true"
+              [data]="data"
+              [colDef]="col"
+              [placeholder]="emptyValuePlaceholder"
+            ></acp-grid-cell>
+            } }
+          </td>
+        </ng-container>
+        } @if (!useContentHeaderRowTemplate) {
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        } @if (!useContentRowTemplate) {
+        <tr
+          mat-row
+          *matRowDef="
+                let row;
+                let index = index;
+                let dataIndex = dataIndex;
+                columns: displayedColumns
+              "
+          [class]="row | rowClass: index : dataIndex : rowClassFormatter"
+          [class.selected]="rowSelection.isSelected(row)"
+          (click)="_selectRow($event, row, _getIndex(index, dataIndex))"
+          (contextmenu)="_contextmenu($event, row, _getIndex(index, dataIndex))"
+        ></tr>
+        } @if (_whetherShowSummary) {
+        <tr mat-footer-row *matFooterRowDef="displayedColumns; sticky: true"></tr>
+        } @if (expandable) {
+        <!-- Expanded Content Column - The expandable row is made up of this one column that spans across all columns -->
+        <ng-container matColumnDef="acpGridExpansionColumnDef">
+          <td
+            mat-cell
+            *matCellDef="let row; let dataIndex = dataIndex"
+            [attr.colspan]="displayedColumns.length"
+          >
+            <div class="acp-grid-expansion-detail-wrapper">
+              <div class="acp-grid-expansion-detail">
+                <ng-template
+                  [ngTemplateOutlet]="expansionTemplate"
+                  [ngTemplateOutletContext]="{
+                        $implicit: row,
+                        rowData: row,
+                        index: dataIndex,
+                        expanded: expansionRowStates[dataIndex].expanded,
+                      }"
+                ></ng-template>
+              </div>
+            </div>
+          </td>
+        </ng-container>
+        <tr
+          mat-row
+          *matRowDef="
+                let row;
+                columns: ['acpGridExpansionColumnDef'];
+                let dataIndex = dataIndex
+              "
+          class="acp-grid-expansion"
+          [class]="expansionRowStates[dataIndex].expanded ? 'expanded' : 'collapsed'"
+        ></tr>
+        }
+      </table>
+      } @else {
+      <!-- TODO: Use flexbox-based mat-table -->
+      <table
+        mat-table
+        columnResize
+        [class.mat-table-hover]="rowHover"
+        [class.mat-table-striped]="rowStriped"
+        [class.mat-table-expandable]="expandable"
+        [dataSource]="dataSource"
+        [multiTemplateDataRows]="expandable"
+        matSort
+        [matSortActive]="sortActive"
+        [matSortDirection]="sortDirection"
+        [matSortDisableClear]="sortDisableClear"
+        [matSortDisabled]="sortDisabled"
+        [matSortStart]="sortStart"
+        (matSortChange)="_onSortChange($event)"
+        [trackBy]="trackBy"
+      >
+        @if (rowSelectable && !hideRowSelectionCheckbox) {
+        <ng-container matColumnDef="acpGridCheckboxColumnDef">
+          <th mat-header-cell *matHeaderCellDef class="acp-grid-checkbox-cell">
+            @if (multiSelectable) {
+            <mat-checkbox
+              [checked]="rowSelection.hasValue() && _isAllSelected()"
+              [indeterminate]="rowSelection.hasValue() && !_isAllSelected()"
+              (change)="$event ? _toggleMasterCheckbox() : null"
+            ></mat-checkbox>
+            }
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let row; let index = index; let dataIndex = dataIndex"
+            class="acp-grid-checkbox-cell"
+          >
+            @if ( !( rowSelectionFormatter.hideCheckbox && rowSelectionFormatter.hideCheckbox(row,
+            _getIndex(index, dataIndex)) ) ) {
+            <mat-checkbox
+              [disabled]="
+                      rowSelectionFormatter.disabled &&
+                      rowSelectionFormatter.disabled(row, _getIndex(index, dataIndex))
+                    "
+              [checked]="rowSelection.isSelected(row)"
+              (click)="$event.stopPropagation()"
+              (change)="$event ? _toggleNormalCheckbox(row) : null"
+            ></mat-checkbox>
+            }
+          </td>
+          <td mat-footer-cell *matFooterCellDef class="acp-grid-checkbox-cell"></td>
+        </ng-container>
+        } @for (col of columns; track col.field) {
+        <ng-container
+          [matColumnDef]="col.field"
+          [sticky]="col.pinned === 'left'"
+          [stickyEnd]="col.pinned === 'right'"
+        >
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            [class]="col | colClass"
+            [class.mat-table-sticky-left]="col.pinned === 'left'"
+            [class.mat-table-sticky-right]="col.pinned === 'right'"
+            [style.width]="col.width"
+            [style.left]="col.left"
+            [style.right]="col.right"
+            [resizable]="col.resizable"
+            [matResizableMinWidthPx]="col.minWidth"
+            [matResizableMaxWidthPx]="col.maxWidth"
+          >
+            <div class="mat-header-cell-inner">
+              @if (headerTemplate | isTemplateRef) {
+              <ng-template
+                [ngTemplateOutlet]="$any(headerTemplate)"
+                [ngTemplateOutletContext]="{ $implicit: col, colDef: col }"
+              ></ng-template>
+              } @else { @if ( $safeNavigationMigration($any(headerTemplate)?.[col.field]) |
+              isTemplateRef ) {
+              <ng-template
+                [ngTemplateOutlet]="$any(headerTemplate)[col.field]"
+                [ngTemplateOutletContext]="{ $implicit: col, colDef: col }"
+              ></ng-template>
+              } @else {
+              <div
+                [mat-sort-header]="col.sortProp?.id || col.field"
+                [disabled]="!col.sortable"
+                [disableClear]="col.sortProp?.disableClear ?? sortDisableClear"
+                [arrowPosition]="$safeNavigationMigration(col.sortProp?.arrowPosition)!"
+                [start]="$safeNavigationMigration(col.sortProp?.start)!"
+              >
+                @if (col.showExpand) {
+                <span class="acp-grid-expansion-placeholder"></span>
+                }
+                <span>{{ col.header | toObservable | async }}</span>
+                @if (col.sortable) {
+                <svg
+                  class="acp-grid-icon mat-sort-header-icon"
+                  viewBox="0 0 24 24"
+                  width="24px"
+                  height="24px"
+                  fill="currentColor"
+                  focusable="false"
+                >
+                  <path d="M3,13H15V11H3M3,6V8H21V6M3,18H9V16H3V18Z" />
+                </svg>
+                }
+              </div>
+              <ng-template
+                [ngTemplateOutlet]="headerExtraTplBase"
+                [ngTemplateOutletContext]="{ $implicit: headerExtraTemplate, colDef: col }"
+              ></ng-template>
+              } }
+            </div>
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let row; let index = index; let dataIndex = dataIndex"
+            [class]="
+                  col
+                    | colClass
+                      : row
+                      : rowChangeRecord
+                      : $safeNavigationMigration(rowChangeRecord?.currentValue)
+                "
+            [class.mat-table-sticky-left]="col.pinned === 'left'"
+            [class.mat-table-sticky-right]="col.pinned === 'right'"
+            [style.width]="col.width"
+            [style.left]="col.left"
+            [style.right]="col.right"
+            acpGridSelectableCell
+            [cellSelectable]="cellSelectable"
+            (cellSelectedChange)="_selectCell($event, row, col)"
+          >
+            @if (cellTemplate | isTemplateRef) {
+            <ng-template
+              [ngTemplateOutlet]="$any(cellTemplate)"
+              [ngTemplateOutletContext]="{
+                      $implicit: row,
+                      rowData: row,
+                      index: _getIndex(index, dataIndex),
+                      colDef: col,
+                    }"
+            ></ng-template>
+            } @else { @if ($safeNavigationMigration($any(cellTemplate)?.[col.field]) |
+            isTemplateRef) {
+            <ng-template
+              [ngTemplateOutlet]="$any(cellTemplate)[col.field]"
+              [ngTemplateOutletContext]="{
+                        $implicit: row,
+                        rowData: row,
+                        index: _getIndex(index, dataIndex),
+                        colDef: col,
+                      }"
+            ></ng-template>
+            } @else { @if (col.cellTemplate) {
+            <ng-template
+              [ngTemplateOutlet]="col.cellTemplate!"
+              [ngTemplateOutletContext]="{
+                          $implicit: row,
+                          rowData: row,
+                          index: _getIndex(index, dataIndex),
+                          colDef: col,
+                        }"
+            ></ng-template>
+            } @else { @if (col.showExpand) {
+            <button
+              class="acp-grid-row-expand-button"
+              matIconButton
+              acpGridExpansionToggle
+              type="button"
+              [(opened)]="expansionRowStates[dataIndex].expanded"
+              (toggleChange)="_onExpansionChange($event, row, col, dataIndex)"
+            >
+              <svg
+                class="acp-grid-icon acp-grid-row-expand-icon"
+                viewBox="0 0 24 24"
+                width="24px"
+                height="24px"
+                fill="currentColor"
+                focusable="false"
+              >
+                <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+              </svg>
+            </button>
+            }
+            <acp-grid-cell
+              [rowData]="row"
+              [colDef]="col"
+              [placeholder]="emptyValuePlaceholder"
+              (rowDataChange)="_onRowDataChange($event)"
+            ></acp-grid-cell>
+            } } }
+          </td>
+          <td
+            mat-footer-cell
+            *matFooterCellDef
+            [class.mat-table-sticky-left]="col.pinned === 'left'"
+            [class.mat-table-sticky-right]="col.pinned === 'right'"
+            [style.width]="col.width"
+            [style.left]="col.left"
+            [style.right]="col.right"
+          >
+            @if (col.showExpand) {
+            <span class="acp-grid-expansion-placeholder"></span>
+            } @if (summaryTemplate | isTemplateRef) {
+            <ng-template
+              [ngTemplateOutlet]="$any(summaryTemplate)"
+              [ngTemplateOutletContext]="{ $implicit: col, colDef: col, data: data }"
+            ></ng-template>
+            } @else { @if ( $safeNavigationMigration($any(summaryTemplate)?.[col.field]) |
+            isTemplateRef ) {
+            <ng-template
+              [ngTemplateOutlet]="$any(summaryTemplate)[col.field]"
+              [ngTemplateOutletContext]="{
+                        $implicit: _getColData(data, col),
+                        colData: _getColData(data, col),
+                        colDef: col,
+                      }"
+            ></ng-template>
+            } @else {
+            <acp-grid-cell
+              [summary]="true"
+              [data]="data"
+              [colDef]="col"
+              [placeholder]="emptyValuePlaceholder"
+            ></acp-grid-cell>
+            } }
+          </td>
+        </ng-container>
+        } @if (!useContentHeaderRowTemplate) {
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        } @if (!useContentRowTemplate) {
+        <tr
+          mat-row
+          *matRowDef="
+                let row;
+                let index = index;
+                let dataIndex = dataIndex;
+                columns: displayedColumns
+              "
+          [class]="row | rowClass: index : dataIndex : rowClassFormatter"
+          [class.selected]="rowSelection.isSelected(row)"
+          (click)="_selectRow($event, row, _getIndex(index, dataIndex))"
+          (contextmenu)="_contextmenu($event, row, _getIndex(index, dataIndex))"
+        ></tr>
+        } @if (_whetherShowSummary) {
+        <tr mat-footer-row *matFooterRowDef="displayedColumns; sticky: true"></tr>
+        } @if (expandable) {
+        <!-- Expanded Content Column - The expandable row is made up of this one column that spans across all columns -->
+        <ng-container matColumnDef="acpGridExpansionColumnDef">
+          <td
+            mat-cell
+            *matCellDef="let row; let dataIndex = dataIndex"
+            [attr.colspan]="displayedColumns.length"
+          >
+            <div class="acp-grid-expansion-detail-wrapper">
+              <div class="acp-grid-expansion-detail">
+                <ng-template
+                  [ngTemplateOutlet]="expansionTemplate"
+                  [ngTemplateOutletContext]="{
+                        $implicit: row,
+                        rowData: row,
+                        index: dataIndex,
+                        expanded: expansionRowStates[dataIndex].expanded,
+                      }"
+                ></ng-template>
+              </div>
+            </div>
+          </td>
+        </ng-container>
+        <tr
+          mat-row
+          *matRowDef="
+                let row;
+                columns: ['acpGridExpansionColumnDef'];
+                let dataIndex = dataIndex
+              "
+          class="acp-grid-expansion"
+          [class]="expansionRowStates[dataIndex].expanded ? 'expanded' : 'collapsed'"
+        ></tr>
+        }
+      </table>
+      }
+    </div>
+
+    <!-- No result -->
+    @if (_hasNoResult) {
+    <div class="acp-grid-no-result">
+      @if (noResultTemplate) {
+      <ng-template [ngTemplateOutlet]="noResultTemplate"></ng-template>
+      } @else { {{ noResultText }} }
+    </div>
+    }
+  </div>
+
+  <!-- Tool sidebar -->
+  @if (showSidebar) {
+  <div class="acp-grid-sidebar">
+    @if (sidebarTemplate) {
+    <ng-template [ngTemplateOutlet]="sidebarTemplate"></ng-template>
+    }
+  </div>
+  }
+</div>
+
+<div class="acp-grid-footer">
+  <!-- Status Bar -->
+  @if (showStatusbar) {
+  <div class="acp-grid-statusbar">
+    @if (statusbarTemplate) {
+    <ng-template [ngTemplateOutlet]="statusbarTemplate"></ng-template>
+    }
+  </div>
+  }
+
+  <!-- Pagination -->
+  <div class="acp-grid-pagination">
+    @if (paginationTemplate) {
+    <ng-template [ngTemplateOutlet]="paginationTemplate"></ng-template>
+    } @else {
+    <mat-paginator
+      [class.mat-paginator-hidden]="!showPaginator"
+      [showFirstLastButtons]="showFirstLastButtons"
+      [length]="length"
+      [pageIndex]="pageIndex"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="pageSizeOptions"
+      [hidePageSize]="hidePageSize"
+      (page)="_onPage($event)"
+      [disabled]="pageDisabled"
+    ></mat-paginator>
+    }
+  </div>
+</div>
+
+<!-- Header template for extra content -->
+<ng-template #headerExtraTplBase let-headerExtraTemplate let-col="colDef">
+  @if (headerExtraTemplate | isTemplateRef) {
+  <ng-template
+    [ngTemplateOutlet]="headerExtraTemplate"
+    [ngTemplateOutletContext]="{ $implicit: col, colDef: col }"
+  ></ng-template>
+  } @else { @if ($safeNavigationMigration($any(headerExtraTemplate)?.[col.field]) | isTemplateRef) {
+  <ng-template
+    [ngTemplateOutlet]="headerExtraTemplate[col.field]"
+    [ngTemplateOutletContext]="{ $implicit: col, colDef: col }"
+  ></ng-template>
+  } }
+</ng-template>

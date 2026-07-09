@@ -1,0 +1,50 @@
+<mat-card class="example-card">
+  <mat-card-header>
+    <mat-card-title>Date Range Input con Fechas Editables</mat-card-title>
+    <mat-card-subtitle>Ejemplo con entrada de fechas manual habilitada</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="example-container">
+      <!-- Componente Date Range Input con fechas editables -->
+      <acp-date-range-input
+        inputLabel="Selecciona un rango de fechas"
+        [dateFormat]="'dd/MM/yyyy'"
+        [enableEditableDates]="true"
+        (dateSelectionChanged)="onDateSelectionChanged($event)"
+      ></acp-date-range-input>
+
+      <!-- Resultado de la selección -->
+      <div class="result-display">
+        <h4>Resultado de la selección:</h4>
+        <div class="result-grid">
+          <div class="result-item">
+            <strong>Fecha inicio:</strong>
+            <span>{{ selectedStartDate | date:'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="result-item">
+            <strong>Fecha fin:</strong>
+            <span>{{ selectedEndDate | date:'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="result-item">
+            <strong>Expresión inicio:</strong>
+            <span>{{ startExpr || 'N/A' }}</span>
+          </div>
+          <div class="result-item">
+            <strong>Expresión fin:</strong>
+            <span>{{ endExpr || 'N/A' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <h4>Formatos soportados:</h4>
+        <ul>
+          <li>Fechas en formato dd/MM/yyyy (ej: 15/01/2024)</li>
+          <li>Expresiones relativas (ej: now-7d, p7d)</li>
+          <li>Matemáticas de fecha (ej: now-30d)</li>
+        </ul>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

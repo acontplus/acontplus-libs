@@ -120,6 +120,23 @@
       "options": {
         "targetName": "e2e"
       }
+    },
+    {
+      "plugin": "@nx/eslint/plugin",
+      "options": {
+        "targetName": "lint"
+      },
+      "include": [
+        "apps/acontplus-erp/**/*",
+        "apps/demo-app/**/*",
+        "packages/ng-auth/**/*",
+        "packages/ng-common/**/*",
+        "packages/ng-components/**/*",
+        "packages/ng-config/**/*",
+        "packages/ng-customer/**/*",
+        "packages/ng-infrastructure/**/*",
+        "packages/ng-notifications/**/*"
+      ]
     }
   ],
   "generators": {
@@ -136,5 +153,6 @@
       "style": "scss",
       "unitTestRunner": "jest"
     }
-  }
+  },
+  "analytics": false
 }

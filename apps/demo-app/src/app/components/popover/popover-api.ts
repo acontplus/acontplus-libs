@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 /**
  * API documentation component for the ACP Popover.
@@ -8,6 +8,7 @@ import { Component } from '@angular/core';
  */
 @Component({
   selector: 'app-popover-api',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <div class="api-documentation">
       <div class="api-section">

@@ -1,4 +1,10 @@
-import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  ViewEncapsulation,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { HeaderLink } from './header-link';
 
 @Component({
@@ -10,6 +16,7 @@ import { HeaderLink } from './header-link';
     </h3>
   `,
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [HeaderLink],
 })
 export class DocHeading implements OnInit {

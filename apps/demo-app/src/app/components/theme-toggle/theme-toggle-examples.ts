@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { DocHeading } from '../../shared/doc-heading/doc-heading';
 import { CodeExample } from '../../shared/code-example/code-example';
 import { ThemeToggle } from '@acontplus/ng-components';
@@ -79,6 +79,7 @@ import { MatCardModule } from '@angular/material/card';
       <app-code-example [code]="fullCustomCode" [language]="'html'" />
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [
     `
       .docs-component-viewer-content {

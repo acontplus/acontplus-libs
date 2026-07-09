@@ -6,6 +6,7 @@ import {
   ChangeDetectorRef,
   inject,
   viewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -51,6 +52,7 @@ import { ApplicationAddEditComponent } from './application-add-edit/application-
     Button,
   ],
   templateUrl: './application.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./application.component.scss'],
 })
 export class ApplicationComponent implements OnInit, AfterViewInit {

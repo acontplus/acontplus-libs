@@ -1,3 +1,19 @@
+## 2.1.17 (2026-07-10)
+
+### 🩹 Fixes
+
+- add keyboard events and fix linting issues ([#113](https://github.com/acontplus/acontplus-libs/pull/113))
+
+### 🧱 Updated Dependencies
+
+- Updated core to 1.1.6
+- Updated ng-config to 2.0.5
+- Updated ng-infrastructure to 2.0.18
+
+### ❤️ Thank You
+
+- Emilio Senguana @senguanasoft
+
 ## 2.1.16 (2026-07-10)
 
 ### 🩹 Fixes

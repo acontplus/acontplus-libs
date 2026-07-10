@@ -1,3 +1,11 @@
+## 2.2.7 (2026-07-10)
+
+### 🧱 Updated Dependencies
+
+- Updated utils to 1.1.2
+- Updated core to 1.1.6
+- Updated ng-components to 2.1.32
+
 ## 2.2.6 (2026-07-10)
 
 ### 🩹 Fixes

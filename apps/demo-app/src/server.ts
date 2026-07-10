@@ -16,7 +16,9 @@ const app = express();
 const angularApp = new AngularNodeAppEngine();
 
 // JWT secret for demo
-const JWT_SECRET = 'demo-jwt-secret-key-change-in-production';
+// WARNING: In production, always use environment variables for JWT secrets
+// Set JWT_SECRET environment variable to override the default demo secret
+const JWT_SECRET = process.env['JWT_SECRET'] || 'demo-jwt-secret-key-change-in-production';
 
 // Fake backend data storage
 interface User {

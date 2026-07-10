@@ -59,3 +59,8 @@ vitest.config.*.timestamp*
 /packages/core/node_modules
 /packages/ng-components/node_modules
 commit.txt
+
+.claude/worktrees
+.nx/polygraph
+.nx/self-healing
+.nx/migrate-runs

@@ -91,6 +91,9 @@
               [checked]="rowSelection.isSelected(row)"
               (click)="$event.stopPropagation()"
               (change)="$event ? _toggleNormalCheckbox(row) : null"
+              (keydown)="_onCheckboxKeyDown($event)"
+              (keyup)="_onCheckboxKeyUp($event)"
+              (keypress)="_onCheckboxKeyPress($event)"
             ></mat-checkbox>
             }
           </td>
@@ -289,6 +292,9 @@
           [class.selected]="rowSelection.isSelected(row)"
           (click)="_selectRow($event, row, _getIndex(index, dataIndex))"
           (contextmenu)="_contextmenu($event, row, _getIndex(index, dataIndex))"
+          (keydown)="_onRowKeyDown($event, row, _getIndex(index, dataIndex))"
+          (keyup)="_onRowKeyUp($event, row, _getIndex(index, dataIndex))"
+          (keypress)="_onRowKeyPress($event, row, _getIndex(index, dataIndex))"
         ></tr>
         } @if (_whetherShowSummary) {
         <tr mat-footer-row *matFooterRowDef="displayedColumns; sticky: true"></tr>
@@ -372,6 +378,9 @@
               [checked]="rowSelection.isSelected(row)"
               (click)="$event.stopPropagation()"
               (change)="$event ? _toggleNormalCheckbox(row) : null"
+              (keydown)="_onCheckboxKeyDown($event)"
+              (keyup)="_onCheckboxKeyUp($event)"
+              (keypress)="_onCheckboxKeyPress($event)"
             ></mat-checkbox>
             }
           </td>
@@ -570,6 +579,9 @@
           [class.selected]="rowSelection.isSelected(row)"
           (click)="_selectRow($event, row, _getIndex(index, dataIndex))"
           (contextmenu)="_contextmenu($event, row, _getIndex(index, dataIndex))"
+          (keydown)="_onRowKeyDown($event, row, _getIndex(index, dataIndex))"
+          (keyup)="_onRowKeyUp($event, row, _getIndex(index, dataIndex))"
+          (keypress)="_onRowKeyPress($event, row, _getIndex(index, dataIndex))"
         ></tr>
         } @if (_whetherShowSummary) {
         <tr mat-footer-row *matFooterRowDef="displayedColumns; sticky: true"></tr>

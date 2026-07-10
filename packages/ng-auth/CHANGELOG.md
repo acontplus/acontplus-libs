@@ -1,3 +1,20 @@
+## 2.1.16 (2026-07-10)
+
+### 🩹 Fixes
+
+- resolve ng-components build errors and add SCSS exports ([#110](https://github.com/acontplus/acontplus-libs/pull/110))
+
+### 🧱 Updated Dependencies
+
+- Updated ui-kit to 1.0.3
+- Updated core to 1.1.5
+- Updated ng-config to 2.0.4
+- Updated ng-infrastructure to 2.0.17
+
+### ❤️ Thank You
+
+- Emilio Senguana @senguanasoft
+
 ## 2.1.15 (2026-04-03)
 
 ### 🧱 Updated Dependencies

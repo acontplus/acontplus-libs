@@ -161,11 +161,10 @@
 
   .alert-danger {
     background-color: var(--mat-sys-error-container, #ffdad6);
-    border-color: var(--mat-sys-error, #ba1a1a);
     color: var(--mat-sys-on-error-container, #410002);
     padding: 12px;
     border-radius: 4px;
-    border: 1px solid transparent;
+    border: 1px solid var(--mat-sys-error, #ba1a1a);
   }
 
   .row {

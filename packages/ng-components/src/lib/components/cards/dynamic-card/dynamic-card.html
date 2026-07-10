@@ -1,6 +1,9 @@
 <mat-card
   appearance="outlined"
   (click)="handleCardClick($event)"
+  (keydown)="handleKeyDown($event)"
+  (keyup)="handleKeyUp($event)"
+  (keypress)="handleKeyPress($event)"
   [class.mat-card-divider]="hasDivider()"
 >
   @if (isHeaderVisible()) {

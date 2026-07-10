@@ -270,6 +270,26 @@ export class DataGrid implements AfterViewInit, OnChanges {
   /** Event emitted when the row is selected. */
   @Output() rowSelectedChange = new EventEmitter<any[]>();
 
+  @Output() checkboxKeyDown = new EventEmitter<KeyboardEvent>();
+  @Output() checkboxKeyUp = new EventEmitter<KeyboardEvent>();
+  @Output() checkboxKeyPress = new EventEmitter<KeyboardEvent>();
+
+  @Output() rowKeyDown = new EventEmitter<{
+    event: KeyboardEvent;
+    row: Record<string, any>;
+    index: number;
+  }>();
+  @Output() rowKeyUp = new EventEmitter<{
+    event: KeyboardEvent;
+    row: Record<string, any>;
+    index: number;
+  }>();
+  @Output() rowKeyPress = new EventEmitter<{
+    event: KeyboardEvent;
+    row: Record<string, any>;
+    index: number;
+  }>();
+
   // ===== Cell Selection =====
 
   cellSelection: any[] = [];
@@ -601,6 +621,30 @@ export class DataGrid implements AfterViewInit, OnChanges {
   _toggleNormalCheckbox(row: Record<string, any>) {
     this.rowSelection.toggle(row);
     this.rowSelectedChange.emit(this.rowSelection.selected);
+  }
+
+  _onCheckboxKeyDown(event: KeyboardEvent) {
+    this.checkboxKeyDown.emit(event);
+  }
+
+  _onCheckboxKeyUp(event: KeyboardEvent) {
+    this.checkboxKeyUp.emit(event);
+  }
+
+  _onCheckboxKeyPress(event: KeyboardEvent) {
+    this.checkboxKeyPress.emit(event);
+  }
+
+  _onRowKeyDown(event: KeyboardEvent, row: Record<string, any>, index: number) {
+    this.rowKeyDown.emit({ event, row, index });
+  }
+
+  _onRowKeyUp(event: KeyboardEvent, row: Record<string, any>, index: number) {
+    this.rowKeyUp.emit({ event, row, index });
+  }
+
+  _onRowKeyPress(event: KeyboardEvent, row: Record<string, any>, index: number) {
+    this.rowKeyPress.emit({ event, row, index });
   }
 
   /** Column change event */

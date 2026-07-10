@@ -116,6 +116,21 @@ export class DynamicCard {
    */
   cardClicked = output<Event>();
 
+  /**
+   * Event emitted when a key is pressed down on the card.
+   */
+  keyDown = output<KeyboardEvent>();
+
+  /**
+   * Event emitted when a key is released on the card.
+   */
+  keyUp = output<KeyboardEvent>();
+
+  /**
+   * Event emitted when a key is pressed on the card.
+   */
+  keyPress = output<KeyboardEvent>();
+
   // Methods
   /**
    * Handles the primary button click event.
@@ -144,5 +159,32 @@ export class DynamicCard {
    */
   handleCardClick(event: Event): void {
     this.cardClicked.emit(event);
+  }
+
+  /**
+   * Handles the key down event on the card.
+   * Emits the keyDown event with the original keyboard event.
+   * @param event The keyboard event
+   */
+  handleKeyDown(event: KeyboardEvent): void {
+    this.keyDown.emit(event);
+  }
+
+  /**
+   * Handles the key up event on the card.
+   * Emits the keyUp event with the original keyboard event.
+   * @param event The keyboard event
+   */
+  handleKeyUp(event: KeyboardEvent): void {
+    this.keyUp.emit(event);
+  }
+
+  /**
+   * Handles the key press event on the card.
+   * Emits the keyPress event with the original keyboard event.
+   * @param event The keyboard event
+   */
+  handleKeyPress(event: KeyboardEvent): void {
+    this.keyPress.emit(event);
   }
 }

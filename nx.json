@@ -1,6 +1,5 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
-  "npmScope": "acontplus",
   "targetDefaults": {
     "build": {
       "cache": true,
@@ -53,7 +52,9 @@
       "foundation": {
         "projects": ["utils", "ui-kit"],
         "projectChangelogs": true,
-        "releaseTagPattern": "{projectName}@{version}"
+        "releaseTag": {
+          "pattern": "{projectName}@{version}"
+        }
       },
       "angular-libs": {
         "projects": [
@@ -65,20 +66,23 @@
           "ng-auth"
         ],
         "projectChangelogs": true,
-        "releaseTagPattern": "{projectName}@{version}"
+        "releaseTag": {
+          "pattern": "{projectName}@{version}"
+        }
       },
       "standalone": {
         "projects": ["ng-common", "ng-customer"],
         "projectChangelogs": true,
-        "releaseTagPattern": "{projectName}@{version}"
+        "releaseTag": {
+          "pattern": "{projectName}@{version}"
+        }
       }
     },
     "version": {
       "preVersionCommand": "npx nx run-many -t build",
       "conventionalCommits": true,
-      "generatorOptions": {
-        "updateDependents": "auto"
-      }
+      "updateDependents": "auto",
+      "preserveLocalDependencyProtocols": false
     },
     "changelog": {
       "workspaceChangelog": {
@@ -86,7 +90,9 @@
       },
       "projectChangelogs": true
     },
-    "releaseTagPattern": "{projectName}@{version}"
+    "releaseTag": {
+      "pattern": "{projectName}@{version}"
+    }
   },
   "plugins": [
     {

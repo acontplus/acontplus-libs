@@ -84,6 +84,21 @@
       "updateDependents": "auto",
       "preserveLocalDependencyProtocols": false
     },
+    "conventionalCommits": {
+      "types": {
+        "feat": { "semverBump": "minor", "changelog": { "title": "Features" } },
+        "fix": { "semverBump": "patch", "changelog": { "title": "Bug Fixes" } },
+        "perf": { "semverBump": "patch", "changelog": { "title": "Performance Improvements" } },
+        "refactor": { "semverBump": "patch", "changelog": { "title": "Refactoring" } },
+        "docs": { "semverBump": "none", "changelog": { "hidden": true } },
+        "chore": { "semverBump": "none", "changelog": { "hidden": true } },
+        "ci": { "semverBump": "none", "changelog": false },
+        "test": { "semverBump": "none", "changelog": { "hidden": true } },
+        "build": { "semverBump": "none", "changelog": { "hidden": true } },
+        "style": { "semverBump": "none", "changelog": { "hidden": true } },
+        "revert": { "semverBump": "patch", "changelog": { "title": "Reverts" } }
+      }
+    },
     "changelog": {
       "workspaceChangelog": {
         "createRelease": "github"

@@ -64,3 +64,8 @@ commit.txt
 .nx/polygraph
 .nx/self-healing
 .nx/migrate-runs
+
+# Environment variables
+.env
+.env.local
+.env.*.local

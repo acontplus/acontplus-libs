@@ -506,18 +506,22 @@ export class DataGrid implements AfterViewInit, OnChanges {
   }
 
   _countPinnedPosition() {
-    const count = (acc: number, cur: DataGridColumn) => acc + parseFloat(cur.width || '80px');
-
     const pinnedLeftCols = this.columns.filter(col => col.pinned && col.pinned === 'left');
     pinnedLeftCols.forEach((item, idx) => {
-      item.left = pinnedLeftCols.slice(0, idx).reduce(count, 0) + 'px';
+      item.left =
+        pinnedLeftCols
+          .slice(0, idx)
+          .reduce((acc, cur) => acc + parseFloat(cur.width || '80px'), 0) + 'px';
     });
 
     const pinnedRightCols = this.columns
       .filter(col => col.pinned && col.pinned === 'right')
       .reverse();
     pinnedRightCols.forEach((item, idx) => {
-      item.right = pinnedRightCols.slice(0, idx).reduce(count, 0) + 'px';
+      item.right =
+        pinnedRightCols
+          .slice(0, idx)
+          .reduce((acc, cur) => acc + parseFloat(cur.width || '80px'), 0) + 'px';
     });
   }
 

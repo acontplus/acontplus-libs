@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
+      - '.github/workflows/publish-wiki.yml'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

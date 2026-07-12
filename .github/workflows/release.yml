@@ -56,11 +56,16 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Version, Changelog & Tag
+      - name: Version & Changelog (no tags, no push yet)
+        # Bump versions and generate changelogs but explicitly skip tagging
+        # and pushing. Tags are only created AFTER a successful npm publish
+        # to prevent orphaned tags pointing to unpublished versions.
         id: version
         run: |
-          pnpm exec nx release --skip-publish 2>&1 | tee /tmp/nx-release.log
-          # Check if nx release created any new commits (version bumps / changelogs)
+          pnpm exec nx release version --git-tag=false --git-push=false 2>&1 | tee /tmp/nx-version.log
+          pnpm exec nx release changelog --git-tag=false --git-push=false 2>&1 | tee /tmp/nx-changelog.log
+
+          # Check if nx release created new version commits
           if git diff --name-only HEAD~1 HEAD 2>/dev/null | grep -q "package.json\|CHANGELOG"; then
             echo "changes=true" >> $GITHUB_OUTPUT
           else
@@ -70,34 +75,34 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
           HUSKY: '0'
 
-      - name: Push version commits and tags
+      - name: Push version commits (no tags yet)
+        # Push the version bump + changelog commits to main.
+        # --no-follow-tags ensures only commits are pushed, not any local tags.
+        # Tags are pushed in a separate step only after publish succeeds.
         if: steps.version.outputs.changes == 'true'
         run: |
           git pull origin main --ff-only
-          git push origin main --follow-tags
+          git push origin main --no-follow-tags
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 
       - name: Build packages
-        # Always build regardless of whether versions were bumped.
-        # nx release preVersionCommand only runs when versions change,
-        # so when there are no new commits the dist/ may be stale or missing.
-        # This ensures dist/packages/* always reflects the current tag versions.
+        # Always build to ensure dist/ matches current source versions.
+        # nx.json preVersionCommand only runs when nx release bumps versions.
         run: pnpm exec nx run-many -t build --exclude demo-app,acontplus-erp --parallel=3
         env:
           HUSKY: '0'
 
       - name: Publish to npm (OIDC trusted publishing)
-        # NPM_CONFIG_USERCONFIG points to a temp .npmrc written by setup-node
-        # containing: //registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}
-        # Even after unsetting NODE_AUTH_TOKEN, npm reads this file and finds
-        # an _authToken entry which blocks OIDC detection.
-        # We overwrite that file to contain only the registry endpoint,
-        # then npm 11 falls through to OIDC-first authentication.
-        # Provenance attestations are generated automatically for public repos.
+        # setup-node writes NPM_CONFIG_USERCONFIG pointing to a temp .npmrc
+        # with: //registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}
+        # npm reads this file and the _authToken entry blocks OIDC detection
+        # even after unsetting the env var. We overwrite the file with just
+        # the registry line so npm 11 uses OIDC-first authentication.
+        # Per https://docs.npmjs.com/trusted-publishers
+        id: publish
         run: |
-          # Remove _authToken from the temp .npmrc setup-node wrote,
-          # keeping only the registry line so OIDC detection works.
+          # Clear _authToken from temp .npmrc so OIDC detection works
           echo "registry=https://registry.npmjs.org/" > "$NPM_CONFIG_USERCONFIG"
 
           published=0
@@ -131,3 +136,16 @@ jobs:
           if [ "$failed" -gt 0 ]; then
             exit 1
           fi
+
+      - name: Tag & push (only after successful publish)
+        # Create git tags and push them ONLY after npm publish succeeds.
+        # This ensures every git tag corresponds to a version actually on npm.
+        # Uses nx release changelog to create the tags properly (it reads the
+        # version from the already-committed package.json files).
+        if: steps.version.outputs.changes == 'true'
+        run: |
+          pnpm exec nx release changelog --git-commit=false --git-push=false
+          git push origin main --tags
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          HUSKY: '0'

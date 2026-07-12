@@ -71,6 +71,11 @@ This repo uses **Conventional Commits** enforced by a Husky `commit-msg` hook.
 | `build`    | **none**     | `build: update nx to 23.1`                               |
 | `style`    | **none**     | `style: fix prettier formatting`                         |
 
+> **Updating a README on npmjs.com** requires a new version — npm immutability rule
+> ([docs](https://docs.npmjs.com/about-package-readme-files/)). Use `fix(scope):` for README corrections that
+> affect consumers (triggers a patch bump and republishes with the updated README). Use `docs(scope):` for trivial
+> edits — the GitHub README updates immediately; npmjs.com picks it up on the next real `fix:` or `feat:` release.
+
 **Breaking change** (major bump): append `!` after type or add `BREAKING CHANGE:` in footer:
 
 ```

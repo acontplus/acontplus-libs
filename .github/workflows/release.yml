@@ -5,9 +5,18 @@ on:
     branches:
       - main
     paths-ignore:
+      # Wiki and standalone docs — never trigger a release
       - 'docs/**'
-      - '**/*.md'
       - '.github/workflows/publish-wiki.yml'
+      # Root-level and app markdown — no package impact
+      - 'README.md'
+      - 'CONTRIBUTING.md'
+      - 'CHANGELOG.md'
+      - 'LICENSE'
+      - 'apps/**/*.md'
+      # NOTE: packages/*/README.md is intentionally NOT ignored —
+      # a fix(scope): commit updating a package README should trigger
+      # a release to republish that package with the updated npm README.
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

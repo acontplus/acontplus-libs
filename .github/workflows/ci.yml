@@ -5,16 +5,29 @@ on:
     branches:
       - main
     paths-ignore:
+      # Wiki and standalone docs — never affect lint or build
       - 'docs/**'
-      - '**/*.md'
       - '.github/workflows/publish-wiki.yml'
+      # Root-level and app markdown — no package impact
+      - 'README.md'
+      - 'CONTRIBUTING.md'
+      - 'CHANGELOG.md'
+      - 'LICENSE'
+      - 'apps/**/*.md'
+      # NOTE: packages/*/README.md is intentionally NOT ignored —
+      # a fix(scope): commit updating a package README should trigger
+      # CI + release to republish the package with the updated npm README.
   pull_request:
     branches:
       - main
     paths-ignore:
       - 'docs/**'
-      - '**/*.md'
       - '.github/workflows/publish-wiki.yml'
+      - 'README.md'
+      - 'CONTRIBUTING.md'
+      - 'CHANGELOG.md'
+      - 'LICENSE'
+      - 'apps/**/*.md'
 
 permissions:
   actions: read

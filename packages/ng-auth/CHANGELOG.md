@@ -1,3 +1,12 @@
+## 2.1.18 (2026-07-12)
+
+### 🧱 Updated Dependencies
+
+- Updated ui-kit to 1.0.4
+- Updated core to 1.1.7
+- Updated ng-config to 2.0.6
+- Updated ng-infrastructure to 2.0.19
+
 ## 2.1.17 (2026-07-10)
 
 ### 🩹 Fixes

@@ -1,3 +1,12 @@
+## 2.2.8 (2026-07-12)
+
+### 🧱 Updated Dependencies
+
+- Updated utils to 1.1.3
+- Updated core to 1.1.7
+- Updated ng-notifications to 2.1.2
+- Updated ng-components to 2.1.33
+
 ## 2.2.7 (2026-07-10)
 
 ### 🧱 Updated Dependencies

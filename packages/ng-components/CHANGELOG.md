@@ -1,3 +1,9 @@
+## 2.1.33 (2026-07-12)
+
+### 🧱 Updated Dependencies
+
+- Updated ui-kit to 1.0.4
+
 ## 2.1.32 (2026-07-10)
 
 ### 🩹 Fixes

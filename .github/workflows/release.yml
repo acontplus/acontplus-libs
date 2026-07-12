@@ -37,13 +37,14 @@ jobs:
 
       - uses: actions/setup-node@v6
         with:
-          # Node 24 LTS ships with npm 11.x which satisfies the npm trusted
-          # publishing requirement of >= 11.5.1. No manual npm upgrade needed.
-          node-version: 24
-          cache: 'pnpm'
-          # Do NOT set registry-url here — setup-node injects NODE_AUTH_TOKEN
-          # into every subsequent step when registry-url is set, which takes
-          # precedence over OIDC and causes 404 auth failures on npm publish.
+          node-version: '24'
+          # registry-url is required for OIDC trusted publishing.
+          # npm CLI detects the OIDC environment and uses it BEFORE falling
+          # back to NODE_AUTH_TOKEN, per https://docs.npmjs.com/trusted-publishers
+          registry-url: 'https://registry.npmjs.org'
+          # Docs explicitly recommend disabling cache for release builds
+          # to avoid stale cache causing inconsistent publish artifacts.
+          package-manager-cache: false
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -79,10 +80,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 
       - name: Publish to npm (OIDC trusted publishing)
-        # No NODE_AUTH_TOKEN / NPM_TOKEN needed — npm CLI auto-detects the
-        # GitHub Actions OIDC environment and exchanges it for a short-lived
-        # publish token. Provenance attestations are generated automatically
-        # when publishing from a public repo via trusted publishing.
+        # npm 11 automatically detects the GitHub Actions OIDC environment
+        # and exchanges it for a short-lived publish token BEFORE falling
+        # back to NODE_AUTH_TOKEN. Do NOT override NODE_AUTH_TOKEN here —
+        # setting it to '' still leaves it as a set (empty) variable which
+        # breaks the OIDC-first detection logic.
+        # Provenance attestations are generated automatically for public repos.
         run: |
           published=0
           skipped=0

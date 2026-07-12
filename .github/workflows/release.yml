@@ -79,23 +79,23 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 
-      - name: Publish to npm (OIDC trusted publishing)
-        # nx release publish uses pnpm publish which has no OIDC support.
-        # We call npm publish directly on dist packages instead.
-        # Per https://dipak.tech/blog/npm-package-publishing-mental-model:
-        # - NODE_AUTH_TOKEN must be unset at shell level (file-clear is not enough)
-        # - npm CLI must be >= 11.5.1 (Node 24 bundles an older version)
-        # - registry-url in setup-node is required for OIDC endpoint config
+      - name: Upgrade npm for OIDC trusted publishing
+        # Node 24 bundles npm that may be below 11.5.1 (required for OIDC).
+        # Upgrade explicitly and add the new binary to PATH.
         run: |
-          # Upgrade npm to latest (12.x) — Node 24 bundles an older version
-          # that may not have full OIDC trusted publishing support
           npm install -g npm@latest
+          echo "$(npm config get prefix)/bin" >> $GITHUB_PATH
 
-          # Clear _authToken from temp .npmrc AND unset the env var.
-          # npm reads both: file-clear alone leaves NODE_AUTH_TOKEN in env
-          # which npm uses instead of OIDC, causing ENEEDAUTH.
+      - name: Publish to npm (OIDC trusted publishing)
+        # pnpm publish has no OIDC support — call npm publish directly.
+        # Per https://blog.moelove.info/from-deprecated-npm-classic-tokens-to-oidc-trusted-publishing:
+        # NODE_AUTH_TOKEN must NOT be set at all (not even empty) for OIDC to work.
+        # setup-node injects it for all steps — we clear both the file and the var.
+        # Per https://docs.npmjs.com/trusted-publishers: registry-url is required.
+        run: |
           echo "registry=https://registry.npmjs.org/" > "$NPM_CONFIG_USERCONFIG"
           unset NODE_AUTH_TOKEN
+          npm --version
 
           published=0
           skipped=0
@@ -128,6 +128,3 @@ jobs:
           if [ "$failed" -gt 0 ]; then
             exit 1
           fi
-        env:
-          NPM_CONFIG_PROVENANCE: 'true'
-          HUSKY: '0'

@@ -80,16 +80,22 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 
       - name: Publish to npm (OIDC trusted publishing)
-        # nx release publish uses pnpm publish in a pnpm workspace.
-        # pnpm does NOT support npm OIDC trusted publishing (only npm CLI does).
-        # Per https://docs.npmjs.com/trusted-publishers: only npm publish supports OIDC.
-        # We therefore call npm publish directly on each dist package.
-        #
-        # setup-node writes _authToken=${NODE_AUTH_TOKEN} to NPM_CONFIG_USERCONFIG.
-        # We overwrite that file with just the registry line — npm 11 then detects
-        # the GitHub Actions OIDC environment and exchanges it for a publish token.
+        # nx release publish uses pnpm publish which has no OIDC support.
+        # We call npm publish directly on dist packages instead.
+        # Per https://dipak.tech/blog/npm-package-publishing-mental-model:
+        # - NODE_AUTH_TOKEN must be unset at shell level (file-clear is not enough)
+        # - npm CLI must be >= 11.5.1 (Node 24 bundles an older version)
+        # - registry-url in setup-node is required for OIDC endpoint config
         run: |
+          # Upgrade npm to latest (12.x) — Node 24 bundles an older version
+          # that may not have full OIDC trusted publishing support
+          npm install -g npm@latest
+
+          # Clear _authToken from temp .npmrc AND unset the env var.
+          # npm reads both: file-clear alone leaves NODE_AUTH_TOKEN in env
+          # which npm uses instead of OIDC, causing ENEEDAUTH.
           echo "registry=https://registry.npmjs.org/" > "$NPM_CONFIG_USERCONFIG"
+          unset NODE_AUTH_TOKEN
 
           published=0
           skipped=0

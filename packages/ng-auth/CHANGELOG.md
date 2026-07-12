@@ -1,3 +1,62 @@
+## 2.1.19 (2026-07-12)
+
+### 🩹 Fixes
+
+- **release:** sync source package versions with git tags ([#124](https://github.com/acontplus/acontplus-libs/pull/124))
+
+### 🧱 Updated Dependencies
+
+- Updated ui-kit to 1.0.5
+- Updated core to 1.1.8
+- Updated ng-config to 2.0.7
+- Updated ng-infrastructure to 2.0.20
+
+### ❤️ Thank You
+
+- Ivan Fernando Paz @iferpaz7
+
+## 2.1.18 (2026-07-12)
+
+### 🧱 Updated Dependencies
+
+- Updated ui-kit to 1.0.4
+- Updated core to 1.1.7
+- Updated ng-config to 2.0.6
+- Updated ng-infrastructure to 2.0.19
+
+## 2.1.17 (2026-07-10)
+
+### 🩹 Fixes
+
+- add keyboard events and fix linting issues ([#113](https://github.com/acontplus/acontplus-libs/pull/113))
+
+### 🧱 Updated Dependencies
+
+- Updated core to 1.1.6
+- Updated ng-config to 2.0.5
+- Updated ng-infrastructure to 2.0.18
+
+### ❤️ Thank You
+
+- Emilio Senguana @senguanasoft
+
+## 2.1.16 (2026-07-10)
+
+### 🩹 Fixes
+
+- resolve ng-components build errors and add SCSS exports ([#110](https://github.com/acontplus/acontplus-libs/pull/110))
+
+### 🧱 Updated Dependencies
+
+- Updated ui-kit to 1.0.3
+- Updated core to 1.1.5
+- Updated ng-config to 2.0.4
+- Updated ng-infrastructure to 2.0.17
+
+### ❤️ Thank You
+
+- Emilio Senguana @senguanasoft
+
 ## 2.1.15 (2026-04-03)
 
 ### 🧱 Updated Dependencies

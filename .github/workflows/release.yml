@@ -12,8 +12,7 @@ concurrency:
 permissions:
   # Required to push version commits, tags, and create GitHub releases
   contents: write
-  # Required for OIDC trusted publishing — allows GitHub Actions to generate
-  # short-lived tokens that npm exchanges for publish credentials
+  # Required for OIDC trusted publishing and npm provenance attestation
   id-token: write
 
 jobs:
@@ -26,7 +25,6 @@ jobs:
     steps:
       # RELEASE_TOKEN (PAT) is required to push version commits and tags
       # to main, which is protected and requires PRs for normal pushes.
-      # The PAT owner must be added to bypass_pull_request_allowances.
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
@@ -35,14 +33,14 @@ jobs:
 
       - uses: pnpm/action-setup@v6
 
+      # Per https://docs.npmjs.com/trusted-publishers:
+      # - registry-url is required for OIDC endpoint configuration
+      # - package-manager-cache: false is explicitly recommended for release builds
+      # - id-token: write permission enables OIDC token generation
       - uses: actions/setup-node@v6
         with:
           node-version: '24'
-          # registry-url is required for OIDC trusted publishing.
-          # npm CLI detects OIDC BEFORE falling back to NODE_AUTH_TOKEN.
-          # Per https://docs.npmjs.com/trusted-publishers
           registry-url: 'https://registry.npmjs.org'
-          # Docs explicitly recommend disabling cache for release builds.
           package-manager-cache: false
 
       - name: Install dependencies
@@ -56,16 +54,14 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Version & Changelog (no tags, no push yet)
-        # Bump versions and generate changelogs but explicitly skip tagging
-        # and pushing. Tags are only created AFTER a successful npm publish
-        # to prevent orphaned tags pointing to unpublished versions.
+      - name: Version, Changelog & Tag
+        # Per https://nx.dev/docs/guides/nx-release/publish-in-ci-cd:
+        # Run nx release --skip-publish locally (here in CI on main push).
+        # This handles: version bump → changelog → git commit → git tag → git push.
+        # Tags are created atomically with the version commit in this step.
         id: version
         run: |
-          pnpm exec nx release version --git-tag=false --git-push=false 2>&1 | tee /tmp/nx-version.log
-          pnpm exec nx release changelog --git-tag=false --git-push=false 2>&1 | tee /tmp/nx-changelog.log
-
-          # Check if nx release created new version commits
+          pnpm exec nx release --skip-publish 2>&1 | tee /tmp/nx-release.log
           if git diff --name-only HEAD~1 HEAD 2>/dev/null | grep -q "package.json\|CHANGELOG"; then
             echo "changes=true" >> $GITHUB_OUTPUT
           else
@@ -75,77 +71,33 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
           HUSKY: '0'
 
-      - name: Push version commits (no tags yet)
-        # Push the version bump + changelog commits to main.
-        # --no-follow-tags ensures only commits are pushed, not any local tags.
-        # Tags are pushed in a separate step only after publish succeeds.
+      - name: Push version commits and tags
         if: steps.version.outputs.changes == 'true'
         run: |
           git pull origin main --ff-only
-          git push origin main --no-follow-tags
+          git push origin main --follow-tags
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 
       - name: Build packages
-        # Always build to ensure dist/ matches current source versions.
-        # nx.json preVersionCommand only runs when nx release bumps versions.
+        # nx release preVersionCommand builds during versioning when versions change.
+        # This step ensures dist/ is always up to date even when nx release skips.
         run: pnpm exec nx run-many -t build --exclude demo-app,acontplus-erp --parallel=3
         env:
           HUSKY: '0'
 
       - name: Publish to npm (OIDC trusted publishing)
-        # setup-node writes NPM_CONFIG_USERCONFIG pointing to a temp .npmrc
-        # with: //registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}
-        # npm reads this file and the _authToken entry blocks OIDC detection
-        # even after unsetting the env var. We overwrite the file with just
-        # the registry line so npm 11 uses OIDC-first authentication.
-        # Per https://docs.npmjs.com/trusted-publishers
-        id: publish
+        # Per https://nx.dev/docs/guides/nx-release/publish-in-ci-cd:
+        # Use nx release publish which natively checks npm view before publishing,
+        # automatically skipping already-published versions without erroring.
+        #
+        # Per https://docs.npmjs.com/trusted-publishers:
+        # npm 11 detects OIDC before falling back to NODE_AUTH_TOKEN.
+        # setup-node writes _authToken to NPM_CONFIG_USERCONFIG — we clear it
+        # so OIDC takes over. NPM_CONFIG_PROVENANCE=true generates attestations.
         run: |
-          # Clear _authToken from temp .npmrc so OIDC detection works
           echo "registry=https://registry.npmjs.org/" > "$NPM_CONFIG_USERCONFIG"
-
-          published=0
-          skipped=0
-          failed=0
-
-          for dir in dist/packages/*/; do
-            if [ -f "$dir/package.json" ]; then
-              pkg_name=$(node -p "require('./$dir/package.json').name")
-              pkg_version=$(node -p "require('./$dir/package.json').version")
-              echo "::group::Publishing $pkg_name@$pkg_version"
-
-              if npm publish "$dir" --access public; then
-                echo "✓ Published $pkg_name@$pkg_version"
-                published=$((published + 1))
-              else
-                if npm view "$pkg_name@$pkg_version" version 2>/dev/null | grep -q "$pkg_version"; then
-                  echo "⊘ Skipped $pkg_name@$pkg_version (already published)"
-                  skipped=$((skipped + 1))
-                else
-                  echo "✗ Failed to publish $pkg_name@$pkg_version"
-                  failed=$((failed + 1))
-                fi
-              fi
-              echo "::endgroup::"
-            fi
-          done
-
-          echo ""
-          echo "Summary: $published published, $skipped skipped, $failed failed"
-          if [ "$failed" -gt 0 ]; then
-            exit 1
-          fi
-
-      - name: Tag & push (only after successful publish)
-        # Create git tags and push them ONLY after npm publish succeeds.
-        # This ensures every git tag corresponds to a version actually on npm.
-        # Uses nx release changelog to create the tags properly (it reads the
-        # version from the already-committed package.json files).
-        if: steps.version.outputs.changes == 'true'
-        run: |
-          pnpm exec nx release changelog --git-commit=false --git-push=false
-          git push origin main --tags
+          pnpm exec nx release publish
         env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          NPM_CONFIG_PROVENANCE: 'true'
           HUSKY: '0'

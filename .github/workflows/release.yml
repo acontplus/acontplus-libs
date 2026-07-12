@@ -80,21 +80,48 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 
       - name: Publish to npm (OIDC trusted publishing)
-        # Per https://nx.dev/docs/guides/nx-release/updating-version-references (Scenario 3):
-        # project.json uses manifestRootsToUpdate: ["dist/{projectRoot}"] and
-        # currentVersionResolver: "git-tag". Flow:
-        #   1. preVersionCommand builds dist/ from source package.json
-        #   2. nx release version writes the bumped version into dist/packages/*/package.json
-        #   3. nx release publish reads from dist/ and publishes the bumped version
-        # A second build MUST NOT run between steps 2 and 3 or it would overwrite
-        # the bumped version that nx release wrote into dist/ with the old source version.
+        # nx release publish uses pnpm publish in a pnpm workspace.
+        # pnpm does NOT support npm OIDC trusted publishing (only npm CLI does).
+        # Per https://docs.npmjs.com/trusted-publishers: only npm publish supports OIDC.
+        # We therefore call npm publish directly on each dist package.
         #
-        # Per https://docs.npmjs.com/trusted-publishers:
-        # setup-node writes _authToken to NPM_CONFIG_USERCONFIG which blocks OIDC.
-        # We clear it so npm 11 uses OIDC-first authentication.
+        # setup-node writes _authToken=${NODE_AUTH_TOKEN} to NPM_CONFIG_USERCONFIG.
+        # We overwrite that file with just the registry line — npm 11 then detects
+        # the GitHub Actions OIDC environment and exchanges it for a publish token.
         run: |
           echo "registry=https://registry.npmjs.org/" > "$NPM_CONFIG_USERCONFIG"
-          pnpm exec nx release publish
+
+          published=0
+          skipped=0
+          failed=0
+
+          for dir in dist/packages/*/; do
+            if [ -f "$dir/package.json" ]; then
+              pkg_name=$(node -p "require('./$dir/package.json').name")
+              pkg_version=$(node -p "require('./$dir/package.json').version")
+              echo "::group::Publishing $pkg_name@$pkg_version"
+
+              if npm publish "$dir" --access public; then
+                echo "✓ Published $pkg_name@$pkg_version"
+                published=$((published + 1))
+              else
+                if npm view "$pkg_name@$pkg_version" version 2>/dev/null | grep -q "$pkg_version"; then
+                  echo "⊘ Skipped $pkg_name@$pkg_version (already published)"
+                  skipped=$((skipped + 1))
+                else
+                  echo "✗ Failed to publish $pkg_name@$pkg_version"
+                  failed=$((failed + 1))
+                fi
+              fi
+              echo "::endgroup::"
+            fi
+          done
+
+          echo ""
+          echo "Summary: $published published, $skipped skipped, $failed failed"
+          if [ "$failed" -gt 0 ]; then
+            exit 1
+          fi
         env:
           NPM_CONFIG_PROVENANCE: 'true'
           HUSKY: '0'

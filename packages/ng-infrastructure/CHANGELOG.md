@@ -1,3 +1,20 @@
+## 2.0.20 (2026-07-12)
+
+### 🩹 Fixes
+
+- **release:** sync source package versions with git tags ([#124](https://github.com/acontplus/acontplus-libs/pull/124))
+
+### 🧱 Updated Dependencies
+
+- Updated core to 1.1.8
+- Updated ng-config to 2.0.7
+- Updated ng-notifications to 2.1.3
+- Updated ng-components to 2.1.34
+
+### ❤️ Thank You
+
+- Ivan Fernando Paz @iferpaz7
+
 ## 2.0.19 (2026-07-12)
 
 ### 🧱 Updated Dependencies

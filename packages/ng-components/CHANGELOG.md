@@ -1,3 +1,17 @@
+## 2.1.34 (2026-07-12)
+
+### 🩹 Fixes
+
+- **release:** sync source package versions with git tags ([#124](https://github.com/acontplus/acontplus-libs/pull/124))
+
+### 🧱 Updated Dependencies
+
+- Updated ui-kit to 1.0.5
+
+### ❤️ Thank You
+
+- Ivan Fernando Paz @iferpaz7
+
 ## 2.1.33 (2026-07-12)
 
 ### 🧱 Updated Dependencies

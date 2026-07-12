@@ -1,3 +1,13 @@
+## 1.1.4 (2026-07-12)
+
+### 🩹 Fixes
+
+- **release:** sync source package versions with git tags ([#124](https://github.com/acontplus/acontplus-libs/pull/124))
+
+### ❤️ Thank You
+
+- Ivan Fernando Paz @iferpaz7
+
 ## 1.1.3 (2026-07-12)
 
 This was a version bump only for utils to align it with other projects, there were no code changes.

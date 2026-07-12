@@ -142,22 +142,6 @@
     "vite-plugin-dts": "4.5.4",
     "vitest": "4.0.18"
   },
-  "pnpm": {
-    "ignoredBuiltDependencies": [
-      "@parcel/watcher",
-      "@swc/core",
-      "esbuild",
-      "less",
-      "lmdb",
-      "msgpackr-extract",
-      "nx",
-      "rollup",
-      "unrs-resolver"
-    ],
-    "overrides": {
-      "qs": ">=6.14.1"
-    }
-  },
   "lint-staged": {
     "*.{ts,js,html,css,scss,json,md}": [
       "prettier --write"

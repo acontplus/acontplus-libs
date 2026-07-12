@@ -39,11 +39,10 @@ jobs:
         with:
           node-version: '24'
           # registry-url is required for OIDC trusted publishing.
-          # npm CLI detects the OIDC environment and uses it BEFORE falling
-          # back to NODE_AUTH_TOKEN, per https://docs.npmjs.com/trusted-publishers
+          # npm CLI detects OIDC BEFORE falling back to NODE_AUTH_TOKEN.
+          # Per https://docs.npmjs.com/trusted-publishers
           registry-url: 'https://registry.npmjs.org'
-          # Docs explicitly recommend disabling cache for release builds
-          # to avoid stale cache causing inconsistent publish artifacts.
+          # Docs explicitly recommend disabling cache for release builds.
           package-manager-cache: false
 
       - name: Install dependencies
@@ -79,14 +78,25 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 
+      - name: Build packages
+        # Always build regardless of whether versions were bumped.
+        # nx release preVersionCommand only runs when versions change,
+        # so when there are no new commits the dist/ may be stale or missing.
+        # This ensures dist/packages/* always reflects the current tag versions.
+        run: pnpm exec nx run-many -t build --exclude demo-app,acontplus-erp --parallel=3
+        env:
+          HUSKY: '0'
+
       - name: Publish to npm (OIDC trusted publishing)
-        # npm 11 automatically detects the GitHub Actions OIDC environment
-        # and exchanges it for a short-lived publish token BEFORE falling
-        # back to NODE_AUTH_TOKEN. Do NOT override NODE_AUTH_TOKEN here —
-        # setting it to '' still leaves it as a set (empty) variable which
-        # breaks the OIDC-first detection logic.
+        # NODE_AUTH_TOKEN is unset via shell before invoking npm publish.
+        # actions/setup-node injects NODE_AUTH_TOKEN for all steps when
+        # registry-url is set. If it is present (even as empty string via env:),
+        # npm uses it instead of the OIDC exchange. Unsetting it at shell level
+        # forces npm 11 to fall through to OIDC-first authentication.
         # Provenance attestations are generated automatically for public repos.
         run: |
+          unset NODE_AUTH_TOKEN
+
           published=0
           skipped=0
           failed=0

@@ -71,14 +71,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
           HUSKY: '0'
 
-      - name: Push version commits (no tags yet)
-        # Push the version bump + changelog commits to main.
-        # --no-follow-tags ensures only commits are pushed, not any local tags.
-        # Tags are pushed in a separate step only after publish succeeds.
+      - name: Push version commits and tags
         if: steps.version.outputs.changes == 'true'
         run: |
           git pull origin main --ff-only
-          git push origin main --no-follow-tags
+          git push origin main --follow-tags
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 

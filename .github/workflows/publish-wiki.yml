@@ -1,0 +1,31 @@
+name: Publish Wiki
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/wiki/**'
+      - '.github/workflows/publish-wiki.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: publish-wiki
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    name: Sync docs/wiki to GitHub Wiki
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: Andrew-Chen-Wang/github-wiki-action@v5
+        with:
+          path: docs/wiki/
+          commit-message: 'docs: sync wiki from docs/wiki [skip ci]'
+          disable-empty-commits: true

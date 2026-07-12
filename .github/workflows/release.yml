@@ -79,11 +79,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 
-      - name: Build packages
-        # Build AFTER versioning so dist/packages/*/package.json has the new
-        # bumped version. nx.json preVersionCommand was removed because it
-        # built BEFORE the bump, causing nx release publish to see stale
-        # versions in dist and skip publishing them.
+      - name: Build packages (post-version)
+        # nx release preVersionCommand builds BEFORE versioning — required
+        # because project.json uses manifestRootsToUpdate: ["dist/{projectRoot}"]
+        # and nx release writes the new version to dist/packages/*/package.json.
+        # This second build runs AFTER versioning so that dist reflects the
+        # bumped version numbers that nx release publish will check against npm.
         run: pnpm exec nx run-many -t build --exclude demo-app,acontplus-erp --parallel=3
         env:
           HUSKY: '0'

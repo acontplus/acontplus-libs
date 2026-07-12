@@ -79,7 +79,6 @@
       }
     },
     "version": {
-      "preVersionCommand": "npx nx run-many -t build",
       "conventionalCommits": true,
       "updateDependents": "auto",
       "preserveLocalDependencyProtocols": false

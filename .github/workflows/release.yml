@@ -88,14 +88,17 @@ jobs:
           HUSKY: '0'
 
       - name: Publish to npm (OIDC trusted publishing)
-        # NODE_AUTH_TOKEN is unset via shell before invoking npm publish.
-        # actions/setup-node injects NODE_AUTH_TOKEN for all steps when
-        # registry-url is set. If it is present (even as empty string via env:),
-        # npm uses it instead of the OIDC exchange. Unsetting it at shell level
-        # forces npm 11 to fall through to OIDC-first authentication.
+        # NPM_CONFIG_USERCONFIG points to a temp .npmrc written by setup-node
+        # containing: //registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}
+        # Even after unsetting NODE_AUTH_TOKEN, npm reads this file and finds
+        # an _authToken entry which blocks OIDC detection.
+        # We overwrite that file to contain only the registry endpoint,
+        # then npm 11 falls through to OIDC-first authentication.
         # Provenance attestations are generated automatically for public repos.
         run: |
-          unset NODE_AUTH_TOKEN
+          # Remove _authToken from the temp .npmrc setup-node wrote,
+          # keeping only the registry line so OIDC detection works.
+          echo "registry=https://registry.npmjs.org/" > "$NPM_CONFIG_USERCONFIG"
 
           published=0
           skipped=0

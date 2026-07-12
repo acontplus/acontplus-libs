@@ -41,9 +41,9 @@ jobs:
           # publishing requirement of >= 11.5.1. No manual npm upgrade needed.
           node-version: 24
           cache: 'pnpm'
-          # registry-url configures .npmrc so npm CLI knows which registry to
-          # target for OIDC token exchange during publish.
-          registry-url: 'https://registry.npmjs.org'
+          # Do NOT set registry-url here — setup-node injects NODE_AUTH_TOKEN
+          # into every subsequent step when registry-url is set, which takes
+          # precedence over OIDC and causes 404 auth failures on npm publish.
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile

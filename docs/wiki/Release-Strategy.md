@@ -29,6 +29,12 @@ Configured in `nx.json` under `release.conventionalCommits.types`:
 | `BREAKING CHANGE:` in footer                    | **major**          | Breaking change          |
 | `docs`, `chore`, `ci`, `test`, `build`, `style` | **none**           | Hidden / not published   |
 
+> **Updating a README on npmjs.com** requires publishing a new version — this is a hard npm registry constraint
+> ([official docs](https://docs.npmjs.com/about-package-readme-files/)).
+> For a README correction that matters to consumers, use `fix(scope):` to trigger a **patch** bump that republishes
+> with the updated README. For trivial wording edits, `docs(scope):` is fine — the README on GitHub updates
+> immediately, and npmjs.com will reflect it on the next real release.
+
 > Commit format enforced by Husky `commit-msg` hook: `<type>(<scope>): <description>` — max 72 chars, no emoji, lowercase.
 
 ---
@@ -240,6 +246,9 @@ No manual version bumps. Versions are determined automatically from **convention
 | `docs`, `chore`, `ci`, `test`, `build`, `style` | **none**           | No publish triggered       |
 
 > Commit types are enforced by Husky `commit-msg` hook. Format: `<type>(<scope>): <description>` — max 72 chars, no emoji.
+>
+> **README-only update on npmjs.com?** Use `fix(scope):` — npm requires a new version to update any file in a
+> published package. `docs(scope):` only updates the GitHub README; npmjs.com picks it up on the next real release.
 
 ---
 

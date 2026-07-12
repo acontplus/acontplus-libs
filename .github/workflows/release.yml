@@ -79,24 +79,19 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 
-      - name: Build packages
-        # Build AFTER versioning so dist/packages/*/package.json has the new
-        # bumped version. nx.json preVersionCommand was removed because it
-        # built BEFORE the bump, causing nx release publish to see stale
-        # versions in dist and skip publishing them.
-        run: pnpm exec nx run-many -t build --exclude demo-app,acontplus-erp --parallel=3
-        env:
-          HUSKY: '0'
-
       - name: Publish to npm (OIDC trusted publishing)
-        # Per https://nx.dev/docs/guides/nx-release/publish-in-ci-cd:
-        # Use nx release publish which natively checks npm view before publishing,
-        # automatically skipping already-published versions without erroring.
+        # Per https://nx.dev/docs/guides/nx-release/updating-version-references (Scenario 3):
+        # project.json uses manifestRootsToUpdate: ["dist/{projectRoot}"] and
+        # currentVersionResolver: "git-tag". Flow:
+        #   1. preVersionCommand builds dist/ from source package.json
+        #   2. nx release version writes the bumped version into dist/packages/*/package.json
+        #   3. nx release publish reads from dist/ and publishes the bumped version
+        # A second build MUST NOT run between steps 2 and 3 or it would overwrite
+        # the bumped version that nx release wrote into dist/ with the old source version.
         #
         # Per https://docs.npmjs.com/trusted-publishers:
-        # npm 11 detects OIDC before falling back to NODE_AUTH_TOKEN.
-        # setup-node writes _authToken to NPM_CONFIG_USERCONFIG — we clear it
-        # so OIDC takes over. NPM_CONFIG_PROVENANCE=true generates attestations.
+        # setup-node writes _authToken to NPM_CONFIG_USERCONFIG which blocks OIDC.
+        # We clear it so npm 11 uses OIDC-first authentication.
         run: |
           echo "registry=https://registry.npmjs.org/" > "$NPM_CONFIG_USERCONFIG"
           pnpm exec nx release publish

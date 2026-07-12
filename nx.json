@@ -79,6 +79,7 @@
       }
     },
     "version": {
+      "preVersionCommand": "pnpm exec nx run-many -t build --exclude demo-app,acontplus-erp --parallel=3",
       "conventionalCommits": true,
       "updateDependents": "auto",
       "preserveLocalDependencyProtocols": false

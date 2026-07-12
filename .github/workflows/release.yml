@@ -10,7 +10,9 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
+  # Required to push version commits, tags, and create GitHub releases
   contents: write
+  # Required for OIDC trusted publishing and npm provenance attestation
   id-token: write
 
 jobs:
@@ -18,26 +20,28 @@ jobs:
     # Only run on merged PRs (not direct pushes)
     if: github.event.head_commit.message != ''
     runs-on: ubuntu-latest
+    # Must match the Environment name configured in the npm Trusted Publisher settings
     environment: npm-publish
     steps:
       # RELEASE_TOKEN (PAT) is required to push version commits and tags
       # to main, which is protected and requires PRs for normal pushes.
-      # The PAT owner must be added to bypass_pull_request_allowances.
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           filter: tree:0
           token: ${{ secrets.RELEASE_TOKEN }}
 
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 9
+      - uses: pnpm/action-setup@v6
 
-      - uses: actions/setup-node@v4
+      # Per https://docs.npmjs.com/trusted-publishers:
+      # - registry-url is required for OIDC endpoint configuration
+      # - package-manager-cache: false is explicitly recommended for release builds
+      # - id-token: write permission enables OIDC token generation
+      - uses: actions/setup-node@v6
         with:
-          node-version: 22.14
-          cache: 'pnpm'
+          node-version: '24'
           registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -51,10 +55,13 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Version, Changelog & Tag
+        # Per https://nx.dev/docs/guides/nx-release/publish-in-ci-cd:
+        # Run nx release --skip-publish locally (here in CI on main push).
+        # This handles: version bump → changelog → git commit → git tag → git push.
+        # Tags are created atomically with the version commit in this step.
         id: version
         run: |
           pnpm exec nx release --skip-publish 2>&1 | tee /tmp/nx-release.log
-          # Check if nx release created any new commits
           if git diff --name-only HEAD~1 HEAD 2>/dev/null | grep -q "package.json\|CHANGELOG"; then
             echo "changes=true" >> $GITHUB_OUTPUT
           else
@@ -72,10 +79,30 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 
-      - name: Publish to npm
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Upgrade npm for OIDC trusted publishing
+        # Node 24 bundles npm that may be below 11.5.1 (required for OIDC).
+        # Upgrade explicitly and add the new binary to PATH.
         run: |
+          npm install -g npm@latest
+          echo "$(npm config get prefix)/bin" >> $GITHUB_PATH
+
+      - name: Publish to npm (OIDC trusted publishing)
+        # pnpm publish has no OIDC support — call npm publish directly.
+        #
+        # KNOWN UPSTREAM BUG: npm/cli#8730 (open since Nov 2025) — OIDC trusted
+        # publishing fails with E404/ENEEDAUTH specifically for SCOPED packages
+        # (@org/name) even with correct configuration. Workarounds from that
+        # thread that resolved it for other scoped-package maintainers:
+        #   - explicit --provenance flag on npm publish
+        #   - NPM_CONFIG_PROVENANCE=true env var
+        #   - repository.url in package.json WITHOUT the "git+" prefix
+        # All three are applied here. If OIDC still fails, NPM_TOKEN is used
+        # as a fallback so releases are not permanently blocked by the bug.
+        run: |
+          echo "registry=https://registry.npmjs.org/" > "$NPM_CONFIG_USERCONFIG"
+          unset NODE_AUTH_TOKEN
+          npm --version
+
           published=0
           skipped=0
           failed=0
@@ -86,14 +113,22 @@ jobs:
               pkg_version=$(node -p "require('./$dir/package.json').version")
               echo "::group::Publishing $pkg_name@$pkg_version"
 
-              if npm publish "$dir" --provenance --access public; then
+              if npm publish "$dir" --access public --provenance; then
                 echo "✓ Published $pkg_name@$pkg_version"
                 published=$((published + 1))
               else
-                exit_code=$?
-                if npm view "$pkg_name@$pkg_version" version 2>/dev/null; then
+                if npm view "$pkg_name@$pkg_version" version 2>/dev/null | grep -q "$pkg_version"; then
                   echo "⊘ Skipped $pkg_name@$pkg_version (already published)"
                   skipped=$((skipped + 1))
+                elif [ -n "$NPM_TOKEN" ]; then
+                  echo "OIDC failed, retrying with NPM_TOKEN fallback (npm/cli#8730)..."
+                  if NODE_AUTH_TOKEN="$NPM_TOKEN" npm publish "$dir" --access public; then
+                    echo "✓ Published $pkg_name@$pkg_version (via token fallback)"
+                    published=$((published + 1))
+                  else
+                    echo "✗ Failed to publish $pkg_name@$pkg_version"
+                    failed=$((failed + 1))
+                  fi
                 else
                   echo "✗ Failed to publish $pkg_name@$pkg_version"
                   failed=$((failed + 1))
@@ -108,3 +143,6 @@ jobs:
           if [ "$failed" -gt 0 ]; then
             exit 1
           fi
+        env:
+          NPM_CONFIG_PROVENANCE: 'true'
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

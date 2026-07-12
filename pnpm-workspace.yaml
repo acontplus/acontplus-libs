@@ -1,3 +1,35 @@
 packages:
   - 'apps/*'
   - 'packages/*'
+
+# -----------------------------------------------------------------------------
+# Hoisting (moved from .npmrc — pnpm v11 reads these from pnpm-workspace.yaml)
+# -----------------------------------------------------------------------------
+shamefullyHoist: true
+publicHoistPattern:
+  - '*'
+linkWorkspacePackages: deep
+
+# save-exact moved from .npmrc (non-auth setting must live here in pnpm v11)
+saveExact: true
+
+# -----------------------------------------------------------------------------
+# Build scripts allowlist
+# pnpm v11 replaced ignoredBuiltDependencies with allowBuilds (map of name → bool)
+# -----------------------------------------------------------------------------
+allowBuilds:
+  '@parcel/watcher': true
+  '@swc/core': true
+  esbuild: true
+  less: true
+  lmdb: true
+  msgpackr-extract: true
+  nx: true
+  rollup: true
+  unrs-resolver: true
+
+# -----------------------------------------------------------------------------
+# Dependency overrides
+# -----------------------------------------------------------------------------
+overrides:
+  qs: '>=6.14.1'

@@ -88,10 +88,16 @@ jobs:
 
       - name: Publish to npm (OIDC trusted publishing)
         # pnpm publish has no OIDC support — call npm publish directly.
-        # Per https://blog.moelove.info/from-deprecated-npm-classic-tokens-to-oidc-trusted-publishing:
-        # NODE_AUTH_TOKEN must NOT be set at all (not even empty) for OIDC to work.
-        # setup-node injects it for all steps — we clear both the file and the var.
-        # Per https://docs.npmjs.com/trusted-publishers: registry-url is required.
+        #
+        # KNOWN UPSTREAM BUG: npm/cli#8730 (open since Nov 2025) — OIDC trusted
+        # publishing fails with E404/ENEEDAUTH specifically for SCOPED packages
+        # (@org/name) even with correct configuration. Workarounds from that
+        # thread that resolved it for other scoped-package maintainers:
+        #   - explicit --provenance flag on npm publish
+        #   - NPM_CONFIG_PROVENANCE=true env var
+        #   - repository.url in package.json WITHOUT the "git+" prefix
+        # All three are applied here. If OIDC still fails, NPM_TOKEN is used
+        # as a fallback so releases are not permanently blocked by the bug.
         run: |
           echo "registry=https://registry.npmjs.org/" > "$NPM_CONFIG_USERCONFIG"
           unset NODE_AUTH_TOKEN
@@ -107,13 +113,22 @@ jobs:
               pkg_version=$(node -p "require('./$dir/package.json').version")
               echo "::group::Publishing $pkg_name@$pkg_version"
 
-              if npm publish "$dir" --access public; then
+              if npm publish "$dir" --access public --provenance; then
                 echo "✓ Published $pkg_name@$pkg_version"
                 published=$((published + 1))
               else
                 if npm view "$pkg_name@$pkg_version" version 2>/dev/null | grep -q "$pkg_version"; then
                   echo "⊘ Skipped $pkg_name@$pkg_version (already published)"
                   skipped=$((skipped + 1))
+                elif [ -n "$NPM_TOKEN" ]; then
+                  echo "OIDC failed, retrying with NPM_TOKEN fallback (npm/cli#8730)..."
+                  if NODE_AUTH_TOKEN="$NPM_TOKEN" npm publish "$dir" --access public; then
+                    echo "✓ Published $pkg_name@$pkg_version (via token fallback)"
+                    published=$((published + 1))
+                  else
+                    echo "✗ Failed to publish $pkg_name@$pkg_version"
+                    failed=$((failed + 1))
+                  fi
                 else
                   echo "✗ Failed to publish $pkg_name@$pkg_version"
                   failed=$((failed + 1))
@@ -128,3 +143,6 @@ jobs:
           if [ "$failed" -gt 0 ]; then
             exit 1
           fi
+        env:
+          NPM_CONFIG_PROVENANCE: 'true'
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

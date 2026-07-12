@@ -6,11 +6,11 @@ Guidelines for contributing to the Acontplus Angular Libraries monorepo.
 
 ## Prerequisites
 
-| Tool        | Version | Purpose         |
-| ----------- | ------- | --------------- |
-| Node.js     | 24      | Runtime         |
-| pnpm        | 11.9.0  | Package manager |
-| Angular CLI | 22      | Code generation |
+| Tool        | Version | Purpose                                                         |
+| ----------- | ------- | --------------------------------------------------------------- |
+| Node.js     | 24      | Runtime                                                         |
+| pnpm        | 11.9.0  | Package manager (`packageManager` field enforces exact version) |
+| Angular CLI | 22      | Code generation                                                 |
 
 ```bash
 # Clone

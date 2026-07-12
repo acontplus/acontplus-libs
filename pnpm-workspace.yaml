@@ -2,18 +2,18 @@ packages:
   - 'apps/*'
   - 'packages/*'
 
-# pnpm v9+ reads overrides and ignoredBuiltDependencies from pnpm-workspace.yaml,
-# not from the "pnpm" field in package.json.
+# pnpm v11: allowBuilds is a map of package name -> boolean (explicit allowlist).
+# Replaces the removed ignoredBuiltDependencies / onlyBuiltDependencies settings.
+allowBuilds:
+  '@parcel/watcher': true
+  '@swc/core': true
+  esbuild: true
+  less: true
+  lmdb: true
+  msgpackr-extract: true
+  nx: true
+  rollup: true
+  unrs-resolver: true
+
 overrides:
   qs: '>=6.14.1'
-
-ignoredBuiltDependencies:
-  - '@parcel/watcher'
-  - '@swc/core'
-  - esbuild
-  - less
-  - lmdb
-  - msgpackr-extract
-  - nx
-  - rollup
-  - unrs-resolver

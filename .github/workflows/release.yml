@@ -12,8 +12,7 @@ concurrency:
 permissions:
   # Required to push version commits, tags, and create GitHub releases
   contents: write
-  # Required for OIDC trusted publishing — allows GitHub Actions to generate
-  # short-lived tokens that npm exchanges for publish credentials
+  # Required for OIDC trusted publishing and npm provenance attestation
   id-token: write
 
 jobs:
@@ -26,7 +25,6 @@ jobs:
     steps:
       # RELEASE_TOKEN (PAT) is required to push version commits and tags
       # to main, which is protected and requires PRs for normal pushes.
-      # The PAT owner must be added to bypass_pull_request_allowances.
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
@@ -35,14 +33,14 @@ jobs:
 
       - uses: pnpm/action-setup@v6
 
+      # Per https://docs.npmjs.com/trusted-publishers:
+      # - registry-url is required for OIDC endpoint configuration
+      # - package-manager-cache: false is explicitly recommended for release builds
+      # - id-token: write permission enables OIDC token generation
       - uses: actions/setup-node@v6
         with:
           node-version: '24'
-          # registry-url is required for OIDC trusted publishing.
-          # npm CLI detects OIDC BEFORE falling back to NODE_AUTH_TOKEN.
-          # Per https://docs.npmjs.com/trusted-publishers
           registry-url: 'https://registry.npmjs.org'
-          # Docs explicitly recommend disabling cache for release builds.
           package-manager-cache: false
 
       - name: Install dependencies
@@ -57,10 +55,13 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Version, Changelog & Tag
+        # Per https://nx.dev/docs/guides/nx-release/publish-in-ci-cd:
+        # Run nx release --skip-publish locally (here in CI on main push).
+        # This handles: version bump → changelog → git commit → git tag → git push.
+        # Tags are created atomically with the version commit in this step.
         id: version
         run: |
           pnpm exec nx release --skip-publish 2>&1 | tee /tmp/nx-release.log
-          # Check if nx release created any new commits (version bumps / changelogs)
           if git diff --name-only HEAD~1 HEAD 2>/dev/null | grep -q "package.json\|CHANGELOG"; then
             echo "changes=true" >> $GITHUB_OUTPUT
           else
@@ -79,52 +80,24 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 
       - name: Build packages
-        # Always build regardless of whether versions were bumped.
-        # nx release preVersionCommand only runs when versions change,
-        # so when there are no new commits the dist/ may be stale or missing.
-        # This ensures dist/packages/* always reflects the current tag versions.
+        # nx release preVersionCommand builds during versioning when versions change.
+        # This step ensures dist/ is always up to date even when nx release skips.
         run: pnpm exec nx run-many -t build --exclude demo-app,acontplus-erp --parallel=3
         env:
           HUSKY: '0'
 
       - name: Publish to npm (OIDC trusted publishing)
-        # NODE_AUTH_TOKEN is unset via shell before invoking npm publish.
-        # actions/setup-node injects NODE_AUTH_TOKEN for all steps when
-        # registry-url is set. If it is present (even as empty string via env:),
-        # npm uses it instead of the OIDC exchange. Unsetting it at shell level
-        # forces npm 11 to fall through to OIDC-first authentication.
-        # Provenance attestations are generated automatically for public repos.
+        # Per https://nx.dev/docs/guides/nx-release/publish-in-ci-cd:
+        # Use nx release publish which natively checks npm view before publishing,
+        # automatically skipping already-published versions without erroring.
+        #
+        # Per https://docs.npmjs.com/trusted-publishers:
+        # npm 11 detects OIDC before falling back to NODE_AUTH_TOKEN.
+        # setup-node writes _authToken to NPM_CONFIG_USERCONFIG — we clear it
+        # so OIDC takes over. NPM_CONFIG_PROVENANCE=true generates attestations.
         run: |
-          unset NODE_AUTH_TOKEN
-
-          published=0
-          skipped=0
-          failed=0
-
-          for dir in dist/packages/*/; do
-            if [ -f "$dir/package.json" ]; then
-              pkg_name=$(node -p "require('./$dir/package.json').name")
-              pkg_version=$(node -p "require('./$dir/package.json').version")
-              echo "::group::Publishing $pkg_name@$pkg_version"
-
-              if npm publish "$dir" --access public; then
-                echo "✓ Published $pkg_name@$pkg_version"
-                published=$((published + 1))
-              else
-                if npm view "$pkg_name@$pkg_version" version 2>/dev/null | grep -q "$pkg_version"; then
-                  echo "⊘ Skipped $pkg_name@$pkg_version (already published)"
-                  skipped=$((skipped + 1))
-                else
-                  echo "✗ Failed to publish $pkg_name@$pkg_version"
-                  failed=$((failed + 1))
-                fi
-              fi
-              echo "::endgroup::"
-            fi
-          done
-
-          echo ""
-          echo "Summary: $published published, $skipped skipped, $failed failed"
-          if [ "$failed" -gt 0 ]; then
-            exit 1
-          fi
+          echo "registry=https://registry.npmjs.org/" > "$NPM_CONFIG_USERCONFIG"
+          pnpm exec nx release publish
+        env:
+          NPM_CONFIG_PROVENANCE: 'true'
+          HUSKY: '0'

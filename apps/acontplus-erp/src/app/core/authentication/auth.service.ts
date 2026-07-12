@@ -22,7 +22,7 @@ export class AuthService {
   );
 
   init() {
-    return new Promise<void>((resolve) => this.change$.subscribe(() => resolve()));
+    return firstValueFrom(this.change$);
   }
 
   change() {

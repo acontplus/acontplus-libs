@@ -39,20 +39,22 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          # npm trusted publishing requires Node >= 22.14.0 and npm >= 11.5.1.
-          # Node 22.14 ships with npm 10.x, so we upgrade npm explicitly.
-          node-version: 22.14
-          # Do NOT cache pnpm store in release builds — stale caches can cause
-          # inconsistent publish artifacts. Caching is fine in CI (ci.yml).
+          # npm 12 (latest) requires Node ^22.22.2 || ^24.15.0 || >=26.0.0.
+          # We pin to 22.22.2 (latest Node 22 LTS) to satisfy that constraint
+          # while staying on the LTS line.
+          # npm trusted publishing requires npm >= 11.5.1; npm 12 ships with Node 22.22.2.
+          node-version: 22.22.2
           cache: 'pnpm'
-          # registry-url is required for setup-node to configure .npmrc so that
-          # npm CLI picks up the correct registry for OIDC token exchange.
+          # registry-url configures .npmrc so npm CLI knows which registry to
+          # use for OIDC token exchange. setup-node also injects NODE_AUTH_TOKEN
+          # automatically, but with trusted publishing the OIDC flow takes
+          # precedence and no long-lived token secret is needed.
           registry-url: 'https://registry.npmjs.org'
 
       - name: Upgrade npm for OIDC trusted publishing
-        # npm >= 11.5.1 is required — it auto-detects the OIDC environment
-        # and exchanges the GitHub Actions token for a short-lived publish token.
-        # No NPM_TOKEN needed when using trusted publishers.
+        # Upgrade from the Node-bundled npm to latest (12.x) which has full
+        # OIDC trusted publishing support. Must run after setup-node so the
+        # global npm binary is on the PATH that pnpm and subsequent steps use.
         run: npm install -g npm@latest
 
       - name: Install dependencies

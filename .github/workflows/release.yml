@@ -41,9 +41,11 @@ jobs:
           # publishing requirement of >= 11.5.1. No manual npm upgrade needed.
           node-version: 24
           cache: 'pnpm'
-          # Do NOT set registry-url here — setup-node injects NODE_AUTH_TOKEN
-          # into every subsequent step when registry-url is set, which takes
-          # precedence over OIDC and causes 404 auth failures on npm publish.
+          # registry-url is required: setup-node writes the registry into the
+          # runner .npmrc so npm CLI knows where to publish and can initiate
+          # the OIDC token exchange. NODE_AUTH_TOKEN injected by this step
+          # will be explicitly unset in the publish step below.
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -79,10 +81,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 
       - name: Publish to npm (OIDC trusted publishing)
-        # No NODE_AUTH_TOKEN / NPM_TOKEN needed — npm CLI auto-detects the
-        # GitHub Actions OIDC environment and exchanges it for a short-lived
-        # publish token. Provenance attestations are generated automatically
-        # when publishing from a public repo via trusted publishing.
+        # NODE_AUTH_TOKEN is explicitly unset: setup-node injects it via
+        # registry-url, but if it is present npm uses it instead of OIDC,
+        # causing 404 auth failures. Unsetting it forces npm 11 to fall
+        # through to the OIDC exchange with the GitHub Actions id-token.
+        # Provenance is generated automatically for public repos via OIDC.
+        env:
+          NODE_AUTH_TOKEN: ''
         run: |
           published=0
           skipped=0

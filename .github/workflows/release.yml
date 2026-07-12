@@ -27,35 +27,25 @@ jobs:
       # RELEASE_TOKEN (PAT) is required to push version commits and tags
       # to main, which is protected and requires PRs for normal pushes.
       # The PAT owner must be added to bypass_pull_request_allowances.
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           filter: tree:0
           token: ${{ secrets.RELEASE_TOKEN }}
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
         with:
           version: 9
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
-          # npm 12 (latest) requires Node ^22.22.2 || ^24.15.0 || >=26.0.0.
-          # We pin to 22.22.2 (latest Node 22 LTS) to satisfy that constraint
-          # while staying on the LTS line.
-          # npm trusted publishing requires npm >= 11.5.1; npm 12 ships with Node 22.22.2.
-          node-version: 22.22.2
+          # Node 24 LTS ships with npm 11.x which satisfies the npm trusted
+          # publishing requirement of >= 11.5.1. No manual npm upgrade needed.
+          node-version: 24
           cache: 'pnpm'
           # registry-url configures .npmrc so npm CLI knows which registry to
-          # use for OIDC token exchange. setup-node also injects NODE_AUTH_TOKEN
-          # automatically, but with trusted publishing the OIDC flow takes
-          # precedence and no long-lived token secret is needed.
+          # target for OIDC token exchange during publish.
           registry-url: 'https://registry.npmjs.org'
-
-      - name: Upgrade npm for OIDC trusted publishing
-        # Upgrade from the Node-bundled npm to latest (12.x) which has full
-        # OIDC trusted publishing support. Must run after setup-node so the
-        # global npm binary is on the PATH that pnpm and subsequent steps use.
-        run: npm install -g npm@latest
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -93,8 +83,8 @@ jobs:
       - name: Publish to npm (OIDC trusted publishing)
         # No NODE_AUTH_TOKEN / NPM_TOKEN needed — npm CLI auto-detects the
         # GitHub Actions OIDC environment and exchanges it for a short-lived
-        # publish token. Provenance attestations are also generated automatically
-        # when publishing from a public repo via trusted publishing (no --provenance flag needed).
+        # publish token. Provenance attestations are generated automatically
+        # when publishing from a public repo via trusted publishing.
         run: |
           published=0
           skipped=0

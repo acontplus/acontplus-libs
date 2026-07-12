@@ -2,6 +2,12 @@ packages:
   - 'apps/*'
   - 'packages/*'
 
+# Hoisting settings (pnpm v11 reads these from pnpm-workspace.yaml, not .npmrc)
+shamefullyHoist: true
+publicHoistPattern:
+  - '*'
+linkWorkspacePackages: deep
+
 # pnpm v11: allowBuilds is a map of package name -> boolean (explicit allowlist).
 # Replaces the removed ignoredBuiltDependencies / onlyBuiltDependencies settings.
 allowBuilds:

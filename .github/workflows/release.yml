@@ -80,8 +80,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 
       - name: Build packages
-        # nx release preVersionCommand builds during versioning when versions change.
-        # This step ensures dist/ is always up to date even when nx release skips.
+        # Build AFTER versioning so dist/packages/*/package.json has the new
+        # bumped version. nx.json preVersionCommand was removed because it
+        # built BEFORE the bump, causing nx release publish to see stale
+        # versions in dist and skip publishing them.
         run: pnpm exec nx run-many -t build --exclude demo-app,acontplus-erp --parallel=3
         env:
           HUSKY: '0'

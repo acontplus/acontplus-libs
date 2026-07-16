@@ -4,7 +4,7 @@
 />
 
 <ng-template #menuTpl let-menuList="menuList" let-parentRoute="parentRoute" let-level="level">
-  <ul appNavAccordion class="matero-sidemenu level-{{ level }}" [class.submenu]="level > 0">
+  <ul appNavAccordion class="acontplus-sidemenu level-{{ level }}" [class.submenu]="level > 0">
     @for (menuItem of menuList; track $index) {
       <ng-template
         [ngxPermissionsOnly]="$safeNavigationMigration(menuItem.permissions?.only)"

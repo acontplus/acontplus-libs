@@ -9,3 +9,61 @@
     left: 2rem;
   }
 }
+
+.theme-colors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+
+  mat-radio-group {
+    display: contents;
+  }
+
+  .color-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-color: rgba(0, 0, 0, 0.02);
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+      transform: scale(1.05);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--mat-sys-primary);
+      outline-offset: 2px;
+    }
+
+    &.selected {
+      border-color: var(--mat-sys-primary);
+      background-color: rgba(0, 0, 0, 0.08);
+      box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+    }
+
+    mat-radio-button {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .color-dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease;
+    }
+
+    &:hover .color-dot {
+      transform: scale(1.1);
+    }
+  }
+}

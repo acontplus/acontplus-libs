@@ -91,16 +91,25 @@ interface DemoData {
       <app-code-example [code]="sortingCode" [language]="'typescript'" />
 
       <!-- Pagination -->
-      <h2>Pagination</h2>
+      <h2>Pagination (Server-side)</h2>
       <mat-card class="example-card">
         <mat-card-content>
+          <div class="reload-section">
+            <button mat-button (click)="reloadPaginatedData()">
+              <mat-icon>refresh</mat-icon>
+              Reload
+            </button>
+          </div>
           <acp-data-grid
-            [data]="paginatedData"
+            [data]="paginatedData()"
             [columns]="basicColumns"
             [showPaginator]="true"
+            [pageOnFront]="false"
+            [length]="paginatedTotalItems()"
             [pageSize]="5"
             [pageSizeOptions]="[5, 10, 25]"
-            (page)="onPageChange($event)"
+            [loading]="isPaginatedLoading()"
+            (page)="onPaginatedPageChange($event)"
           />
         </mat-card-content>
       </mat-card>
@@ -270,6 +279,12 @@ interface DemoData {
         border-radius: 4px;
       }
 
+      .reload-section {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 1rem;
+      }
+
       .expansion-content {
         padding: 1rem;
         background: var(--mat-sys-surface-container-low);
@@ -317,16 +332,18 @@ export class DataGridExamples {
   selectedRows = signal<DemoData[]>([]);
   isLoading = signal(false);
   serverData = signal<DemoData[]>([]);
+  paginatedData = signal<DemoData[]>([]);
+  isPaginatedLoading = signal(false);
   lastCellClick = signal<string>('');
   highlightedIndex = signal(-1);
   focusedIndex = signal(-1);
 
   totalItems = 50;
+  paginatedTotalItems = signal(0);
 
   // Data
   basicData = this.generateData(5);
   demoData = this.generateData(10);
-  paginatedData = this.generateData(25);
   styledData = this.generateData(8);
 
   // Columns
@@ -378,6 +395,7 @@ export class DataGridExamples {
 
   constructor() {
     this.loadServerData(0, 5);
+    // this.loadPaginatedData(0, 5);
   }
 
   private generateData(count: number): DemoData[] {
@@ -427,11 +445,43 @@ export class DataGridExamples {
   }
 
   onSortChange(sort: Sort): void {
-    console.info('Sort changed:', sort);
+    alert('Sort changed:' + sort);
   }
 
   onPageChange(event: PageEvent): void {
-    console.info('Page changed:', event);
+    alert('Page changed:' + event);
+  }
+
+  onPaginatedPageChange(event: PageEvent): void {
+    this.loadPaginatedData(event.pageIndex, event.pageSize);
+  }
+
+  private loadPaginatedData(pageIndex: number, pageSize: number): void {
+    this.isPaginatedLoading.set(true);
+    // Simulate API call - in real apps, API returns { items: [], total: number }
+    setTimeout(() => {
+      const start = pageIndex * pageSize;
+      // Simulate dynamic total from API (e.g., could vary based on filters)
+      const simulatedTotal = 100 + Math.floor(Math.random() * 50);
+      this.paginatedTotalItems.set(simulatedTotal);
+      this.paginatedData.set(
+        Array.from({ length: pageSize }, (_, i) => ({
+          id: start + i + 1,
+          name: `API Item ${start + i + 1}`,
+          description: `API description ${start + i + 1}`,
+          price: Math.round(Math.random() * 1000 * 100) / 100,
+          quantity: Math.floor(Math.random() * 100),
+          category: ['Electronics', 'Clothing', 'Food', 'Books'][i % 4],
+          status: ['pending', 'processing', 'completed', 'failed'][i % 4] as DemoData['status'],
+          createdAt: new Date(Date.now() - Math.random() * 10000000000),
+        })),
+      );
+      this.isPaginatedLoading.set(false);
+    }, 300);
+  }
+
+  reloadPaginatedData(): void {
+    this.loadPaginatedData(0, 5);
   }
 
   onServerPageChange(event: PageEvent): void {
@@ -439,11 +489,11 @@ export class DataGridExamples {
   }
 
   onEdit(row: DemoData): void {
-    console.info('Edit:', row);
+    alert('Edit:' + row);
   }
 
   onDelete(row: DemoData): void {
-    console.info('Delete:', row);
+    alert('Delete:' + row);
   }
 
   onCellClick(event: { row: DemoData; column: DataGridColumn<DemoData> }): void {
@@ -498,15 +548,36 @@ columns: DataGridColumn[] = [
   (sortChange)="onSortChange($event)"
 />`;
 
-  paginationCode = `// Client-side Pagination
+  paginationCode = `// Server-side Pagination with API simulation
+paginatedData = signal<T[]>([]);
+  paginatedTotalItems = signal(0);
+  isPaginatedLoading = signal(false);
+
 <acp-data-grid
-  [data]="data"
+  [data]="paginatedData()"
   [columns]="columns"
   [showPaginator]="true"
+  [pageOnFront]="false"
+  [length]="paginatedTotalItems()"
   [pageSize]="5"
   [pageSizeOptions]="[5, 10, 25]"
-  (page)="onPageChange($event)"
-/>`;
+  [loading]="isPaginatedLoading()"
+  (page)="onPaginatedPageChange($event)"
+/>
+
+onPaginatedPageChange(event: PageEvent) {
+  this.loadPaginatedData(event.pageIndex, event.pageSize);
+}
+
+private loadPaginatedData(pageIndex: number, pageSize: number) {
+  this.isPaginatedLoading.set(true);
+  // Real API call returns { items: T[], total: number }
+  this.apiService.getData(pageIndex, pageSize).subscribe(data => {
+    this.paginatedData.set(data.items);
+    this.paginatedTotalItems.set(data.total); // Dynamic total from API
+    this.isPaginatedLoading.set(false);
+  });
+}`;
 
   serverPaginationCode = `// Server-side Pagination
 <acp-data-grid

@@ -28,11 +28,11 @@ import { MatOptionModule } from '@angular/material/core';
   styleUrl: './auth-layout.component.scss',
 })
 export class AuthLayoutComponent implements AfterViewInit {
-  @ViewChild('signinFields') signinFieldsRef!: TemplateRef<any>;
-  @ViewChild('signupFields') signupFieldsRef!: TemplateRef<any>;
+  @ViewChild('signinFields') signinFieldsRef!: TemplateRef<AuthLayoutComponent>;
+  @ViewChild('signupFields') signupFieldsRef!: TemplateRef<AuthLayoutComponent>;
 
-  signinFields = signal<TemplateRef<any> | null>(null);
-  signupFields = signal<TemplateRef<any> | null>(null);
+  signinFields = signal<TemplateRef<AuthLayoutComponent> | null>(null);
+  signupFields = signal<TemplateRef<AuthLayoutComponent> | null>(null);
 
   companies = [
     { id: 1, name: 'Acontplus Corp' },

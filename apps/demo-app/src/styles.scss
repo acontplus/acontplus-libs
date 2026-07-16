@@ -1,5 +1,4 @@
 @use '@angular/material' as mat;
-// @use '../../extensions' as mtx;
 // @use './styles/highlightjs';
 @use './styles/constants';
 @use './styles/reboot';
@@ -8,6 +7,22 @@
 
 // Import notification styles
 @use '../../../packages/ng-notifications/src/styles/snackbar-themes.scss';
+
+// Import prebuilt themes from ng-components
+@import '@acontplus/ng-components/prebuilt-themes/blue';
+@import '@acontplus/ng-components/prebuilt-themes/aqua';
+@import '@acontplus/ng-components/prebuilt-themes/purple';
+@import '@acontplus/ng-components/prebuilt-themes/green';
+@import '@acontplus/ng-components/prebuilt-themes/cyan';
+@import '@acontplus/ng-components/prebuilt-themes/orange';
+@import '@acontplus/ng-components/prebuilt-themes/pink';
+@import '@acontplus/ng-components/prebuilt-themes/rose';
+
+// Set default theme color
+html {
+  --theme-primary-color: #1b84ff;
+}
+
 $config: (
   color: (
     primary: mat.$azure-palette,

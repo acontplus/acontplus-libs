@@ -50,7 +50,4 @@ export const MODULES_MENU: ModuleCategory[] = [
 export class ModuleNav {
   @Input() params: Observable<Params> | undefined;
   menus = MODULES_MENU;
-  constructor() {
-    console.log(this.menus);
-  }
 }

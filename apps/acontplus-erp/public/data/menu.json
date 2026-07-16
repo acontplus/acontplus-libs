@@ -2,7 +2,7 @@
   "menu": [
     {
       "route": "dashboard",
-      "name": "dashboard",
+      "name": "Panel",
       "type": "link",
       "icon": "dashboard",
       "badge": {
@@ -10,252 +10,226 @@
         "value": "5"
       }
     },
-    {
-      "route": "design",
-      "name": "design",
-      "type": "sub",
-      "icon": "color_lens",
-      "label": {
-        "color": "azure-50",
-        "value": "New"
-      },
-      "children": [
-        {
-          "route": "colors",
-          "name": "colors",
-          "type": "link",
-          "icon": "colorize"
-        },
-        {
-          "route": "icons",
-          "name": "icons",
-          "type": "link",
-          "icon": "flag"
-        }
-      ],
-      "permissions": {
-        "only": ["ADMIN", "MANAGER"]
-      }
-    },
+
     {
       "route": "material",
-      "name": "material",
+      "name": "Material",
       "type": "sub",
       "icon": "favorite",
       "children": [
         {
           "route": "",
-          "name": "form-controls",
+          "name": "Controles de Formulario",
           "type": "sub",
           "children": [
             {
               "route": "autocomplete",
-              "name": "autocomplete",
+              "name": "Autocompletado",
               "type": "link"
             },
             {
               "route": "checkbox",
-              "name": "checkbox",
+              "name": "Casilla",
               "type": "link"
             },
             {
               "route": "datepicker",
-              "name": "datepicker",
+              "name": "Selector de Fecha",
               "type": "link"
             },
             {
               "route": "form-field",
-              "name": "form-field",
+              "name": "Campo de Formulario",
               "type": "link"
             },
             {
               "route": "input",
-              "name": "input",
+              "name": "Entrada",
               "type": "link"
             },
             {
               "route": "radio",
-              "name": "radio",
+              "name": "Radio",
               "type": "link"
             },
             {
               "route": "select",
-              "name": "select",
+              "name": "Seleccionar",
               "type": "link"
             },
             {
               "route": "slider",
-              "name": "slider",
+              "name": "Deslizador",
               "type": "link"
             },
             {
               "route": "slide-toggle",
-              "name": "slide-toggle",
+              "name": "Interruptor",
               "type": "link"
             }
           ]
         },
         {
           "route": "",
-          "name": "navigation",
+          "name": "Navegación",
           "type": "sub",
           "children": [
             {
               "route": "menu",
-              "name": "menu",
+              "name": "Menú",
               "type": "link"
             },
             {
               "route": "sidenav",
-              "name": "sidenav",
+              "name": "Barra Lateral",
               "type": "link"
             },
             {
               "route": "toolbar",
-              "name": "toolbar",
+              "name": "Barra de Herramientas",
               "type": "link"
             }
           ]
         },
         {
           "route": "",
-          "name": "layout",
+          "name": "Diseño",
           "type": "sub",
           "children": [
             {
               "route": "card",
-              "name": "card",
+              "name": "Tarjeta",
               "type": "link"
             },
             {
               "route": "divider",
-              "name": "divider",
+              "name": "Divisor",
               "type": "link"
             },
             {
               "route": "expansion",
-              "name": "expansion",
+              "name": "Expansión",
               "type": "link"
             },
             {
               "route": "grid-list",
-              "name": "grid-list",
+              "name": "Cuadrícula",
               "type": "link"
             },
             {
               "route": "list",
-              "name": "list",
+              "name": "Lista",
               "type": "link"
             },
             {
               "route": "stepper",
-              "name": "stepper",
+              "name": "Pasos",
               "type": "link"
             },
             {
               "route": "tab",
-              "name": "tab",
+              "name": "Pestaña",
               "type": "link"
             },
             {
               "route": "tree",
-              "name": "tree",
+              "name": "Árbol",
               "type": "link"
             }
           ]
         },
         {
           "route": "",
-          "name": "buttons-indicators",
+          "name": "Botones e Indicadores",
           "type": "sub",
           "children": [
             {
               "route": "button",
-              "name": "button",
+              "name": "Botón",
               "type": "link"
             },
             {
               "route": "button-toggle",
-              "name": "button-toggle",
+              "name": "Botón Alternar",
               "type": "link"
             },
             {
               "route": "badge",
-              "name": "badge",
+              "name": "Insignia",
               "type": "link"
             },
             {
               "route": "chips",
-              "name": "chips",
+              "name": "Chips",
               "type": "link"
             },
             {
               "route": "icon",
-              "name": "icon",
+              "name": "Icono",
               "type": "link"
             },
             {
               "route": "progress-spinner",
-              "name": "progress-spinner",
+              "name": "Indicador de Carga",
               "type": "link"
             },
             {
               "route": "progress-bar",
-              "name": "progress-bar",
+              "name": "Barra de Progreso",
               "type": "link"
             },
             {
               "route": "ripple",
-              "name": "ripple",
+              "name": "Onda",
               "type": "link"
             }
           ]
         },
         {
           "route": "",
-          "name": "popups-modals",
+          "name": "Popups y Modales",
           "type": "sub",
           "children": [
             {
               "route": "bottom-sheet",
-              "name": "bottom-sheet",
+              "name": "Hoja Inferior",
               "type": "link"
             },
             {
               "route": "dialog",
-              "name": "dialog",
+              "name": "Diálogo",
               "type": "link"
             },
             {
               "route": "snack-bar",
-              "name": "snackbar",
+              "name": "Notificación",
               "type": "link"
             },
             {
               "route": "tooltip",
-              "name": "tooltip",
+              "name": "Tooltip",
               "type": "link"
             }
           ]
         },
         {
           "route": "data-table",
-          "name": "data-table",
+          "name": "Tabla de Datos",
           "type": "sub",
           "children": [
             {
               "route": "paginator",
-              "name": "paginator",
+              "name": "Paginador",
               "type": "link"
             },
             {
               "route": "sort",
-              "name": "sort",
+              "name": "Ordenar",
               "type": "link"
             },
             {
               "route": "table",
-              "name": "table",
+              "name": "Tabla",
               "type": "link"
             }
           ]
@@ -265,72 +239,31 @@
         "except": ["MANAGER", "GUEST"]
       }
     },
-    {
-      "route": "permissions",
-      "name": "permissions",
-      "type": "sub",
-      "icon": "lock",
-      "children": [
-        {
-          "route": "role-switching",
-          "name": "role-switching",
-          "type": "link"
-        },
-        {
-          "route": "route-guard",
-          "name": "route-guard",
-          "type": "link",
-          "permissions": {
-            "except": "GUEST"
-          }
-        },
-        {
-          "route": "test",
-          "name": "test",
-          "type": "link",
-          "permissions": {
-            "only": "ADMIN"
-          }
-        }
-      ]
-    },
-    {
-      "route": "media",
-      "name": "media",
-      "type": "sub",
-      "icon": "image",
-      "children": [
-        {
-          "route": "gallery",
-          "name": "gallery",
-          "type": "link"
-        }
-      ]
-    },
+
     {
       "route": "forms",
-      "name": "forms",
+      "name": "Formularios",
       "type": "sub",
       "icon": "description",
       "children": [
         {
           "route": "elements",
-          "name": "form-elements",
+          "name": "Elementos de Formulario",
           "type": "link"
         },
         {
           "route": "dynamic",
-          "name": "dynamic-form",
+          "name": "Formulario Dinámico",
           "type": "link"
         },
         {
           "route": "select",
-          "name": "select",
+          "name": "Seleccionar",
           "type": "link"
         },
         {
           "route": "datetime",
-          "name": "datetime",
+          "name": "Fecha y Hora",
           "type": "link"
         }
       ],
@@ -340,141 +273,23 @@
     },
     {
       "route": "tables",
-      "name": "tables",
+      "name": "Tablas",
       "type": "sub",
       "icon": "format_line_spacing",
       "children": [
         {
           "route": "kitchen-sink",
-          "name": "kitchen-sink",
+          "name": "Ejemplo Completo",
           "type": "link"
         },
         {
           "route": "remote-data",
-          "name": "remote-data",
+          "name": "Datos Remotos",
           "type": "link"
         }
       ],
       "permissions": {
         "except": "GUEST"
-      }
-    },
-    {
-      "route": "profile",
-      "name": "profile",
-      "type": "sub",
-      "icon": "person",
-      "children": [
-        {
-          "route": "overview",
-          "name": "overview",
-          "type": "link"
-        },
-        {
-          "route": "settings",
-          "name": "settings",
-          "type": "link"
-        }
-      ]
-    },
-    {
-      "route": "https://ng-matero.github.io/extensions/",
-      "name": "extensions",
-      "type": "extTabLink",
-      "icon": "extension",
-      "permissions": {
-        "only": "ADMIN"
-      }
-    },
-    {
-      "route": "/",
-      "name": "sessions",
-      "type": "sub",
-      "icon": "question_answer",
-      "children": [
-        {
-          "route": "403",
-          "name": "403",
-          "type": "link"
-        },
-        {
-          "route": "404",
-          "name": "404",
-          "type": "link"
-        },
-        {
-          "route": "500",
-          "name": "500",
-          "type": "link"
-        }
-      ],
-      "permissions": {
-        "only": "ADMIN"
-      }
-    },
-    {
-      "route": "utilities",
-      "name": "utilities",
-      "type": "sub",
-      "icon": "all_inbox",
-      "children": [
-        {
-          "route": "css-grid",
-          "name": "css-grid",
-          "type": "link"
-        },
-        {
-          "route": "css-helpers",
-          "name": "css-helpers",
-          "type": "link"
-        }
-      ]
-    },
-    {
-      "route": "menu-level",
-      "name": "menu-level",
-      "type": "sub",
-      "icon": "subject",
-      "children": [
-        {
-          "route": "level-1-1",
-          "name": "level-1-1",
-          "type": "sub",
-          "children": [
-            {
-              "route": "level-2-1",
-              "name": "level-2-1",
-              "type": "sub",
-              "children": [
-                {
-                  "route": "level-3-1",
-                  "name": "level-3-1",
-                  "type": "sub",
-                  "children": [
-                    {
-                      "route": "level-4-1",
-                      "name": "level-4-1",
-                      "type": "link"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "route": "level-2-2",
-              "name": "level-2-2",
-              "type": "link"
-            }
-          ]
-        },
-        {
-          "route": "level-1-2",
-          "name": "level-1-2",
-          "type": "link"
-        }
-      ],
-      "permissions": {
-        "only": "ADMIN"
       }
     }
   ]

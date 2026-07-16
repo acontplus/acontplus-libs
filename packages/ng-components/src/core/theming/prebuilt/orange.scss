@@ -1,0 +1,21 @@
+@use '@angular/material' as mat;
+@use '../../../core/tokens/system' as system;
+@use '../../../core/theming/palettes' as palettes;
+@use '../../../core/theming/all-theme' as all-theme;
+
+.theme-orange {
+  --theme-primary-color: #fa896b;
+
+  @include system.theme(
+    (
+      color: (
+        primary: palettes.$custom-orange-palette,
+        tertiary: palettes.$custom-orange-palette,
+      ),
+      typography: Roboto,
+      density: 0,
+    )
+  );
+
+  @include all-theme.custom-component-overrides;
+}

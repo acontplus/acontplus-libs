@@ -19,6 +19,30 @@
   "exports": {
     ".": {
       "sass": "./src/_index.scss"
+    },
+    "./prebuilt-themes/blue": {
+      "sass": "./src/core/theming/prebuilt/blue.scss"
+    },
+    "./prebuilt-themes/aqua": {
+      "sass": "./src/core/theming/prebuilt/aqua.scss"
+    },
+    "./prebuilt-themes/purple": {
+      "sass": "./src/core/theming/prebuilt/purple.scss"
+    },
+    "./prebuilt-themes/green": {
+      "sass": "./src/core/theming/prebuilt/green.scss"
+    },
+    "./prebuilt-themes/cyan": {
+      "sass": "./src/core/theming/prebuilt/cyan.scss"
+    },
+    "./prebuilt-themes/orange": {
+      "sass": "./src/core/theming/prebuilt/orange.scss"
+    },
+    "./prebuilt-themes/pink": {
+      "sass": "./src/core/theming/prebuilt/pink.scss"
+    },
+    "./prebuilt-themes/rose": {
+      "sass": "./src/core/theming/prebuilt/rose.scss"
     }
   },
   "files": [

@@ -12,9 +12,8 @@ import { Button } from '@acontplus/ng-components';
 export class CompanyCustomerCreate {
   formId = signal('companyCustomerFormId');
   private dgRef = inject(MatDialogRef<CompanyCustomerCreate>);
-  onCustomerCreated(customer: any): void {
-    console.log('Cliente creado:', customer);
-    // Mostrar notificación de éxito
+  onCustomerCreated(customer: { test: string }): void {
+    alert(customer);
   }
 
   onCancel(): void {

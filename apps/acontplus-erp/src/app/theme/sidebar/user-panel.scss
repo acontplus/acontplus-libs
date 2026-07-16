@@ -1,6 +1,6 @@
 @use '@angular/material' as mat;
 
-.matero-user-panel {
+.acontplus-user-panel {
   display: flex;
   align-items: center;
   padding: 0.75rem;
@@ -17,7 +17,7 @@
 }
 
 // Set default width and height can avoid flashing before avatar image loaded.
-.matero-user-panel-avatar {
+.acontplus-user-panel-avatar {
   width: 3rem;
   height: 3rem;
   border-radius: 50rem;
@@ -30,7 +30,7 @@
   }
 }
 
-.matero-user-panel-info {
+.acontplus-user-panel-info {
   flex: 1;
   width: 0;
   margin-left: 0.75rem;

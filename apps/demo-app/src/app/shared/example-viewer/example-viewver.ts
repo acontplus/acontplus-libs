@@ -45,7 +45,7 @@ export class ExampleViewer implements OnInit, OnDestroy {
   @Input() exampleData!: ExampleType;
 
   @ViewChild('demo', { read: ViewContainerRef, static: true }) demoRef!: ViewContainerRef;
-  demoComponentRef!: ComponentRef<any>;
+  demoComponentRef!: ComponentRef<unknown>;
 
   /** Whether the source for the example is being displayed. */
   showSource = false;
@@ -64,13 +64,7 @@ export class ExampleViewer implements OnInit, OnDestroy {
     this.showSource = !this.showSource;
   }
 
-  copySource(content: any) {
-    // if (this.copier.copyText(content.innerText)) {
-    //   this.snackbar.open('Code copied', '', { duration: 2500 });
-    // } else {
-    //   this.snackbar.open('Copy failed. Please try again!', '', { duration: 2500 });
-    // }
-    console.log(content);
-    this.snackbar.open('Copy failed. Please try again!', '', { duration: 2500 });
+  copySource(content: unknown) {
+    this.snackbar.open('Copy failed. Please try again!' + content, '', { duration: 2500 });
   }
 }

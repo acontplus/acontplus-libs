@@ -16,7 +16,7 @@ import { Breadcrumb } from '../breadcrumb/breadcrumb';
   templateUrl: './page-header.html',
   styleUrl: './page-header.scss',
   host: {
-    class: 'matero-page-header',
+    class: 'acontplus-page-header',
   },
   encapsulation: ViewEncapsulation.None,
   imports: [Breadcrumb],

@@ -46,7 +46,7 @@ export class App {
     });
 
     drawerRef.afterDismissed().subscribe(_result => {
-      console.log('The drawer was dismissed');
+      alert('The drawer was dismissed');
     });
   }
 }

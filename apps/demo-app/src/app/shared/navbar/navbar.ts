@@ -6,6 +6,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { ThemeToggle, ThemeSwitcher } from '@acontplus/ng-components';
+import { Customizer } from '../../components/customizer/customizer';
 
 @Component({
   selector: 'app-navbar',
@@ -21,6 +22,7 @@ import { ThemeToggle, ThemeSwitcher } from '@acontplus/ng-components';
     MatMenuModule,
     NgTemplateOutlet,
     ThemeToggle,
+    Customizer,
   ],
 })
 export class Navbar {
@@ -30,4 +32,5 @@ export class Navbar {
   skipLinkHidden = true;
 
   isDarkMode$ = this.themeSwitcher.isDarkMode$;
+  showCustomizer = false;
 }

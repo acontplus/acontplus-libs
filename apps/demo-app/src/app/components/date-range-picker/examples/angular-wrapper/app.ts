@@ -71,7 +71,7 @@ export class DateRangePickerAngularWrapperExample {
   // Event handlers
   onDateRangeSelected(event: DateRangeValue<false>) {
     // Handle date range selection - convert to Date objects if needed
-    console.log('Rango seleccionado:', event);
+    alert('Rango seleccionado:' + event);
   }
 
   // Form value display

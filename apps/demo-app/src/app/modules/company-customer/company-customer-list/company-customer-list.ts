@@ -8,12 +8,12 @@ import { CompanyCustomerForm } from '@acontplus/ng-customer';
   templateUrl: './company-customer-list.html',
 })
 export class CompanyCustomerList {
-  onCustomerCreated(customer: any): void {
-    console.log('Cliente creado:', customer);
+  onCustomerCreated(customer: { test: string }): void {
     // Mostrar notificación de éxito
+    alert(customer);
   }
 
   onCancel(): void {
-    console.log('Cancelar');
+    alert('Cancelar');
   }
 }

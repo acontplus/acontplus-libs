@@ -1,50 +1,36 @@
-// Import all the theming functionality.
 @use '@angular/material' as mat;
 @use './../../lib/components/alert/alert-theme';
-// @use '../../button/button-theme';
-// @use '../../colorpicker/colorpicker-theme';
-// @use '../../datetimepicker/datetimepicker-theme';
 @use './../../lib/components/drawer/drawer-theme';
-@use './../../lib/components/data-grid/grid-theme';
-// @use '../../loader/loader-theme';
+@use './../../lib/components/grid/grid-theme';
 @use './../../lib/components/popover/popover-theme';
-// @use '../../progress/progress-theme';
-// @use '../../select/select-theme';
-// @use '../../split/split-theme';
-// @use '../../tooltip/tooltip-theme';
 
 // Create a theme.
 @mixin all-component-themes($theme) {
   @include alert-theme.theme($theme);
-  // @include button-theme.theme($theme);
-  // @include colorpicker-theme.theme($theme);
-  // @include datetimepicker-theme.theme($theme);
   @include drawer-theme.theme($theme);
   @include grid-theme.theme($theme);
-  // @include loader-theme.theme($theme);
   @include popover-theme.theme($theme);
-  // @include progress-theme.theme($theme);
-  // @include select-theme.theme($theme);
-  // @include split-theme.theme($theme);
-  // @include tooltip-theme.theme($theme);
 }
 
 @mixin all-component-bases($theme) {
   @include alert-theme.base($theme);
-  // @include button-theme.base($theme);
-  // @include colorpicker-theme.base($theme);
-  // @include datetimepicker-theme.base($theme);
   @include drawer-theme.base($theme);
   @include grid-theme.base($theme);
-  // @include loader-theme.base($theme);
   @include popover-theme.base($theme);
-  // @include progress-theme.base($theme);
-  // @include select-theme.base($theme);
-  // @include split-theme.base($theme);
-  // @include tooltip-theme.base($theme);
 }
 
-// @deprecated Use `all-component-themes`.
-@mixin material-extensions-theme($theme) {
-  @include all-component-themes($theme);
+// Custom component overrides for all themes
+@mixin custom-component-overrides {
+  @include mat.checkbox-overrides(
+    (
+      selected-checkmark-color: white,
+    )
+  );
+
+  @include mat.fab-overrides(
+    (
+      container-color: var(--theme-primary-color),
+      foreground-color: white,
+    )
+  );
 }

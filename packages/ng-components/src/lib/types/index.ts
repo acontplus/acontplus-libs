@@ -1,2 +1,2 @@
 export * from './tabulator-type';
-export * from '../components/data-grid/interfaces';
+export * from '../components/grid/interfaces';

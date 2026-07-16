@@ -1,6 +1,6 @@
 @use '../../../styles/grid/breakpoints';
 
-.matero-sidebar-header {
+.acontplus-sidebar-header {
   overflow: hidden;
 
   mat-toolbar {
@@ -14,7 +14,7 @@
   }
 }
 
-.matero-sidebar-main {
+.acontplus-sidebar-main {
   height: calc(100% - var(--mat-toolbar-standard-height));
   padding: 0 0.5rem 0.5rem;
   overflow: auto;

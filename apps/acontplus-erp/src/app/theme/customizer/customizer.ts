@@ -16,7 +16,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Subscription } from 'rxjs';
 import { AcpDrawer, AcpDrawerRef } from '@acontplus/ng-components';
-import { AppSettings, SettingsService } from '@core';
+import { AppSettings, AppThemeColor, SettingsService } from '@core';
 import { DisableControl } from '@shared';
 
 @Component({
@@ -40,6 +40,17 @@ import { DisableControl } from '@shared';
 })
 export class Customizer {
   readonly optionsChange = output<AppSettings>();
+
+  themeColors: { value: AppThemeColor; label: string; tooltip: string; color: string }[] = [
+    { value: 'blue', label: 'Blue', tooltip: 'Blue (Corporativo)', color: '#1b84ff' },
+    { value: 'aqua', label: 'Aqua', tooltip: 'Aqua (Profesional)', color: '#0074ba' },
+    { value: 'purple', label: 'Purple', tooltip: 'Purple (Premium)', color: '#763ebd' },
+    { value: 'green', label: 'Green', tooltip: 'Green (Enterprise)', color: '#0a7ea4' },
+    { value: 'cyan', label: 'Cyan', tooltip: 'Cyan (Tecnológico)', color: '#01c0c8' },
+    { value: 'orange', label: 'Orange', tooltip: 'Orange (Energético)', color: '#fa896b' },
+    { value: 'pink', label: 'Pink', tooltip: 'Pink (Moderno)', color: '#d200d2' },
+    { value: 'rose', label: 'Rose', tooltip: 'Rose (Elegante)', color: '#e80074' },
+  ];
 
   private readonly settings = inject(SettingsService);
   private readonly drawer = inject(AcpDrawer);
@@ -93,6 +104,10 @@ export class Customizer {
 
   closePanel() {
     this.drawerRef?.dismiss();
+  }
+
+  setThemeColor(color: AppThemeColor) {
+    this.form.get('themeColor')?.setValue(color);
   }
 
   sendOptions(options: AppSettings) {

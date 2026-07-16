@@ -117,7 +117,7 @@ export class MenuService {
         let nextUnhandledLayer: any[] = [];
         for (const ele of unhandledLayer) {
           const eachItem = ele.item;
-          const currentNamePathList = this.deepClone(ele.parentNamePathList).concat(eachItem.name);
+          const currentNamePathList = [eachItem.name];
           const currentRealRouteArr = this.deepClone(ele.realRouteArr).concat(eachItem.route);
           // Compare the full Array for expandable
           if (this.isRouteEqual(routeArr, currentRealRouteArr)) {
@@ -127,7 +127,7 @@ export class MenuService {
           if (!this.isLeafItem(eachItem)) {
             const wrappedChildren = eachItem.children?.map((child) => ({
               item: child,
-              parentNamePathList: currentNamePathList,
+              parentNamePathList: [],
               realRouteArr: currentRealRouteArr,
             }));
             nextUnhandledLayer = nextUnhandledLayer.concat(wrappedChildren);
@@ -142,9 +142,11 @@ export class MenuService {
   /** Add namespace for translation. */
   addNamespace(menu: Menu[] | MenuChildrenItem[], namespace: string) {
     menu.forEach((menuItem) => {
-      menuItem.name = `${namespace}.${menuItem.name}`;
+      if (namespace) {
+        menuItem.name = `${namespace}.${menuItem.name}`;
+      }
       if (menuItem.children && menuItem.children.length > 0) {
-        this.addNamespace(menuItem.children, menuItem.name);
+        this.addNamespace(menuItem.children, '');
       }
     });
   }

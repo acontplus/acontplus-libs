@@ -1,0 +1,21 @@
+@use '@angular/material' as mat;
+@use '../../../core/tokens/system' as system;
+@use '../../../core/theming/palettes' as palettes;
+@use '../../../core/theming/all-theme' as all-theme;
+
+.theme-green {
+  --theme-primary-color: #0a7ea4;
+
+  @include system.theme(
+    (
+      color: (
+        primary: palettes.$custom-green-palette,
+        tertiary: palettes.$custom-green-palette,
+      ),
+      typography: Roboto,
+      density: 0,
+    )
+  );
+
+  @include all-theme.custom-component-overrides;
+}

@@ -1,5 +1,15 @@
 import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject, catchError, map, merge, of, share, switchMap, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  catchError,
+  firstValueFrom,
+  map,
+  merge,
+  of,
+  share,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { filterObject, isEmptyObject } from './helpers';
 import { User } from './interface';
 import { LoginService } from './login.service';

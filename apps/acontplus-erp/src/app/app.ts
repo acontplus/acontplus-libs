@@ -15,6 +15,7 @@ export class App implements OnInit, AfterViewInit {
   ngOnInit() {
     this.settings.setDirection();
     this.settings.setTheme();
+    this.settings.setThemeColor();
   }
 
   ngAfterViewInit() {

@@ -9,14 +9,14 @@ import { AuthService } from '@core/authentication';
 @Component({
   selector: 'app-user-panel',
   template: `
-    <div class="matero-user-panel" routerLink="/profile/overview">
+    <div class="acontplus-user-panel" routerLink="/profile/overview">
       <img
-        class="matero-user-panel-avatar"
+        class="acontplus-user-panel-avatar"
         [src]="$safeNavigationMigration(user()?.avatar)"
         alt="avatar"
         width="64"
       />
-      <div class="matero-user-panel-info">
+      <div class="acontplus-user-panel-info">
         <h4>{{ user()?.name }}</h4>
         <h5>{{ user()?.email }}</h5>
       </div>

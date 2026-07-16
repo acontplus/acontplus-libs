@@ -1,4 +1,4 @@
-.matero-header {
+.acontplus-header {
   --mat-toolbar-container-background-color: transparent;
 
   position: relative;
@@ -6,8 +6,9 @@
   display: block;
   background-color: var(--header-background-color);
   backdrop-filter: blur(8px);
+  height: 60px;
 }
 
-.matero-header .mat-mdc-icon-button {
+.acontplus-header .mat-mdc-icon-button {
   color: #fff;
 }

@@ -1,6 +1,6 @@
 @use '@angular/material' as mat;
 
-.matero-topmenu {
+.acontplus-topmenu {
   --mat-tab-divider-height: 0;
   --mat-button-text-label-text-color: var(--topmenu-text-color);
 
@@ -75,7 +75,7 @@
   }
 }
 
-.matero-topmenu-panel {
+.acontplus-topmenu-panel {
   .mat-mdc-menu-item {
     &.active {
       color: var(--topmenu-dropdown-item-active-text-color);

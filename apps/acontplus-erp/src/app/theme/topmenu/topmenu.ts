@@ -23,7 +23,7 @@ import { TopmenuPanel } from './topmenu-panel';
   templateUrl: './topmenu.html',
   styleUrl: './topmenu.scss',
   host: {
-    class: 'matero-topmenu',
+    class: 'acontplus-topmenu',
   },
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.Eager,

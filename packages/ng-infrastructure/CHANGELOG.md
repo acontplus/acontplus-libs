@@ -1,3 +1,9 @@
+## 2.1.0 (2026-07-16)
+
+### 🧱 Updated Dependencies
+
+- Updated ng-components to 2.2.0
+
 ## 2.0.20 (2026-07-12)
 
 ### 🩹 Fixes

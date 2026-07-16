@@ -1,5 +1,4 @@
-@use '@angular/material' as mat;
-// @use '../../extensions' as mtx;
+@use '@angular/material' as mat; 
 // @use './styles/highlightjs';
 @use './styles/constants';
 @use './styles/reboot';
@@ -18,6 +17,11 @@
 @import '@acontplus/ng-components/prebuilt-themes/orange';
 @import '@acontplus/ng-components/prebuilt-themes/pink';
 @import '@acontplus/ng-components/prebuilt-themes/rose';
+
+// Set default theme color
+html {
+  --theme-primary-color: #1b84ff;
+}
 
 $config: (
   color: (

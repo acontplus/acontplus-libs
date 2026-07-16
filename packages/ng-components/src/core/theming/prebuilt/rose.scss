@@ -1,8 +1,11 @@
 @use '@angular/material' as mat;
 @use '../../../core/tokens/system' as system;
 @use '../../../core/theming/palettes' as palettes;
+@use '../../../core/theming/all-theme' as all-theme;
 
 .theme-rose {
+  --theme-primary-color: #e80074;
+
   @include system.theme(
     (
       color: (
@@ -14,9 +17,5 @@
     )
   );
 
-  @include mat.checkbox-overrides(
-    (
-      selected-checkmark-color: white,
-    )
-  );
+  @include all-theme.custom-component-overrides;
 }

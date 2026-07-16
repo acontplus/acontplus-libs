@@ -18,3 +18,21 @@
   @include grid-theme.base($theme);
   @include popover-theme.base($theme);
 }
+
+// Custom component overrides for all themes
+@mixin custom-component-overrides {
+  @include mat.checkbox-overrides(
+    (
+      selected-checkmark-color: white,
+    )
+  );
+
+  @include mat.fab-overrides(
+    (
+      container-color: var(--theme-primary-color),
+      foreground-color: white,
+    )
+  );
+
+   
+}

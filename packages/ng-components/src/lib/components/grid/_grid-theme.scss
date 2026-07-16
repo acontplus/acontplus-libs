@@ -1,6 +1,6 @@
 @use 'sass:map';
 @use '@angular/material' as mat;
-@use '../core/tokens/token-utils';
+@use './../../../core/tokens/token-utils';
 @use './m3-grid';
 
 @mixin base($theme) {

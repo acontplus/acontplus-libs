@@ -9,7 +9,7 @@ import { AppSettings, AppTheme, AppThemeColor, defaults } from '../settings';
   providedIn: 'root',
 })
 export class SettingsService {
-  private readonly key = 'ng-matero-settings';
+  private readonly key = 'ng-acontplus-settings';
 
   private readonly document = inject(DOCUMENT);
   private readonly store = inject(LocalStorageService);

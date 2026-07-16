@@ -18,7 +18,7 @@ import { UserButton } from '../widgets/user-button';
   templateUrl: './header.html',
   styleUrl: './header.scss',
   host: {
-    class: 'matero-header',
+    class: 'acontplus-header',
   },
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.Eager,

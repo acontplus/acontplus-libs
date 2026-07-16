@@ -108,5 +108,6 @@ export class AdminLayout implements OnDestroy {
     this.settings.setOptions(options);
     this.settings.setDirection();
     this.settings.setTheme();
+    this.settings.setThemeColor();
   }
 }

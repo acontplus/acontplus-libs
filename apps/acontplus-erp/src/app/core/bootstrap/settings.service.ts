@@ -3,7 +3,7 @@ import { MediaMatcher } from '@angular/cdk/layout';
 import { Injectable, inject, DOCUMENT } from '@angular/core';
 import { AppDirectionality, LocalStorageService } from '@shared';
 import { BehaviorSubject } from 'rxjs';
-import { AppSettings, AppTheme, defaults } from '../settings';
+import { AppSettings, AppTheme, AppThemeColor, defaults } from '../settings';
 
 @Injectable({
   providedIn: 'root',
@@ -75,6 +75,25 @@ export class SettingsService {
     } else {
       this.htmlElement.classList.remove('theme-dark');
     }
+  }
+
+  setThemeColor(themeColor?: AppThemeColor) {
+    if (themeColor) {
+      this.setOptions({ themeColor });
+    }
+    // Remover todas las clases de color de tema
+    this.htmlElement.classList.remove(
+      'theme-blue',
+      'theme-aqua',
+      'theme-purple',
+      'theme-green',
+      'theme-cyan',
+      'theme-orange',
+      'theme-pink',
+      'theme-rose',
+    );
+    // Agregar la clase del color seleccionado
+    this.htmlElement.classList.add(`theme-${this.options.themeColor}`);
   }
 
   getTranslateLang() {

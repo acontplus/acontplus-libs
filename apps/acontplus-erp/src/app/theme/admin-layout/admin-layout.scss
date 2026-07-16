@@ -111,6 +111,9 @@
   .matero-header {
     position: sticky;
     top: 0;
+    background-color: var(--mat-sys-primary);
+    box-shadow: var(--mat-sys-level2);
+    height: 60px;
   }
 
   .matero-topmenu {

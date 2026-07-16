@@ -1,0 +1,27 @@
+@if (showSelectAll) {
+<mat-checkbox
+  class="acp-checkbox-master"
+  [checked]="selectAll"
+  [(indeterminate)]="selectAllIndeterminate"
+  [disabled]="disabled"
+  (change)="_updateMasterCheckboxState($event, -1)"
+>
+  {{ selectAllLabel }}
+</mat-checkbox>
+} @for (option of items; track _trackBy($index, option); let i = $index) {
+<mat-checkbox
+  class="acp-checkbox-normal"
+  [(ngModel)]="option.checked"
+  [aria-describedby]="option.ariaDescribedby"
+  [aria-label]="option.ariaLabel"
+  [aria-labelledby]="option.ariaLabelledby"
+  [color]="option.color"
+  [disabled]="option.disabled || disabled"
+  [disableRipple]="option.disableRipple"
+  [labelPosition]="option.labelPosition"
+  [required]="option.required"
+  (change)="_updateNormalCheckboxState($event, i)"
+>
+  {{ option[bindLabel()] | toObservable | async }}
+</mat-checkbox>
+}

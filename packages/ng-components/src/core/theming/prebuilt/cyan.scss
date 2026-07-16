@@ -1,0 +1,22 @@
+@use '@angular/material' as mat;
+@use '../../../core/tokens/system' as system;
+@use '../../../core/theming/palettes' as palettes;
+
+.theme-cyan {
+  @include system.theme(
+    (
+      color: (
+        primary: palettes.$custom-cyan-palette,
+        tertiary: palettes.$custom-cyan-palette,
+      ),
+      typography: Roboto,
+      density: 0,
+    )
+  );
+
+  @include mat.checkbox-overrides(
+    (
+      selected-checkmark-color: white,
+    )
+  );
+}

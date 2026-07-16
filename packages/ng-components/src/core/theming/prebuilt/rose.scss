@@ -1,0 +1,22 @@
+@use '@angular/material' as mat;
+@use '../../../core/tokens/system' as system;
+@use '../../../core/theming/palettes' as palettes;
+
+.theme-rose {
+  @include system.theme(
+    (
+      color: (
+        primary: palettes.$rose-palette,
+        tertiary: palettes.$rose-palette,
+      ),
+      typography: Roboto,
+      density: 0,
+    )
+  );
+
+  @include mat.checkbox-overrides(
+    (
+      selected-checkmark-color: white,
+    )
+  );
+}

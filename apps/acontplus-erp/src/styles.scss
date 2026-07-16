@@ -1,5 +1,7 @@
-/* You can add global styles to this file, and also import other style files */
-/* You can add global styles to this file, and also import other style files */
+/* Bootstrap 5 - Latest Version */
+@use 'bootstrap/scss/bootstrap';
+
+/* Custom styles */
 @use 'styles/reboot';
 @use 'styles/themes';
 @use 'styles/colors';
@@ -7,3 +9,11 @@
 // @use 'styles/helpers';
 // @use 'styles/plugins';
 @use 'styles/custom';
+@import '@acontplus/ng-components/prebuilt-themes/blue';
+@import '@acontplus/ng-components/prebuilt-themes/aqua';
+@import '@acontplus/ng-components/prebuilt-themes/purple';
+@import '@acontplus/ng-components/prebuilt-themes/green';
+@import '@acontplus/ng-components/prebuilt-themes/cyan';
+@import '@acontplus/ng-components/prebuilt-themes/orange';
+@import '@acontplus/ng-components/prebuilt-themes/pink';
+@import '@acontplus/ng-components/prebuilt-themes/rose';

@@ -20,6 +20,28 @@
         <mat-radio-button class="m-x-4" value="auto">Auto</mat-radio-button>
       </mat-radio-group>
     </div>
+    <mat-divider inset class="m-x-0 m-y-24" />
+    <h3 class="f-w-400">Theme Color</h3>
+    <div class="m-l-8 theme-colors-grid">
+      <mat-radio-group formControlName="themeColor">
+        @for (theme of themeColors; track theme.value) {
+          <div
+            class="color-card"
+            role="button"
+            tabindex="0"
+            [class.selected]="form.get('themeColor')?.value === theme.value"
+            [matTooltip]="theme.tooltip"
+            (click)="setThemeColor(theme.value)"
+            (keydown.enter)="setThemeColor(theme.value)"
+            (keydown.space)="setThemeColor(theme.value)"
+          >
+            <mat-radio-button [value]="theme.value" />
+            <span class="color-dot" [style.background-color]="theme.color"></span>
+          </div>
+        }
+      </mat-radio-group>
+    </div>
+    <mat-divider inset class="m-x-0 m-y-24" />
     <h3 class="f-w-400">Header</h3>
     <div class="m-l-8">
       <mat-slide-toggle formControlName="showHeader"> Visible </mat-slide-toggle>

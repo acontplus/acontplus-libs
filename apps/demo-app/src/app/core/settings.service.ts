@@ -39,7 +39,7 @@ export class SettingsService {
       if (stored) {
         return JSON.parse(stored) as AppSettings;
       }
-    } catch (e) {
+    } catch {
       // Silently fail and return defaults
     }
     return defaults;
@@ -48,7 +48,7 @@ export class SettingsService {
   private saveSettings() {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(this.options()));
-    } catch (e) {
+    } catch {
       // Silently fail on save error
     }
   }

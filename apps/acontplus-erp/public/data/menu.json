@@ -10,7 +10,7 @@
         "value": "5"
       }
     },
-     
+
     {
       "route": "material",
       "name": "Material",
@@ -239,8 +239,7 @@
         "except": ["MANAGER", "GUEST"]
       }
     },
-     
-    
+
     {
       "route": "forms",
       "name": "Formularios",
@@ -292,7 +291,6 @@
       "permissions": {
         "except": "GUEST"
       }
-    } 
-     
+    }
   ]
 }

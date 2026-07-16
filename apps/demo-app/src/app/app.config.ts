@@ -23,6 +23,7 @@ import { provideNotifications } from '../../../../packages/ng-notifications/src/
 import { companyCustomerProvider } from './modules/company-customer/company-customer-provider';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { TokenLocalStorageRepository } from './core/token-local-storage.repository';
+import { SettingsService } from './core/settings.service';
 
 // WhatsApp providers
 import {
@@ -83,6 +84,9 @@ export const appConfig: ApplicationConfig = {
     // Environment
     { provide: ENVIRONMENT, useValue: environment },
     { provide: AUTH_TOKEN, useClass: TokenLocalStorageRepository },
+
+    // Theme settings
+    SettingsService,
 
     // WhatsApp providers
     { provide: WHATSAPP_MESSAGING_PORT, useClass: MetaWhatsAppAdapter },

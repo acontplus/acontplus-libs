@@ -15,7 +15,7 @@ export class App implements OnInit {
   dgSvc = inject(AdvancedDialogService);
   ccSvc = inject(COMPANY_CUSTOMER_HTTP_TOKEN);
 
-  list: any = [];
+  list: { test: string }[] = [];
   add() {
     this.dgSvc.openInWrapper(
       {
@@ -66,10 +66,6 @@ export class App implements OnInit {
   totalRecords = signal(0);
   page = signal(0);
   pageSize = signal(25);
-
-  trackByName(index: number) {
-    return `${index}-`;
-  }
 
   ngOnInit() {
     this.ccSvc.list({}).subscribe(response => {

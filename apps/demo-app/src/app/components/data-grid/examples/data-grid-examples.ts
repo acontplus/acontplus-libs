@@ -445,11 +445,11 @@ export class DataGridExamples {
   }
 
   onSortChange(sort: Sort): void {
-    console.info('Sort changed:', sort);
+    alert('Sort changed:' + sort);
   }
 
   onPageChange(event: PageEvent): void {
-    console.info('Page changed:', event);
+    alert('Page changed:' + event);
   }
 
   onPaginatedPageChange(event: PageEvent): void {
@@ -489,11 +489,11 @@ export class DataGridExamples {
   }
 
   onEdit(row: DemoData): void {
-    console.info('Edit:', row);
+    alert('Edit:' + row);
   }
 
   onDelete(row: DemoData): void {
-    console.info('Delete:', row);
+    alert('Delete:' + row);
   }
 
   onCellClick(event: { row: DemoData; column: DataGridColumn<DemoData> }): void {

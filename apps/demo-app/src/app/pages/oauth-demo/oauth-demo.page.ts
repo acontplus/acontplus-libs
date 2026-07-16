@@ -548,8 +548,6 @@ export class OAuthDemoPage {
     const disc = this.discovery();
     if (!disc?.provider) return;
 
-    console.log('Starting OAuth flow:', disc);
-
     // In real app: this.authState.startOAuthFlow({ ... })
     this.showDemoMessage(
       `OAuth flow would redirect to ${disc.provider} for tenant: ${disc.tenantId}`,
@@ -557,15 +555,11 @@ export class OAuthDemoPage {
   }
 
   loginWithPassword() {
-    console.log('Password login for:', this.email);
-
     // In real app: this.authState.login({ email, password })
     this.showDemoMessage(`Would login with password for: ${this.email}`);
   }
 
   loginWithProvider(provider: SocialProvider) {
-    console.log('Social login with:', provider);
-
     // In real app: this.authState.startOAuthFlow({ provider })
     this.showDemoMessage(`Would login with ${provider}`);
   }
@@ -575,7 +569,6 @@ export class OAuthDemoPage {
    * to prevent accidental information disclosure in production
    */
   private showDemoMessage(message: string) {
-    console.info('Demo:', message);
     this.snackBar.open(message, 'Close', {
       duration: 5000,
       horizontalPosition: 'center',

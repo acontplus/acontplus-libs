@@ -1,5 +1,4 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-
 import { AcpAlert } from '@acontplus/ng-components';
 import { MatCardModule } from '@angular/material/card';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -143,6 +142,6 @@ export class AlertOverview {
   `;
 
   onAlertClosed(type: string): void {
-    console.log(`Alert of type "${type}" was closed`);
+    alert(`Alert of type "${type}" was closed`);
   }
 }

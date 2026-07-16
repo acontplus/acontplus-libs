@@ -34,8 +34,4 @@ export class App {
   ];
 
   list = EXAMPLE_DATA;
-
-  trackByName(index: number, item: any) {
-    return item.name;
-  }
 }

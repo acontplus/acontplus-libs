@@ -1,4 +1,4 @@
-import { Component, inject, computed } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -14,7 +14,7 @@ import { SettingsService } from '../../core/settings.service';
       <h3>Theme Settings</h3>
 
       <div class="setting-group">
-        <label>Theme Color</label>
+        <span>Theme Color</span>
         <div class="color-options">
           @for (color of themeColors; track color.value) {
             <button
@@ -30,7 +30,7 @@ import { SettingsService } from '../../core/settings.service';
       </div>
 
       <div class="setting-group">
-        <label>Theme Mode</label>
+        <span>Theme Mode</span>
         <mat-radio-group [formControl]="form.controls.theme">
           <mat-radio-button value="light">Light</mat-radio-button>
           <mat-radio-button value="dark">Dark</mat-radio-button>

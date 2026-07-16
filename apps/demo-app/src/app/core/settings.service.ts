@@ -40,7 +40,7 @@ export class SettingsService {
         return JSON.parse(stored) as AppSettings;
       }
     } catch (e) {
-      console.error('Failed to load settings:', e);
+      // Silently fail and return defaults
     }
     return defaults;
   }
@@ -49,7 +49,7 @@ export class SettingsService {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(this.options()));
     } catch (e) {
-      console.error('Failed to save settings:', e);
+      // Silently fail on save error
     }
   }
 

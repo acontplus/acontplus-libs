@@ -433,9 +433,15 @@ export class StringFormatter {
   }
 
   /**
-   * Initializes a new string of the guid structure.
+   * Initializes a new string of the guid structure using cryptographically secure random generation.
    */
   public static newGuid(): string {
+    if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+      return crypto.randomUUID();
+    }
+
+    // Fallback for environments without crypto.randomUUID (e.g., older browsers)
+    // Note: This fallback is not cryptographically secure
     return (
       this.S4() +
       this.S4() +

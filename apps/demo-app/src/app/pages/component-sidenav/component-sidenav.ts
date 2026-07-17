@@ -29,8 +29,8 @@ const SMALL_WIDTH_BREAKPOINT = 959;
   imports: [MatSidenavModule, ComponentNav, ComponentPageHeader, RouterOutlet, AsyncPipe],
 })
 export class ComponentSidenav implements OnInit, OnDestroy {
-  private _route = inject(ActivatedRoute);
-  private _navigationFocusService = inject(NavigationFocusService);
+  private readonly _route = inject(ActivatedRoute);
+  private readonly _navigationFocusService = inject(NavigationFocusService);
 
   @ViewChild(MatSidenav) sidenav!: MatSidenav;
   params: Observable<Params> | undefined;
@@ -38,7 +38,7 @@ export class ComponentSidenav implements OnInit, OnDestroy {
   isScreenSmall: Observable<boolean>;
 
   private _urlFragment = '';
-  private subscriptions = new Subscription();
+  private readonly subscriptions = new Subscription();
 
   constructor() {
     const breakpoints = inject(BreakpointObserver);

@@ -51,6 +51,9 @@ import { AutocompleteWrapperService } from '../../services';
   encapsulation: ViewEncapsulation.None,
 })
 export class ReusableAutocompleteComponent implements OnInit, OnDestroy {
+  private static inputIdCounter = 0;
+  readonly inputId = `acp-autocomplete-search-input-${++ReusableAutocompleteComponent.inputIdCounter}`;
+
   readonly dataSource = input<AutocompleteWrapperItem[]>([]); // Para búsqueda local
   @Input() config: AutocompleteWrapperConfig = AUTOCOMPLETE_WRAPPER_DEFAULT_CONFIG;
   readonly itemTemplate = input<TemplateRef<any>>();

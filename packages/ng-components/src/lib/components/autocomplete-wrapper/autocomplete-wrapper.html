@@ -1,4 +1,7 @@
 <div class="acp-autocomplete-wrapper" [class.acp-autocomplete-wrapper-active]="overlayOpen()">
+  @if (config.label) {
+  <label class="acp-autocomplete-wrapper-label" [for]="inputId">{{ config.label }}</label>
+  }
   <!-- Input Container -->
   <div
     class="acp-autocomplete-wrapper-input-container"
@@ -9,6 +12,7 @@
       <mat-icon class="acp-autocomplete-wrapper-search-icon">search</mat-icon>
       <input
         #searchInput
+        [id]="inputId"
         type="text"
         class="acp-autocomplete-wrapper-input-field"
         [placeholder]="config.placeholder"
@@ -170,7 +174,11 @@
                 >
                   <mat-icon>chevron_left</mat-icon>
                 </button>
+                <label class="acp-autocomplete-wrapper-page-label" [for]="inputId + '-page'"
+                  >Página</label
+                >
                 <input
+                  [id]="inputId + '-page'"
                   type="number"
                   class="autocomplete-wrapper-page-input"
                   [value]="currentPage()"

@@ -38,6 +38,13 @@
   font-size: 20px;
 }
 
+.acp-autocomplete-wrapper-label {
+  display: block;
+  font-size: 12px;
+  color: var(--mat-sys-on-surface-variant, #666);
+  margin-bottom: 4px;
+}
+
 .acp-autocomplete-wrapper-input-field {
   flex: 1;
   border: none;
@@ -253,6 +260,12 @@
     width: 18px;
     height: 18px;
   }
+}
+
+.acp-autocomplete-wrapper-page-label {
+  font-size: 12px;
+  color: var(--mat-sys-on-surface-variant, #666);
+  margin-right: 4px;
 }
 
 .acp-autocomplete-wrapper-page-input {

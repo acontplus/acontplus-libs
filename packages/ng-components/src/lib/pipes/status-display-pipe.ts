@@ -1,4 +1,4 @@
-import { inject, Pipe, PipeTransform } from '@angular/core';
+import { inject, Pipe, PipeTransform, SecurityContext } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { TranslocoService } from '@jsverse/transloco';
 
@@ -41,8 +41,10 @@ export class StatusDisplayPipe implements PipeTransform {
     const text = this.getStatusText(isActive, gender, customActiveText, customInactiveText);
     const icon = isActive ? 'check_circle' : 'cancel';
     const colorClass = isActive ? 'text-green-500' : 'text-red-500';
-    const combinedIconClass = `${colorClass} align-middle mr-1 ${iconClass}`.trim();
-    const combinedTextClass = `align-middle ${textClass}`.trim();
+    const sanitizedIconClass = this.sanitizeClassName(iconClass);
+    const sanitizedTextClass = this.sanitizeClassName(textClass);
+    const combinedIconClass = `${colorClass} align-middle mr-1 ${sanitizedIconClass}`.trim();
+    const combinedTextClass = `align-middle ${sanitizedTextClass}`.trim();
 
     let html = '';
 
@@ -61,8 +63,12 @@ export class StatusDisplayPipe implements PipeTransform {
     customActive?: string,
     customInactive?: string,
   ): string {
-    if (customActive && isActive) return customActive;
-    if (customInactive && !isActive) return customInactive;
+    if (customActive && isActive) {
+      return this.sanitizer.sanitize(SecurityContext.HTML, customActive) || customActive;
+    }
+    if (customInactive && !isActive) {
+      return this.sanitizer.sanitize(SecurityContext.HTML, customInactive) || customInactive;
+    }
     if (!this.transloco) return this.getFallbackText(isActive, gender);
 
     const translationKey = this.getTranslationKey(isActive, gender);
@@ -91,5 +97,11 @@ export class StatusDisplayPipe implements PipeTransform {
     } else {
       return gender === 'female' ? 'Inactiva' : 'Inactivo';
     }
+  }
+
+  private sanitizeClassName(className: string): string {
+    // Only allow alphanumeric characters, hyphens, underscores, and spaces
+    // This prevents CSS injection through class names
+    return className.replace(/[^a-zA-Z0-9_-\s]/g, '');
   }
 }

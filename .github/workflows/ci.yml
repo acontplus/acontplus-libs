@@ -38,14 +38,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9f68d2
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           filter: tree:0
 
-      - uses: pnpm/action-setup@fe02b34c77c8cc9d786d3c8acc6211e3f402516b
+      - uses: pnpm/action-setup@v6
 
-      - uses: actions/setup-node@1f8c5b68e2f1eacc1d0f4ff6e6fdf31bb5c4f2d2
+      - uses: actions/setup-node@v6
         with:
           node-version: 24
           cache: 'pnpm'
@@ -53,7 +53,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - uses: nrwl/nx-set-shas@9a09540d0b1a9b6fc2a7b0ae9b7c5870666f7e4a
+      - uses: nrwl/nx-set-shas@v5
 
       - name: Run lint
         run: pnpm exec nx affected -t lint --exclude demo-app --parallel=3

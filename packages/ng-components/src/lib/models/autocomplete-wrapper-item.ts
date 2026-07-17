@@ -23,6 +23,7 @@ export type AutocompleteWrapperSearchFunction = (
 
 export interface AutocompleteWrapperConfig {
   placeholder?: string;
+  label?: string;
   clearInput?: boolean;
   disabled?: boolean;
   debounceTime?: number;

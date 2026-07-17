@@ -8,14 +8,14 @@
 @use '../../../packages/ng-notifications/src/styles/snackbar-themes.scss';
 
 // Import prebuilt themes from ng-components
-@import '@acontplus/ng-components/prebuilt-themes/blue';
-@import '@acontplus/ng-components/prebuilt-themes/aqua';
-@import '@acontplus/ng-components/prebuilt-themes/purple';
-@import '@acontplus/ng-components/prebuilt-themes/green';
-@import '@acontplus/ng-components/prebuilt-themes/cyan';
-@import '@acontplus/ng-components/prebuilt-themes/orange';
-@import '@acontplus/ng-components/prebuilt-themes/pink';
-@import '@acontplus/ng-components/prebuilt-themes/rose';
+@use '@acontplus/ng-components/prebuilt-themes/blue';
+@use '@acontplus/ng-components/prebuilt-themes/aqua';
+@use '@acontplus/ng-components/prebuilt-themes/purple';
+@use '@acontplus/ng-components/prebuilt-themes/green';
+@use '@acontplus/ng-components/prebuilt-themes/cyan';
+@use '@acontplus/ng-components/prebuilt-themes/orange';
+@use '@acontplus/ng-components/prebuilt-themes/pink';
+@use '@acontplus/ng-components/prebuilt-themes/rose';
 
 // Set default theme color
 html {

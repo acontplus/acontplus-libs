@@ -438,28 +438,19 @@ export class StringFormatter {
       return crypto.randomUUID();
     }
 
-    // Fallback for environments without crypto.randomUUID (e.g., older browsers)
-    // Note: This fallback is not cryptographically secure
-    return (
-      this.S4() +
-      this.S4() +
-      '-' +
-      this.S4() +
-      '-' +
-      this.S4() +
-      '-' +
-      this.S4() +
-      '-' +
-      this.S4() +
-      this.S4() +
-      this.S4()
-    );
-  }
+    if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+      const bytes = new Uint8Array(16);
+      crypto.getRandomValues(bytes);
+      // Set version (4) and variant bits per RFC 4122
+      bytes[6] = (bytes[6] & 0x0f) | 0x40;
+      bytes[8] = (bytes[8] & 0x3f) | 0x80;
+      const hex = Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
+      return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+    }
 
-  private static S4() {
-    return Math.trunc((1 + Math.random()) * 0x10000)
-      .toString(16)
-      .substring(1);
+    throw new Error(
+      'crypto API is not available: cannot generate a cryptographically secure GUID.',
+    );
   }
 
   /**

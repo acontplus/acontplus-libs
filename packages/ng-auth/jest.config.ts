@@ -8,14 +8,14 @@ export default {
       'jest-preset-angular',
       {
         tsconfig: '<rootDir>/tsconfig.spec.json',
-        stringifyContentPathRegex: '\\.(html|svg)$',
+        stringifyContentPathRegex: String.raw`\.(html|svg)$`,
         isolatedModules: true,
         useESM: true,
       },
     ],
   },
   transformIgnorePatterns: [
-    'node_modules/(?!.*\\.mjs$|@angular|@jsverse|rxjs|tslib|@acontplus|uuid|jwt-decode)',
+    String.raw`node_modules/(?!.*\.mjs$|@angular|@jsverse|rxjs|tslib|@acontplus|uuid|jwt-decode)`,
   ],
   snapshotSerializers: [
     'jest-preset-angular/build/serializers/no-ng-attributes',

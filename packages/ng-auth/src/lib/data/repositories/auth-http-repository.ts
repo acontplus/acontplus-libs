@@ -26,7 +26,8 @@ import { AuthTokens } from '@acontplus/core';
 import { AUTH_API } from '@acontplus/ng-config';
 
 function getDeviceInfo(): string {
-  return `${navigator.platform ?? 'Unknown'} - ${navigator.userAgent}`;
+  const platform = (navigator as any).userAgentData?.platform ?? 'Unknown';
+  return `${platform} - ${navigator.userAgent}`;
 }
 
 @Injectable({

@@ -6,7 +6,7 @@ import { ProfitMarginCalculation } from '../../types';
  * Calculadora especializada para márgenes de ganancia y utilidades
  */
 export class ProfitCalculator {
-  constructor(private decimals = 4) {}
+  constructor(private readonly decimals = 4) {}
 
   /**
    * Calcula el precio de venta a partir del costo y el margen de ganancia
@@ -79,7 +79,7 @@ export class ProfitCalculator {
       ParameterValidator.validatePositiveNumber(salePrice, 'salePrice');
       ParameterValidator.validatePositiveNumber(cost, 'cost');
 
-      return DecimalConverter.subtractAsNumber(salePrice, cost) as number;
+      return DecimalConverter.subtractAsNumber(salePrice, cost);
     } catch (error) {
       throw new PricingCalculationError('calculateProfitAmount', error as Error);
     }

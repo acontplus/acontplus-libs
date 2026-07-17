@@ -6,7 +6,7 @@ import { DiscountCalculation } from '../../types';
  * Calculadora especializada para descuentos
  */
 export class DiscountCalculator {
-  constructor(private decimales = 4) {}
+  constructor(private readonly decimales = 4) {}
 
   /**
    * Calcula el valor del descuento a partir del porcentaje

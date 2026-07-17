@@ -5,7 +5,6 @@ import { EXAMPLE_DATA } from '../../data';
 @Component({
   selector: 'app-data-grid-basic-example',
   templateUrl: './app.html',
-  styleUrl: './app.scss',
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [DataGrid],
 })

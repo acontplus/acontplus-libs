@@ -11,7 +11,7 @@ import { ComponentPageTitleService } from '../../shared/services/page-title';
   imports: [MatButtonModule, RouterLink],
 })
 export class AppLayout implements OnInit {
-  private _componentPageTitle = inject(ComponentPageTitleService);
+  private readonly _componentPageTitle = inject(ComponentPageTitleService);
 
   @HostBinding('class.main-content') readonly mainContentClass = true;
 

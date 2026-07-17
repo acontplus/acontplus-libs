@@ -255,27 +255,28 @@ export class ReusableAutocompleteComponent implements OnInit, OnDestroy {
 
     switch (event.key) {
       case 'ArrowDown':
-        this.handleArrowDown(maxIndex);
+        this.handleArrowDown(maxIndex, event);
         break;
       case 'ArrowUp':
-        this.handleArrowUp(maxIndex);
+        this.handleArrowUp(maxIndex, event);
         break;
       case 'Enter':
-        this.handleEnter(currentList, maxIndex);
+        this.handleEnter(currentList, maxIndex, event);
         break;
       case 'Escape':
-        this.handleEscape();
+        this.handleEscape(event);
         break;
       case 'PageDown':
-        this.handlePageDown();
+        this.handlePageDown(event);
         break;
       case 'PageUp':
-        this.handlePageUp();
+        this.handlePageUp(event);
         break;
     }
   }
 
-  private handleArrowDown(maxIndex: number) {
+  private handleArrowDown(maxIndex: number, event?: KeyboardEvent) {
+    event?.preventDefault();
     if (maxIndex >= 0) {
       const nextIndex = this.selectedIndex() < maxIndex ? this.selectedIndex() + 1 : 0;
       this.selectedIndex.set(nextIndex);
@@ -283,7 +284,8 @@ export class ReusableAutocompleteComponent implements OnInit, OnDestroy {
     }
   }
 
-  private handleArrowUp(maxIndex: number) {
+  private handleArrowUp(maxIndex: number, event?: KeyboardEvent) {
+    event?.preventDefault();
     if (maxIndex >= 0) {
       const prevIndex = this.selectedIndex() > 0 ? this.selectedIndex() - 1 : maxIndex;
       this.selectedIndex.set(prevIndex);
@@ -291,23 +293,31 @@ export class ReusableAutocompleteComponent implements OnInit, OnDestroy {
     }
   }
 
-  private handleEnter(currentList: AutocompleteWrapperItem[], maxIndex: number) {
+  private handleEnter(
+    currentList: AutocompleteWrapperItem[],
+    maxIndex: number,
+    event?: KeyboardEvent,
+  ) {
+    event?.preventDefault();
     if (this.selectedIndex() >= 0 && this.selectedIndex() <= maxIndex) {
       this.selectItem(currentList[this.selectedIndex()]);
     }
   }
 
-  private handleEscape() {
+  private handleEscape(event?: KeyboardEvent) {
+    event?.preventDefault();
     this.hideOverlay();
   }
 
-  private handlePageDown() {
+  private handlePageDown(event?: KeyboardEvent) {
+    event?.preventDefault();
     if (!this.isHistoryVisible() && this.config.enablePagination) {
       this.goToNextPage();
     }
   }
 
-  private handlePageUp() {
+  private handlePageUp(event?: KeyboardEvent) {
+    event?.preventDefault();
     if (!this.isHistoryVisible() && this.config.enablePagination) {
       this.goToPreviousPage();
     }

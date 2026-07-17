@@ -38,19 +38,19 @@ jobs:
     steps:
       # RELEASE_TOKEN (PAT) is required to push version commits and tags
       # to main, which is protected and requires PRs for normal pushes.
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9f68d2
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           filter: tree:0
           token: ${{ secrets.RELEASE_TOKEN }}
 
-      - uses: pnpm/action-setup@fe02b34c77c8cc9d786d3c8acc6211e3f402516b
+      - uses: pnpm/action-setup@v6
 
       # Per https://docs.npmjs.com/trusted-publishers:
       # - registry-url is required for OIDC endpoint configuration
       # - package-manager-cache: false is explicitly recommended for release builds
       # - id-token: write permission enables OIDC token generation
-      - uses: actions/setup-node@1f8c5b68e2f1eacc1d0f4ff6e6fdf31bb5c4f2d2
+      - uses: actions/setup-node@v6
         with:
           node-version: '24'
           registry-url: 'https://registry.npmjs.org'

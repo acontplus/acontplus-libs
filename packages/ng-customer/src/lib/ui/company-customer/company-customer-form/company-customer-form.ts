@@ -59,12 +59,12 @@ export class CompanyCustomerForm implements OnInit {
   showButtons = input(true);
   submitted = output<any>();
   cancelled = output<void>();
-  private fb = inject(FormBuilder);
+  private readonly fb = inject(FormBuilder);
 
   config =
     inject(COMPANY_CUSTOMER_FORM_CONFIG, { optional: true }) ?? MAIN_APP_COMPANY_CUSTOMER_CONFIG;
 
-  private customerService =
+  private readonly customerService =
     inject(COMPANY_CUSTOMER_HTTP_TOKEN, { optional: true }) ?? inject(CompanyCustomerHttp);
 
   form!: FormGroup;
@@ -298,9 +298,11 @@ export class CompanyCustomerForm implements OnInit {
     // Validadores específicos por campo
     switch (fieldName) {
       case 'numeroIdentificacion':
-        validators.push(Validators.minLength(13));
-        validators.push(Validators.maxLength(13));
-        validators.push(CustomerValidators.endsWith001());
+        validators.push(
+          Validators.minLength(13),
+          Validators.maxLength(13),
+          CustomerValidators.endsWith001(),
+        );
         break;
 
       case 'correo':
@@ -366,8 +368,8 @@ export class CompanyCustomerForm implements OnInit {
 
     const operation$ =
       this.mode() === 'create'
-        ? this.customerService!.create(customerData)
-        : this.customerService!.update(this.customer()!.id!, customerData);
+        ? this.customerService.create(customerData)
+        : this.customerService.update(this.customer().id, customerData);
 
     operation$.subscribe({
       next: (savedCustomer: any) => {
@@ -387,7 +389,7 @@ export class CompanyCustomerForm implements OnInit {
 
   getErrorMessage(fieldName: string): string {
     const control = this.form.get(fieldName);
-    if (!control || !control.errors || !control.touched) {
+    if (!control?.errors || !control.touched) {
       return '';
     }
 

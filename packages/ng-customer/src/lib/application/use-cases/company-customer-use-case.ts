@@ -2,7 +2,7 @@ import { CustomerRepository } from '../../domain';
 import { CustomerSearch } from '../../domain/models/customer-search';
 
 export class CompanyCustomerUseCase {
-  constructor(private repo: CustomerRepository) {}
+  constructor(private readonly repo: CustomerRepository) {}
 
   getAll(params: any) {
     return this.repo.getAll(params);

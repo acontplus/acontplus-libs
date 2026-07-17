@@ -22,7 +22,7 @@ export class ObjectHelper {
    * @example ObjectHelper.isUndefined(1)           = false
    */
   public static isUndefined(value: unknown): value is undefined {
-    return typeof value === 'undefined';
+    return value === undefined;
   }
 
   /**

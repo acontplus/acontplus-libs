@@ -9,9 +9,9 @@ import { COMPANY_CUSTOMER_MAPPER } from '../customer-token';
   providedIn: 'root',
 })
 export class CompanyCustomerHttp implements ICompanyCustomerHttp {
-  private apiUrl = '/FactElect/CompanyCustomer/';
-  private http = inject(HttpClient);
-  private mapper =
+  private readonly apiUrl = '/FactElect/CompanyCustomer/';
+  private readonly http = inject(HttpClient);
+  private readonly mapper =
     inject(COMPANY_CUSTOMER_MAPPER, { optional: true }) ?? new CompanyCustomerDefaultMapper();
 
   getFormData() {
@@ -71,6 +71,6 @@ export class CompanyCustomerHttp implements ICompanyCustomerHttp {
   }
 
   private isValidPhone(phone: string): boolean {
-    return /^\d{10}$/.test(phone.replace(/\D/g, ''));
+    return /^\d{10}$/.test(phone.replaceAll(/\D/g, ''));
   }
 }

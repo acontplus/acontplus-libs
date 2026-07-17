@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
   providedIn: 'root',
 })
 export class CorrelationInfo {
-  private correlationId = signal<string | null>(null);
+  private readonly correlationId = signal<string | null>(null);
   private readonly CORRELATION_KEY = 'correlation-id';
 
   // Signal-based getter for reactive updates

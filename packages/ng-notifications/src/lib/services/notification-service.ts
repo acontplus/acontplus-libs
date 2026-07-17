@@ -20,12 +20,12 @@ import { NotificationCallProps, SweetAlertConfig } from '../types/notification.t
   providedIn: 'root',
 })
 export class NotificationService {
-  private config = inject<NotificationProviderConfig>(NOTIFICATION_CONFIG);
-  private toastrProvider = inject(ToastrProvider);
-  private snackbarProvider = inject(SnackbarProvider);
-  private sweetAlertProvider = inject(SweetalertProvider);
+  private readonly config = inject<NotificationProviderConfig>(NOTIFICATION_CONFIG);
+  private readonly toastrProvider = inject(ToastrProvider);
+  private readonly snackbarProvider = inject(SnackbarProvider);
+  private readonly sweetAlertProvider = inject(SweetalertProvider);
 
-  private providers = new Map<NotificationProvider, NotificationProviderBase>();
+  private readonly providers = new Map<NotificationProvider, NotificationProviderBase>();
   private currentProvider: NotificationProviderBase;
 
   // Expose predefined messages

@@ -12,7 +12,7 @@ export interface NotificationProviderConfig {
   toastr?: unknown;
   snackbar?: unknown;
   sweetalert?: {
-    defaultTheme?: 'auto' | 'material-ui' | 'material-ui-light' | 'material-ui-dark' | string;
+    defaultTheme?: 'auto' | 'material-ui' | 'material-ui-light' | 'material-ui-dark';
     [key: string]: unknown;
   };
 }

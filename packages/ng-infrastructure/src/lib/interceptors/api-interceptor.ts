@@ -149,14 +149,14 @@ function handleToastNotifications(
   });
 
   // Secondary: show individual warnings only when no primary message covered them
-  if (response.status === 'warning' && response.warnings?.length && !response.message) {
+  if (response.status === 'warning' && response.warnings?.length && response.message) {
     response.warnings.forEach((w) =>
       notificationService.show({ type: 'warning', message: w.message }),
     );
   }
 
   // Secondary: show individual errors only when no primary message covered them
-  if (response.status === 'error' && response.errors?.length && !response.message) {
+  if (response.status === 'error' && response.errors?.length && response.message) {
     response.errors.forEach((e) => notificationService.show({ type: 'error', message: e.message }));
   }
 }
@@ -191,9 +191,6 @@ function transformResponseForConsumers(
         : originalEvent.clone({ body: response });
 
     case 'error':
-      // Already handled in switchMap — this is a safety fallback
-      return originalEvent.clone({ body: response });
-
     default:
       return originalEvent.clone({ body: response });
   }

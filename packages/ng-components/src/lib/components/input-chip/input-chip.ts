@@ -21,7 +21,6 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
   selector: 'acp-input-chip',
   imports: [MatFormField, MatLabel, MatChipRow, MatIcon, MatHint, MatChipGrid, MatChipInput],
   templateUrl: './input-chip.html',
-  styleUrl: './input-chip.scss',
   changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })

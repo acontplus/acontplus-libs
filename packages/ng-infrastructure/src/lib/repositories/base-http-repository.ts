@@ -9,28 +9,28 @@ export abstract class BaseHttpRepository {
   protected abstract config: RepositoryConfig; // Abstract property
 
   protected buildUrl(path = ''): string {
-    const baseUrl = (this.config.baseUrl || '/api').replace(/\/+$/, '');
+    const baseUrl = (this.config.baseUrl || '/api').replaceAll(/\/+/g, '');
     const version = this.config.version ? `/v${this.config.version}` : '';
     const endpoint = path
-      ? `${this.config.endpoint}/${path}`.replace(/\/+/g, '/')
+      ? `${this.config.endpoint}/${path}`.replaceAll(/\/+/g, '/')
       : this.config.endpoint;
 
     return `${baseUrl}${version}/${endpoint.replace(/^\/+/, '')}`;
   }
 
-  protected get<T>(path = '', params?: Record<string, string | number | boolean>): Observable<T> {
+  protected get<T>(params?: Record<string, string | number | boolean>, path = ''): Observable<T> {
     return this.http.get<T>(this.buildUrl(path), { params });
   }
 
-  protected post<T>(path = '', body: unknown): Observable<T> {
+  protected post<T>(body: unknown, path = ''): Observable<T> {
     return this.http.post<T>(this.buildUrl(path), body);
   }
 
-  protected put<T>(path = '', body: unknown): Observable<T> {
+  protected put<T>(body: unknown, path = ''): Observable<T> {
     return this.http.put<T>(this.buildUrl(path), body);
   }
 
-  protected patch<T>(path = '', body?: unknown): Observable<T> {
+  protected patch<T>(body?: unknown, path = ''): Observable<T> {
     return this.http.patch<T>(this.buildUrl(path), body);
   }
 

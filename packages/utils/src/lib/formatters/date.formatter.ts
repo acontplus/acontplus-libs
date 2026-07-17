@@ -1,8 +1,8 @@
 import { ObjectHelper } from '../helpers';
-import { TIME_OF_DAY, HOUR_OF_DAY, MINUTE_OF_DAY, SECOND_OF_DAY } from '../types';
+import { TIME_OF_DAY, MINUTE_OF_DAY, SECOND_OF_DAY } from '../types';
 
 export class DateFormatter {
-  private static timeFormatRegex = /yyyy|yy|MM|M|dd|d|HH|H|mm|m|ss|s|SSS|S/g;
+  private static readonly timeFormatRegex = /yyyy|yy|MM|M|dd|d|HH|H|mm|m|ss|s|SSS|S/g;
 
   /**
    * Adds a number of years to a date returning a new object. The original Date is unchanged.
@@ -159,7 +159,7 @@ export class DateFormatter {
       return '';
     }
 
-    return format.replace(this.timeFormatRegex, matched =>
+    return format.replaceAll(this.timeFormatRegex, matched =>
       this.getTimeFormat(false, date, matched),
     );
   }
@@ -188,7 +188,9 @@ export class DateFormatter {
     if (!this.isValid(date)) {
       return '';
     }
-    return format.replace(this.timeFormatRegex, matched => this.getTimeFormat(true, date, matched));
+    return format.replaceAll(this.timeFormatRegex, matched =>
+      this.getTimeFormat(true, date, matched),
+    );
   }
 
   /**
@@ -318,49 +320,54 @@ export class DateFormatter {
     if (ObjectHelper.isNullOrUndefined(date)) {
       return false;
     }
-    return !isNaN(date.getTime());
+    return !Number.isNaN(date.getTime());
   }
 
   private static getTimeFormat(isUTC: boolean, date: Date, formatKey: string): string {
+    const getYear = () => (isUTC ? date.getUTCFullYear() : date.getFullYear());
+    const getMonth = () => (isUTC ? date.getUTCMonth() : date.getMonth()) + 1;
+    const getDay = () => (isUTC ? date.getUTCDate() : date.getDate());
+    const getHours = () => (isUTC ? date.getUTCHours() : date.getHours());
+    const getMinutes = () => (isUTC ? date.getUTCMinutes() : date.getMinutes());
+    const getSeconds = () => (isUTC ? date.getUTCSeconds() : date.getSeconds());
+    const getMilliseconds = () => (isUTC ? date.getUTCMilliseconds() : date.getMilliseconds());
+
+    const padZero = (value: number): string => (value >= 10 ? value.toString() : `0${value}`);
+    const padThreeZeros = (value: number): string => {
+      if (value >= 100) return value.toString();
+      if (value >= 10) return `0${value}`;
+      return `00${value}`;
+    };
+
     switch (formatKey) {
       case 'yyyy':
-        return (isUTC ? date.getUTCFullYear() : date.getFullYear()).toString();
+        return getYear().toString();
       case 'yy':
-        return (isUTC ? date.getUTCFullYear() : date.getFullYear()).toString().slice(2);
+        return getYear().toString().slice(2);
       case 'MM':
-        const month = isUTC ? date.getUTCMonth() + 1 : date.getMonth() + 1;
-        return month >= 10 ? month.toString() : `0${month}`;
+        return padZero(getMonth());
       case 'M':
-        return (isUTC ? date.getUTCMonth() + 1 : date.getMonth() + 1).toString();
+        return getMonth().toString();
       case 'dd':
-        const day = isUTC ? date.getUTCDate() : date.getDate();
-        return day >= 10 ? day.toString() : `0${day}`;
+        return padZero(getDay());
       case 'd':
-        return (isUTC ? date.getUTCDate() : date.getDate()).toString();
+        return getDay().toString();
       case 'HH':
-        const hour = isUTC ? date.getUTCHours() : date.getHours();
-        return hour >= 10 ? hour.toString() : `0${hour}`;
+        return padZero(getHours());
       case 'H':
-        return (isUTC ? date.getUTCHours() : date.getHours()).toString();
+        return getHours().toString();
       case 'mm':
-        const min = isUTC ? date.getUTCMinutes() : date.getMinutes();
-        return min >= 10 ? min.toString() : `0${min}`;
+        return padZero(getMinutes());
       case 'm':
-        return (isUTC ? date.getUTCMinutes() : date.getMinutes()).toString();
+        return getMinutes().toString();
       case 'ss':
-        const seconds = isUTC ? date.getUTCSeconds() : date.getSeconds();
-        return seconds >= 10 ? seconds.toString() : `0${seconds}`;
+        return padZero(getSeconds());
       case 's':
-        return (isUTC ? date.getUTCSeconds() : date.getSeconds()).toString();
+        return getSeconds().toString();
       case 'SSS':
-        const milliseconds = isUTC ? date.getUTCMilliseconds() : date.getMilliseconds();
-        return milliseconds >= 100
-          ? milliseconds.toString()
-          : milliseconds >= 10
-            ? `0${milliseconds}`
-            : `00${milliseconds}`;
+        return padThreeZeros(getMilliseconds());
       case 'S':
-        return (isUTC ? date.getUTCMilliseconds() : date.getMilliseconds()).toString();
+        return getMilliseconds().toString();
       default:
         return '';
     }

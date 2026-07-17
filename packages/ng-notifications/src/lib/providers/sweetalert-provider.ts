@@ -15,8 +15,8 @@ import { ThemeDetector } from '../services/theme-detector';
   providedIn: 'root',
 })
 export class SweetalertProvider extends NotificationProviderBase {
-  private config = inject<NotificationProviderConfig>(NOTIFICATION_CONFIG);
-  private themeDetector = inject(ThemeDetector);
+  private readonly config = inject<NotificationProviderConfig>(NOTIFICATION_CONFIG);
+  private readonly themeDetector = inject(ThemeDetector);
 
   private getTheme(): string {
     const configTheme = (this.config.sweetalert as any)?.defaultTheme;
@@ -80,7 +80,7 @@ export class SweetalertProvider extends NotificationProviderBase {
     const swalConfig = {
       title: props.title,
       text: props.message,
-      icon: props.type as 'success' | 'error' | 'warning' | 'info',
+      icon: props.type,
       theme: this.getTheme(),
       ...(duration ? { timer: duration as number, timerProgressBar: true } : {}),
       ...otherConfig,

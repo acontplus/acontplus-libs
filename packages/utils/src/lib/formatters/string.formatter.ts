@@ -175,7 +175,7 @@ export class StringFormatter {
     } else if (stripChars.length === 0) {
       return str;
     } else {
-      while (start !== strLen && stripChars.indexOf(str.charAt(start)) !== -1) {
+      while (start !== strLen && stripChars.includes(str.charAt(start))) {
         start++;
       }
     }
@@ -207,7 +207,7 @@ export class StringFormatter {
     } else if (stripChars.length === 0) {
       return str;
     } else {
-      while (end !== 0 && stripChars.indexOf(str.charAt(end - 1)) !== -1) {
+      while (end !== 0 && stripChars.includes(str.charAt(end - 1))) {
         end--;
       }
     }
@@ -325,7 +325,7 @@ export class StringFormatter {
    */
   public static contains(str: string, searchStr: string): boolean {
     if (ObjectHelper.isString(str) && ObjectHelper.isString(searchStr)) {
-      return str.indexOf(searchStr) >= 0;
+      return str.includes(searchStr);
     } else {
       return false;
     }
@@ -338,7 +338,7 @@ export class StringFormatter {
    */
   public static containsIgnoreCase(str: string, searchStr: string): boolean {
     if (ObjectHelper.isString(str) && ObjectHelper.isString(searchStr)) {
-      return str.toLocaleLowerCase().indexOf(searchStr.toLocaleLowerCase()) >= 0;
+      return str.toLocaleLowerCase().includes(searchStr.toLocaleLowerCase());
     } else {
       return false;
     }
@@ -379,9 +379,7 @@ export class StringFormatter {
     if (!ObjectHelper.isString(str) || !ObjectHelper.isString(prefix)) {
       return false;
     }
-    // return str.indexOf(prefix) === 0;
-    // according to https://leonax.net/p/5806/use-string-startswith-and-endswith-in-javascript/
-    return str.slice(0, prefix.length) === prefix;
+    return str.startsWith(prefix);
   }
 
   /**
@@ -407,7 +405,7 @@ export class StringFormatter {
     if (!ObjectHelper.isString(str) || !ObjectHelper.isString(suffix)) {
       return false;
     }
-    return str.indexOf(suffix, str.length - suffix.length) !== -1;
+    return str.endsWith(suffix);
   }
 
   /**
@@ -421,7 +419,7 @@ export class StringFormatter {
     }
     const useStr = str.toLocaleLowerCase();
     const useSuffix = suffix.toLocaleLowerCase();
-    return useStr.indexOf(useSuffix, useStr.length - useSuffix.length) !== -1;
+    return useStr.endsWith(useSuffix);
   }
 
   /**
@@ -429,7 +427,7 @@ export class StringFormatter {
    * @param ch
    */
   public static isWhitespace(ch: string): boolean {
-    return ' \f\n\r\t\v\u00A0\u2028\u2029'.indexOf(ch) > -1;
+    return ' \f\n\r\t\v\u00A0\u2028\u2029'.includes(ch);
   }
 
   /**
@@ -459,7 +457,9 @@ export class StringFormatter {
   }
 
   private static S4() {
-    return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+    return Math.trunc((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
   }
 
   /**
@@ -568,7 +568,7 @@ export class StringFormatter {
       return str;
     }
 
-    return str.replace(new RegExp(this.escapeRegExp(searchValue), 'g'), replacer);
+    return str.replaceAll(new RegExp(this.escapeRegExp(searchValue), 'g'), replacer);
   }
 
   /**
@@ -587,10 +587,10 @@ export class StringFormatter {
     }
 
     const useSeparator = separator ?? '';
-    return array.map(item => String(item)).join(useSeparator);
+    return array.map(String).join(useSeparator);
   }
 
   private static escapeRegExp(str: string): string {
-    return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, '\\$1');
+    return str.replaceAll(/([.*+?^=!:${}()|[\]/\\])/g, '\\$1');
   }
 }

@@ -1,0 +1,60 @@
+@if (variant() === 'icon') {
+<button
+  matIconButton
+  [disabled]="isDisabled()"
+  [disableRipple]="disableRipple()"
+  [acpLoading]="loading()"
+  [type]="type()"
+  [ngClass]="[color(), square() ? 'square' : '', size()]"
+  (click)="clicked.emit()"
+  (focus)="focused.emit()"
+  (blur)="blurred.emit()"
+>
+  <mat-icon>{{icon()}}</mat-icon>
+</button>
+} @else if (variant() === 'fab') {
+<button
+  matFab
+  [extended]="extended()"
+  [disabled]="isDisabled()"
+  [disableRipple]="disableRipple()"
+  [acpLoading]="loading()"
+  [type]="type()"
+  [ngClass]="[color(), size()]"
+  (click)="clicked.emit()"
+  (focus)="focused.emit()"
+  (blur)="blurred.emit()"
+>
+  @if (icon()) { <mat-icon>{{icon()}}</mat-icon> } @if (extended()) { <ng-content></ng-content> }
+</button>
+} @else if (variant() === 'mini-fab') {
+<button
+  matMiniFab
+  [disabled]="isDisabled()"
+  [disableRipple]="disableRipple()"
+  [acpLoading]="loading()"
+  [type]="type()"
+  [ngClass]="[color(), size()]"
+  (click)="clicked.emit()"
+  (focus)="focused.emit()"
+  (blur)="blurred.emit()"
+>
+  <mat-icon>{{icon()}}</mat-icon>
+</button>
+} @else {
+<button
+  [matButton]="appearance()"
+  [disabled]="isDisabled()"
+  [disableRipple]="disableRipple()"
+  [acpLoading]="loading()"
+  [type]="type()"
+  [ngClass]="[color(), square() ? 'square' : '', size()]"
+  (click)="clicked.emit()"
+  (focus)="focused.emit()"
+  (blur)="blurred.emit()"
+>
+  @if (icon()) { <mat-icon>{{icon()}}</mat-icon> }
+  <ng-content></ng-content>
+  @if (suffixIcon()) { <mat-icon iconPositionEnd>{{suffixIcon()}}</mat-icon> }
+</button>
+}

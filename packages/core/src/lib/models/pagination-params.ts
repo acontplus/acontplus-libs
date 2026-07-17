@@ -26,14 +26,15 @@ export class PaginationParams {
     return this._pageIndex;
   }
   set pageIndex(value: number) {
-    this._pageIndex = value < 1 ? 1 : value;
+    this._pageIndex = Math.max(1, value);
   }
 
   get pageSize(): number {
     return this._pageSize;
   }
   set pageSize(value: number) {
-    this._pageSize = value < 1 ? 10 : value > 1000 ? 1000 : value;
+    const clampedValue = value < 1 ? 10 : value;
+    this._pageSize = clampedValue > 1000 ? 1000 : clampedValue;
   }
 
   get skip(): number {

@@ -119,7 +119,7 @@
 
     &:hover:not([disabled]) {
       background-color: var(--mat-sys-surface-variant, #e7e0ec);
-      border-color: var(--mat-sys-primary, #6750a4);
+      border: 1.5px solid var(--mat-sys-primary, #6750a4);
     }
 
     &[disabled] {

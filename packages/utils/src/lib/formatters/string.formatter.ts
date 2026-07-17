@@ -491,11 +491,66 @@ export class StringFormatter {
       return '';
     }
 
-    return String(str)
-      .replace(/(^[^A-Za-z0-9]*)|([^A-Za-z0-9]*$)/g, '')
-      .replace(/([a-z])([A-Z])/g, (m, a, b) => a + '_' + b.toLowerCase())
-      .replace(/([^A-Za-z0-9]+)|(_+)/g, '_')
-      .toLowerCase();
+    let result = String(str);
+
+    // Remove leading non-alphanumeric characters
+    while (result.length > 0 && !this.isAlphanumeric(result[0])) {
+      result = result.slice(1);
+    }
+
+    // Remove trailing non-alphanumeric characters
+    while (result.length > 0 && !this.isAlphanumeric(result[result.length - 1])) {
+      result = result.slice(0, -1);
+    }
+
+    // Convert camelCase to snake_case
+    let converted = '';
+    for (let i = 0; i < result.length; i++) {
+      const char = result[i];
+      if (i > 0 && this.isLowerCase(result[i - 1]) && this.isUpperCase(char)) {
+        converted += '_' + char.toLowerCase();
+      } else {
+        converted += char;
+      }
+    }
+    result = converted;
+
+    // Replace sequences of non-alphanumeric characters and underscores with single underscore
+    let cleaned = '';
+    let inSeparator = false;
+    for (const char of result) {
+      if (!this.isAlphanumeric(char)) {
+        if (!inSeparator) {
+          cleaned += '_';
+          inSeparator = true;
+        }
+      } else {
+        cleaned += char;
+        inSeparator = false;
+      }
+    }
+    result = cleaned;
+
+    return result.toLowerCase();
+  }
+
+  private static isAlphanumeric(char: string): boolean {
+    const code = char.charCodeAt(0);
+    return (
+      (code >= 48 && code <= 57) || // 0-9
+      (code >= 65 && code <= 90) || // A-Z
+      (code >= 97 && code <= 122) // a-z
+    );
+  }
+
+  private static isLowerCase(char: string): boolean {
+    const code = char.charCodeAt(0);
+    return code >= 97 && code <= 122;
+  }
+
+  private static isUpperCase(char: string): boolean {
+    const code = char.charCodeAt(0);
+    return code >= 65 && code <= 90;
   }
 
   /**

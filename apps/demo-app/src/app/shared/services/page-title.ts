@@ -6,7 +6,7 @@ import { Title } from '@angular/platform-browser';
  */
 @Injectable({ providedIn: 'root' })
 export class ComponentPageTitleService {
-  private bodyTitle = inject(Title);
+  private readonly bodyTitle = inject(Title);
 
   _title = '';
   _originalTitle = 'AcontPlus Angular Material library';
@@ -17,7 +17,7 @@ export class ComponentPageTitleService {
 
   set title(title: string) {
     this._title = title && this.capitalizeTitle(title);
-    if (title !== '') {
+    if (title) {
       title = `${this._title} | AcontPlus Angular Material `;
     } else {
       title = this._originalTitle;
@@ -29,6 +29,6 @@ export class ComponentPageTitleService {
     return title
       .split('-')
       .join(' ')
-      .replace(/\b\w+\b/g, word => word.substring(0, 1).toUpperCase() + word.substring(1));
+      .replaceAll(/\b\w+\b/g, word => word.substring(0, 1).toUpperCase() + word.substring(1));
   }
 }

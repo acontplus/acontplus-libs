@@ -26,7 +26,7 @@ import { Customizer } from '../../components/customizer/customizer';
   ],
 })
 export class Navbar {
-  private themeSwitcher = inject(ThemeSwitcher);
+  private readonly themeSwitcher = inject(ThemeSwitcher);
 
   skipLinkHref: string | null | undefined;
   skipLinkHidden = true;

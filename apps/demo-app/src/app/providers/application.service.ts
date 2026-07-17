@@ -14,8 +14,8 @@ export interface Application {
   providedIn: 'root',
 })
 export class ApplicationService {
-  private http = inject(HttpClient);
-  private url = 'aplicaciones/';
+  private readonly http = inject(HttpClient);
+  private readonly url = 'aplicaciones/';
 
   get(): Observable<Application[]> {
     // The interceptor handles all standardization - just return the data

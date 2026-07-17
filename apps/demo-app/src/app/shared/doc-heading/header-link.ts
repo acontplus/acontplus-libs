@@ -27,7 +27,7 @@ import { MatIconModule } from '@angular/material/icon';
   imports: [MatIconModule],
 })
 export class HeaderLink implements OnInit {
-  private platformLocation = inject(PlatformLocation);
+  private readonly platformLocation = inject(PlatformLocation);
 
   /**
    * Id of the anchor element. Note that is uses "example" because we instantiate the

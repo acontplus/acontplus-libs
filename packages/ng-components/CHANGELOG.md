@@ -1,3 +1,15 @@
+## 2.3.0 (2026-07-17)
+
+### Features
+
+- **ng-components:** implement AcpButton v2 component and apply code quality improvements ([#139](https://github.com/acontplus/acontplus-libs/pull/139))
+- **ng-components:** implement AcpButton v2 component and apply code quality improvements ([#138](https://github.com/acontplus/acontplus-libs/pull/138))
+
+### ❤️ Thank You
+
+- Devin @devin-ai-integration[bot]
+- Emilio Senguana @senguanasoft
+
 ## 2.2.0 (2026-07-16)
 
 ### Features

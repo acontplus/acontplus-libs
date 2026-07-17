@@ -1,3 +1,21 @@
+## 2.3.1 (2026-07-17)
+
+### Features
+
+- **ng-components:** implement AcpButton v2 component and apply code quality improvements ([#138](https://github.com/acontplus/acontplus-libs/pull/138))
+
+### 🧱 Updated Dependencies
+
+- Updated utils to 1.1.2
+- Updated core to 1.1.6
+- Updated ng-notifications to 2.1.2
+- Updated ng-components to 2.3.0
+
+### ❤️ Thank You
+
+- Devin @devin-ai-integration[bot]
+- Emilio Senguana @senguanasoft
+
 ## 2.3.0 (2026-07-16)
 
 ### 🧱 Updated Dependencies

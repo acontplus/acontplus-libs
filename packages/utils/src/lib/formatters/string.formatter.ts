@@ -448,28 +448,9 @@ export class StringFormatter {
       return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
     }
 
-    // Fallback for environments without crypto (should be extremely rare)
-    // Note: This fallback is not cryptographically secure and should not be used for security-sensitive purposes
-    return (
-      this.S4() +
-      this.S4() +
-      '-' +
-      this.S4() +
-      '-' +
-      this.S4() +
-      '-' +
-      this.S4() +
-      '-' +
-      this.S4() +
-      this.S4() +
-      this.S4()
+    throw new Error(
+      'crypto API is not available: cannot generate a cryptographically secure GUID.',
     );
-  }
-
-  private static S4() {
-    return Math.trunc((1 + Math.random()) * 0x10000)
-      .toString(16)
-      .substring(1);
   }
 
   /**

@@ -31,6 +31,9 @@ export abstract class BaseButton {
   type = input<AcpButtonType>('button');
   extended = input(false, { transform: booleanAttribute });
   size = input<'small' | 'medium' | 'large'>('large');
+  text = input<string>();
+
+  hasText = computed(() => !!this.text() && this.text()!.trim().length > 0);
 
   clicked = output<void>();
   focused = output<void>();

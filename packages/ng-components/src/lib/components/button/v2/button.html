@@ -25,7 +25,8 @@
   (focus)="focused.emit()"
   (blur)="blurred.emit()"
 >
-  @if (icon()) { <mat-icon>{{icon()}}</mat-icon> } @if (extended()) { <ng-content></ng-content> }
+  @if (icon()) { <mat-icon>{{icon()}}</mat-icon> } @if (extended()) { @if (hasText()) { {{text()}} }
+  @else { <ng-content></ng-content> } }
 </button>
 } @else if (variant() === 'mini-fab') {
 <button
@@ -53,8 +54,8 @@
   (focus)="focused.emit()"
   (blur)="blurred.emit()"
 >
-  @if (icon()) { <mat-icon>{{icon()}}</mat-icon> }
-  <ng-content></ng-content>
-  @if (suffixIcon()) { <mat-icon iconPositionEnd>{{suffixIcon()}}</mat-icon> }
+  @if (icon()) { <mat-icon>{{icon()}}</mat-icon> } @if (hasText()) { {{text()}} } @else {
+  <ng-content></ng-content> } @if (suffixIcon()) {
+  <mat-icon iconPositionEnd>{{suffixIcon()}}</mat-icon> }
 </button>
 }

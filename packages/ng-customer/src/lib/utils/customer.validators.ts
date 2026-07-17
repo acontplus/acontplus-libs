@@ -45,7 +45,7 @@ export class CustomerValidators {
       }
 
       // Algoritmo de validación de cédula ecuatoriana
-      const provincia = parseInt(value.substring(0, 2));
+      const provincia = Number.parseInt(value.substring(0, 2));
       if (provincia < 1 || provincia > 24) {
         return { invalidProvince: true };
       }
@@ -54,12 +54,12 @@ export class CustomerValidators {
       let suma = 0;
 
       for (let i = 0; i < 9; i++) {
-        let valor = parseInt(value.charAt(i)) * coeficientes[i];
+        let valor = Number.parseInt(value.charAt(i)) * coeficientes[i];
         if (valor >= 10) valor -= 9;
         suma += valor;
       }
 
-      const digitoVerificador = parseInt(value.charAt(9));
+      const digitoVerificador = Number.parseInt(value.charAt(9));
       const resultado = suma % 10 === 0 ? 0 : 10 - (suma % 10);
 
       if (resultado !== digitoVerificador) {

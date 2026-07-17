@@ -11,7 +11,7 @@ import { Button } from '@acontplus/ng-components';
 })
 export class CompanyCustomerCreate {
   formId = signal('companyCustomerFormId');
-  private dgRef = inject(MatDialogRef<CompanyCustomerCreate>);
+  private readonly dgRef = inject(MatDialogRef<CompanyCustomerCreate>);
   onCustomerCreated(customer: { test: string }): void {
     alert(customer);
   }

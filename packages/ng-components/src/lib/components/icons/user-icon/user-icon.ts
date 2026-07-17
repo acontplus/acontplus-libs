@@ -4,7 +4,6 @@ import { Component, input, ViewEncapsulation, ChangeDetectionStrategy } from '@a
   selector: 'acp-user-icon',
   imports: [],
   templateUrl: './user-icon.html',
-  styleUrl: './user-icon.scss',
   changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None,
 })

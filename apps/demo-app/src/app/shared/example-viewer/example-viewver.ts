@@ -14,7 +14,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
-//import { CopierService } from '../copier/copier.service';
 
 export interface ExampleType {
   title: string;
@@ -39,7 +38,6 @@ export interface ExampleType {
 })
 export class ExampleViewer implements OnInit, OnDestroy {
   private readonly snackbar = inject(MatSnackBar);
-  //private readonly copier = inject(CopierService);
 
   @Input() type!: string;
   @Input() exampleData!: ExampleType;
@@ -62,9 +60,5 @@ export class ExampleViewer implements OnInit, OnDestroy {
 
   toggleSourceView() {
     this.showSource = !this.showSource;
-  }
-
-  copySource(content: unknown) {
-    this.snackbar.open('Copy failed. Please try again!' + content, '', { duration: 2500 });
   }
 }

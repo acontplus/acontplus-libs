@@ -7,7 +7,7 @@ import { CoreConfig } from '@acontplus/core';
 })
 export class CoreConfigService {
   private config: Required<CoreConfig>;
-  private environment = inject(ENVIRONMENT);
+  private readonly environment = inject(ENVIRONMENT);
 
   constructor() {
     this.config = this.initializeConfig();
@@ -64,7 +64,7 @@ export class CoreConfigService {
   getApiUrl(entityName?: string): string {
     const baseUrl = this.config.apiBaseUrl;
     if (!entityName) return baseUrl;
-    return `${baseUrl}/${entityName}`.replace(/\/+/g, '/');
+    return `${baseUrl}/${entityName}`.replaceAll(/\/+/g, '/');
   }
 
   /**

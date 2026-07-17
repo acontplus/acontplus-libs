@@ -540,7 +540,7 @@ export class AuthState implements OnDestroy {
       }
 
       this.ngZone.runOutsideAngular(() => {
-        this.refreshTokenTimeout = window.setTimeout(() => {
+        this.refreshTokenTimeout = globalThis.setTimeout(() => {
           this.ngZone.run(() => {
             if (this.tokenRepository.needsRefresh()) {
               this.refreshToken().subscribe();
@@ -572,7 +572,7 @@ export class AuthState implements OnDestroy {
   private decodeToken(token: string): DecodedToken {
     try {
       const base64Url = token.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const base64 = base64Url.replaceAll('-', '+').replaceAll('_', '/');
       const jsonPayload = decodeURIComponent(
         atob(base64)
           .split('')

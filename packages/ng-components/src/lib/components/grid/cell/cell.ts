@@ -73,9 +73,9 @@ import { AcpGridMenu } from '../grid-menu';
   ],
 })
 export class AcpGridCell implements OnInit, DoCheck {
-  private _utils = inject(DataGridUtils);
-  private _differs = inject(KeyValueDiffers);
-  private _changeDetectorRef = inject(ChangeDetectorRef);
+  private readonly _utils = inject(DataGridUtils);
+  private readonly _differs = inject(KeyValueDiffers);
+  private readonly _changeDetectorRef = inject(ChangeDetectorRef);
 
   /** Row data */
   @Input() rowData: Record<string, any> = {};
@@ -122,7 +122,11 @@ export class AcpGridCell implements OnInit, DoCheck {
   }
 
   _getText(value: any) {
-    return value === undefined ? '' : this._utils.isEmpty(value) ? this.placeholder : value;
+    if (value === undefined) {
+      return '';
+    }
+    const isEmpty = this._utils.isEmpty(value);
+    return isEmpty ? this.placeholder : value;
   }
 
   _getTooltip(value: any) {

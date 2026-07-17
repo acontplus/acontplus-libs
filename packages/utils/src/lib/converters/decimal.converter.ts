@@ -31,24 +31,17 @@ export class DecimalConverter {
   private static createDecimal(value: DecimalInput, operation = 'unknown'): Decimal {
     if (value instanceof Decimal) return value;
 
-    try {
-      const decimal = new Decimal(value);
+    const decimal = new Decimal(value);
 
-      if (this.defaultConfig.throwOnNaN && decimal.isNaN()) {
-        throw new DecimalError(`Invalid number: NaN detected in ${operation}`, operation);
-      }
-
-      if (this.defaultConfig.throwOnInfinity && !decimal.isFinite()) {
-        throw new DecimalError(`Invalid number: Infinity detected in ${operation}`, operation);
-      }
-
-      return decimal;
-    } catch (error) {
-      throw new DecimalError(
-        `Failed to create decimal from value: ${value} in ${operation}`,
-        operation,
-      );
+    if (this.defaultConfig.throwOnNaN && decimal.isNaN()) {
+      throw new DecimalError(`Invalid number: NaN detected in ${operation}`, operation);
     }
+
+    if (this.defaultConfig.throwOnInfinity && !decimal.isFinite()) {
+      throw new DecimalError(`Invalid number: Infinity detected in ${operation}`, operation);
+    }
+
+    return decimal;
   }
 
   private static processResult(
@@ -70,9 +63,9 @@ export class DecimalConverter {
 
     if (config.precision >= 0) {
       result =
-        config.rounding !== undefined
-          ? result.toDecimalPlaces(config.precision, config.rounding)
-          : result.toDecimalPlaces(config.precision);
+        config.rounding === undefined
+          ? result.toDecimalPlaces(config.precision)
+          : result.toDecimalPlaces(config.precision, config.rounding);
     }
 
     return config.returnAsNumber ? result.toNumber() : result;
@@ -282,9 +275,9 @@ export class DecimalConverter {
   ): DecimalOutput {
     const decimal = this.createDecimal(value, 'rounding');
     const result =
-      rounding !== undefined
-        ? decimal.toDecimalPlaces(precision, rounding)
-        : decimal.toDecimalPlaces(precision);
+      rounding === undefined
+        ? decimal.toDecimalPlaces(precision)
+        : decimal.toDecimalPlaces(precision, rounding);
     return this.processResult(result, { ...options, precision, rounding }, 'rounding');
   }
 
@@ -406,12 +399,21 @@ export class DecimalConverter {
     let formatted = decimal.toFixed(precision);
 
     if (decimalSeparator !== '.') {
-      formatted = formatted.replace('.', decimalSeparator);
+      formatted = formatted.replaceAll('.', decimalSeparator);
     }
 
     if (thousandsSeparator) {
       const parts = formatted.split(decimalSeparator);
-      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousandsSeparator);
+      // Manual insertion to avoid ReDoS vulnerability from regex backtracking
+      const integerPart = parts[0];
+      const result: string[] = [];
+      for (let i = integerPart.length - 1, count = 0; i >= 0; i--, count++) {
+        if (count > 0 && count % 3 === 0) {
+          result.unshift(thousandsSeparator);
+        }
+        result.unshift(integerPart[i]);
+      }
+      parts[0] = result.join('');
       formatted = parts.join(decimalSeparator);
     }
 
@@ -421,32 +423,32 @@ export class DecimalConverter {
 
 class DecimalChain {
   private value: Decimal;
-  private operations: string[] = [];
+  private readonly operations: string[] = [];
 
   constructor(initialValue: DecimalInput) {
     this.value = new Decimal(initialValue);
     this.operations.push(`Started with: ${initialValue}`);
   }
 
-  add(num: DecimalInput): DecimalChain {
+  add(num: DecimalInput): this {
     this.value = this.value.plus(num);
     this.operations.push(`Added: ${num}`);
     return this;
   }
 
-  subtract(num: DecimalInput): DecimalChain {
+  subtract(num: DecimalInput): this {
     this.value = this.value.minus(num);
     this.operations.push(`Subtracted: ${num}`);
     return this;
   }
 
-  multiply(num: DecimalInput): DecimalChain {
+  multiply(num: DecimalInput): this {
     this.value = this.value.mul(num);
     this.operations.push(`Multiplied by: ${num}`);
     return this;
   }
 
-  divide(num: DecimalInput): DecimalChain {
+  divide(num: DecimalInput): this {
     if (new Decimal(num).isZero()) {
       throw new DecimalError('Division by zero is not allowed', 'chain_division');
     }
@@ -455,13 +457,13 @@ class DecimalChain {
     return this;
   }
 
-  power(exponent: DecimalInput): DecimalChain {
+  power(exponent: DecimalInput): this {
     this.value = this.value.pow(exponent);
     this.operations.push(`Raised to power: ${exponent}`);
     return this;
   }
 
-  sqrt(): DecimalChain {
+  sqrt(): this {
     if (this.value.isNegative()) {
       throw new DecimalError('Square root of negative number is not supported', 'chain_sqrt');
     }
@@ -470,48 +472,48 @@ class DecimalChain {
     return this;
   }
 
-  percentage(percent: DecimalInput): DecimalChain {
+  percentage(percent: DecimalInput): this {
     this.value = this.value.mul(percent).div(100);
     this.operations.push(`Applied percentage: ${percent}%`);
     return this;
   }
 
-  applyDiscount(discountPercent: DecimalInput): DecimalChain {
+  applyDiscount(discountPercent: DecimalInput): this {
     const discount = this.value.mul(discountPercent).div(100);
     this.value = this.value.minus(discount);
     this.operations.push(`Applied discount: ${discountPercent}%`);
     return this;
   }
 
-  addTax(taxPercent: DecimalInput): DecimalChain {
+  addTax(taxPercent: DecimalInput): this {
     const tax = this.value.mul(taxPercent).div(100);
     this.value = this.value.plus(tax);
     this.operations.push(`Added tax: ${taxPercent}%`);
     return this;
   }
 
-  abs(): DecimalChain {
+  abs(): this {
     this.value = this.value.abs();
     this.operations.push('Absolute value applied');
     return this;
   }
 
-  round(precision = 0, rounding?: Decimal.Rounding): DecimalChain {
+  round(precision = 0, rounding?: Decimal.Rounding): this {
     this.value =
-      rounding !== undefined
-        ? this.value.toDecimalPlaces(precision, rounding)
-        : this.value.toDecimalPlaces(precision);
+      rounding === undefined
+        ? this.value.toDecimalPlaces(precision)
+        : this.value.toDecimalPlaces(precision, rounding);
     this.operations.push(`Rounded to ${precision} decimal places`);
     return this;
   }
 
-  ceil(precision = 0): DecimalChain {
+  ceil(precision = 0): this {
     this.value = this.value.toDecimalPlaces(precision, Decimal.ROUND_UP);
     this.operations.push(`Ceiling applied with ${precision} decimal places`);
     return this;
   }
 
-  floor(precision = 0): DecimalChain {
+  floor(precision = 0): this {
     this.value = this.value.toDecimalPlaces(precision, Decimal.ROUND_DOWN);
     this.operations.push(`Floor applied with ${precision} decimal places`);
     return this;
@@ -551,5 +553,7 @@ export const minus = DecimalConverter.subtract;
 export const times = DecimalConverter.multiply;
 export const dividedBy = DecimalConverter.divide;
 
-export { DecimalChain, DecimalError };
-export type { DecimalInput, DecimalOutput, DecimalOptions, ComparisonResult };
+export { DecimalChain };
+export { DecimalError } from '../errors';
+export type { DecimalInput, DecimalOutput, ComparisonResult };
+export type { DecimalOptions } from '../models';

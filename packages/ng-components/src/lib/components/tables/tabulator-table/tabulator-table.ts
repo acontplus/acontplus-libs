@@ -94,9 +94,10 @@ export class TabulatorTable implements OnChanges, AfterViewInit, OnDestroy {
   readonly tableReady = output<Tabulator>();
 
   private _tabulator!: Tabulator;
+  private static instanceCounter = 0;
 
   // Made public for template access
-  public containerId = `acp-tabulator-table-${Math.random().toString(36).slice(2, 9)}`;
+  public containerId = `acp-tabulator-table-${TabulatorTable.instanceCounter++}`;
 
   ngAfterViewInit(): void {
     this.initializeTable();

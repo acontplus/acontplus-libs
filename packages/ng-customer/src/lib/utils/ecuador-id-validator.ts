@@ -29,19 +29,19 @@ export class EcuadorIdValidator {
   static isCedula(id: string): boolean {
     if (!/^\d{10}$/.test(id)) return false;
 
-    const provincia = parseInt(id.substring(0, 2));
+    const provincia = Number.parseInt(id.substring(0, 2));
     if (provincia < 1 || provincia > 24) return false;
 
     const coeficientes = [2, 1, 2, 1, 2, 1, 2, 1, 2];
     let suma = 0;
 
     for (let i = 0; i < 9; i++) {
-      let valor = parseInt(id[i]) * coeficientes[i];
+      let valor = Number.parseInt(id[i]) * coeficientes[i];
       if (valor > 9) valor -= 9;
       suma += valor;
     }
 
-    const digito = parseInt(id[9]);
+    const digito = Number.parseInt(id[9]);
     const resultado = suma % 10 === 0 ? 0 : 10 - (suma % 10);
 
     return resultado === digito;
@@ -50,7 +50,7 @@ export class EcuadorIdValidator {
   static isRuc(id: string): boolean {
     if (!/^\d{13}$/.test(id)) return false;
 
-    const tercerDigito = parseInt(id[2]);
+    const tercerDigito = Number.parseInt(id[2]);
 
     if (tercerDigito < 6) {
       const cedula = id.substring(0, 10);
@@ -73,19 +73,19 @@ export class EcuadorIdValidator {
     let suma = 0;
 
     for (let i = 0; i < 9; i++) {
-      suma += parseInt(id[i]) * coeficientes[i];
+      suma += Number.parseInt(id[i]) * coeficientes[i];
     }
 
     const residuo = suma % 11;
     const digito = residuo === 0 ? 0 : 11 - residuo;
 
-    return digito === parseInt(id[9]) && id.endsWith('001');
+    return digito === Number.parseInt(id[9]) && id.endsWith('001');
   }
 
   static getRucType(id: string): string | null {
     if (!this.isRuc(id)) return null;
 
-    const tercerDigito = parseInt(id[2]);
+    const tercerDigito = Number.parseInt(id[2]);
 
     if (tercerDigito < 6) return 'Persona Natural';
     if (tercerDigito === 6) return 'Entidad Pública';

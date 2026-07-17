@@ -7,9 +7,9 @@ import { Subscription } from 'rxjs';
   providedIn: 'root',
 })
 export class NavigationFocusService implements OnDestroy {
-  private router = inject(Router);
+  private readonly router = inject(Router);
 
-  private subscriptions = new Subscription();
+  private readonly subscriptions = new Subscription();
   private navigationFocusRequests: HTMLElement[] = [];
   private skipLinkFocusRequests: HTMLElement[] = [];
   private skipLinkHref: string | null | undefined;
@@ -26,7 +26,7 @@ export class NavigationFocusService implements OnDestroy {
         if (!this.router.url.split('#')[1]) {
           setTimeout(() => {
             if (this.navigationFocusRequests.length) {
-              this.navigationFocusRequests[this.navigationFocusRequests.length - 1].focus({
+              this.navigationFocusRequests.at(-1)?.focus({
                 preventScroll: true,
               });
             }
@@ -55,7 +55,7 @@ export class NavigationFocusService implements OnDestroy {
 
   relinquishSkipLinkFocus(el: HTMLElement) {
     this.skipLinkFocusRequests.splice(this.skipLinkFocusRequests.indexOf(el), 1);
-    const skipLinkFocusTarget = this.skipLinkFocusRequests[this.skipLinkFocusRequests.length - 1];
+    const skipLinkFocusTarget = this.skipLinkFocusRequests.at(-1);
     this.setSkipLinkHref(skipLinkFocusTarget);
   }
 
@@ -71,8 +71,8 @@ export class NavigationFocusService implements OnDestroy {
   isNavigationWithinComponentView(previousUrl: string, newUrl: string) {
     const componentViewExpression = /(components|cdk)\/([^/]+)/;
 
-    const previousUrlMatch = previousUrl.match(componentViewExpression);
-    const newUrlMatch = newUrl.match(componentViewExpression);
+    const previousUrlMatch = componentViewExpression.exec(previousUrl);
+    const newUrlMatch = componentViewExpression.exec(newUrl);
 
     return (
       previousUrl &&

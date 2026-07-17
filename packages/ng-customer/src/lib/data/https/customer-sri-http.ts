@@ -11,7 +11,7 @@ import { EcuadorIdValidator } from './../../utils';
   providedIn: 'root',
 })
 export class CustomerSriHttp {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
   private get url(): string {
     return `${CUSTOMER_API.BILLING}/Consultas/`;
@@ -42,7 +42,7 @@ export class CustomerSriHttp {
         let phone: string | undefined;
         let email: string | undefined;
 
-        if (response.contribuyente) {
+        if (response?.contribuyente) {
           // caso sriOnly = true
           idCard = response.contribuyente.numeroRuc;
           businessName = response.contribuyente.razonSocial;

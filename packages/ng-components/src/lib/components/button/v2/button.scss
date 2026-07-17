@@ -1,0 +1,221 @@
+@use '@angular/material' as mat;
+
+.acp-primary {
+  @include mat.button-overrides(
+    (
+      filled-container-color: var(--theme-primary-color),
+      filled-label-text-color: #ffffff,
+      outlined-label-text-color: var(--theme-primary-color),
+      protected-label-text-color: var(--theme-primary-color),
+      text-label-text-color: var(--theme-primary-color),
+      text-state-layer-color: var(--theme-primary-color),
+    )
+  );
+}
+
+.acp-secondary {
+  @include mat.button-overrides(
+    (
+      filled-container-color: var(--mat-sys-secondary),
+      filled-label-text-color: var(--mat-sys-on-secondary),
+      outlined-label-text-color: var(--mat-sys-secondary),
+      protected-label-text-color: var(--mat-sys-secondary),
+      text-label-text-color: var(--mat-sys-secondary),
+      text-state-layer-color: var(--mat-sys-secondary),
+    )
+  );
+}
+
+.acp-accent {
+  @include mat.button-overrides(
+    (
+      filled-container-color: var(--mat-sys-tertiary),
+      filled-label-text-color: var(--mat-sys-on-tertiary),
+      outlined-label-text-color: var(--mat-sys-tertiary),
+      protected-label-text-color: var(--mat-sys-tertiary),
+      text-label-text-color: var(--mat-sys-tertiary),
+      text-state-layer-color: var(--mat-sys-tertiary),
+    )
+  );
+}
+
+.acp-error {
+  @include mat.button-overrides(
+    (
+      filled-container-color: var(--mat-sys-error),
+      filled-label-text-color: var(--mat-sys-on-error),
+      outlined-label-text-color: var(--mat-sys-error),
+      protected-label-text-color: var(--mat-sys-error),
+      text-label-text-color: var(--mat-sys-error),
+      text-state-layer-color: var(--mat-sys-error),
+    )
+  );
+}
+
+.acp-success {
+  @include mat.button-overrides(
+    (
+      filled-container-color: #4caf50,
+      filled-label-text-color: #ffffff,
+      outlined-label-text-color: #4caf50,
+      protected-label-text-color: #4caf50,
+      text-label-text-color: #4caf50,
+      text-state-layer-color: #4caf50,
+    )
+  );
+}
+
+.acp-warning {
+  @include mat.button-overrides(
+    (
+      filled-container-color: #f59e0b,
+      filled-label-text-color: #ffffff,
+      outlined-label-text-color: #f59e0b,
+      protected-label-text-color: #f59e0b,
+      text-label-text-color: #f59e0b,
+      text-state-layer-color: #f59e0b,
+    )
+  );
+}
+
+.acp-info {
+  @include mat.button-overrides(
+    (
+      filled-container-color: #3b82f6,
+      filled-label-text-color: #ffffff,
+      outlined-label-text-color: #3b82f6,
+      protected-label-text-color: #3b82f6,
+      text-label-text-color: #3b82f6,
+      text-state-layer-color: #3b82f6,
+    )
+  );
+}
+
+.acp-dark {
+  @include mat.button-overrides(
+    (
+      filled-container-color: #1f2937,
+      filled-label-text-color: #ffffff,
+      outlined-label-text-color: #1f2937,
+      protected-label-text-color: #1f2937,
+      text-label-text-color: #1f2937,
+      text-state-layer-color: #1f2937,
+    )
+  );
+}
+
+[matIconButton].acp-primary {
+  @include mat.icon-overrides(
+    (
+      color: var(--theme-primary-color),
+    )
+  );
+}
+
+[matIconButton].acp-secondary {
+  @include mat.icon-overrides(
+    (
+      color: var(--mat-sys-secondary),
+    )
+  );
+}
+
+[matIconButton].acp-accent {
+  @include mat.icon-overrides(
+    (
+      color: var(--mat-sys-tertiary),
+    )
+  );
+}
+
+[matIconButton].acp-error {
+  @include mat.icon-overrides(
+    (
+      color: var(--mat-sys-error),
+    )
+  );
+}
+
+[matIconButton].acp-success {
+  @include mat.icon-overrides(
+    (
+      color: #10b981,
+    )
+  );
+}
+
+[matIconButton].acp-warning {
+  @include mat.icon-overrides(
+    (
+      color: #f59e0b,
+    )
+  );
+}
+
+[matIconButton].acp-info {
+  @include mat.icon-overrides(
+    (
+      color: #3b82f6,
+    )
+  );
+}
+
+[matIconButton].acp-dark {
+  @include mat.icon-overrides(
+    (
+      color: #1f2937,
+    )
+  );
+}
+
+.acp-square {
+  @include mat.button-overrides(
+    (
+      filled-container-shape: 8px,
+      outlined-container-shape: 8px,
+      protected-container-shape: 8px,
+      text-container-shape: 8px,
+      tonal-container-shape: 8px,
+    )
+  );
+  --mat-icon-button-container-shape: 8px;
+}
+
+.acp-medium {
+  @include mat.theme(
+    (
+      density: -1,
+    )
+  );
+  @include mat.button-overrides(
+    (
+      filled-horizontal-padding: 20px,
+      outlined-horizontal-padding: 20px,
+      protected-horizontal-padding: 20px,
+      text-horizontal-padding: 20px,
+      tonal-horizontal-padding: 20px,
+    )
+  );
+
+  @include mat.button-toggle-overrides(
+    (
+      height: 36px,
+    )
+  );
+}
+.acp-small {
+  @include mat.theme(
+    (
+      density: -2,
+    )
+  );
+  @include mat.button-overrides(
+    (
+      filled-horizontal-padding: 16px,
+      outlined-horizontal-padding: 16px,
+      protected-horizontal-padding: 16px,
+      text-horizontal-padding: 16px,
+      tonal-horizontal-padding: 16px,
+    )
+  );
+}

@@ -25,11 +25,14 @@ export class ListCustomerMapper {
     // Parse payload (backend sends JSON string in payload)
     const parsed =
       typeof response?.payload === 'string' ? JSON.parse(response.payload) : response?.payload;
-    const dataArray: any[] = Array.isArray(parsed)
-      ? (parsed[0] ?? [])
-      : Array.isArray(parsed?.items)
-        ? parsed.items
-        : [];
+    let dataArray: any[];
+    if (Array.isArray(parsed)) {
+      dataArray = parsed[0] ?? [];
+    } else if (Array.isArray(parsed?.items)) {
+      dataArray = parsed.items;
+    } else {
+      dataArray = [];
+    }
 
     // Map each item to UI-friendly fields, preserving source values
     result.items = dataArray.map((item: any, index: number) => ({

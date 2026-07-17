@@ -19,7 +19,7 @@ export class ArrayHelper {
       return true;
     }
     if (!ObjectHelper.isArray(array)) {
-      throw new Error('input parameter is not a array or null/undefined');
+      throw new TypeError('input parameter is not a array or null/undefined');
     }
 
     return array.length === 0;
@@ -58,7 +58,7 @@ export class ArrayHelper {
     if (this.isEmpty(array) || ObjectHelper.isNullOrUndefined(item)) {
       return false;
     }
-    return array.indexOf(item) !== -1;
+    return array.includes(item);
   }
 
   /**
@@ -79,7 +79,7 @@ export class ArrayHelper {
     }
 
     for (const candidate of candidates) {
-      if (array.indexOf(candidate) !== -1) {
+      if (array.includes(candidate)) {
         return true;
       }
     }
@@ -174,7 +174,7 @@ export class ArrayHelper {
   public static take<T>(array: T[], n?: number | undefined | null): T[] {
     const length = array.length;
     let takeN;
-    if (ObjectHelper.isNullOrUndefined(n) || isNaN(n)) {
+    if (ObjectHelper.isNullOrUndefined(n) || Number.isNaN(n)) {
       takeN = 1;
     } else if (n <= 0) {
       takeN = 0;
@@ -203,7 +203,7 @@ export class ArrayHelper {
   public static takeRight<T>(array: T[], n?: number | undefined | null): T[] {
     const length = array.length;
     let useStartIndex: number;
-    if (ObjectHelper.isNullOrUndefined(n) || isNaN(n)) {
+    if (ObjectHelper.isNullOrUndefined(n) || Number.isNaN(n)) {
       // default value is 1
       useStartIndex = length - 1;
     } else if (n < 0) {

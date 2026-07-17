@@ -24,7 +24,7 @@ import { ComponentPageTitleService } from '../../shared/services/page-title';
   imports: [MatButtonModule, MatIconModule],
 })
 export class ComponentPageHeader {
-  private _componentPageTitle = inject(ComponentPageTitleService);
+  private readonly _componentPageTitle = inject(ComponentPageTitleService);
 
   @Output() toggleSidenav = new EventEmitter<void>();
 

@@ -16,7 +16,7 @@ export class DataGridUtils {
       if (i === 0) {
         tmp = rowData[key];
       } else {
-        tmp = tmp && tmp[key];
+        tmp = tmp?.[key];
       }
     });
     return tmp;

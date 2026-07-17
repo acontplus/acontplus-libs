@@ -17,7 +17,12 @@ export class CustomerFormDataMapper {
 
       result.ciudades = ciudades.reduce((acc: any, ciudade: any) => {
         const dataExists = acc.find((c: any) => c.idProvincia === ciudade.idProvincia);
-        if (!dataExists) {
+        if (dataExists) {
+          dataExists.ciudades.push({
+            idCiudad: ciudade.idCiudad,
+            nombre: ciudade.ciudad,
+          });
+        } else {
           acc.push({
             idProvincia: ciudade.idProvincia,
             nombre: ciudade.provincia,
@@ -27,11 +32,6 @@ export class CustomerFormDataMapper {
                 nombre: ciudade.ciudad,
               },
             ],
-          });
-        } else {
-          dataExists.ciudades.push({
-            idCiudad: ciudade.idCiudad,
-            nombre: ciudade.ciudad,
           });
         }
         return acc;

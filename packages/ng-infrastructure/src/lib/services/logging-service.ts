@@ -6,15 +6,15 @@ import { HttpRequestLog, HttpErrorLog } from '../interceptors';
   providedIn: 'root',
 })
 export class LoggingService {
-  private environment = inject(ENVIRONMENT);
+  private readonly environment = inject(ENVIRONMENT);
 
   log(level: 'info' | 'warn' | 'error', message: string, context?: unknown): void {
     if (this.environment.isProduction) {
       // Production logging (e.g., to external service)
       this.logToExternalService(level, message, context);
-    } else {
-      console[level](`[${level.toUpperCase()}] ${message}`, context);
+      return;
     }
+    console[level](`[${level.toUpperCase()}] ${message}`, context);
   }
 
   info(message: string, context?: unknown): void {

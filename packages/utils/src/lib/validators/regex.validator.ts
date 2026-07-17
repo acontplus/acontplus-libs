@@ -8,7 +8,7 @@ export class RegexValidator {
    * @example } => \}
    */
   public static escapeRegExp(str: string): string {
-    return str.replace(/[.*+?^${}()|[\]\\-]/g, '\\$&');
+    return str.replaceAll(/[.*+?^${}()|[\]\\-]/g, '\\$&');
   }
 
   /**
@@ -35,7 +35,7 @@ export class RegexValidator {
   public static validateEmail(email: string): boolean {
     // from: https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
     const regex =
-      /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+      /^(([^<>()\[\]\.,;:\s@"]+(\.[^<>()\[\]\.,;:\s@"]+)*)|(".+"))@(([^<>()[\]\.,;:\s@"]+\.)+[^<>()[\]\.,;:\s@"]{2,})$/i;
     return regex.test(email);
   }
 }

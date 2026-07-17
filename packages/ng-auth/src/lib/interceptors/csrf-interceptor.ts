@@ -50,8 +50,8 @@ export const csrfInterceptor: HttpInterceptorFn = (req, next) => {
  */
 function isRequestToSameOrigin(req: HttpRequest<unknown>): boolean {
   try {
-    const requestUrl = new URL(req.url, window.location.origin);
-    return requestUrl.origin === window.location.origin;
+    const requestUrl = new URL(req.url, globalThis.location.origin);
+    return requestUrl.origin === globalThis.location.origin;
   } catch {
     // If URL parsing fails, assume it's not same origin for security
     return false;

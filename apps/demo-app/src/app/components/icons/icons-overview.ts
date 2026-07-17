@@ -189,7 +189,7 @@ import { CodeExample } from '../../shared/code-example/code-example';
   ],
 })
 export class IconsOverview implements OnInit {
-  private iconRegistry = inject(IconRegistryService);
+  private readonly iconRegistry = inject(IconRegistryService);
 
   defaultIcons = [
     'home',

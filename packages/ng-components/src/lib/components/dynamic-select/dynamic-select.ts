@@ -13,18 +13,19 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { Subject } from 'rxjs';
 import type { SelectOption } from '@acontplus/ui-kit';
 
+type SelectValue = string | number | null;
+
 @Component({
   selector: 'acp-dynamic-select',
   imports: [NgSelectModule, ReactiveFormsModule],
   templateUrl: './dynamic-select.html',
-  styleUrl: './dynamic-select.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DynamicSelect implements OnInit, OnDestroy {
   // Basic inputs
   label = input<string>('Seleccione una opción');
   options = input.required<SelectOption[]>();
-  selectedValue = input<string | number | null>();
+  selectedValue = input<SelectValue>();
   className = input<string>('w-100');
   placeholder = input<string>();
   disabled = input<boolean>(false);
@@ -53,13 +54,13 @@ export class DynamicSelect implements OnInit, OnDestroy {
   notFoundText = input<string>('No items found');
 
   // Output
-  selectionChange = output<string | number | null>();
+  selectionChange = output<SelectValue>();
 
-  public selectControl = new FormControl<string | number | null>(null);
+  public selectControl = new FormControl<SelectValue>(null);
   public filteredOptions: SelectOption[] = [];
   public loading = false;
 
-  private _onDestroy = new Subject<void>();
+  private readonly _onDestroy = new Subject<void>();
 
   constructor() {
     // Sincroniza las opciones

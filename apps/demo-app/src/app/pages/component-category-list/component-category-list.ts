@@ -18,7 +18,7 @@ interface ComponentGroup {
 })
 export class ComponentCategoryList implements OnInit, OnDestroy {
   _componentPageTitle = inject(ComponentPageTitleService);
-  private _route = inject(ActivatedRoute);
+  private readonly _route = inject(ActivatedRoute);
 
   params!: Observable<Params>;
   routeParamSubscription!: Subscription;

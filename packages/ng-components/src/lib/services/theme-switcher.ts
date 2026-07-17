@@ -24,7 +24,7 @@ export class ThemeSwitcher {
       this.applyTheme(savedTheme === 'dark');
     } else {
       // Check system preference
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const prefersDark = globalThis.matchMedia('(prefers-color-scheme: dark)').matches;
       this._darkMode.next(prefersDark);
       this.applyTheme(prefersDark);
     }

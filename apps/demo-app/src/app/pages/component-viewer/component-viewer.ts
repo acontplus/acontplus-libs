@@ -136,12 +136,12 @@ import { ComponentPageTitleService } from '../../shared/services/page-title';
   imports: [MatTabsModule, RouterLinkActive, RouterLink, RouterOutlet],
 })
 export class ComponentViewer implements OnDestroy {
-  private _router = inject(Router);
-  private _route = inject(ActivatedRoute);
-  private _componentPageTitle = inject(ComponentPageTitleService);
+  private readonly _router = inject(Router);
+  private readonly _route = inject(ActivatedRoute);
+  private readonly _componentPageTitle = inject(ComponentPageTitleService);
 
-  sections = new Set<string>(['overview', 'examples', 'api', 'styling']);
-  private _destroyed = new Subject<void>();
+  sections = ['overview', 'examples', 'api', 'styling'];
+  private readonly _destroyed = new Subject<void>();
 
   componentId = '';
 

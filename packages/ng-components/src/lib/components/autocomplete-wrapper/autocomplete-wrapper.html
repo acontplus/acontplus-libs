@@ -73,10 +73,10 @@
           >
             @for (item of historyList(); track $index) {
             <li class="autocomplete-wrapper-list-item autocomplete-wrapper-history-item">
-              <div
+              <button
+                type="button"
                 class="autocomplete-wrapper-item-content"
                 [class.autocomplete-wrapper-selected]="$index === selectedIndex()"
-                tabindex="0"
                 (click)="selectItem(item)"
                 (keydown.enter)="selectItem(item)"
               >
@@ -89,7 +89,7 @@
                         "
                   />
                 </div>
-              </div>
+              </button>
               <button
                 type="button"
                 mat-icon-button
@@ -210,10 +210,10 @@
           >
             @for (item of currentPageItems(); track $index) {
             <li class="autocomplete-wrapper-list-item autocomplete-wrapper-result-item">
-              <div
+              <button
+                type="button"
                 class="autocomplete-wrapper-item-content"
                 [class.autocomplete-wrapper-selected]="$index === selectedIndex()"
-                tabindex="0"
                 (click)="selectItem(item)"
                 (keydown.enter)="selectItem(item)"
               >
@@ -225,7 +225,7 @@
                           "
                   />
                 </div>
-              </div>
+              </button>
             </li>
             }
           </ul>

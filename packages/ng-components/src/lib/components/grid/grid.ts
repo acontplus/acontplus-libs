@@ -128,9 +128,9 @@ export const DATA_GRID_DEFAULT_OPTIONS = new InjectionToken<DataGridDefaultOptio
 export class DataGrid implements AfterViewInit, OnChanges {
   size = input<'small' | 'medium' | 'normal'>('normal');
   protected _animationsDisabled = _animationsDisabled();
-  private _utils = inject(DataGridUtils);
-  private _changeDetectorRef = inject(ChangeDetectorRef);
-  private _defaultOptions = inject<DataGridDefaultOptions>(DATA_GRID_DEFAULT_OPTIONS, {
+  private readonly _utils = inject(DataGridUtils);
+  private readonly _changeDetectorRef = inject(ChangeDetectorRef);
+  private readonly _defaultOptions = inject<DataGridDefaultOptions>(DATA_GRID_DEFAULT_OPTIONS, {
     optional: true,
   });
 
@@ -439,7 +439,13 @@ export class DataGrid implements AfterViewInit, OnChanges {
   }
 
   _isColumnHide(item: DataGridColumn) {
-    return item.hide !== undefined ? item.hide : item.show !== undefined ? !item.show : false;
+    if (item.hide !== undefined) {
+      return item.hide;
+    }
+    if (item.show !== undefined) {
+      return !item.show;
+    }
+    return false;
   }
 
   // Waiting for async data
@@ -511,7 +517,7 @@ export class DataGrid implements AfterViewInit, OnChanges {
       item.left =
         pinnedLeftCols
           .slice(0, idx)
-          .reduce((acc, cur) => acc + parseFloat(cur.width || '80px'), 0) + 'px';
+          .reduce((acc, cur) => acc + Number.parseFloat(cur.width || '80px'), 0) + 'px';
     });
 
     const pinnedRightCols = this.columns
@@ -521,7 +527,7 @@ export class DataGrid implements AfterViewInit, OnChanges {
       item.right =
         pinnedRightCols
           .slice(0, idx)
-          .reduce((acc, cur) => acc + parseFloat(cur.width || '80px'), 0) + 'px';
+          .reduce((acc, cur) => acc + Number.parseFloat(cur.width || '80px'), 0) + 'px';
     });
   }
 

@@ -60,7 +60,6 @@ import { CustomerHttpRepository } from '../../../infrastructure/repositories/cus
     DynamicCard,
   ],
   templateUrl: './company-customer-add-edit.html',
-  styleUrl: './customer-add-edit-dialog.scss',
   providers: [
     provideNativeDateAdapter(),
     {
@@ -91,7 +90,7 @@ export class CustomerAddEditComponent implements OnInit {
 
   readonly params = this.paramsOptions.data;
 
-  private notificationService = inject(NotificationService);
+  private readonly notificationService = inject(NotificationService);
 
   title = 'Nuevo Cliente';
 
@@ -240,91 +239,92 @@ export class CustomerAddEditComponent implements OnInit {
         const mainDataForm = Array.isArray(response) ? response[0].data : response.data;
         const dataCompanyCustomer = Array.isArray(response) ? response[1] : null;
 
-        this.tiposIdentificacion.set(mainDataForm.tipoIdentificacion);
-        this.tiemposCredito.set(mainDataForm.tiempoCreditos);
-        this.tipoContribuyentes.set(mainDataForm.tipoContribuyentes);
-        this.formasPagoSri.set(mainDataForm.formasPagoSri);
-        this.tiposCliente.set(mainDataForm.tiposCliente);
-        this.ciudades.set(mainDataForm.ciudades);
-        this.cargos.set(mainDataForm.cargos);
-        this.empresas.set(mainDataForm.empresas);
-        this.employees.set(mainDataForm.employees);
-        this.maritalStatuses.set(mainDataForm.maritalStatuses);
-        this.housingTypes.set(mainDataForm.housingTypes);
+        this.setFormDataSignals(mainDataForm);
 
         if (this.isDataOfSri()) {
-          const { codigoSri, numeroIdentificacion } = this.params;
-
-          const dataIdentificacion = this.tiposIdentificacion().find(
-            (ti: any) => ti.codigoSri === codigoSri,
-          );
-
-          if (dataIdentificacion) {
-            const idTipoIdentificacionCtrl = this.customerForm.get(
-              'idTipoIdentificacion',
-            ) as FormControl<number> | null;
-            idTipoIdentificacionCtrl?.setValue(dataIdentificacion.idTipoIdentificacion as number);
-
-            const numeroIdentificacionCtrl = this.customerForm.get(
-              'numeroIdentificacion',
-            ) as FormControl<string> | null;
-            numeroIdentificacionCtrl?.setValue(numeroIdentificacion as string);
-
-            const idTiempoCreditoCtrl = this.customerForm.get(
-              'idTiempoCredito',
-            ) as FormControl<number> | null;
-            idTiempoCreditoCtrl?.setValue(
-              this.tiemposCredito().length > 0
-                ? (this.tiemposCredito()[0].idTiempoCredito as number)
-                : 0,
-            );
-            this.updateFormControlNumeroIdentificacion(dataIdentificacion.codigoSri);
-
-            this.onKeyDownGovernmentId();
-          }
-
+          this.handleDataOfSri();
           return;
         }
 
         if (this.isCreate()) {
-          const dataIdentificacion = this.tiposIdentificacion().find(
-            (ti: any) => ti.codigoSri === SRI_DOCUMENT_TYPE.RUC,
-          );
-
-          if (dataIdentificacion) {
-            const idTipoIdentificacionCtrl = this.customerForm.get(
-              'idTipoIdentificacion',
-            ) as FormControl<number> | null;
-            idTipoIdentificacionCtrl?.setValue(dataIdentificacion.idTipoIdentificacion as number);
-            this.setIdentificationTypeChange(dataIdentificacion.codigoSri);
-          }
-
-          const idTiempoCreditoCtrl = this.customerForm.get(
-            'idTiempoCredito',
-          ) as FormControl<number> | null;
-          idTiempoCreditoCtrl?.setValue(
-            this.tiemposCredito().length > 0
-              ? (this.tiemposCredito()[0].idTiempoCredito as number)
-              : 0,
-          );
+          this.handleCreateMode();
         } else {
-          this.title = 'Editar Cliente';
-          this.btnText.set('Actualizar');
-          if (dataCompanyCustomer) {
-            this.emails = dataCompanyCustomer.correos;
-            this.telephones = dataCompanyCustomer.telefonos;
-            this.placas.set(dataCompanyCustomer.placas);
-            const { dataInfoCred, ...rest } = dataCompanyCustomer;
-            this.customerForm.patchValue(rest);
-            if (dataInfoCred) {
-              this.customerForm.get('dataInfoCred')?.patchValue(dataInfoCred);
-            }
-            this.updateFormControlNumeroIdentificacion(rest.codigoSri);
-          }
+          this.handleUpdateMode(dataCompanyCustomer);
         }
       });
     } catch {
       // Handle error appropriately
+    }
+  }
+
+  private setFormDataSignals(mainDataForm: any): void {
+    this.tiposIdentificacion.set(mainDataForm.tipoIdentificacion);
+    this.tiemposCredito.set(mainDataForm.tiempoCreditos);
+    this.tipoContribuyentes.set(mainDataForm.tipoContribuyentes);
+    this.formasPagoSri.set(mainDataForm.formasPagoSri);
+    this.tiposCliente.set(mainDataForm.tiposCliente);
+    this.ciudades.set(mainDataForm.ciudades);
+    this.cargos.set(mainDataForm.cargos);
+    this.empresas.set(mainDataForm.empresas);
+    this.employees.set(mainDataForm.employees);
+    this.maritalStatuses.set(mainDataForm.maritalStatuses);
+    this.housingTypes.set(mainDataForm.housingTypes);
+  }
+
+  private handleDataOfSri(): void {
+    const { codigoSri, numeroIdentificacion } = this.params;
+
+    const dataIdentificacion = this.tiposIdentificacion().find(
+      (ti: any) => ti.codigoSri === codigoSri,
+    );
+
+    if (dataIdentificacion) {
+      const idTipoIdentificacionCtrl = this.customerForm.get('idTipoIdentificacion');
+      idTipoIdentificacionCtrl?.setValue(dataIdentificacion.idTipoIdentificacion);
+
+      const numeroIdentificacionCtrl = this.customerForm.get('numeroIdentificacion');
+      numeroIdentificacionCtrl?.setValue(numeroIdentificacion);
+
+      const idTiempoCreditoCtrl = this.customerForm.get('idTiempoCredito');
+      idTiempoCreditoCtrl?.setValue(
+        this.tiemposCredito().length > 0 ? this.tiemposCredito()[0].idTiempoCredito : 0,
+      );
+      this.updateFormControlNumeroIdentificacion(dataIdentificacion.codigoSri);
+
+      this.onKeyDownGovernmentId();
+    }
+  }
+
+  private handleCreateMode(): void {
+    const dataIdentificacion = this.tiposIdentificacion().find(
+      (ti: any) => ti.codigoSri === SRI_DOCUMENT_TYPE.RUC,
+    );
+
+    if (dataIdentificacion) {
+      const idTipoIdentificacionCtrl = this.customerForm.get('idTipoIdentificacion');
+      idTipoIdentificacionCtrl?.setValue(dataIdentificacion.idTipoIdentificacion);
+      this.setIdentificationTypeChange(dataIdentificacion.codigoSri);
+    }
+
+    const idTiempoCreditoCtrl = this.customerForm.get('idTiempoCredito');
+    idTiempoCreditoCtrl?.setValue(
+      this.tiemposCredito().length > 0 ? this.tiemposCredito()[0].idTiempoCredito : 0,
+    );
+  }
+
+  private handleUpdateMode(dataCompanyCustomer: any): void {
+    this.title = 'Editar Cliente';
+    this.btnText.set('Actualizar');
+    if (dataCompanyCustomer) {
+      this.emails = dataCompanyCustomer.correos;
+      this.telephones = dataCompanyCustomer.telefonos;
+      this.placas.set(dataCompanyCustomer.placas);
+      const { dataInfoCred, ...rest } = dataCompanyCustomer;
+      this.customerForm.patchValue(rest);
+      if (dataInfoCred) {
+        this.customerForm.get('dataInfoCred')?.patchValue(dataInfoCred);
+      }
+      this.updateFormControlNumeroIdentificacion(rest.codigoSri);
     }
   }
 
@@ -390,12 +390,8 @@ export class CustomerAddEditComponent implements OnInit {
     }
     if (this.numeroIdentificacionControl?.invalid) return;
 
-    const idTipoIdentificacion = (
-      this.customerForm.get('idTipoIdentificacion') as FormControl<number> | null
-    )?.value as number;
-    const numeroIdentificacion = (
-      this.customerForm.get('numeroIdentificacion') as FormControl<string> | null
-    )?.value as string;
+    const idTipoIdentificacion = this.customerForm.get('idTipoIdentificacion')?.value;
+    const numeroIdentificacion = this.customerForm.get('numeroIdentificacion')?.value;
 
     const codigoSri = this.tiposIdentificacion().find(
       (x: any) => x.idTipoIdentificacion == idTipoIdentificacion,
@@ -406,8 +402,8 @@ export class CustomerAddEditComponent implements OnInit {
     }
   }
 
-  private isDataOfSri = () => this.params.dataOfSri;
-  private isCreate = () => !(this.params.id > 0);
+  private readonly isDataOfSri = () => this.params.dataOfSri;
+  private readonly isCreate = () => this.params.id <= 0;
   isUpdate = () => this.params.id > 0;
 
   onSave() {

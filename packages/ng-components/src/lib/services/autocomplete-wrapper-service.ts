@@ -13,7 +13,7 @@ import {
   providedIn: 'root',
 })
 export class AutocompleteWrapperService {
-  private historySubject = new BehaviorSubject<AutocompleteWrapperItem[]>([]);
+  private readonly historySubject = new BehaviorSubject<AutocompleteWrapperItem[]>([]);
   public history$ = this.historySubject.asObservable();
 
   constructor() {

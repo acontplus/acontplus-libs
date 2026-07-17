@@ -113,24 +113,139 @@ export const httpContextInterceptor: HttpInterceptorFn = (req, next) => {
   if (skipHeaders) return next(req);
 
   // ── URL exclusion (with ReDoS protection) ────────────────────────────────
-  const shouldExclude = config.excludeUrls.some((pattern) => {
+  if (shouldExcludeUrl(req.url, config.excludeUrls)) return next(req);
+
+  // ── Auth skip check ──────────────────────────────────────────────────────
+  const skipAuth = shouldSkipAuth(req.url, config.skipAuthUrls);
+
+  // ── URL resolution ───────────────────────────────────────────────────────
+  const finalUrl = resolveFinalUrl(
+    req.url,
+    isCustomUrl,
+    config.baseUrlInjection,
+    environment.apiBaseUrl,
+  );
+
+  // ── Header construction ──────────────────────────────────────────────────
+  const headers = buildHeaders(
+    config,
+    tokenProvider,
+    correlationService,
+    tenantService,
+    environment,
+    skipAuth,
+    contextHeaders,
+    req,
+  );
+
+  // ── Clone request ────────────────────────────────────────────────────────
+  const enhancedReq = req.clone({ url: finalUrl, setHeaders: headers });
+
+  // ── Request logging ──────────────────────────────────────────────────────
+  if (config.enableRequestLogging) {
+    logRequest(loggingService, req, finalUrl, headers, {
+      requestId: headers[config.requestIdHeader],
+      correlationId: headers[config.correlationIdHeader],
+      tenantId: headers[config.tenantIdHeader],
+      isCustomUrl,
+    });
+  }
+
+  // ── Execute request with unified error handling ──────────────────────────
+  const hasAuth = !!headers['Authorization'];
+
+  // Shared error context for both handlers below
+  const errorCtx = {
+    req,
+    finalUrl,
+    requestId: headers[config.requestIdHeader],
+    correlationId: headers[config.correlationIdHeader],
+    tenantId: headers[config.tenantIdHeader],
+    isCustomUrl,
+    hasAuth,
+    config,
+    router,
+    loggingService,
+    tenantService,
+    tokenProvider,
+    environment,
+  };
+
+  // Base pipeline — always present
+  const base$ = next(enhancedReq).pipe(
+    catchError((error: HttpErrorResponse) => handleContextError(error, errorCtx)),
+  );
+
+  // When auth + refresh callback are available, prepend a 401-refresh layer
+  if (!hasAuth || !config.refreshTokenCallback) {
+    return base$;
+  }
+
+  return next(enhancedReq).pipe(
+    // Intercept 401 first — attempt token refresh before general error handling
+    catchError((error: HttpErrorResponse) => {
+      if (error.status !== 401) return throwError(() => error);
+
+      const refreshToken = tokenProvider?.getRefreshToken?.();
+      if (!refreshToken?.trim()) return throwError(() => error);
+
+      return config.refreshTokenCallback!().pipe(
+        switchMap(({ token }) =>
+          next(
+            req.clone({
+              url: finalUrl,
+              setHeaders: { ...headers, Authorization: `Bearer ${token}` },
+            }),
+          ),
+        ),
+        catchError((refreshError) => {
+          config.logoutCallback?.();
+          return throwError(() => refreshError);
+        }),
+      );
+    }),
+    // General error handling (logs, redirects, tenant, rate-limit, etc.)
+    catchError((error: HttpErrorResponse) => handleContextError(error, errorCtx)),
+  );
+};
+
+// ---------------------------------------------------------------------------
+// Helper functions to reduce cognitive complexity
+// ---------------------------------------------------------------------------
+
+function shouldExcludeUrl(url: string, excludeUrls: string[]): boolean {
+  return excludeUrls.some((pattern) => {
     try {
-      return req.url.includes(pattern) || new RegExp(pattern).test(req.url);
+      return url.includes(pattern) || new RegExp(pattern).test(url);
     } catch {
       return false; // malformed regex — skip safely
     }
   });
+}
 
-  if (shouldExclude) return next(req);
+function shouldSkipAuth(url: string, skipAuthUrls: string[]): boolean {
+  return skipAuthUrls.some((u) => url.includes(u));
+}
 
-  // ── Auth skip check ──────────────────────────────────────────────────────
-  const skipAuth = config.skipAuthUrls.some((u) => req.url.includes(u));
+function resolveFinalUrl(
+  url: string,
+  isCustomUrl: boolean,
+  baseUrlInjection: boolean,
+  apiBaseUrl: string,
+): string {
+  return isCustomUrl || !baseUrlInjection ? url : `${apiBaseUrl}${url}`;
+}
 
-  // ── URL resolution ───────────────────────────────────────────────────────
-  const baseUrl = environment.apiBaseUrl;
-  const finalUrl = isCustomUrl || !config.baseUrlInjection ? req.url : `${baseUrl}${req.url}`;
-
-  // ── Header construction ──────────────────────────────────────────────────
+function buildHeaders(
+  config: Required<HttpContextConfig>,
+  tokenProvider: any,
+  correlationService: CorrelationInfo,
+  tenantService: TenantInfo,
+  environment: any,
+  skipAuth: boolean,
+  contextHeaders: Record<string, string>,
+  req: HttpRequest<unknown>,
+): Record<string, string> {
   const correlationId = config.enableCorrelationTracking
     ? correlationService.getOrCreateCorrelationId()
     : uuidv4();
@@ -184,81 +299,28 @@ export const httpContextInterceptor: HttpInterceptorFn = (req, next) => {
     headers['Content-Type'] = 'application/json';
   }
 
-  // ── Clone request ────────────────────────────────────────────────────────
-  const enhancedReq = req.clone({ url: finalUrl, setHeaders: headers });
+  return headers;
+}
 
-  // ── Request logging ──────────────────────────────────────────────────────
-  if (config.enableRequestLogging) {
-    loggingService.logHttpRequest({
-      method: req.method,
-      url: finalUrl,
-      originalUrl: req.url,
-      requestId,
-      correlationId,
-      tenantId,
-      timestamp: new Date().toISOString(),
-      headers: Object.keys(headers),
-      isCustomUrl,
-    });
-  }
-
-  // ── Execute request with unified error handling ──────────────────────────
-  const hasAuth = !!headers['Authorization'];
-
-  // Shared error context for both handlers below
-  const errorCtx = {
-    req,
-    finalUrl,
-    requestId,
-    correlationId,
-    tenantId,
-    isCustomUrl,
-    hasAuth,
-    config,
-    router,
-    loggingService,
-    tenantService,
-    tokenProvider,
-    environment,
-  };
-
-  // Base pipeline — always present
-  const base$ = next(enhancedReq).pipe(
-    catchError((error: HttpErrorResponse) => handleContextError(error, errorCtx)),
-  );
-
-  // When auth + refresh callback are available, prepend a 401-refresh layer
-  if (!hasAuth || !config.refreshTokenCallback) {
-    return base$;
-  }
-
-  return next(enhancedReq).pipe(
-    // Intercept 401 first — attempt token refresh before general error handling
-    catchError((error: HttpErrorResponse) => {
-      if (error.status !== 401) return throwError(() => error);
-
-      const refreshToken = tokenProvider?.getRefreshToken?.();
-      if (!refreshToken?.trim()) return throwError(() => error);
-
-      return config.refreshTokenCallback!().pipe(
-        switchMap(({ token }) =>
-          next(
-            req.clone({
-              url: finalUrl,
-              setHeaders: { ...headers, Authorization: `Bearer ${token}` },
-            }),
-          ),
-        ),
-        catchError((refreshError) => {
-          config.logoutCallback?.();
-          return throwError(() => refreshError);
-        }),
-      );
-    }),
-    // General error handling (logs, redirects, tenant, rate-limit, etc.)
-    catchError((error: HttpErrorResponse) => handleContextError(error, errorCtx)),
-  );
-};
+function logRequest(
+  loggingService: LoggingService,
+  req: HttpRequest<unknown>,
+  finalUrl: string,
+  headers: Record<string, string>,
+  logData: { requestId: string; correlationId: string; tenantId: string; isCustomUrl: boolean },
+): void {
+  loggingService.logHttpRequest({
+    method: req.method,
+    url: finalUrl,
+    originalUrl: req.url,
+    requestId: logData.requestId,
+    correlationId: logData.correlationId,
+    tenantId: logData.tenantId,
+    timestamp: new Date().toISOString(),
+    headers: Object.keys(headers),
+    isCustomUrl: logData.isCustomUrl,
+  });
+}
 
 // ---------------------------------------------------------------------------
 // Unified error handler (eliminates duplicated catchError blocks)

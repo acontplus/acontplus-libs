@@ -1,8 +1,7 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 
-import { Spinner } from '@acontplus/ng-components';
+import { Spinner, Button } from '@acontplus/ng-components';
 import { MatCardModule } from '@angular/material/card';
-import { Button } from '@acontplus/ng-components';
 import { DocHeading } from '../../shared/doc-heading/doc-heading';
 import { CodeExample } from '../../shared/code-example/code-example';
 

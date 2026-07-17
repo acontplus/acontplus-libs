@@ -5,13 +5,13 @@ import { CustomerGetByIdMapper } from '../mappers/customer-get-by-id-mapper';
 import { CustomerCreateUpdateMapper } from '../mappers/customer-create-update-mapper';
 import { CustomerSearch } from '../../domain/models/customer-search';
 import { CompanySearchMapper } from '../mappers/company-search-mapper';
-import { ApiResponse, HttpClientFactory, PagedResult } from '@acontplus/core';
+import { ApiResponse, PagedResult } from '@acontplus/core';
 import { CUSTOMER_API } from '../../data/customer-constants';
+import { HttpClient } from '@angular/common/http';
+import { inject } from '@angular/core';
 
 export class CustomerHttpRepository implements CustomerRepository {
-  private get http() {
-    return HttpClientFactory.getClient(); // siempre toma el último cliente configurado
-  }
+  private readonly http = inject(HttpClient);
 
   private get url() {
     return `${CUSTOMER_API.BILLING}/CompanyCustomer/`;

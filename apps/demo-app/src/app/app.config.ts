@@ -1,6 +1,5 @@
 import {
   ApplicationConfig,
-  provideAppInitializer,
   provideBrowserGlobalErrorListeners,
   provideZoneChangeDetection,
 } from '@angular/core';
@@ -8,7 +7,6 @@ import { provideRouter } from '@angular/router';
 import { appRoutes } from './app.routes';
 import { provideHttpClient, withInterceptors, withFetch } from '@angular/common/http';
 import { environment } from '../environments/environment';
-import { initHttpFactory } from './init-http-factory';
 import { provideTransloco } from '@jsverse/transloco';
 import { TranslocoHttpLoader } from './providers';
 
@@ -44,8 +42,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(appRoutes),
 
     // Enable hydration with timeout handling
-    //  provideClientHydration(withEventReplay()), // App initialization
-    provideAppInitializer(initHttpFactory()),
+    //  provideClientHydration(withEventReplay()),
 
     // HTTP configuration
     provideHttpClient(

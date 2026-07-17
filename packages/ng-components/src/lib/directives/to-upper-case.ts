@@ -12,8 +12,8 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
   ],
 })
 export class ToUpperCase implements ControlValueAccessor {
-  private el = inject(ElementRef);
-  private renderer = inject(Renderer2);
+  private readonly el = inject(ElementRef);
+  private readonly renderer = inject(Renderer2);
 
   @HostListener('input') onInput() {
     const value = this.el.nativeElement.value;

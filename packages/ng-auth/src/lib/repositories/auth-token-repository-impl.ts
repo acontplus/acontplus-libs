@@ -8,8 +8,8 @@ import { AuthTokenRepository, ENVIRONMENT } from '@acontplus/ng-config';
   providedIn: 'root',
 })
 export class AuthTokenRepositoryImpl implements AuthTokenRepository {
-  private environment = inject(ENVIRONMENT);
-  private platformId = inject(PLATFORM_ID);
+  private readonly environment = inject(ENVIRONMENT);
+  private readonly platformId = inject(PLATFORM_ID);
 
   saveTokens(tokens: AuthTokens, rememberMe = false): void {
     if (isPlatformBrowser(this.platformId)) {

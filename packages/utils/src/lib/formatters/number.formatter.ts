@@ -23,7 +23,7 @@ export class NumberFormatter {
    * @example Number.isInteger([1]);       // false
    */
   public static isInteger(value: any): boolean {
-    return ObjectHelper.isNumber(value) && isFinite(value) && Math.floor(value) === value;
+    return ObjectHelper.isNumber(value) && Number.isFinite(value) && Math.floor(value) === value;
   }
 
   /**
@@ -80,7 +80,7 @@ export class NumberFormatter {
   }
 
   public static isNumber(value: any): boolean {
-    return typeof value === 'number' && !isNaN(value) && isFinite(value);
+    return typeof value === 'number' && !Number.isNaN(value) && Number.isFinite(value);
   }
 
   public static isPositive(value: number): boolean {

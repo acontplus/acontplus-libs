@@ -36,7 +36,7 @@ export class IdentificationNumberVo extends BaseVo<string> {
     if (!/^\d{10}$/.test(this.id)) return false;
 
     // Verificar que los primeros 2 dígitos sean una provincia válida (01-24)
-    const provincia = parseInt(this.id.substring(0, 2));
+    const provincia = Number.parseInt(this.id.substring(0, 2));
     if (provincia < 1 || provincia > 24) return false;
 
     // Algoritmo de validación del dígito verificador
@@ -44,12 +44,12 @@ export class IdentificationNumberVo extends BaseVo<string> {
     let suma = 0;
 
     for (let i = 0; i < 9; i++) {
-      const valor = parseInt(this.id.charAt(i)) * coeficientes[i];
+      const valor = Number.parseInt(this.id.charAt(i)) * coeficientes[i];
       suma += valor > 9 ? valor - 9 : valor;
     }
 
     const digitoVerificador = suma % 10 === 0 ? 0 : 10 - (suma % 10);
-    return digitoVerificador === parseInt(this.id.charAt(9));
+    return digitoVerificador === Number.parseInt(this.id.charAt(9));
   }
 
   // Validación de RUC más flexible
@@ -58,7 +58,7 @@ export class IdentificationNumberVo extends BaseVo<string> {
 
     // Los primeros 10 dígitos deben ser una cédula válida para personas naturales
     // o seguir reglas específicas para sociedades
-    const tercerDigito = parseInt(this.id.charAt(2));
+    const tercerDigito = Number.parseInt(this.id.charAt(2));
 
     // RUC de persona natural (tercer dígito < 6)
     if (tercerDigito < 6) {
@@ -85,32 +85,32 @@ export class IdentificationNumberVo extends BaseVo<string> {
     let suma = 0;
 
     for (let i = 0; i < 9; i++) {
-      suma += parseInt(this.id.charAt(i)) * coeficientes[i];
+      suma += Number.parseInt(this.id.charAt(i)) * coeficientes[i];
     }
 
     const residuo = suma % 11;
     const digitoVerificador = residuo === 0 ? 0 : 11 - residuo;
 
-    return digitoVerificador === parseInt(this.id.charAt(9)) && this.id.endsWith('001');
+    return digitoVerificador === Number.parseInt(this.id.charAt(9)) && this.id.endsWith('001');
   }
 
   // Método auxiliar estático para validar cédula sin crear instancia
   private static validateCedula(cedula: string): boolean {
     if (!/^\d{10}$/.test(cedula)) return false;
 
-    const provincia = parseInt(cedula.substring(0, 2));
+    const provincia = Number.parseInt(cedula.substring(0, 2));
     if (provincia < 1 || provincia > 24) return false;
 
     const coeficientes = [2, 1, 2, 1, 2, 1, 2, 1, 2];
     let suma = 0;
 
     for (let i = 0; i < 9; i++) {
-      const valor = parseInt(cedula.charAt(i)) * coeficientes[i];
+      const valor = Number.parseInt(cedula.charAt(i)) * coeficientes[i];
       suma += valor > 9 ? valor - 9 : valor;
     }
 
     const digitoVerificador = suma % 10 === 0 ? 0 : 10 - (suma % 10);
-    return digitoVerificador === parseInt(cedula.charAt(9));
+    return digitoVerificador === Number.parseInt(cedula.charAt(9));
   }
 
   // Métodos públicos mejorados
@@ -144,7 +144,7 @@ export class IdentificationNumberVo extends BaseVo<string> {
   public getRucType(): string | null {
     if (this.type !== SRI_DOCUMENT_TYPE.RUC) return null;
 
-    const tercerDigito = parseInt(this.id.charAt(2));
+    const tercerDigito = Number.parseInt(this.id.charAt(2));
     if (tercerDigito < 6) return 'Persona Natural';
     if (tercerDigito === 6) return 'Entidad Pública';
     if (tercerDigito === 9) return 'Sociedad Privada';

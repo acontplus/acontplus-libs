@@ -7,7 +7,7 @@ import { firstValueFrom, map } from 'rxjs';
   providedIn: 'root',
 })
 export class CsrfApi {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
   private csrfToken: string | null = null;
 
   /**

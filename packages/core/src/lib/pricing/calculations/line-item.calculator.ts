@@ -6,7 +6,7 @@ import { PricingCalculationError } from './pricing-calculation.error';
  * Calculadora especializada para líneas de productos/servicios en facturas
  */
 export class LineItemCalculator {
-  constructor(private decimales = 4) {}
+  constructor(private readonly decimales = 4) {}
 
   /**
    * Calcula el total de una línea de producto incluyendo descuentos e impuestos
@@ -63,6 +63,6 @@ export class LineItemCalculator {
    * ```
    */
   calculateSubtotal(unitPrice: number, quantity: number): number {
-    return DecimalConverter.multiplyAsNumber(unitPrice, quantity) as number;
+    return DecimalConverter.multiplyAsNumber(unitPrice, quantity);
   }
 }

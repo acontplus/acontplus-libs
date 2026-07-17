@@ -6,7 +6,7 @@ import { TaxCalculation } from '../../types';
  * Calculadora especializada para impuestos (IVA, IGV, etc.)
  */
 export class TaxCalculator {
-  constructor(private decimales = 4) {}
+  constructor(private readonly decimales = 4) {}
 
   /**
    * Calcula el valor del impuesto basado en el precio base y la tasa

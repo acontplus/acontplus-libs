@@ -6,7 +6,7 @@ import { LoggingService } from './logging-service';
 })
 export class TenantInfo {
   private tenantId: string | null = null;
-  private logger = inject(LoggingService);
+  private readonly logger = inject(LoggingService);
 
   getTenantId(): string {
     if (!this.tenantId) {

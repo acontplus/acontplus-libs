@@ -102,14 +102,7 @@ export class ReusableAutocompleteComponent implements OnInit, OnDestroy {
   });
 
   currentPageItems = computed(() => {
-    // if (!this.config.enablePagination) {
-    // }
     return this.filteredItems();
-    // return this.autocompleteService.paginateItems(
-    //   this.filteredItems(),
-    //   this.currentPage(),
-    //   this.config.itemsPerPage || 10
-    // );
   });
 
   startItem = computed(() => {
@@ -138,8 +131,8 @@ export class ReusableAutocompleteComponent implements OnInit, OnDestroy {
   });
 
   // Private
-  private destroy$ = new Subject<void>();
-  private searchSubject = new Subject<{ query: string; filters: any; page: number }>();
+  private readonly destroy$ = new Subject<void>();
+  private readonly searchSubject = new Subject<{ query: string; filters: any; page: number }>();
   private autocompleteService = inject(AutocompleteWrapperService);
 
   ngOnInit() {
@@ -259,48 +252,61 @@ export class ReusableAutocompleteComponent implements OnInit, OnDestroy {
 
     switch (event.key) {
       case 'ArrowDown':
-        event.preventDefault();
-        if (maxIndex >= 0) {
-          const nextIndex = this.selectedIndex() < maxIndex ? this.selectedIndex() + 1 : 0;
-          this.selectedIndex.set(nextIndex);
-          this.scrollToSelected();
-        }
+        this.handleArrowDown(maxIndex);
         break;
-
       case 'ArrowUp':
-        event.preventDefault();
-        if (maxIndex >= 0) {
-          const prevIndex = this.selectedIndex() > 0 ? this.selectedIndex() - 1 : maxIndex;
-          this.selectedIndex.set(prevIndex);
-          this.scrollToSelected();
-        }
+        this.handleArrowUp(maxIndex);
         break;
-
       case 'Enter':
-        event.preventDefault();
-        if (this.selectedIndex() >= 0 && this.selectedIndex() <= maxIndex) {
-          this.selectItem(currentList[this.selectedIndex()]);
-        }
+        this.handleEnter(currentList, maxIndex);
         break;
-
       case 'Escape':
-        event.preventDefault();
-        this.hideOverlay();
+        this.handleEscape();
         break;
-
       case 'PageDown':
-        event.preventDefault();
-        if (!this.isHistoryVisible() && this.config.enablePagination) {
-          this.goToNextPage();
-        }
+        this.handlePageDown();
         break;
-
       case 'PageUp':
-        event.preventDefault();
-        if (!this.isHistoryVisible() && this.config.enablePagination) {
-          this.goToPreviousPage();
-        }
+        this.handlePageUp();
         break;
+    }
+  }
+
+  private handleArrowDown(maxIndex: number) {
+    if (maxIndex >= 0) {
+      const nextIndex = this.selectedIndex() < maxIndex ? this.selectedIndex() + 1 : 0;
+      this.selectedIndex.set(nextIndex);
+      this.scrollToSelected();
+    }
+  }
+
+  private handleArrowUp(maxIndex: number) {
+    if (maxIndex >= 0) {
+      const prevIndex = this.selectedIndex() > 0 ? this.selectedIndex() - 1 : maxIndex;
+      this.selectedIndex.set(prevIndex);
+      this.scrollToSelected();
+    }
+  }
+
+  private handleEnter(currentList: AutocompleteWrapperItem[], maxIndex: number) {
+    if (this.selectedIndex() >= 0 && this.selectedIndex() <= maxIndex) {
+      this.selectItem(currentList[this.selectedIndex()]);
+    }
+  }
+
+  private handleEscape() {
+    this.hideOverlay();
+  }
+
+  private handlePageDown() {
+    if (!this.isHistoryVisible() && this.config.enablePagination) {
+      this.goToNextPage();
+    }
+  }
+
+  private handlePageUp() {
+    if (!this.isHistoryVisible() && this.config.enablePagination) {
+      this.goToPreviousPage();
     }
   }
 
@@ -310,7 +316,6 @@ export class ReusableAutocompleteComponent implements OnInit, OnDestroy {
       this.performSearch(this.query);
       this.searchSubjectNext();
     }
-    // this.filterChanged.emit(this.filters);
   }
 
   // Método público para actualizar resultados desde el padre
@@ -373,7 +378,7 @@ export class ReusableAutocompleteComponent implements OnInit, OnDestroy {
   // Pagination Methods
   goToPage(event: Event) {
     const target = event.target as HTMLInputElement;
-    const page = parseInt(target.value);
+    const page = Number.parseInt(target.value);
     if (this.autocompleteService.isValidPage(page, this.totalPages())) {
       this.currentPage.set(page);
       this.selectedIndex.set(-1);
@@ -425,8 +430,6 @@ export class ReusableAutocompleteComponent implements OnInit, OnDestroy {
 
   // Footer Actions
   onCreateNew(_$event: MouseEvent) {
-    //$event.stopPropagation();
-    // this.hideOverlay();
     this.createClicked.emit(this.query);
   }
 

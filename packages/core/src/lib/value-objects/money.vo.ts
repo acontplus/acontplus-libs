@@ -8,7 +8,7 @@ export class MoneyVo extends BaseVo<{ amount: number; currency: string }> {
 
   protected validate(value: { amount: number; currency: string }) {
     if (value.amount < 0) throw new Error('Amount cannot be negative');
-    if (!value.currency || value.currency.length !== 3) {
+    if (!value.currency?.length || value.currency.length !== 3) {
       throw new Error('Invalid currency code');
     }
   }

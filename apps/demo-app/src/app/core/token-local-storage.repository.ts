@@ -6,7 +6,7 @@ import { environment } from '../../environments/environment';
 })
 export class TokenLocalStorageRepository {
   // private tokenKey = `${envConfig.appVersion}-${envConfig.TOKEN_KEY}`;
-  private tokenKey = `${environment.tokenKey}`;
+  private readonly tokenKey = `${environment.tokenKey}`;
 
   getToken(): string | null {
     return localStorage.getItem(this.tokenKey);

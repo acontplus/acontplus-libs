@@ -5,7 +5,7 @@ import { BaseRepository } from '@acontplus/ng-config';
 
 @Injectable({ providedIn: 'root' })
 export class RepositoryFactory {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
   create<TEntity, TId extends string | number = number>(
     config: RepositoryConfig,
@@ -14,7 +14,7 @@ export class RepositoryFactory {
       const baseUrl = config.baseUrl || '/api';
       const version = config.version ? `/v${config.version}` : '';
       const endpoint = path ? `${config.endpoint}/${path}` : config.endpoint;
-      return `${baseUrl}${version}/${endpoint}`.replace(/\/+/g, '/');
+      return `${baseUrl}${version}/${endpoint}`.replaceAll(/\/+/g, '/');
     };
 
     const buildParams = (pagination?: PaginationParams) => {

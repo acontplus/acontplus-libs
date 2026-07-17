@@ -33,6 +33,10 @@ export const routes = [
         loadChildren: () => import('./alert/alert.routes').then(m => m.routes),
       },
       {
+        path: 'badge',
+        loadChildren: () => import('./badge/badge.routes').then(m => m.routes),
+      },
+      {
         path: 'button',
         loadChildren: () => import('./button/button.routes').then(m => m.routes),
       },

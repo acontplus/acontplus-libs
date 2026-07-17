@@ -52,6 +52,13 @@ export const COMPONENTS_MENU: ComponentCategory[] = [
     category: 'Buttons & Indicators',
   },
   {
+    id: 'badge',
+    name: 'Badge',
+    summary:
+      'Versatile badge and chip component built on Angular Material for status, labels, filters, and KPIs.',
+    category: 'Buttons & Indicators',
+  },
+  {
     id: 'button',
     name: 'Button',
     summary: 'Flexible buttons with Material Design variants and report format support.',

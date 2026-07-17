@@ -37,7 +37,7 @@ export class ModuleSidenav implements OnInit, OnDestroy {
   isExtraScreenSmall: Observable<boolean>;
   isScreenSmall: Observable<boolean>;
 
-  private readonly _urlFragment = '';
+  private _urlFragment = '';
   private readonly subscriptions = new Subscription();
 
   constructor() {

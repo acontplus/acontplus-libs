@@ -1,0 +1,52 @@
+@use 'sass:map';
+@use '@angular/material' as mat;
+@use '../../../core/tokens/m3-utils';
+@use '../../../core/tokens/m3';
+
+@function get-tokens($theme: m3.$sys-theme) {
+  $system: m3-utils.get-system($theme);
+
+  $semantic-palettes: (
+    success: mat.$green-palette,
+    warning: mat.$orange-palette,
+    danger: mat.$red-palette,
+    info: mat.$azure-palette,
+  );
+
+  $color-tokens: ();
+  @each $name, $palette in $semantic-palettes {
+    $color-tokens: map.merge(
+      $color-tokens,
+      (
+        badge-#{$name}-fg: light-dark(map.get($palette, 95), map.get($palette, 20)),
+        badge-#{$name}-bg: light-dark(map.get($palette, 40), map.get($palette, 80))
+      )
+    );
+  }
+
+  $tokens: (
+    base: (
+      badge-container-shape: map.get($system, corner-small),
+      badge-pill-shape: map.get($system, corner-full),
+    ),
+    color: map.merge(
+        (
+          badge-primary-color: map.get($system, on-primary),
+          badge-primary-bg: map.get($system, primary),
+          badge-secondary-color: map.get($system, on-secondary),
+          badge-secondary-bg: map.get($system, secondary),
+          badge-tertiary-color: map.get($system, on-tertiary),
+          badge-tertiary-bg: map.get($system, tertiary),
+          badge-neutral-color: map.get($system, on-surface-variant),
+          badge-neutral-bg: map.get($system, surface-variant),
+          badge-custom-color: map.get($system, on-surface),
+          badge-custom-bg: map.get($system, surface-container),
+        ),
+        $color-tokens
+      ),
+    typography: (),
+    density: (),
+  );
+
+  @return $tokens;
+}

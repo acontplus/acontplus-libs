@@ -61,4 +61,11 @@ export class ExampleViewer implements OnInit, OnDestroy {
   toggleSourceView() {
     this.showSource = !this.showSource;
   }
+
+  copySource(element: HTMLElement) {
+    const text = element.textContent || '';
+    navigator.clipboard.writeText(text).then(() => {
+      this.snackbar.open('Code copied', undefined, { duration: 2500 });
+    });
+  }
 }

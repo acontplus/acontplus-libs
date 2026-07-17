@@ -1,0 +1,318 @@
+@use '@angular/material' as mat;
+@use '../../../core/tokens/token-utils';
+@use './m3-badge';
+
+$fallbacks: m3-badge.get-tokens();
+
+.acp-badge {
+  --acp-badge-bg: #{token-utils.slot(badge-primary-bg, $fallbacks)};
+  --acp-badge-fg: #{token-utils.slot(badge-primary-color, $fallbacks)};
+
+  display: inline-flex;
+  vertical-align: middle;
+  max-width: 100%;
+
+  &__set {
+    display: inline-flex;
+    max-width: 100%;
+  }
+
+  &__chip.mat-mdc-chip {
+    position: relative;
+    max-width: 100%;
+  }
+
+  &__label,
+  &__value {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__separator {
+    margin: 0 6px;
+    opacity: 0.6;
+  }
+
+  &__loader {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: inherit;
+    border-radius: inherit;
+    z-index: 1;
+
+    &::after {
+      content: '';
+      width: 16px;
+      height: 16px;
+      border: 2px solid currentColor;
+      border-right-color: transparent;
+      border-radius: 50%;
+      animation: acp-badge-spin 0.75s linear infinite;
+    }
+  }
+
+  &__remove {
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid currentColor;
+      outline-offset: 1px;
+    }
+  }
+
+  @keyframes acp-badge-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  // Colors - set CSS variables on host
+  &.acp-badge--primary {
+    --acp-badge-bg: #{token-utils.slot(badge-primary-bg, $fallbacks)};
+    --acp-badge-fg: #{token-utils.slot(badge-primary-color, $fallbacks)};
+  }
+
+  &.acp-badge--secondary {
+    --acp-badge-bg: #{token-utils.slot(badge-secondary-bg, $fallbacks)};
+    --acp-badge-fg: #{token-utils.slot(badge-secondary-color, $fallbacks)};
+  }
+
+  &.acp-badge--tertiary {
+    --acp-badge-bg: #{token-utils.slot(badge-tertiary-bg, $fallbacks)};
+    --acp-badge-fg: #{token-utils.slot(badge-tertiary-color, $fallbacks)};
+  }
+
+  &.acp-badge--success {
+    --acp-badge-bg: #{token-utils.slot(badge-success-bg, $fallbacks)};
+    --acp-badge-fg: #{token-utils.slot(badge-success-fg, $fallbacks)};
+  }
+
+  &.acp-badge--warning {
+    --acp-badge-bg: #{token-utils.slot(badge-warning-bg, $fallbacks)};
+    --acp-badge-fg: #{token-utils.slot(badge-warning-fg, $fallbacks)};
+  }
+
+  &.acp-badge--danger {
+    --acp-badge-bg: #{token-utils.slot(badge-danger-bg, $fallbacks)};
+    --acp-badge-fg: #{token-utils.slot(badge-danger-fg, $fallbacks)};
+  }
+
+  &.acp-badge--info {
+    --acp-badge-bg: #{token-utils.slot(badge-info-bg, $fallbacks)};
+    --acp-badge-fg: #{token-utils.slot(badge-info-fg, $fallbacks)};
+  }
+
+  &.acp-badge--neutral {
+    --acp-badge-bg: #{token-utils.slot(badge-neutral-bg, $fallbacks)};
+    --acp-badge-fg: #{token-utils.slot(badge-neutral-color, $fallbacks)};
+  }
+
+  &.acp-badge--custom {
+    --acp-badge-bg: var(--acp-badge-custom-bg, #{token-utils.slot(badge-custom-bg, $fallbacks)});
+    --acp-badge-fg: var(--acp-badge-custom-fg, #{token-utils.slot(badge-custom-color, $fallbacks)});
+  }
+
+  // Variants - apply styles based on variant
+  &.acp-badge--filled &__chip.mat-mdc-chip {
+    @include mat.chips-overrides(
+      (
+        elevated-container-color: var(--acp-badge-bg),
+        elevated-selected-container-color: var(--acp-badge-bg),
+        label-text-color: var(--acp-badge-fg),
+        selected-label-text-color: var(--acp-badge-fg),
+        with-icon-icon-color: var(--acp-badge-fg),
+        with-icon-selected-icon-color: var(--acp-badge-fg),
+        with-trailing-icon-trailing-icon-color: var(--acp-badge-fg),
+        selected-trailing-icon-color: var(--acp-badge-fg),
+        outline-color: transparent,
+      )
+    );
+  }
+
+  &.acp-badge--outlined &__chip.mat-mdc-chip {
+    @include mat.chips-overrides(
+      (
+        elevated-container-color: transparent,
+        elevated-selected-container-color: transparent,
+        label-text-color: var(--acp-badge-bg),
+        selected-label-text-color: var(--acp-badge-bg),
+        with-icon-icon-color: var(--acp-badge-bg),
+        with-icon-selected-icon-color: var(--acp-badge-bg),
+        with-trailing-icon-trailing-icon-color: var(--acp-badge-bg),
+        selected-trailing-icon-color: var(--acp-badge-bg),
+        outline-color: var(--acp-badge-bg),
+        outline-width: 1px,
+      )
+    );
+  }
+
+  &.acp-badge--soft &__chip.mat-mdc-chip {
+    @include mat.chips-overrides(
+      (
+        elevated-container-color: color-mix(in srgb, var(--acp-badge-bg) 12%, transparent),
+        elevated-selected-container-color: color-mix(in srgb, var(--acp-badge-bg) 12%, transparent),
+        label-text-color: var(--acp-badge-bg),
+        selected-label-text-color: var(--acp-badge-bg),
+        with-icon-icon-color: var(--acp-badge-bg),
+        with-icon-selected-icon-color: var(--acp-badge-bg),
+        with-trailing-icon-trailing-icon-color: var(--acp-badge-bg),
+        selected-trailing-icon-color: var(--acp-badge-bg),
+        outline-color: transparent,
+      )
+    );
+  }
+
+  &.acp-badge--tonal &__chip.mat-mdc-chip {
+    @include mat.chips-overrides(
+      (
+        elevated-container-color: color-mix(in srgb, var(--acp-badge-bg) 22%, transparent),
+        elevated-selected-container-color: color-mix(in srgb, var(--acp-badge-bg) 22%, transparent),
+        label-text-color: var(--acp-badge-bg),
+        selected-label-text-color: var(--acp-badge-bg),
+        with-icon-icon-color: var(--acp-badge-bg),
+        with-icon-selected-icon-color: var(--acp-badge-bg),
+        with-trailing-icon-trailing-icon-color: var(--acp-badge-bg),
+        selected-trailing-icon-color: var(--acp-badge-bg),
+        outline-color: transparent,
+      )
+    );
+  }
+
+  &.acp-badge--text &__chip.mat-mdc-chip {
+    @include mat.chips-overrides(
+      (
+        elevated-container-color: transparent,
+        elevated-selected-container-color: transparent,
+        label-text-color: var(--acp-badge-bg),
+        selected-label-text-color: var(--acp-badge-bg),
+        with-icon-icon-color: var(--acp-badge-bg),
+        with-icon-selected-icon-color: var(--acp-badge-bg),
+        with-trailing-icon-trailing-icon-color: var(--acp-badge-bg),
+        selected-trailing-icon-color: var(--acp-badge-bg),
+        outline-color: transparent,
+      )
+    );
+  }
+
+  // Sizes
+  &.acp-badge--xs &__chip.mat-mdc-chip {
+    @include mat.chips-overrides(
+      (
+        container-height: 20px,
+        label-text-size: 10px,
+      )
+    );
+
+    .mat-icon {
+      --acp-badge-icon-size: 12px;
+    }
+  }
+
+  &.acp-badge--sm &__chip.mat-mdc-chip {
+    @include mat.chips-overrides(
+      (
+        container-height: 24px,
+        label-text-size: 11px,
+      )
+    );
+
+    .mat-icon {
+      --acp-badge-icon-size: 14px;
+    }
+  }
+
+  &.acp-badge--md &__chip.mat-mdc-chip {
+    @include mat.chips-overrides(
+      (
+        container-height: 28px,
+        label-text-size: 12px,
+      )
+    );
+
+    .mat-icon {
+      --acp-badge-icon-size: 16px;
+    }
+  }
+
+  &.acp-badge--lg &__chip.mat-mdc-chip {
+    @include mat.chips-overrides(
+      (
+        container-height: 32px,
+        label-text-size: 14px,
+      )
+    );
+
+    .mat-icon {
+      --acp-badge-icon-size: 18px;
+    }
+  }
+
+  // Shapes
+  &.acp-badge--rounded &__chip.mat-mdc-chip {
+    @include mat.chips-overrides(
+      (
+        container-shape-radius: #{token-utils.slot(badge-container-shape, $fallbacks)},
+      )
+    );
+  }
+
+  &.acp-badge--pill &__chip.mat-mdc-chip {
+    @include mat.chips-overrides(
+      (
+        container-shape-radius: #{token-utils.slot(badge-pill-shape, $fallbacks)},
+      )
+    );
+  }
+
+  &.acp-badge--square &__chip.mat-mdc-chip {
+    @include mat.chips-overrides(
+      (
+        container-shape-radius: 0,
+      )
+    );
+  }
+
+  // Icon sizing
+  &__chip.mat-mdc-chip .mat-icon {
+    width: var(--acp-badge-icon-size, 18px);
+    height: var(--acp-badge-icon-size, 18px);
+    font-size: var(--acp-badge-icon-size, 18px);
+    line-height: var(--acp-badge-icon-size, 18px);
+  }
+
+  // States
+  &.acp-badge--interactive &__chip.mat-mdc-chip {
+    cursor: pointer;
+  }
+
+  &.acp-badge--disabled &__chip.mat-mdc-chip {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  &.acp-badge--loading &__chip.mat-mdc-chip {
+    pointer-events: none;
+  }
+
+  &.acp-badge--selected &__chip.mat-mdc-chip.mdc-evolution-chip--selected,
+  &.acp-badge--selected &__chip.mat-mdc-chip.mat-mdc-chip-highlighted {
+    box-shadow: inset 0 0 0 2px currentColor;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &__loader::after {
+      animation: none;
+    }
+  }
+
+  @media (prefers-contrast: more) {
+    &__chip.mat-mdc-chip {
+      outline: 2px solid currentColor;
+      outline-offset: 1px;
+    }
+  }
+}

@@ -36,6 +36,10 @@ export abstract class BaseButton {
   focused = output<void>();
   blurred = output<void>();
 
+  colorClass = computed(() => `acp-${this.color()}`);
+  sizeClass = computed(() => `acp-${this.size()}`);
+  squareClass = computed(() => (this.square() ? 'acp-square' : ''));
+
   isDisabled = computed(() => this.disabled() || this.loading());
   pointerEvents = computed(() => (this.isDisabled() ? 'none' : 'auto'));
 }

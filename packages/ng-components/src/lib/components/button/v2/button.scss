@@ -1,6 +1,6 @@
 @use '@angular/material' as mat;
 
-.primary {
+.acp-primary {
   @include mat.button-overrides(
     (
       filled-container-color: var(--theme-primary-color),
@@ -13,7 +13,7 @@
   );
 }
 
-.secondary {
+.acp-secondary {
   @include mat.button-overrides(
     (
       filled-container-color: var(--mat-sys-secondary),
@@ -26,7 +26,7 @@
   );
 }
 
-.accent {
+.acp-accent {
   @include mat.button-overrides(
     (
       filled-container-color: var(--mat-sys-tertiary),
@@ -39,7 +39,7 @@
   );
 }
 
-.error {
+.acp-error {
   @include mat.button-overrides(
     (
       filled-container-color: var(--mat-sys-error),
@@ -52,7 +52,7 @@
   );
 }
 
-.success {
+.acp-success {
   @include mat.button-overrides(
     (
       filled-container-color: #4caf50,
@@ -65,7 +65,7 @@
   );
 }
 
-.warning {
+.acp-warning {
   @include mat.button-overrides(
     (
       filled-container-color: #f59e0b,
@@ -78,7 +78,7 @@
   );
 }
 
-.info {
+.acp-info {
   @include mat.button-overrides(
     (
       filled-container-color: #3b82f6,
@@ -91,7 +91,7 @@
   );
 }
 
-.dark {
+.acp-dark {
   @include mat.button-overrides(
     (
       filled-container-color: #1f2937,
@@ -104,7 +104,7 @@
   );
 }
 
-[matIconButton].primary {
+[matIconButton].acp-primary {
   @include mat.icon-overrides(
     (
       color: var(--theme-primary-color),
@@ -112,7 +112,7 @@
   );
 }
 
-[matIconButton].secondary {
+[matIconButton].acp-secondary {
   @include mat.icon-overrides(
     (
       color: var(--mat-sys-secondary),
@@ -120,7 +120,7 @@
   );
 }
 
-[matIconButton].accent {
+[matIconButton].acp-accent {
   @include mat.icon-overrides(
     (
       color: var(--mat-sys-tertiary),
@@ -128,7 +128,7 @@
   );
 }
 
-[matIconButton].error {
+[matIconButton].acp-error {
   @include mat.icon-overrides(
     (
       color: var(--mat-sys-error),
@@ -136,7 +136,7 @@
   );
 }
 
-[matIconButton].success {
+[matIconButton].acp-success {
   @include mat.icon-overrides(
     (
       color: #10b981,
@@ -144,7 +144,7 @@
   );
 }
 
-[matIconButton].warning {
+[matIconButton].acp-warning {
   @include mat.icon-overrides(
     (
       color: #f59e0b,
@@ -152,7 +152,7 @@
   );
 }
 
-[matIconButton].info {
+[matIconButton].acp-info {
   @include mat.icon-overrides(
     (
       color: #3b82f6,
@@ -160,7 +160,7 @@
   );
 }
 
-[matIconButton].dark {
+[matIconButton].acp-dark {
   @include mat.icon-overrides(
     (
       color: #1f2937,
@@ -168,7 +168,7 @@
   );
 }
 
-.square {
+.acp-square {
   @include mat.button-overrides(
     (
       filled-container-shape: 8px,
@@ -181,7 +181,7 @@
   --mat-icon-button-container-shape: 8px;
 }
 
-.medium {
+.acp-medium {
   @include mat.theme(
     (
       density: -1,
@@ -203,7 +203,7 @@
     )
   );
 }
-.small {
+.acp-small {
   @include mat.theme(
     (
       density: -2,

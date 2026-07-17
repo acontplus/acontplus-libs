@@ -21,20 +21,20 @@ export class GenericRepository<TEntity = any, TId extends string | number = numb
   }
 
   getById(id: TId): Observable<TEntity> {
-    return this.get<TEntity>(id.toString());
+    return this.get<TEntity>(undefined, id.toString());
   }
 
   getAll(pagination?: PaginationParams): Observable<PagedResult<TEntity>> {
     const params = this.buildParams(pagination);
-    return this.get<PagedResult<TEntity>>('', params);
+    return this.get<PagedResult<TEntity>>(params);
   }
 
   create(entity: Partial<TEntity>): Observable<TEntity> {
-    return this.post<TEntity>('', entity);
+    return this.post<TEntity>(entity);
   }
 
   update(id: TId, entity: Partial<TEntity>): Observable<TEntity> {
-    return this.put<TEntity>(id.toString(), entity);
+    return this.put<TEntity>(entity, id.toString());
   }
 
   remove(id: TId): Observable<void> {
@@ -67,6 +67,6 @@ export class SearchableGenericRepository<TEntity = any, TId extends string | num
   search(query: string, pagination: PaginationParams): Observable<PagedResult<TEntity>> {
     const searchFilters = { q: query };
     const params = this.buildParams(pagination, searchFilters);
-    return this.get<PagedResult<TEntity>>('search', params);
+    return this.get<PagedResult<TEntity>>(params, 'search');
   }
 }

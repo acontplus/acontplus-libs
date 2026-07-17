@@ -33,13 +33,13 @@ export interface FocusableElement {
 })
 export class KeyboardNavigationService {
   /** Array privado que contiene todos los elementos registrados para la navegación */
-  private focusableElements: FocusableElement[] = [];
+  private readonly focusableElements: FocusableElement[] = [];
 
   /** Signal que mantiene el índice del elemento actualmente enfocado en el array `focusableElements` */
-  private currentFocusIndex = signal(-1);
+  private readonly currentFocusIndex = signal(-1);
 
   /** Subject para notificar la destrucción del servicio y limpiar suscripciones */
-  private destroy$ = new Subject<void>();
+  private readonly destroy$ = new Subject<void>();
 
   // --- Signals Públicos para Exponer el Estado ---
 
@@ -77,7 +77,7 @@ export class KeyboardNavigationService {
     this.focusableElements.push(element);
 
     // Configurar eventos de teclado para este elemento
-    fromEvent<KeyboardEvent>(element.element.nativeElement, 'keydown')
+    fromEvent<KeyboardEvent>(element.element?.nativeElement, 'keydown')
       .pipe(
         takeUntil(this.destroy$),
         filter(event => ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)),
@@ -88,7 +88,7 @@ export class KeyboardNavigationService {
       });
 
     // Configurar eventos de foco para este elemento
-    fromEvent<FocusEvent>(element.element.nativeElement, 'focus')
+    fromEvent<FocusEvent>(element.element?.nativeElement, 'focus')
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         const index = this.focusableElements.findIndex(e => e.element === element.element);

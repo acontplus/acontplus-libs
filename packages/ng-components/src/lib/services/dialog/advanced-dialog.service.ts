@@ -123,11 +123,14 @@ export class AdvancedDialogService {
     dialogConfig: MatDialogConfig<D>,
     config: MatCustomDialogConfig<D>,
   ): void {
-    dialogConfig.width = config.width ?? this.getDialogWidth(config.size);
+    const width = config.width ?? this.getDialogWidth(config.size);
+    dialogConfig.width = width;
     dialogConfig.height = config.height;
     dialogConfig.minWidth = config.minWidth;
-    dialogConfig.maxWidth = config.maxWidth ?? '95vw';
-    dialogConfig.maxHeight = config.maxHeight ?? 'auto';
+    const maxWidth = config.maxWidth ?? '95vw';
+    dialogConfig.maxWidth = maxWidth;
+    const maxHeight = config.maxHeight ?? 'auto';
+    dialogConfig.maxHeight = maxHeight;
     dialogConfig.position = config.position;
   }
 

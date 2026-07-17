@@ -34,7 +34,7 @@ export class AcpGridRowClassPipe implements PipeTransform {
     dataIndex: number,
     rowClassFormatter?: DataGridRowClassFormatter,
   ) {
-    const rowIndex = index === undefined ? dataIndex : index;
+    const rowIndex = index ?? dataIndex;
     const classList: string[] = rowIndex % 2 === 1 ? ['mat-row-odd'] : [];
     if (rowClassFormatter) {
       for (const key of Object.keys(rowClassFormatter)) {
@@ -118,7 +118,7 @@ export class AcpGridCellActionDisablePipe implements PipeTransform {
 
 @Pipe({ name: 'cellSummary' })
 export class AcpGridCellSummaryPipe implements PipeTransform {
-  private utils = inject(DataGridUtils);
+  private readonly utils = inject(DataGridUtils);
 
   transform(data: any[], colDef: DataGridColumn) {
     if (typeof colDef.summary === 'string') {

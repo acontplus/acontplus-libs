@@ -25,8 +25,8 @@ type TranslationKey =
   name: 'statusDisplay',
 })
 export class StatusDisplayPipe implements PipeTransform {
-  private sanitizer = inject(DomSanitizer);
-  private transloco = inject(TranslocoService, { optional: true });
+  private readonly sanitizer = inject(DomSanitizer);
+  private readonly transloco = inject(TranslocoService, { optional: true });
 
   transform(isActive: boolean, options: StatusOptions = {}): SafeHtml {
     const {
@@ -74,14 +74,14 @@ export class StatusDisplayPipe implements PipeTransform {
     const translationKey = this.getTranslationKey(isActive, gender);
     const translation = this.transloco.translate(translationKey);
 
-    return translation !== translationKey ? translation : this.getFallbackText(isActive, gender);
+    return translation === translationKey ? this.getFallbackText(isActive, gender) : translation;
   }
 
   private getTranslationKey(isActive: boolean, gender: StatusGender): TranslationKey {
     const base = isActive ? 'status.active' : 'status.inactive';
-    return gender !== 'neutral'
-      ? (`${base}.${gender}` as TranslationKey)
-      : (base as TranslationKey);
+    return gender === 'neutral'
+      ? (base as TranslationKey)
+      : (`${base}.${gender}` as TranslationKey);
   }
 
   private getFallbackText(isActive: boolean, gender: StatusGender): string {

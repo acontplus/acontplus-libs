@@ -1,5 +1,12 @@
 import { PageEvent } from '@angular/material/paginator';
 
+export interface PaginationOptions {
+  hidePageSize?: boolean;
+  showPageSizeOptions?: boolean;
+  showFirstLastButtons?: boolean;
+  disabled?: boolean;
+}
+
 export class Pagination {
   totalRecords: number;
   pageSize: number;
@@ -16,29 +23,23 @@ export class Pagination {
    * @param pageSize Number of records per page
    * @param totalRecords Total number of records
    * @param pageSizeOptions Available page size options
-   * @param hidePageSize Whether to hide the page size selector
-   * @param showPageSizeOptions Whether to show page size options
-   * @param showFirstLastButtons Whether to show first/last buttons
-   * @param disabled Whether the paginator is disabled
+   * @param options Display and behavior options
    */
   constructor(
     pageIndex = 0, // MatPaginator starts at 0
     pageSize = 25,
     totalRecords = 0,
     pageSizeOptions: number[] = [25, 50, 75, 100],
-    hidePageSize = false,
-    showPageSizeOptions = true,
-    showFirstLastButtons = true,
-    disabled = false,
+    options: PaginationOptions = {},
   ) {
     this.pageIndex = pageIndex;
     this.pageSize = pageSize;
     this.totalRecords = totalRecords;
     this.pageSizeOptions = pageSizeOptions;
-    this.hidePageSize = hidePageSize;
-    this.showPageSizeOptions = showPageSizeOptions;
-    this.showFirstLastButtons = showFirstLastButtons;
-    this.disabled = disabled;
+    this.hidePageSize = options.hidePageSize ?? false;
+    this.showPageSizeOptions = options.showPageSizeOptions ?? true;
+    this.showFirstLastButtons = options.showFirstLastButtons ?? true;
+    this.disabled = options.disabled ?? false;
   }
 
   /**

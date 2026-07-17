@@ -55,7 +55,7 @@ export class NavigationFocusService implements OnDestroy {
 
   relinquishSkipLinkFocus(el: HTMLElement) {
     this.skipLinkFocusRequests.splice(this.skipLinkFocusRequests.indexOf(el), 1);
-    const skipLinkFocusTarget = this.skipLinkFocusRequests.at(-1);
+    const skipLinkFocusTarget = this.skipLinkFocusRequests.at(-1) ?? null;
     this.setSkipLinkHref(skipLinkFocusTarget);
   }
 

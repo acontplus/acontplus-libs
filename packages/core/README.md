@@ -17,7 +17,6 @@ pnpm add @acontplus/core
 - **Clean Architecture**: Ports and adapters pattern for external integrations
 - **Domain Models**: Base entities, value objects, and domain-specific models
 - **Pricing Engine**: Comprehensive pricing calculations with discount, tax, profit, and line item calculators
-- **HTTP Adapters**: Axios and Fetch adapters with HTTP client factory
 - **Use Cases**: Base use case pattern for business logic encapsulation
 - **Value Objects**: Money, EntityId, IdentificationNumber, and AuthTokens value objects
 - **Environment Configuration**: Type-safe environment configuration interfaces
@@ -28,7 +27,6 @@ pnpm add @acontplus/core
 
 This library follows Clean Architecture principles with clear separation of concerns:
 
-- **Adapters**: External service integrations (HTTP clients)
 - **Ports**: Interfaces for external dependencies
 - **Models**: Domain entities and data transfer objects
 - **Value Objects**: Immutable objects representing domain concepts
@@ -36,22 +34,6 @@ This library follows Clean Architecture principles with clear separation of conc
 - **Types**: TypeScript definitions for type safety
 
 ## Usage
-
-### HTTP Adapters
-
-```typescript
-import { HttpClientFactory, AxiosAdapter, FetchAdapter } from '@acontplus/core';
-
-// Create HTTP client with Axios
-const axiosClient = HttpClientFactory.create('axios');
-
-// Create HTTP client with Fetch
-const fetchClient = HttpClientFactory.create('fetch');
-
-// Use adapter directly
-const axiosAdapter = new AxiosAdapter();
-const response = await axiosAdapter.get('https://api.example.com/data');
-```
 
 ### Pricing Calculations
 

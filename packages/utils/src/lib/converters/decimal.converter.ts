@@ -411,7 +411,16 @@ export class DecimalConverter {
 
     if (thousandsSeparator) {
       const parts = formatted.split(decimalSeparator);
-      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousandsSeparator);
+      // Manual insertion to avoid ReDoS vulnerability from regex backtracking
+      const integerPart = parts[0];
+      const result: string[] = [];
+      for (let i = integerPart.length - 1, count = 0; i >= 0; i--, count++) {
+        if (count > 0 && count % 3 === 0) {
+          result.unshift(thousandsSeparator);
+        }
+        result.unshift(integerPart[i]);
+      }
+      parts[0] = result.join('');
       formatted = parts.join(decimalSeparator);
     }
 

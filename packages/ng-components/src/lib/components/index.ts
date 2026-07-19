@@ -9,7 +9,6 @@ export * from './button';
 export * from './spinner';
 export * from './tables';
 export * from './theme-toggle';
-export * from './autocomplete-wrapper';
 export * from './grid';
 export * from './date-range-picker';
 export * from './drawer';

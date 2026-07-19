@@ -59,6 +59,13 @@ export const COMPONENTS_MENU: ComponentCategory[] = [
     category: 'Buttons & Indicators',
   },
   {
+    id: 'kpi-card',
+    name: 'KPI Card',
+    summary:
+      'Professional KPI card component for displaying key performance indicators and metrics on dashboards.',
+    category: 'Buttons & Indicators',
+  },
+  {
     id: 'button',
     name: 'Button',
     summary: 'Flexible buttons with Material Design variants and report format support.',

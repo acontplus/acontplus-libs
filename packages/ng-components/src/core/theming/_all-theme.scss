@@ -4,6 +4,7 @@
 @use './../../lib/components/drawer/drawer-theme';
 @use './../../lib/components/grid/grid-theme';
 @use './../../lib/components/popover/popover-theme';
+@use './../../lib/components/kpi-card/kpi-card-theme';
 
 // Create a theme.
 @mixin all-component-themes($theme) {
@@ -12,6 +13,7 @@
   @include drawer-theme.theme($theme);
   @include grid-theme.theme($theme);
   @include popover-theme.theme($theme);
+  @include kpi-card-theme.theme($theme);
 }
 
 @mixin all-component-bases($theme) {
@@ -20,6 +22,7 @@
   @include drawer-theme.base($theme);
   @include grid-theme.base($theme);
   @include popover-theme.base($theme);
+  @include kpi-card-theme.base($theme);
 }
 
 // Custom component overrides for all themes

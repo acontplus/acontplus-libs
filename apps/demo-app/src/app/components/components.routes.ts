@@ -37,6 +37,10 @@ export const routes = [
         loadChildren: () => import('./badge/badge.routes').then(m => m.routes),
       },
       {
+        path: 'kpi-card',
+        loadChildren: () => import('./kpi-card/kpi-card.routes').then(m => m.KPI_CARD_ROUTES),
+      },
+      {
         path: 'button',
         loadChildren: () => import('./button/button.routes').then(m => m.routes),
       },

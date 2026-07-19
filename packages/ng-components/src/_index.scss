@@ -10,6 +10,8 @@
   grid-density, grid-base, grid-overrides;
 @forward './lib/components/popover/popover-theme' as popover-* show popover-theme, popover-color,
   popover-typography, popover-density, popover-base, popover-overrides;
+@forward './lib/components/kpi-card/kpi-card-theme' as kpi-card-* show kpi-card-theme,
+  kpi-card-color, kpi-card-typography, kpi-card-density, kpi-card-base, kpi-card-overrides;
 @forward './core/theming/definition' show define-theme, define-colors, define-typography,
   define-density;
 @forward './core/theming/color-api-backwards-compatibility' show

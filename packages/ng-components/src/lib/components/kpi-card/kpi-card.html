@@ -2,7 +2,11 @@
   class="acp-kpi-card__card"
   [routerLink]="routerLink()"
   [attr.aria-label]="ariaLabel()"
+  [matTooltip]="tooltip()"
+  [matTooltipDisabled]="!tooltip()"
   (click)="onCardClick()"
+  (mouseenter)="onMouseEnter()"
+  (mouseleave)="onMouseLeave()"
 >
   <!-- Loading Skeleton -->
   @if (loading()) {
@@ -45,7 +49,8 @@
       </div>
     </div>
 
-    <!-- Menu Button (optional) -->
+    <!-- Menu Button (optional) - Only show if actions template exists -->
+    @if (hasActions()) {
     <button
       mat-icon-button
       [matMenuTriggerFor]="menu"
@@ -54,9 +59,10 @@
     >
       <mat-icon>more_vert</mat-icon>
     </button>
-    <mat-menu #menu="matMenu">
+    <mat-menu #menu="matMenu" class="acp-kpi-card__menu">
       <ng-container [ngTemplateOutlet]="actionsTemplate()!"></ng-container>
     </mat-menu>
+    }
   </mat-card-header>
   }
 

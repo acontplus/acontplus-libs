@@ -1,17 +1,21 @@
 export type AcpKpiCardColor =
   | 'primary'
   | 'secondary'
-  | 'tertiary'
   | 'success'
+  | 'success-light'
   | 'warning'
-  | 'danger'
+  | 'warning-light'
+  | 'error'
+  | 'error-light'
   | 'info'
+  | 'info-light'
   | 'neutral'
+  | 'white'
   | 'custom';
 
 export type AcpKpiCardVariant = 'default' | 'elevated' | 'outlined' | 'filled' | 'tonal';
 
-export type AcpKpiCardSize = 'sm' | 'md' | 'lg';
+export type AcpKpiCardSize = 'xs' | 'sm' | 'md' | 'lg';
 
 export type AcpKpiCardTrend = 'up' | 'down' | 'neutral' | 'none';
 

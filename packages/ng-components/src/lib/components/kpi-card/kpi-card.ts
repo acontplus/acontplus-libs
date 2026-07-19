@@ -8,8 +8,9 @@ import {
   output,
   TemplateRef,
   ViewEncapsulation,
+  signal,
 } from '@angular/core';
-import { NgClass, NgTemplateOutlet } from '@angular/common';
+import { NgTemplateOutlet } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatCard, MatCardContent, MatCardHeader } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -17,6 +18,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import {
   AcpKpiCardColor,
@@ -31,7 +33,6 @@ import { KPI_CARD_TREND_CONFIGS } from './kpi-card.utils';
   exportAs: 'acpKpiCard',
   standalone: true,
   imports: [
-    NgClass,
     NgTemplateOutlet,
     RouterLink,
     MatCard,
@@ -42,6 +43,7 @@ import { KPI_CARD_TREND_CONFIGS } from './kpi-card.utils';
     MatMenuModule,
     MatProgressBarModule,
     MatDividerModule,
+    MatTooltipModule,
   ],
   templateUrl: './kpi-card.html',
   styleUrl: './kpi-card.scss',
@@ -92,9 +94,15 @@ export class AcpKpiCard {
   // Aria
   ariaLabel = input<string>();
 
+  // Tooltip
+  tooltip = input<string>();
+
   // Outputs
   clicked = output<void>();
   actionClicked = output<string>();
+
+  // Internal state for hover
+  isHovered = signal(false);
 
   // Content children
   iconTemplate = contentChild('icon', { read: TemplateRef });
@@ -107,14 +115,16 @@ export class AcpKpiCard {
 
   trendConfig = computed(() => KPI_CARD_TREND_CONFIGS[this.trend()]);
 
-  effectiveColor = computed<AcpKpiCardColor>(() => {
-    if (this.isTrending()) return this.trendConfig().color;
-    return this.color();
-  });
-
+  // Effective icon shows trend icon if trending, otherwise shows provided icon
   effectiveIcon = computed<string | undefined>(() => {
     if (this.isTrending()) return this.trendConfig().icon;
     return this.icon();
+  });
+
+  // Trend color is only for the trend indicator (icon and percentage)
+  trendColor = computed<AcpKpiCardColor>(() => {
+    if (this.isTrending()) return this.trendConfig().color;
+    return this.color();
   });
 
   hasHeader = computed(() => !!(this.title() || this.subtitle() || this.icon() || this.avatar()));
@@ -123,11 +133,13 @@ export class AcpKpiCard {
     () => !!(this.footer() || this.footerTemplate() || this.progress() !== undefined),
   );
 
+  hasActions = computed(() => !!this.actionsTemplate());
+
   hostClasses = computed(() => {
     const classes = [
       'acp-kpi-card',
       `acp-kpi-card--${this.variant()}`,
-      `acp-kpi-card--${this.effectiveColor()}`,
+      `acp-kpi-card--${this.color()}`,
       `acp-kpi-card--${this.size()}`,
     ];
 
@@ -148,5 +160,15 @@ export class AcpKpiCard {
   onActionClick(action: string, event: Event): void {
     event.stopPropagation();
     this.actionClicked.emit(action);
+  }
+
+  onMouseEnter(): void {
+    if (this.clickable()) {
+      this.isHovered.set(true);
+    }
+  }
+
+  onMouseLeave(): void {
+    this.isHovered.set(false);
   }
 }

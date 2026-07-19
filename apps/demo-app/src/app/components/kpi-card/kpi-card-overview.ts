@@ -25,8 +25,7 @@ import { CodeExample } from '../../shared/code-example/code-example';
             title="Revenue"
             value="$145,230"
             percentage="+12.4"
-            trend="up"
-            icon="trending_up"
+            icon="add"
             color="primary"
           ></acp-kpi-card>
 
@@ -35,7 +34,6 @@ import { CodeExample } from '../../shared/code-example/code-example';
             value="1,542"
             percentage="+5.6"
             trend="up"
-            icon="shopping_cart"
             color="success"
           ></acp-kpi-card>
 
@@ -56,6 +54,15 @@ import { CodeExample } from '../../shared/code-example/code-example';
             icon="trending_up"
             color="secondary"
           ></acp-kpi-card>
+
+          <acp-kpi-card
+            title="Total Users"
+            value="12,456"
+            percentage="+8.2"
+            trend="up"
+            icon="group"
+            color="white"
+          ></acp-kpi-card>
         </mat-card-content>
       </mat-card>
 
@@ -69,6 +76,15 @@ import { CodeExample } from '../../shared/code-example/code-example';
             percentage="-1.3"
             trend="down"
             icon="inventory"
+            color="warning-light"
+          ></acp-kpi-card>
+
+          <acp-kpi-card
+            title="Alerts"
+            value="45"
+            percentage="+8.2"
+            trend="up"
+            icon="warning"
             color="warning"
           ></acp-kpi-card>
 
@@ -78,7 +94,7 @@ import { CodeExample } from '../../shared/code-example/code-example';
             percentage="-4.1"
             trend="down"
             icon="money"
-            color="danger"
+            color="error"
           ></acp-kpi-card>
 
           <acp-kpi-card
@@ -142,7 +158,7 @@ import { CodeExample } from '../../shared/code-example/code-example';
             percentage="+3.2"
             trend="up"
             icon="trending_up"
-            color="tertiary"
+            color="info"
           ></acp-kpi-card>
         </mat-card-content>
       </mat-card>
@@ -186,9 +202,9 @@ import { CodeExample } from '../../shared/code-example/code-example';
             value="92%"
             description="Fully allocated"
             [progress]="92"
-            progressColor="danger"
+            progressColor="error"
             icon="group"
-            color="danger"
+            color="error"
           ></acp-kpi-card>
         </mat-card-content>
       </mat-card>
@@ -272,21 +288,21 @@ import { CodeExample } from '../../shared/code-example/code-example';
           ></acp-kpi-card>
 
           <acp-kpi-card
-            title="Tertiary"
-            value="$125,000"
-            percentage="+5.2"
-            trend="up"
-            icon="trending_up"
-            color="tertiary"
-          ></acp-kpi-card>
-
-          <acp-kpi-card
             title="Success"
             value="$125,000"
             percentage="+5.2"
             trend="up"
             icon="trending_up"
             color="success"
+          ></acp-kpi-card>
+
+          <acp-kpi-card
+            title="Success Light"
+            value="$125,000"
+            percentage="+5.2"
+            trend="up"
+            icon="trending_up"
+            color="success-light"
           ></acp-kpi-card>
 
           <acp-kpi-card
@@ -299,12 +315,30 @@ import { CodeExample } from '../../shared/code-example/code-example';
           ></acp-kpi-card>
 
           <acp-kpi-card
-            title="Danger"
+            title="Warning Light"
             value="$125,000"
             percentage="+5.2"
             trend="up"
             icon="trending_up"
-            color="danger"
+            color="warning-light"
+          ></acp-kpi-card>
+
+          <acp-kpi-card
+            title="Error"
+            value="$125,000"
+            percentage="+5.2"
+            trend="up"
+            icon="trending_up"
+            color="error"
+          ></acp-kpi-card>
+
+          <acp-kpi-card
+            title="Error Light"
+            value="$125,000"
+            percentage="+5.2"
+            trend="up"
+            icon="trending_up"
+            color="error-light"
           ></acp-kpi-card>
 
           <acp-kpi-card
@@ -317,12 +351,30 @@ import { CodeExample } from '../../shared/code-example/code-example';
           ></acp-kpi-card>
 
           <acp-kpi-card
+            title="Info Light"
+            value="$125,000"
+            percentage="+5.2"
+            trend="up"
+            icon="trending_up"
+            color="info-light"
+          ></acp-kpi-card>
+
+          <acp-kpi-card
             title="Neutral"
             value="$125,000"
             percentage="+5.2"
             trend="up"
             icon="trending_up"
             color="neutral"
+          ></acp-kpi-card>
+
+          <acp-kpi-card
+            title="White"
+            value="$125,000"
+            percentage="+5.2"
+            trend="up"
+            icon="trending_up"
+            color="white"
           ></acp-kpi-card>
         </mat-card-content>
       </mat-card>
@@ -331,6 +383,16 @@ import { CodeExample } from '../../shared/code-example/code-example';
       <h2>Sizes</h2>
       <mat-card class="docs-example-card">
         <mat-card-content class="kpi-grid">
+          <acp-kpi-card
+            title="Extra Small"
+            value="$25,000"
+            percentage="+1.2"
+            trend="up"
+            icon="trending_up"
+            color="primary"
+            size="xs"
+          ></acp-kpi-card>
+
           <acp-kpi-card
             title="Small"
             value="$45,000"
@@ -446,7 +508,6 @@ import { CodeExample } from '../../shared/code-example/code-example';
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 16px;
-      padding: 16px 0;
     }
 
     h2 {

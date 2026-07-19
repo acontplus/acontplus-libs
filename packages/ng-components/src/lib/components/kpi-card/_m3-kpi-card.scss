@@ -6,38 +6,87 @@
 @function get-tokens($theme: m3.$sys-theme) {
   $system: m3-utils.get-system($theme);
 
+  // Semantic color palettes for professional appearance
+  // Using more subtle tones for enterprise dashboard aesthetics
   $semantic-palettes: (
-    success: mat.$green-palette,
-    warning: mat.$orange-palette,
-    danger: mat.$red-palette,
-    info: mat.$azure-palette,
+    success-light: mat.$green-palette,
+    warning-light: mat.$orange-palette,
+    error-light: mat.$red-palette,
+    info-light: mat.$azure-palette,
   );
 
   $color-tokens: ();
   @each $name, $palette in $semantic-palettes {
     $color-tokens: map.merge(
       $color-tokens,
-      (kpi-card-#{$name}-fg: map.get($palette, 20), kpi-card-#{$name}-bg: map.get($palette, 80))
+      (
+        // Use on-surface for better contrast and professional appearance
+        kpi-card-#{$name}-color: map.get($system, on-surface),
+        // Use subtle background with semantic color accent (95 for light, 25 for dark)
+        kpi-card-#{$name}-bg: light-dark(map.get($palette, 95), map.get($palette, 25))
+      )
     );
   }
+
+  // Add success (bright) color using green palette
+  $success-palette: mat.$green-palette;
+  $color-tokens: map.merge(
+    $color-tokens,
+    (
+      // Use white text for bright success color for better contrast
+      kpi-card-success-color: light-dark(#ffffff, map.get($success-palette, 20)),
+      kpi-card-success-bg: light-dark(map.get($success-palette, 50), map.get($success-palette, 70))
+    )
+  );
+
+  // Add warning (bright) color - use Material Design warning/error color
+  // Material Design uses error color for warnings in some contexts, but we'll use orange palette
+  // to match Material button warning color
+  $warning-palette: mat.$orange-palette;
+  $color-tokens: map.merge(
+    $color-tokens,
+    (
+      // Use white text for bright warning color for better contrast
+      kpi-card-warning-color: light-dark(#ffffff, map.get($warning-palette, 20)),
+      // Use orange 60 for light mode (similar to Material button warning), 80 for dark mode
+      kpi-card-warning-bg: light-dark(map.get($warning-palette, 60), map.get($warning-palette, 80))
+    )
+  );
+
+  // Add info (bright) color using azure palette
+  $info-palette: mat.$azure-palette;
+  $color-tokens: map.merge(
+    $color-tokens,
+    (
+      // Use white text for bright info color for better contrast
+      kpi-card-info-color: light-dark(#ffffff, map.get($info-palette, 20)),
+      kpi-card-info-bg: light-dark(map.get($info-palette, 50), map.get($info-palette, 70))
+    )
+  );
 
   $tokens: (
     base: (
       kpi-card-container-shape: map.get($system, corner-medium),
       kpi-card-container-height: 200px,
+      kpi-card-container-elevation: 1,
     ),
     color: map.merge(
         (
-          kpi-card-primary-color: map.get($system, on-primary-container),
-          kpi-card-primary-bg: map.get($system, primary-container),
-          kpi-card-secondary-color: map.get($system, on-secondary-container),
-          kpi-card-secondary-bg: map.get($system, secondary-container),
-          kpi-card-tertiary-color: map.get($system, on-tertiary-container),
-          kpi-card-tertiary-bg: map.get($system, tertiary-container),
+          // Primary: Use primary theme color with on-primary text
+          kpi-card-primary-color: map.get($system, on-primary),
+          kpi-card-primary-bg: map.get($system, primary),
+          // Secondary: Use secondary theme color with on-secondary text
+          kpi-card-secondary-color: map.get($system, on-secondary),
+          kpi-card-secondary-bg: map.get($system, secondary),
+          // Error: Use error theme color with on-error text (Material Design 3 standard)
+          kpi-card-error-color: map.get($system, on-error),
+          kpi-card-error-bg: map.get($system, error),
+          // Neutral: Minimal styling for subtle cards
           kpi-card-neutral-color: map.get($system, on-surface-variant),
           kpi-card-neutral-bg: map.get($system, surface-variant),
+          // Custom: Allow full customization
           kpi-card-custom-color: map.get($system, on-surface),
-          kpi-card-custom-bg: map.get($system, surface-container),
+          kpi-card-custom-bg: map.get($system, surface-container)
         ),
         $color-tokens
       ),

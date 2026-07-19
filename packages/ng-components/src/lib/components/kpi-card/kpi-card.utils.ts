@@ -8,7 +8,7 @@ export const KPI_CARD_TREND_CONFIGS: Record<AcpKpiCardTrend, AcpKpiCardTrendConf
   },
   down: {
     icon: 'trending_down',
-    color: 'danger',
+    color: 'error',
     ariaLabel: 'Trending down',
   },
   neutral: {

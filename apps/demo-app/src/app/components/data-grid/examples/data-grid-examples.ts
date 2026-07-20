@@ -106,7 +106,8 @@ interface DemoData {
             [showPaginator]="true"
             [pageOnFront]="false"
             [length]="paginatedTotalItems()"
-            [pageSize]="5"
+            [pageIndex]="currentPageIndex()"
+            [pageSize]="currentPageSize()"
             [pageSizeOptions]="[5, 10, 25]"
             [loading]="isPaginatedLoading()"
             (page)="onPaginatedPageChange($event)"
@@ -338,6 +339,10 @@ export class DataGridExamples {
   highlightedIndex = signal(-1);
   focusedIndex = signal(-1);
 
+  // Pagination signals
+  currentPageIndex = signal(0);
+  currentPageSize = signal(5);
+
   totalItems = 50;
   paginatedTotalItems = signal(0);
 
@@ -453,6 +458,8 @@ export class DataGridExamples {
   }
 
   onPaginatedPageChange(event: PageEvent): void {
+    this.currentPageIndex.set(event.pageIndex);
+    this.currentPageSize.set(event.pageSize);
     this.loadPaginatedData(event.pageIndex, event.pageSize);
   }
 
@@ -481,6 +488,8 @@ export class DataGridExamples {
   }
 
   reloadPaginatedData(): void {
+    this.currentPageIndex.set(0);
+    this.currentPageSize.set(5);
     this.loadPaginatedData(0, 5);
   }
 
@@ -550,8 +559,10 @@ columns: DataGridColumn[] = [
 
   paginationCode = `// Server-side Pagination with API simulation
 paginatedData = signal<T[]>([]);
-  paginatedTotalItems = signal(0);
-  isPaginatedLoading = signal(false);
+paginatedTotalItems = signal(0);
+isPaginatedLoading = signal(false);
+currentPageIndex = signal(0);
+currentPageSize = signal(5);
 
 <acp-data-grid
   [data]="paginatedData()"
@@ -559,13 +570,16 @@ paginatedData = signal<T[]>([]);
   [showPaginator]="true"
   [pageOnFront]="false"
   [length]="paginatedTotalItems()"
-  [pageSize]="5"
+  [pageIndex]="currentPageIndex()"
+  [pageSize]="currentPageSize()"
   [pageSizeOptions]="[5, 10, 25]"
   [loading]="isPaginatedLoading()"
   (page)="onPaginatedPageChange($event)"
 />
 
 onPaginatedPageChange(event: PageEvent) {
+  this.currentPageIndex.set(event.pageIndex);
+  this.currentPageSize.set(event.pageSize);
   this.loadPaginatedData(event.pageIndex, event.pageSize);
 }
 

@@ -51,7 +51,7 @@ export class AuthState implements OnDestroy {
   readonly emailVerified = this._emailVerified.asReadonly();
 
   // Private refresh token timeout
-  private refreshTokenTimeout?: number;
+  private refreshTokenTimeout?: ReturnType<typeof setTimeout>;
   private refreshInProgress$?: Observable<AuthTokens | null>;
 
   constructor() {

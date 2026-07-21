@@ -1,0 +1,68 @@
+<mat-chip-set
+  class="acp-badge__set"
+  [attr.aria-label]="ariaLabel()"
+  [attr.aria-disabled]="isDisabled() || null"
+>
+  <mat-chip
+    class="acp-badge__chip"
+    [ngClass]="chipClasses()"
+    [disabled]="isDisabled()"
+    [removable]="removable()"
+    [highlighted]="isHighlighted()"
+    [value]="value()"
+    [routerLink]="routerLink()"
+    [attr.href]="href()"
+    (removed)="onRemove($event)"
+    (click)="onChipClick($event)"
+  >
+    @if (loading()) {
+    <span class="acp-badge__loader" aria-hidden="true"></span>
+    } @if (iconTemplate()) {
+    <span matChipAvatar class="acp-badge__avatar">
+      <ng-container [ngTemplateOutlet]="iconTemplate()!"></ng-container>
+    </span>
+    } @else if (effectiveSvgIcon()) {
+    <mat-icon
+      matChipAvatar
+      class="acp-badge__icon"
+      [svgIcon]="effectiveSvgIcon()!"
+      aria-hidden="true"
+    ></mat-icon>
+    } @else if (effectiveIcon()) {
+    <mat-icon matChipAvatar class="acp-badge__icon" aria-hidden="true"
+      >{{ effectiveIcon() }}</mat-icon
+    >
+    } @if (label()) {
+    <span class="acp-badge__label">{{ label() }}</span>
+    } @if (label() && effectiveValue()) {
+    <span class="acp-badge__separator" aria-hidden="true">|</span>
+    } @if (effectiveValue()) {
+    <span class="acp-badge__value">{{ effectiveValue() }}</span>
+    } @if (trailingIconTemplate()) {
+    <span matChipTrailingIcon class="acp-badge__trailing-icon">
+      <ng-container [ngTemplateOutlet]="trailingIconTemplate()!"></ng-container>
+    </span>
+    } @else if (effectiveTrailingSvgIcon()) {
+    <mat-icon
+      matChipTrailingIcon
+      class="acp-badge__trailing-icon"
+      [svgIcon]="effectiveTrailingSvgIcon()!"
+      aria-hidden="true"
+    ></mat-icon>
+    } @else if (effectiveTrailingIcon()) {
+    <mat-icon matChipTrailingIcon class="acp-badge__trailing-icon" aria-hidden="true"
+      >{{ effectiveTrailingIcon() }}</mat-icon
+    >
+    } @if (removable()) {
+    <button
+      matChipRemove
+      type="button"
+      class="acp-badge__remove"
+      aria-label="Remove"
+      (click)="onRemove($event)"
+    >
+      <mat-icon aria-hidden="true">cancel</mat-icon>
+    </button>
+    }
+  </mat-chip>
+</mat-chip-set>

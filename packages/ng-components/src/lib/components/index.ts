@@ -1,4 +1,5 @@
 export * from './alert';
+export * from './badge';
 export * from './cards';
 export * from './dialog-wrapper';
 export * from './dynamic-select';
@@ -8,10 +9,10 @@ export * from './button';
 export * from './spinner';
 export * from './tables';
 export * from './theme-toggle';
-export * from './autocomplete-wrapper';
 export * from './grid';
 export * from './date-range-picker';
 export * from './drawer';
 export * from './popover';
 export * from './date-range-input';
 export * from './checkbox-group';
+export * from './kpi-card';

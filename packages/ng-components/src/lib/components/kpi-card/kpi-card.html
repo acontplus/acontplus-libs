@@ -1,0 +1,119 @@
+<mat-card
+  class="acp-kpi-card__card"
+  [routerLink]="routerLink()"
+  [attr.aria-label]="ariaLabel()"
+  [matTooltip]="tooltip()"
+  [matTooltipDisabled]="!tooltip()"
+  (click)="onCardClick()"
+  (mouseenter)="onMouseEnter()"
+  (mouseleave)="onMouseLeave()"
+>
+  <!-- Loading Skeleton -->
+  @if (loading()) {
+  <div class="acp-kpi-card__skeleton">
+    <div class="acp-kpi-card__skeleton-header"></div>
+    <div class="acp-kpi-card__skeleton-value"></div>
+    <div class="acp-kpi-card__skeleton-text"></div>
+  </div>
+  } @else {
+  <!-- Header -->
+  @if (hasHeader()) {
+  <mat-card-header class="acp-kpi-card__header">
+    <div class="acp-kpi-card__header-content">
+      <!-- Icon or Avatar -->
+      <div class="acp-kpi-card__icon-container">
+        @if (iconTemplate()) {
+        <ng-container [ngTemplateOutlet]="iconTemplate()!"></ng-container>
+        } @else if (svgIcon()) {
+        <mat-icon class="acp-kpi-card__icon" [svgIcon]="svgIcon()!" aria-hidden="true"></mat-icon>
+        } @else if (effectiveIcon()) {
+        <mat-icon class="acp-kpi-card__icon" aria-hidden="true">{{ effectiveIcon() }}</mat-icon>
+        } @else if (avatarTemplate()) {
+        <div class="acp-kpi-card__avatar">
+          <ng-container [ngTemplateOutlet]="avatarTemplate()!"></ng-container>
+        </div>
+        } @else if (avatar()) {
+        <img class="acp-kpi-card__avatar-image" [src]="avatar()" [alt]="title() || 'Avatar'" />
+        } @else if (avatarInitials()) {
+        <div class="acp-kpi-card__avatar-initials">{{ avatarInitials() }}</div>
+        }
+      </div>
+
+      <!-- Title & Subtitle -->
+      <div class="acp-kpi-card__title-container">
+        @if (title()) {
+        <h3 class="acp-kpi-card__title">{{ title() }}</h3>
+        } @if (subtitle()) {
+        <p class="acp-kpi-card__subtitle">{{ subtitle() }}</p>
+        }
+      </div>
+    </div>
+
+    <!-- Menu Button (optional) - Only show if actions template exists -->
+    @if (hasActions()) {
+    <button
+      mat-icon-button
+      [matMenuTriggerFor]="menu"
+      class="acp-kpi-card__menu-button"
+      aria-label="More options"
+    >
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu" class="acp-kpi-card__menu">
+      <ng-container [ngTemplateOutlet]="actionsTemplate()!"></ng-container>
+    </mat-menu>
+    }
+  </mat-card-header>
+  }
+
+  <!-- Content -->
+  <mat-card-content class="acp-kpi-card__content">
+    <!-- Main Value -->
+    @if (value()) {
+    <div class="acp-kpi-card__value-section">
+      <div class="acp-kpi-card__value">{{ value() }}</div>
+
+      <!-- Percentage & Trend -->
+      @if (percentage() !== undefined) {
+      <div class="acp-kpi-card__metric">
+        @if (isTrending()) {
+        <mat-icon class="acp-kpi-card__trend-icon" [attr.aria-label]="trendConfig().ariaLabel">
+          {{ trendConfig().icon }}
+        </mat-icon>
+        }
+        <span class="acp-kpi-card__percentage">
+          {{ percentageFormat() === 'percent' ? (percentage() + '%') : percentage() }}
+        </span>
+      </div>
+      }
+    </div>
+    }
+
+    <!-- Description -->
+    @if (description()) {
+    <p class="acp-kpi-card__description">{{ description() }}</p>
+    }
+
+    <!-- Progress Bar -->
+    @if (progress() !== undefined) {
+    <mat-progress-bar
+      class="acp-kpi-card__progress"
+      mode="determinate"
+      [value]="progress()"
+      [color]="progressColor()"
+    ></mat-progress-bar>
+    }
+  </mat-card-content>
+
+  <!-- Footer -->
+  @if (hasFooter()) {
+  <mat-divider></mat-divider>
+  <div class="acp-kpi-card__footer">
+    @if (footerTemplate()) {
+    <ng-container [ngTemplateOutlet]="footerTemplate()!"></ng-container>
+    } @else if (footer()) {
+    <p class="acp-kpi-card__footer-text">{{ footer() }}</p>
+    }
+  </div>
+  } }
+</mat-card>

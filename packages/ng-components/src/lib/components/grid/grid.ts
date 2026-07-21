@@ -19,8 +19,6 @@ import {
   OnChanges,
   ChangeDetectorRef,
   Input,
-  Output,
-  EventEmitter,
 } from '@angular/core';
 import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
 
@@ -188,7 +186,7 @@ export class DataGrid implements AfterViewInit, OnChanges {
   @Input({ transform: booleanAttribute })
   hidePageSize = this._defaultOptions?.hidePageSize ?? false;
   /** Event emitted when the paginator changes the page size or page index. */
-  @Output() page = new EventEmitter<PageEvent>();
+  page = output<PageEvent>();
   /** The template for the pagination. */
   @Input() paginationTemplate!: TemplateRef<any>;
 
@@ -216,7 +214,7 @@ export class DataGrid implements AfterViewInit, OnChanges {
    */
   @Input() sortStart: 'asc' | 'desc' = this._defaultOptions?.sortStart ?? 'asc';
   /** Event emitted when the user changes either the active sort or sort direction. */
-  @Output() sortChange = new EventEmitter<Sort>();
+  sortChange = output<Sort>();
 
   // ===== Row =====
 
@@ -227,9 +225,9 @@ export class DataGrid implements AfterViewInit, OnChanges {
   @Input({ transform: booleanAttribute })
   rowStriped = this._defaultOptions?.rowStriped ?? false;
   /** Event emitted when the user clicks the row. */
-  @Output() rowClick = new EventEmitter<any>();
+  rowClick = output<any>();
   /** Event emitted when the user attempts to open a context menu. */
-  @Output() rowContextMenu = new EventEmitter<any>();
+  rowContextMenu = output<any>();
 
   // ===== Expandable Row =====
 
@@ -240,7 +238,7 @@ export class DataGrid implements AfterViewInit, OnChanges {
   /** The template for the expandable row. */
   @Input() expansionTemplate!: TemplateRef<any>;
   /** Event emitted when the user toggles the expandable row. */
-  @Output() expansionChange = new EventEmitter<any>();
+  expansionChange = output<any>();
   closeOthersOnExpand = input(false);
   // ===== Row Selection =====
 
@@ -268,23 +266,23 @@ export class DataGrid implements AfterViewInit, OnChanges {
   /** The selected row items. */
   @Input() rowSelected: any[] = [];
   /** Event emitted when the row is selected. */
-  @Output() rowSelectedChange = new EventEmitter<any[]>();
+  rowSelectedChange = output<any[]>();
 
-  @Output() checkboxKeyDown = new EventEmitter<KeyboardEvent>();
-  @Output() checkboxKeyUp = new EventEmitter<KeyboardEvent>();
-  @Output() checkboxKeyPress = new EventEmitter<KeyboardEvent>();
+  checkboxKeyDown = output<KeyboardEvent>();
+  checkboxKeyUp = output<KeyboardEvent>();
+  checkboxKeyPress = output<KeyboardEvent>();
 
-  @Output() rowKeyDown = new EventEmitter<{
+  rowKeyDown = output<{
     event: KeyboardEvent;
     row: Record<string, any>;
     index: number;
   }>();
-  @Output() rowKeyUp = new EventEmitter<{
+  rowKeyUp = output<{
     event: KeyboardEvent;
     row: Record<string, any>;
     index: number;
   }>();
-  @Output() rowKeyPress = new EventEmitter<{
+  rowKeyPress = output<{
     event: KeyboardEvent;
     row: Record<string, any>;
     index: number;
@@ -298,7 +296,7 @@ export class DataGrid implements AfterViewInit, OnChanges {
   @Input({ transform: booleanAttribute })
   cellSelectable = this._defaultOptions?.cellSelectable ?? true;
   /** Event emitted when the cell is selected. */
-  @Output() cellSelectedChange = new EventEmitter<any[]>();
+  cellSelectedChange = output<any[]>();
 
   private _selectedCell?: AcpGridSelectableCell;
 
@@ -327,7 +325,7 @@ export class DataGrid implements AfterViewInit, OnChanges {
   @Input({ transform: booleanAttribute })
   columnPinnable = this._defaultOptions?.columnPinnable ?? true;
   /** Event emitted when the column is hided or is sorted. */
-  @Output() columnChange = new EventEmitter<DataGridColumn[]>();
+  columnChange = output<DataGridColumn[]>();
   /** The options for the column pin list. */
   @Input() columnPinOptions: DataGridColumnPinOption[] =
     this._defaultOptions?.columnPinOptions ?? [];
@@ -482,9 +480,6 @@ export class DataGrid implements AfterViewInit, OnChanges {
 
     this.dataSource = new MatTableDataSource(this.data);
 
-    this.dataSource.paginator = this.pageOnFront ? this.paginator : null;
-    this.dataSource.sort = this.sortOnFront ? this.sort : null;
-
     // Only scroll top with data change
     if (changes['data']) {
       this.scrollTop(0);
@@ -494,10 +489,14 @@ export class DataGrid implements AfterViewInit, OnChanges {
   ngAfterViewInit() {
     if (this.pageOnFront) {
       this.dataSource.paginator = this.paginator;
+    } else {
+      this.dataSource.paginator = null;
     }
 
     if (this.sortOnFront) {
       this.dataSource.sort = this.sort;
+    } else {
+      this.dataSource.sort = null;
     }
 
     if (this.rowDefs?.length > 0 && this.useContentRowTemplate) {

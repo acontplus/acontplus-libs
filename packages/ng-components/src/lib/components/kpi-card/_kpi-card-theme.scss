@@ -1,0 +1,41 @@
+@use 'sass:map';
+@use '@angular/material' as mat;
+@use '../../../core/tokens/token-utils';
+@use './_m3-kpi-card' as m3-kpi-card;
+
+@mixin color($colors) {
+  @include token-utils.batch-create-token-values(
+    $colors,
+    ((namespace: kpi-card, tokens: token-utils.get-overrides(m3-kpi-card.get-tokens(), kpi-card)))
+  );
+}
+
+@mixin typography($typography) {
+  // Typography handled by Material tokens
+}
+
+@mixin density($density) {
+  // Density handled by Material tokens
+}
+
+@mixin base($base) {
+  @include token-utils.batch-create-token-values(
+    $base,
+    ((namespace: kpi-card, tokens: token-utils.get-overrides(m3-kpi-card.get-tokens(), kpi-card)))
+  );
+}
+
+@mixin theme($theme) {
+  @include color(map.get(m3-kpi-card.get-tokens($theme), color));
+  @include typography(map.get(m3-kpi-card.get-tokens($theme), typography));
+  @include density(map.get(m3-kpi-card.get-tokens($theme), density));
+  @include base(map.get(m3-kpi-card.get-tokens($theme), base));
+}
+
+@function color-variants-backwards-compatibility($theme) {
+  @return ();
+}
+
+@function overrides($tokens: ()) {
+  @return $tokens;
+}

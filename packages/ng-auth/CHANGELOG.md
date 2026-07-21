@@ -1,3 +1,18 @@
+## 2.3.0 (2026-07-21)
+
+### Features
+
+- merge pagination fixes and signal API migration ([#140](https://github.com/acontplus/acontplus-libs/pull/140))
+
+### 🧱 Updated Dependencies
+
+- Updated ng-infrastructure to 2.2.0
+
+### ❤️ Thank You
+
+- Devin @devin-ai-integration[bot]
+- Emilio Senguana @senguanasoft
+
 ## 2.2.1 (2026-07-17)
 
 ### Features

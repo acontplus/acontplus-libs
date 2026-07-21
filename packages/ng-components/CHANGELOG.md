@@ -1,3 +1,14 @@
+## 2.4.0 (2026-07-21)
+
+### Features
+
+- merge pagination fixes and signal API migration ([#140](https://github.com/acontplus/acontplus-libs/pull/140))
+
+### ❤️ Thank You
+
+- Devin @devin-ai-integration[bot]
+- Emilio Senguana @senguanasoft
+
 ## 2.3.0 (2026-07-17)
 
 ### Features

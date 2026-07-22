@@ -1,0 +1,50 @@
+// Layout Variables for AcontPlus Applications
+// These variables can be used across different applications
+
+:root {
+  // Typography
+  --acp-body-font-family:
+    'Roboto', 'Helvetica Neue Light', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande',
+    sans-serif;
+  --acp-code-font-family: 'Roboto Mono', monospace;
+
+  // Layout spacing
+  --acp-gutter: 1rem;
+  --acp-sidenav-width: 15rem;
+  --acp-sidenav-collapsed-width: 4rem;
+
+  // Background colors
+  --acp-body-background-color: var(--mat-sys-surface-container);
+
+  // Link colors
+  --acp-link-color: var(--mat-sys-primary);
+  --acp-link-hover-color: var(--mat-sys-primary);
+
+  // Code styling
+  --acp-code-border-color: light-dark(rgba(19, 28, 43, 0.08), rgba(218, 226, 249, 0.08));
+  --acp-code-background-color: light-dark(rgba(19, 28, 43, 0.04), rgba(218, 226, 249, 0.04));
+
+  // Header
+  --acp-header-background-color: var(--theme-primary-color);
+
+  // User panel
+  --acp-user-panel-background-color: var(--mat-sys-surface-container);
+  --acp-user-panel-hover-background-color: var(--mat-sys-surface-variant);
+
+  // Side menu
+  --acp-sidemenu-heading-hover-background-color: var(--mat-sys-surface-container-highest);
+  --acp-sidemenu-active-heading-text-color: var(--mat-sys-primary);
+  --acp-sidemenu-active-heading-background-color: var(--mat-sys-primary-container);
+  --acp-sidemenu-active-heading-hover-background-color: var(--mat-sys-primary-container);
+  --acp-sidemenu-expanded-background-color: var(--mat-sys-surface-container);
+
+  // Top menu
+  --acp-topmenu-text-color: var(--mat-sys-on-background);
+  --acp-topmenu-background-color: var(--acp-header-background-color);
+  --acp-topmenu-item-active-background-color: var(--mat-sys-primary-container);
+  --acp-topmenu-dropdown-item-active-text-color: var(--mat-sys-primary);
+
+  // Material toolbar heights
+  --acp-mat-toolbar-standard-height: 4rem;
+  --acp-mat-toolbar-mobile-height: 3.5rem;
+}

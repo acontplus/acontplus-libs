@@ -21,6 +21,7 @@
   system-level-elevation, system-level-shape, system-level-motion, system-level-state, theme,
   theme-overrides, m2-theme;
 
+@forward './core/tokens/layout-variables';
 @forward './core/theming/all-theme' show all-component-themes, all-component-bases;
 @forward './core/color/all-color' show all-component-colors;
 @forward './core/typography/all-typography' show all-component-typographies;

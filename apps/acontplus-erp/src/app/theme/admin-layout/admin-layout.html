@@ -11,10 +11,15 @@
 
   <!-- Header Above -->
   @if (options.showHeader && options.headerPos === 'above') {
-    <app-header
+    <acp-header
       (toggleSidenav)="sidenav.toggle()"
       (toggleSidenavNotice)="sidenavNotice.toggle()"
       [showBranding]="true"
+      [brandingLogo]="brandingLogo"
+      [brandingName]="brandingName"
+      [userAvatar]="user()?.avatar ?? null"
+      [userMenuItems]="userMenuItems"
+      (userMenuItemClick)="onUserAction($event)"
     />
   }
 
@@ -26,11 +31,17 @@
       [opened]="options.navPos === 'side' && options.sidenavOpened && !isOver"
       (openedChange)="onSidenavOpenedChange($event)"
     >
-      <app-sidebar
+      <acp-sidebar
         [showToggle]="!isOver"
         [showUser]="options.showUserPanel"
         [showHeader]="options.headerPos !== 'above'"
         [toggleChecked]="options.sidenavCollapsed"
+        [brandingLogo]="brandingLogo"
+        [brandingName]="brandingName"
+        [userAvatar]="user()?.avatar ?? null"
+        [userName]="user()?.name ?? ''"
+        [userEmail]="user()?.email ?? ''"
+        [menuItems]="menuItems() ?? []"
         (toggleCollapsed)="toggleCollapsed()"
         (closeSidenav)="sidenav.close()"
       />
@@ -42,11 +53,16 @@
 
     <mat-sidenav-content #content class="acontplus-content">
       @if (options.showHeader && options.headerPos !== 'above') {
-        <app-header
+        <acp-header
           [showToggle]="!options.sidenavCollapsed && options.navPos !== 'top'"
           [showBranding]="options.navPos === 'top'"
+          [brandingLogo]="brandingLogo"
+          [brandingName]="brandingName"
+          [userAvatar]="user()?.avatar ?? null"
+          [userMenuItems]="userMenuItems"
           (toggleSidenav)="sidenav.toggle()"
           (toggleSidenavNotice)="sidenavNotice.toggle()"
+          (userMenuItemClick)="onUserAction($event)"
         />
       }
 

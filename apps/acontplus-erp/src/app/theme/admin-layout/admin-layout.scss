@@ -9,7 +9,7 @@
 }
 
 .acontplus-sidenav {
-  --mat-sidenav-container-width: var(--sidenav-width);
+  --mat-sidenav-container-width: var(--acp-sidenav-width);
 
   position: absolute;
   overflow-x: hidden;
@@ -20,10 +20,10 @@
 // Layout control
 .acontplus-header-above {
   .acontplus-container {
-    height: calc(100% - var(--mat-toolbar-standard-height)) !important;
+    height: calc(100% - var(--acp-mat-toolbar-standard-height)) !important;
 
     @include breakpoints.bp-lt(small) {
-      height: calc(100% - var(--mat-toolbar-mobile-height)) !important;
+      height: calc(100% - var(--acp-mat-toolbar-mobile-height)) !important;
     }
   }
 
@@ -36,7 +36,7 @@
 // Layout control
 .acontplus-sidenav-collapsed {
   .acontplus-sidenav {
-    width: var(--sidenav-collapsed-width);
+    width: var(--acp-sidenav-collapsed-width);
 
     .menu-name,
     .menu-label,
@@ -55,7 +55,7 @@
     }
 
     &:hover {
-      width: var(--sidenav-width);
+      width: var(--acp-sidenav-width);
 
       .menu-name,
       .menu-label,
@@ -76,16 +76,16 @@
   }
 
   .acontplus-content {
-    margin-left: var(--sidenav-collapsed-width) !important;
+    margin-left: var(--acp-sidenav-collapsed-width) !important;
 
     [dir='rtl'] & {
-      margin-right: var(--sidenav-collapsed-width) !important;
+      margin-right: var(--acp-sidenav-collapsed-width) !important;
       margin-left: auto !important;
     }
   }
 
   &[dir='rtl'] .acontplus-content {
-    margin-right: var(--sidenav-collapsed-width) !important;
+    margin-right: var(--acp-sidenav-collapsed-width) !important;
     margin-left: auto !important;
   }
 }
@@ -111,22 +111,22 @@
   .acontplus-header {
     position: sticky;
     top: 0;
-    background-color: var(--header-background-color);
+    background-color: var(--acp-header-background-color);
     height: 60px;
   }
 
   .acontplus-topmenu {
-    top: var(--mat-toolbar-standard-height);
+    top: var(--acp-mat-toolbar-standard-height);
 
     @include breakpoints.bp-lt(small) {
-      top: var(--mat-toolbar-mobile-height);
+      top: var(--acp-mat-toolbar-mobile-height);
     }
   }
 }
 
 .acontplus-page-content {
   position: relative;
-  padding: var(--gutter);
+  padding: var(--acp-gutter);
 
   .acontplus-header + &,
   .acontplus-header-above &,

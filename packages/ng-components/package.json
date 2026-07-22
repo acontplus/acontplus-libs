@@ -20,6 +20,9 @@
     ".": {
       "sass": "./src/_index.scss"
     },
+    "./layout-variables": {
+      "sass": "./src/core/tokens/_layout-variables.scss"
+    },
     "./prebuilt-themes/blue": {
       "sass": "./src/core/theming/prebuilt/blue.scss"
     },

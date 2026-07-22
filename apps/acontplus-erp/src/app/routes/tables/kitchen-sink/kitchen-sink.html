@@ -19,6 +19,7 @@
   <mat-checkbox [(ngModel)]="showPaginator">Show Paginator</mat-checkbox>
   <mat-checkbox [(ngModel)]="isLoading">Loading Status</mat-checkbox>
   <mat-checkbox [(ngModel)]="columnResizable">Column Resizable</mat-checkbox>
+  <mat-checkbox [(ngModel)]="showSidebar">Show Sidebar</mat-checkbox>
 </div>
 <div class="m-y-8">
   <button matButton (click)="updateCell()">Update cell</button>
@@ -55,10 +56,57 @@
   [pageSizeOptions]="[5, 10, 50, 100]"
   [pageIndex]="0"
   [pageSize]="5"
+  [showSidebar]="showSidebar"
+  [sidebarTemplate]="sidebarTemplate"
   (sortChange)="changeSort($event)"
   (selectionChange)="changeSelect($event)"
   [closeOthersOnExpand]="true"
-/>
+>
+  <ng-template #sidebarTemplate>
+    <div class="sidebar-content">
+      <h3>Filters</h3>
+      <p>Custom sidebar content for data grid</p>
+    </div>
+  </ng-template>
+</acp-data-grid>
 <ng-template #expansionTpl let-row>
   {{ row.name }}
 </ng-template>
+
+<mat-sidenav-container>
+  <mat-sidenav #editSidenav position="end" mode="over" [opened]="false">
+    <div class="edit-drawer-content">
+      <h2>Edit Item</h2>
+      @if (editingItem) {
+        <div class="form-field">
+          <span class="field-label">Name</span>
+          <mat-form-field>
+            <input matInput [(ngModel)]="editingItem.name" />
+          </mat-form-field>
+        </div>
+        <div class="form-field">
+          <span class="field-label">Weight</span>
+          <mat-form-field>
+            <input matInput type="number" [(ngModel)]="editingItem.weight" />
+          </mat-form-field>
+        </div>
+        <div class="form-field">
+          <span class="field-label">Gender</span>
+          <mat-form-field>
+            <input matInput [(ngModel)]="editingItem.gender" />
+          </mat-form-field>
+        </div>
+        <div class="form-field">
+          <span class="field-label">City</span>
+          <mat-form-field>
+            <input matInput [(ngModel)]="editingItem.city" />
+          </mat-form-field>
+        </div>
+        <div class="drawer-actions">
+          <button mat-button (click)="cancelEdit()">Cancel</button>
+          <button mat-raised-button color="primary" (click)="saveEdit()">Save</button>
+        </div>
+      }
+    </div>
+  </mat-sidenav>
+</mat-sidenav-container>

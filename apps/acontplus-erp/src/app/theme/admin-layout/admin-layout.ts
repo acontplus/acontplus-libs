@@ -8,17 +8,17 @@ import {
   viewChild,
   ChangeDetectionStrategy,
 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatSidenav, MatSidenavContent, MatSidenavModule } from '@angular/material/sidenav';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { NgProgressbar } from 'ngx-progressbar';
 import { NgProgressRouter } from 'ngx-progressbar/router';
 import { Subscription, filter } from 'rxjs';
 
-import { AppSettings, SettingsService } from '@core';
+import { AppSettings, SettingsService, AuthService, MenuService } from '@core';
 import { Customizer } from '../customizer/customizer';
-import { Header } from '../header/header';
+import { Header, UserMenuItem, Sidebar } from '@acontplus/ng-components';
 import { SidebarNotice } from '../sidebar-notice/sidebar-notice';
-import { Sidebar } from '../sidebar/sidebar';
 import { Topmenu } from '../topmenu/topmenu';
 
 const MOBILE_MEDIAQUERY = 'screen and (max-width: 599px)';
@@ -50,8 +50,28 @@ export class AdminLayout implements OnDestroy {
   private readonly breakpointObserver = inject(BreakpointObserver);
   private readonly router = inject(Router);
   private readonly settings = inject(SettingsService);
+  private readonly auth = inject(AuthService);
+  private readonly menuService = inject(MenuService);
 
   options = this.settings.options;
+  user = toSignal(this.auth.user());
+
+  userMenuItems: UserMenuItem[] = [
+    {
+      icon: 'account_circle',
+      label: 'Profile',
+      action: 'profile',
+      routerLink: '/profile/overview',
+    },
+    { icon: 'edit', label: 'Edit Profile', action: 'edit', routerLink: '/profile/settings' },
+    { icon: 'restore', label: 'Restore Defaults', action: 'restore' },
+    { icon: 'exit_to_app', label: 'Logout', action: 'logout' },
+  ];
+
+  brandingLogo = 'images/acontplus.png';
+  brandingName = 'ACONTPLUS';
+
+  menuItems = toSignal(this.menuService.getAll());
 
   get themeColor() {
     return this.settings.getThemeColor();
@@ -109,5 +129,23 @@ export class AdminLayout implements OnDestroy {
     this.settings.setDirection();
     this.settings.setTheme();
     this.settings.setThemeColor();
+  }
+
+  onUserAction(action: string) {
+    switch (action) {
+      case 'logout':
+        this.auth.logout().subscribe(() => {
+          this.router.navigateByUrl('/auth/login');
+        });
+        break;
+      case 'restore':
+        this.settings.reset();
+        window.location.reload();
+        break;
+      case 'profile':
+      case 'edit':
+        // Navigation handled by routerLink
+        break;
+    }
   }
 }

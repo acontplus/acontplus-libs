@@ -1,0 +1,24 @@
+.acp-acontplus-header {
+  --mat-toolbar-container-background-color: transparent;
+
+  position: relative;
+  z-index: 200;
+  display: block;
+  background-color: var(--acp-header-background-color);
+  backdrop-filter: blur(8px);
+  height: 60px;
+}
+
+.acp-acontplus-header .mat-mdc-icon-button {
+  color: #fff;
+}
+
+.acp-acontplus-header .flex-fill {
+  flex: 1 1 auto;
+}
+
+.acp-acontplus-header .hide-small {
+  @media (max-width: 768px) {
+    display: none;
+  }
+}

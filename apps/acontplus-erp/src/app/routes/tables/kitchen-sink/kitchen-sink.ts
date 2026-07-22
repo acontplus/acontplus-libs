@@ -1,8 +1,11 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, viewChild, TemplateRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSidenavModule, MatSidenav } from '@angular/material/sidenav';
 
 import { PageHeader } from '@shared';
 import { TablesService } from '../tables.service';
@@ -11,10 +14,24 @@ import { DataGrid, DataGridColumn } from '@acontplus/ng-components';
 @Component({
   selector: 'app-table-kitchen-sink',
   templateUrl: './kitchen-sink.html',
-  imports: [FormsModule, MatButtonModule, MatCheckboxModule, MatRadioModule, DataGrid, PageHeader],
+  imports: [
+    FormsModule,
+    MatButtonModule,
+    MatCheckboxModule,
+    MatRadioModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatSidenavModule,
+    DataGrid,
+    PageHeader,
+  ],
 })
 export class TablesKitchenSink implements OnInit {
   private readonly tablesSrv = inject(TablesService);
+  readonly sidebarTemplate = viewChild.required<TemplateRef<any>>('sidebarTemplate');
+  readonly editSidenav = viewChild.required<MatSidenav>('editSidenav');
+
+  editingItem: any = null;
 
   columns: DataGridColumn[] = [
     {
@@ -134,6 +151,7 @@ export class TablesKitchenSink implements OnInit {
   showPaginator = true;
   expandable = false;
   columnResizable = false;
+  showSidebar = true;
 
   ngOnInit() {
     this.list = this.tablesSrv.getData();
@@ -141,7 +159,22 @@ export class TablesKitchenSink implements OnInit {
   }
 
   edit(value: any) {
-    alert(value);
+    this.editingItem = { ...value };
+    this.editSidenav().open();
+  }
+
+  saveEdit() {
+    const index = this.list.findIndex((item) => item.position === this.editingItem.position);
+    if (index !== -1) {
+      this.list[index] = { ...this.editingItem };
+    }
+    this.editingItem = null;
+    this.editSidenav().close();
+  }
+
+  cancelEdit() {
+    this.editingItem = null;
+    this.editSidenav().close();
   }
 
   delete(value: any) {

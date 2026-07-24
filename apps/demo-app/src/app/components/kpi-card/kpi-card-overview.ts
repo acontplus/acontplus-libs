@@ -3,11 +3,10 @@ import { AcpKpiCard } from '@acontplus/ng-components';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { DocHeading } from '../../shared/doc-heading/doc-heading';
-import { CodeExample } from '../../shared/code-example/code-example';
 
 @Component({
   selector: 'app-kpi-card-overview',
-  imports: [AcpKpiCard, MatCardModule, MatDividerModule, DocHeading, CodeExample],
+  imports: [AcpKpiCard, MatCardModule, MatDividerModule, DocHeading],
   template: `
     <div class="docs-component-viewer-content">
       <app-doc-heading>KPI Card</app-doc-heading>

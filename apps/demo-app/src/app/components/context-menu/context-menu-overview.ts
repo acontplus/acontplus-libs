@@ -2,25 +2,18 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { AcpContextMenu, AcpContextMenuDirective } from '@acontplus/ng-components';
 import { MatCardModule } from '@angular/material/card';
 import { DocHeading } from '../../shared/doc-heading/doc-heading';
-import { CodeExample } from '../../shared/code-example/code-example';
 
 @Component({
   selector: 'app-context-menu-overview',
-  imports: [
-    AcpContextMenu,
-    AcpContextMenuDirective,
-    MatCardModule,
-    DocHeading,
-    CodeExample,
-  ],
+  imports: [AcpContextMenu, AcpContextMenuDirective, MatCardModule, DocHeading],
   template: `
     <div class="docs-component-viewer-content">
       <app-doc-heading>Context Menu</app-doc-heading>
 
       <p class="docs-component-description">
-        A flexible context menu component that can be attached to any element. Supports nested menus,
-        icons, badges, keyboard shortcuts, and custom actions. Can be used declaratively with the
-        directive or programmatically with the service.
+        A flexible context menu component that can be attached to any element. Supports nested
+        menus, icons, badges, keyboard shortcuts, and custom actions. Can be used declaratively with
+        the directive or programmatically with the service.
       </p>
 
       <h2>Basic Context Menu</h2>
@@ -130,9 +123,7 @@ import { CodeExample } from '../../shared/code-example/code-example';
       <h2>Declarative Component Usage</h2>
       <mat-card class="docs-example-card">
         <mat-card-content>
-          <div #trigger class="context-menu-target">
-            Right-click me
-          </div>
+          <div #trigger class="context-menu-target">Right-click me</div>
           <acp-contextmenu
             #cm
             [model]="basicMenuItems"

@@ -56,6 +56,10 @@ export const routes = [
         path: 'context-menu',
         loadChildren: () => import('./context-menu/context-menu.routes').then(m => m.routes),
       },
+      {
+        path: 'card',
+        loadChildren: () => import('./card/card.routes').then(m => m.routes),
+      },
 
       // Layout
       {

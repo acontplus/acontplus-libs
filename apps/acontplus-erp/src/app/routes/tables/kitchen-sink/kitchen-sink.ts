@@ -9,7 +9,12 @@ import { MatSidenavModule, MatSidenav } from '@angular/material/sidenav';
 
 import { PageHeader } from '@shared';
 import { TablesService } from '../tables.service';
-import { DataGrid, DataGridColumn, AcpContextMenuItem, AcpContextMenu } from '@acontplus/ng-components';
+import {
+  DataGrid,
+  DataGridColumn,
+  AcpContextMenuItem,
+  AcpContextMenu,
+} from '@acontplus/ng-components';
 
 @Component({
   selector: 'app-table-kitchen-sink',
@@ -139,7 +144,7 @@ export class TablesKitchenSink implements OnInit {
           type: 'icon',
           icon: 'more_vert',
           tooltip: 'More Options',
-          click: (record, event) => this.openContextMenu(record , event ),
+          click: (record, event) => this.openContextMenu(record, event),
         },
       ],
     },
@@ -370,7 +375,7 @@ export class TablesKitchenSink implements OnInit {
   }
 
   duplicateRow(row: any) {
-    console.log(row)
+    console.log(row);
     if (!row || !row.position) {
       console.warn('Cannot duplicate row: invalid row data');
       return;
@@ -491,7 +496,7 @@ export class TablesKitchenSink implements OnInit {
   }
 
   onRowContextMenu(event: any) {
-    console.log(event)
+    console.log(event);
     const { event: mouseEvent, rowData, index } = event;
 
     if (mouseEvent) {

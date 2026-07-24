@@ -4,8 +4,6 @@ import {
   HostBinding,
   input,
   booleanAttribute,
-  numberAttribute,
-  TemplateRef,
 } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import {

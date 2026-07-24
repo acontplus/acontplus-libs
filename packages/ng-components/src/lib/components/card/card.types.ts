@@ -1,5 +1,3 @@
-import { TemplateRef } from '@angular/core';
-
 /**
  * Card appearance variants
  */

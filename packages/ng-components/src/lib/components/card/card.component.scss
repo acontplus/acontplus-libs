@@ -1,0 +1,12 @@
+@use '@angular/material' as mat;
+
+// Customize the entire app. Change :root to your selector if you want to scope the styles.
+.acp-card {
+  @include mat.card-overrides(
+    (
+      elevated-container-color: var(--mat-sys-surface-container),
+      elevated-container-elevation: var(--mat-sys-level2),
+      elevated-container-shape: 20px,
+    )
+  );
+}

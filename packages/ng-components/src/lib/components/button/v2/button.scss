@@ -3,12 +3,12 @@
 .acp-primary {
   @include mat.button-overrides(
     (
-      filled-container-color: var(--theme-primary-color),
+      filled-container-color: var(--acp-theme-primary-color),
       filled-label-text-color: #ffffff,
-      outlined-label-text-color: var(--theme-primary-color),
-      protected-label-text-color: var(--theme-primary-color),
-      text-label-text-color: var(--theme-primary-color),
-      text-state-layer-color: var(--theme-primary-color),
+      outlined-label-text-color: var(--acp-theme-primary-color),
+      protected-label-text-color: var(--acp-theme-primary-color),
+      text-label-text-color: var(--acp-theme-primary-color),
+      text-state-layer-color: var(--acp-theme-primary-color),
     )
   );
 }
@@ -107,7 +107,7 @@
 [matIconButton].acp-primary {
   @include mat.icon-overrides(
     (
-      color: var(--theme-primary-color),
+      color: var(--acp-theme-primary-color),
     )
   );
 }

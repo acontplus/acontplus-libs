@@ -1,4 +1,4 @@
-import { AsyncPipe, NgTemplateOutlet, SlicePipe } from '@angular/common';
+import { NgTemplateOutlet, SlicePipe } from '@angular/common';
 import { Component, input, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
@@ -108,7 +108,6 @@ import { NavAccordionToggleDirective } from './nav-accordion-toggle.directive';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    AsyncPipe,
     SlicePipe,
     NgTemplateOutlet,
     RouterLink,

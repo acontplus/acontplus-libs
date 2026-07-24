@@ -55,7 +55,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import type { AcpSelectedDateEvent } from './model/date-selection-event.model';
 import { DatePipe, NgClass, NgTemplateOutlet } from '@angular/common';
-import { Button } from '../button';
+import { AcpButton } from '../button';
 @Component({
   selector: 'acp-date-range-input',
   templateUrl: './date-range-input.html',
@@ -78,7 +78,7 @@ import { Button } from '../button';
     AcpDateRangeCalendar,
     DatePipe,
     NgTemplateOutlet,
-    Button,
+    AcpButton,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

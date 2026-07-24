@@ -4,7 +4,7 @@
 @use '../../../core/theming/all-theme' as all-theme;
 
 .theme-pink {
-  --theme-primary-color: #d200d2;
+  --acp-theme-primary-color: #d200d2;
 
   @include system.theme(
     (

@@ -52,6 +52,10 @@ export const routes = [
         path: 'spinner',
         loadChildren: () => import('./spinner/spinner.routes').then(m => m.routes),
       },
+      {
+        path: 'context-menu',
+        loadChildren: () => import('./context-menu/context-menu.routes').then(m => m.routes),
+      },
 
       // Layout
       {

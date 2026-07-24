@@ -61,6 +61,7 @@
   (sortChange)="changeSort($event)"
   (selectionChange)="changeSelect($event)"
   [closeOthersOnExpand]="true"
+  (rowContextMenu)="onRowContextMenu($event)"
 >
   <ng-template #sidebarTemplate>
     <div class="sidebar-content">
@@ -110,3 +111,5 @@
     </div>
   </mat-sidenav>
 </mat-sidenav-container>
+
+<acp-contextmenu #cm [model]="contextMenuItems" (hide)="onHide()" />

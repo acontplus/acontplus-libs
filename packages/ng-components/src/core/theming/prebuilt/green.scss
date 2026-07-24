@@ -4,7 +4,7 @@
 @use '../../../core/theming/all-theme' as all-theme;
 
 .theme-green {
-  --theme-primary-color: #0a7ea4;
+  --acp-theme-primary-color: #0a7ea4;
 
   @include system.theme(
     (

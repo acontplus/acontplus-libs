@@ -179,27 +179,29 @@
           <div class="buttons">
             <acp-button
               type="button"
-              variant="danger"
-              matStyle="filled"
-              (handleClick)="isCustomRange = false"
-              >Cancelar</acp-button
-            >
-            <acp-button
-              type="button"
-              variant="primary"
-              matStyle="filled"
+              appearance="filled"
+              color="primary"
+              size="small"
               [class.disabled]="
                 enableEditableDates
                   ? editableForm.invalid
                   : !(calendar?.selectedDates?.start && calendar?.selectedDates?.end)
               "
-              (handleClick)="
+              (clicked)="
                 enableEditableDates && commitEditableDates(calendar);
                 updateCustomRange(dateInput, calendar.selectedDates)
               "
             >
               &nbsp;Aplicar&nbsp;
             </acp-button>
+            <acp-button
+              type="button"
+              appearance="text"
+              color="error"
+              size="small"
+              (clicked)="isCustomRange = false"
+              >Cancelar</acp-button
+            >
           </div>
         </div>
       </div>

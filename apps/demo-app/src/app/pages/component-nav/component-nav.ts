@@ -83,6 +83,12 @@ export const COMPONENTS_MENU: ComponentCategory[] = [
     summary: 'Loading spinner components for async operations.',
     category: 'Buttons & Indicators',
   },
+  {
+    id: 'context-menu',
+    name: 'Context Menu',
+    summary: 'Flexible context menu component with nested menus, icons, badges, and keyboard shortcuts.',
+    category: 'Buttons & Indicators',
+  },
 
   // Layout
   {

@@ -141,6 +141,6 @@ export class AcpGridCell implements OnInit, DoCheck {
     event.preventDefault();
     event.stopPropagation();
 
-    btn.click?.(rowData);
+    btn.click?.(rowData, event);
   }
 }

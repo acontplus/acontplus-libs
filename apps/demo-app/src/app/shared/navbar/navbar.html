@@ -45,26 +45,11 @@
     mat-icon-button
     class="docs-button"
     [matTooltip]="'Theme Settings'"
-    (click)="showCustomizer = !showCustomizer"
+    (click)="openCustomizer()"
     aria-label="Theme Settings"
   >
     <mat-icon>palette</mat-icon>
   </button>
-
-  <!-- Customizer Panel -->
-  @if (showCustomizer) {
-  <div class="customizer-panel-wrapper">
-    <app-customizer />
-    <button
-      mat-icon-button
-      class="close-customizer"
-      (click)="showCustomizer = false"
-      aria-label="Close"
-    >
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
-  }
 
   <a
     mat-button

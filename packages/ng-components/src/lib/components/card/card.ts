@@ -1,24 +1,29 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  ContentChild,
   HostBinding,
+  TemplateRef,
   input,
   booleanAttribute,
 } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
+import { NgTemplateOutlet, NgClass, NgStyle } from '@angular/common';
 import {
   AcpCardAppearance,
   AcpCardElevation,
   AcpCardPadding,
   AcpCardImageRatio,
+  AcpCardPassThroughOptions,
+  AcpCardBackgroundColor,
 } from './card.types';
 
 @Component({
   selector: 'acp-card',
   standalone: true,
-  imports: [MatCardModule],
-  templateUrl: './card.component.html',
-  styleUrl: './card.component.scss',
+  imports: [MatCardModule, NgTemplateOutlet, NgClass, NgStyle],
+  templateUrl: './card.html',
+  styleUrl: './card.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: 'acp-card-wrapper',
@@ -72,6 +77,21 @@ export class AcpCard {
 
   // Full width
   readonly fullWidth = input(false, { transform: booleanAttribute });
+
+  // Background color variant
+  readonly backgroundColor = input<AcpCardBackgroundColor | undefined>(undefined);
+
+  // Pass Through options for styling customization
+  readonly passThrough = input<AcpCardPassThroughOptions>({});
+
+  // Slots
+  @ContentChild('header', { read: TemplateRef }) headerTemplate!: TemplateRef<any>;
+  @ContentChild('media', { read: TemplateRef }) mediaTemplate!: TemplateRef<any>;
+  @ContentChild('avatar', { read: TemplateRef }) avatarTemplate!: TemplateRef<any>;
+  @ContentChild('title', { read: TemplateRef }) titleTemplate!: TemplateRef<any>;
+  @ContentChild('subtitle', { read: TemplateRef }) subtitleTemplate!: TemplateRef<any>;
+  @ContentChild('actions', { read: TemplateRef }) actionsTemplate!: TemplateRef<any>;
+  @ContentChild('footer', { read: TemplateRef }) footerTemplate!: TemplateRef<any>;
 
   @HostBinding('attr.role') get role(): string {
     return this.clickable() ? 'button' : 'article';

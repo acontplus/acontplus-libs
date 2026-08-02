@@ -1,8 +1,7 @@
 import { Direction } from '@angular/cdk/bidi';
 import { MediaMatcher } from '@angular/cdk/layout';
-import { Injectable, inject, DOCUMENT } from '@angular/core';
+import { Injectable, inject, DOCUMENT, signal } from '@angular/core';
 import { AppDirectionality, LocalStorageService } from '@shared';
-import { BehaviorSubject } from 'rxjs';
 import { AppSettings, AppTheme, AppThemeColor, defaults } from '../settings';
 
 @Injectable({
@@ -16,17 +15,15 @@ export class SettingsService {
   private readonly mediaMatcher = inject(MediaMatcher);
   private readonly dir = inject(AppDirectionality);
 
-  private readonly notify$ = new BehaviorSubject<Partial<AppSettings>>({});
-
-  get notify() {
-    return this.notify$.asObservable();
-  }
-
   private htmlElement = this.document.querySelector('html')!;
 
   private storedOptions: AppSettings = this.store.get(this.key);
 
-  options: AppSettings = Object.assign(defaults, this.storedOptions);
+  private readonly _options = signal<AppSettings>(
+    Object.assign(defaults, this.storedOptions)
+  );
+
+  readonly options = this._options.asReadonly();
 
   languages = ['en-US', 'zh-CN', 'zh-TW'];
 
@@ -36,33 +33,34 @@ export class SettingsService {
 
   reset() {
     this.store.remove(this.key);
+    this._options.set(Object.assign(defaults, {}));
   }
 
   setOptions(options?: Partial<AppSettings>) {
-    this.options = Object.assign(defaults, this.options, options);
-    this.store.set(this.key, this.options);
-    this.notify$.next(this.options);
+    const newOptions = Object.assign(defaults, this._options(), options);
+    this._options.set(newOptions);
+    this.store.set(this.key, newOptions);
   }
 
   setDirection(dir?: Direction) {
     if (dir) {
       this.setOptions({ dir });
     }
-    this.dir.value = this.options.dir;
-    this.htmlElement.dir = this.options.dir;
+    this.dir.value = this.options().dir;
+    this.htmlElement.dir = this.options().dir;
   }
 
   getThemeColor() {
     // Check whether the browser support `prefers-color-scheme`
     if (
-      this.options.theme === 'auto' &&
+      this.options().theme === 'auto' &&
       this.mediaMatcher.matchMedia('(prefers-color-scheme)').media !== 'not all'
     ) {
       const isSystemDark = this.mediaMatcher.matchMedia('(prefers-color-scheme: dark)').matches;
       // Set theme to dark if `prefers-color-scheme` is dark. Otherwise, set it to light.
       return isSystemDark ? 'dark' : 'light';
     } else {
-      return this.options.theme as Exclude<AppTheme, 'auto'>;
+      return this.options().theme as Exclude<AppTheme, 'auto'>;
     }
   }
 
@@ -93,15 +91,15 @@ export class SettingsService {
       'theme-rose',
     );
     // Agregar la clase del color seleccionado
-    this.htmlElement.classList.add(`theme-${this.options.themeColor}`);
+    this.htmlElement.classList.add(`theme-${this.options().themeColor}`);
   }
 
   getTranslateLang() {
-    if (this.options.language === 'auto') {
+    if (this.options().language === 'auto') {
       const browserLang = navigator.language;
       return this.languages.includes(browserLang) ? browserLang : 'en-US';
     }
-    return this.options.language;
+    return this.options().language;
   }
 
   setLanguage(language?: string) {

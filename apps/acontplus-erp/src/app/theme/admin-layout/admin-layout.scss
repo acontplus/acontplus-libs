@@ -20,10 +20,10 @@
 // Layout control
 .acontplus-header-above {
   .acontplus-container {
-    height: calc(100% - var(--acp-mat-toolbar-standard-height)) !important;
+    height: calc(100% - var(--mat-toolbar-standard-height)) !important;
 
     @include breakpoints.bp-lt(small) {
-      height: calc(100% - var(--acp-mat-toolbar-mobile-height)) !important;
+      height: calc(100% - var(--mat-toolbar-mobile-height)) !important;
     }
   }
 

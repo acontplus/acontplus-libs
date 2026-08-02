@@ -12,6 +12,10 @@ export const appRoutes: Route[] = [
         path: 'tables',
         loadChildren: () => import('./routes/tables/tables.routes').then((m) => m.routes),
       },
+      {
+        path: 'material',
+        loadChildren: () => import('./routes/material/material.routes').then((m) => m.routes),
+      },
     ],
   },
 ];

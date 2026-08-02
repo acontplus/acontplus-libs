@@ -1,0 +1,63 @@
+@use 'sass:map';
+@use 'variables';
+
+/// Returns the minimum width value for a named breakpoint.
+///
+/// @param {String} $name - Breakpoint name (xsmall | small | medium | large | xlarge)
+/// @param {Map} $breakpoints [variables.$breakpoints] - Custom breakpoints map (optional)
+/// @return {Number} Width value in px
+@function bp($name, $breakpoints: variables.$breakpoints) {
+  $min: map.get($breakpoints, $name);
+
+  @return $min;
+}
+
+/// Applies styles when the viewport is **at least** the given breakpoint width (mobile-first).
+///
+/// @param {String} $name - Breakpoint name (xsmall | small | medium | large | xlarge)
+/// @param {Map} $breakpoints [variables.$breakpoints] - Custom breakpoints map (optional)
+///
+/// @example scss
+///   .my-element {
+///     font-size: 1rem;
+///
+///     @include breakpoints.bp-gt(medium) {
+///       font-size: 1.25rem;
+///     }
+///   }
+@mixin bp-gt($name, $breakpoints: variables.$breakpoints) {
+  $min: bp($name, $breakpoints);
+
+  @if $min {
+    @media (min-width: $min) {
+      @content;
+    }
+  } @else {
+    @content;
+  }
+}
+
+/// Applies styles when the viewport is **at most** the given breakpoint width (max-width).
+///
+/// @param {String} $name - Breakpoint name (xsmall | small | medium | large | xlarge)
+/// @param {Map} $breakpoints [variables.$breakpoints] - Custom breakpoints map (optional)
+///
+/// @example scss
+///   .my-element {
+///     display: block;
+///
+///     @include breakpoints.bp-lt(small) {
+///       display: none;
+///     }
+///   }
+@mixin bp-lt($name, $breakpoints: variables.$breakpoints) {
+  $max: bp($name, $breakpoints) - 1px;
+
+  @if $max {
+    @media (max-width: $max) {
+      @content;
+    }
+  } @else {
+    @content;
+  }
+}

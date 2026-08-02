@@ -45,6 +45,9 @@
   --acp-topmenu-dropdown-item-active-text-color: var(--mat-sys-primary);
 
   // Material toolbar heights
-  --acp-mat-toolbar-standard-height: 4rem;
-  --acp-mat-toolbar-mobile-height: 3.5rem;
+  --mat-toolbar-standard-height: 4rem;
+  --mat-toolbar-mobile-height: 3.5rem;
+
+  --acp-color-border: var(--mat-sys-outline-variant);
+  --acp-spacing: 0.25rem;
 }

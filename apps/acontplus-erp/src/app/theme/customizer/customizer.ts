@@ -56,7 +56,7 @@ export class Customizer {
   private readonly drawer = inject(AcpDrawer);
   private readonly fb = inject(FormBuilder);
 
-  form = this.fb.nonNullable.group<AppSettings>(this.settings.options);
+  form = this.fb.nonNullable.group<AppSettings>(this.settings.options());
 
   private formSubscription = Subscription.EMPTY;
 

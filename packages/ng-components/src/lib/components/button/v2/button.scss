@@ -181,6 +181,10 @@
   --mat-icon-button-container-shape: 8px;
 }
 
+.acp-block {
+  width: 100%;
+}
+
 .acp-medium {
   @include mat.theme(
     (

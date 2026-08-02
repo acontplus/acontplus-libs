@@ -1,0 +1,75 @@
+<div
+  class="matero-container-wrap"
+  [class.matero-sidenav-collapsed]="sidenavCollapsed() && navPos() !== 'top'"
+  [class.matero-navbar-side]="navPos() === 'side'"
+  [class.matero-navbar-top]="navPos() === 'top'"
+  [class.matero-header-above]="headerPos() === 'above'"
+  [class.matero-header-fixed]="headerPos() === 'fixed'"
+  [dir]="dir()"
+>
+  <!-- ── SLOT: Header ABOVE ─────────────────────────────────────────────────
+       Rendered outside the sidenav container so it spans the full width.
+       Only active when headerPos === 'above'.
+       The app projects its own header via <ng-template acpShellHeader>.
+  ──────────────────────────────────────────────────────────────────────── -->
+  @if (showHeaderAbove() && headerSlot()) {
+  <ng-container *ngTemplateOutlet="headerSlot()!.templateRef" />
+  }
+
+  <!-- ── Sidenav container ──────────────────────────────────────────────── -->
+  <mat-sidenav-container class="matero-container" autosize autoFocus>
+    <!-- Primary sidenav -->
+    <mat-sidenav
+      #sidenav
+      class="matero-sidenav"
+      [mode]="sidenavMode()"
+      [opened]="navPos() === 'side' && sidenavOpened() && !isMobile()"
+      (openedChange)="sidenavOpenedChange.emit($event)"
+    >
+      <!-- ── SLOT: Sidebar body ───────────────────────────────────────────
+           The app projects its own sidebar via <ng-template acpShellSidebar>.
+           If no slot is provided the sidenav is still rendered (empty).
+      ────────────────────────────────────────────────────────────────────── -->
+      @if (sidebarSlot()) {
+      <ng-container *ngTemplateOutlet="sidebarSlot()!.templateRef" />
+      }
+
+      <!-- ── SLOT: Sidebar footer ──────────────────────────────────────
+             Optional content pinned to the bottom of the sidebar.
+             Project via <ng-template acpShellSidebarFooter>.
+        ────────────────────────────────────────────────────────────────── -->
+      @if (sidebarFooterSlot()) {
+      <div class="acp-shell-sidebar-footer">
+        <ng-container *ngTemplateOutlet="sidebarFooterSlot()!.templateRef" />
+      </div>
+      }
+    </mat-sidenav>
+
+    <!-- ── Main content area ────────────────────────────────────────────── -->
+    <mat-sidenav-content #content class="matero-content">
+      <!-- ── SLOT: Header inside content (fixed / below) ──────────────────
+           Rendered inside the scrollable content area.
+           Only active when headerPos !== 'above'.
+      ────────────────────────────────────────────────────────────────────── -->
+      @if (showHeaderInContent() && headerSlot()) {
+      <ng-container *ngTemplateOutlet="headerSlot()!.templateRef" />
+      }
+
+      <!-- ── SLOT: Toolbar (center region inside header) ──────────────────
+           Optional extra content (breadcrumb, search bar…) rendered
+           below the header bar, above the page content.
+           Project via <ng-template acpShellToolbar>.
+      ────────────────────────────────────────────────────────────────────── -->
+      @if (toolbarSlot()) {
+      <ng-container *ngTemplateOutlet="toolbarSlot()!.templateRef" />
+      }
+
+      <!-- ── DEFAULT SLOT: Page content ────────────────────────────────────
+           Plain children (e.g. <router-outlet />) land here.
+      ────────────────────────────────────────────────────────────────────── -->
+      <main class="matero-page-content">
+        <router-outlet />
+      </main>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

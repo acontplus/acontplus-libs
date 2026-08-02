@@ -1,81 +1,53 @@
-<div
-  class="acontplus-container-wrap"
-  [class.acontplus-sidenav-collapsed]="options.sidenavCollapsed && options.navPos !== 'top'"
-  [class.acontplus-navbar-side]="options.navPos === 'side'"
-  [class.acontplus-navbar-top]="options.navPos === 'top'"
-  [class.acontplus-header-above]="options.headerPos === 'above'"
-  [class.acontplus-header-fixed]="options.headerPos === 'fixed'"
-  [dir]="options.dir"
->
-  <ng-progress ngProgressRouter />
+<ng-progress ngProgressRouter />
 
-  <!-- Header Above -->
-  @if (options.showHeader && options.headerPos === 'above') {
-    <acp-header
-      (toggleSidenav)="sidenav.toggle()"
-      (toggleSidenavNotice)="sidenavNotice.toggle()"
-      [showBranding]="true"
-      [brandingLogo]="brandingLogo"
-      [brandingName]="brandingName"
-      [userAvatar]="user()?.avatar ?? null"
-      [userMenuItems]="userMenuItems"
-      (userMenuItemClick)="onUserAction($event)"
-    />
+<acp-shell-layout
+  #shell
+  [navPos]="options().navPos"
+  [headerPos]="options().headerPos!"
+  [sidenavOpened]="options().sidenavOpened"
+  [sidenavCollapsed]="options().sidenavCollapsed"
+  [isMobile]="isMobile()"
+  [dir]="options().dir"
+  (sidenavOpenedChange)="onSidenavOpenedChange($event)"
+>
+  <!-- ── Slot: Header ────────────────────────────────────────────────────────
+       app-header define su contenido; el shell lo posiciona según headerPos.
+  ──────────────────────────────────────────────────────────────────────────── -->
+  @if (options().showHeader) {
+    <ng-template acpShellHeader>
+      <app-header
+        [showToggle]="!options().sidenavCollapsed && options().navPos !== 'top'"
+        [showBranding]="options().navPos === 'top' || options().headerPos === 'above'"
+        (toggleSidenav)="shell.toggleSidenav()"
+        (toggleSidenavNotice)="toggleNotice()"
+      />
+    </ng-template>
   }
 
-  <mat-sidenav-container class="acontplus-container" autosize autoFocus>
-    <mat-sidenav
-      #sidenav
-      class="acontplus-sidenav"
-      [mode]="isOver ? 'over' : 'side'"
-      [opened]="options.navPos === 'side' && options.sidenavOpened && !isOver"
-      (openedChange)="onSidenavOpenedChange($event)"
-    >
-      <acp-sidebar
-        [showToggle]="!isOver"
-        [showUser]="options.showUserPanel"
-        [showHeader]="options.headerPos !== 'above'"
-        [toggleChecked]="options.sidenavCollapsed"
-        [brandingLogo]="brandingLogo"
-        [brandingName]="brandingName"
-        [userAvatar]="user()?.avatar ?? null"
-        [userName]="user()?.name ?? ''"
-        [userEmail]="user()?.email ?? ''"
-        [menuItems]="menuItems() ?? []"
-        (toggleCollapsed)="toggleCollapsed()"
-        (closeSidenav)="sidenav.close()"
-      />
-    </mat-sidenav>
+  <!-- ── Slot: Sidebar ───────────────────────────────────────────────────────
+       app-sidebar define su contenido; el shell lo monta en el MatSidenav.
+  ──────────────────────────────────────────────────────────────────────────── -->
+  <ng-template acpShellSidebar>
+    <app-sidebar
+      [showToggle]="!isMobile()"
+      [showUser]="options().showUserPanel"
+      [showHeader]="options().headerPos !== 'above'"
+      [toggleChecked]="options().sidenavCollapsed"
+      [isOver]="isMobile()"
+      (toggleCollapsed)="toggleCollapsed()"
+      (closeSidenav)="shell.closeSidenav()"
+    />
+  </ng-template>
 
-    <mat-sidenav #sidenavNotice position="end" mode="over">
-      <app-sidebar-notice />
-    </mat-sidenav>
+  <!-- ── Page content ────────────────────────────────────────────────────────
+       Default ng-content del shell: top menu + router outlet.
+  ──────────────────────────────────────────────────────────────────────────── -->
+  @if (options().navPos === 'top') {
+    <app-topmenu />
+  }
 
-    <mat-sidenav-content #content class="acontplus-content">
-      @if (options.showHeader && options.headerPos !== 'above') {
-        <acp-header
-          [showToggle]="!options.sidenavCollapsed && options.navPos !== 'top'"
-          [showBranding]="options.navPos === 'top'"
-          [brandingLogo]="brandingLogo"
-          [brandingName]="brandingName"
-          [userAvatar]="user()?.avatar ?? null"
-          [userMenuItems]="userMenuItems"
-          (toggleSidenav)="sidenav.toggle()"
-          (toggleSidenavNotice)="sidenavNotice.toggle()"
-          (userMenuItemClick)="onUserAction($event)"
-        />
-      }
+  <router-outlet />
+</acp-shell-layout>
 
-      @if (options.navPos === 'top') {
-        <app-topmenu />
-      }
-
-      <main class="acontplus-page-content">
-        <router-outlet />
-      </main>
-    </mat-sidenav-content>
-  </mat-sidenav-container>
-
-  <!-- Demo purposes only -->
-  <app-customizer (optionsChange)="updateOptions($event)" />
-</div>
+<!-- Customizer (demo only) -->
+<app-customizer (optionsChange)="updateOptions($event)" />

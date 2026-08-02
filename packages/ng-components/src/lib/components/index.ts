@@ -24,3 +24,4 @@ export * from './user-menu';
 export * from './user-panel';
 export * from './sidemenu';
 export * from './sidebar';
+export * from './shell-layout';

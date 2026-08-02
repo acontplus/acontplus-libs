@@ -1,0 +1,333 @@
+<div class="toolbar-examples">
+  <h1>{{ title }}</h1>
+  <!-- Basic Toolbar -->
+  <section class="example-section">
+    <h3>Toolbar Básico</h3>
+    <p class="description">Un toolbar simple con título y botones de acción.</p>
+
+    <div class="example-container">
+      <mat-toolbar color="primary">
+        <span>{{ basicToolbarTitle }}</span>
+        <span class="example-spacer"></span>
+        <button mat-icon-button>
+          <mat-icon>search</mat-icon>
+        </button>
+        <button mat-icon-button>
+          <mat-icon>notifications</mat-icon>
+        </button>
+        <button mat-icon-button>
+          <mat-icon>account_circle</mat-icon>
+        </button>
+      </mat-toolbar>
+    </div>
+  </section>
+
+  <!-- Toolbar with Multiple Rows -->
+  <section class="example-section">
+    <h3>Toolbar con Múltiples Filas</h3>
+    <p class="description">Toolbar con título en la primera fila y acciones en la segunda.</p>
+
+    <div class="example-container">
+      <mat-toolbar color="accent">
+        <mat-toolbar-row>
+          <span>Second Line Text</span>
+          <span class="example-spacer"></span>
+          <button mat-icon-button>
+            <mat-icon>search</mat-icon>
+          </button>
+        </mat-toolbar-row>
+        <mat-toolbar-row>
+          <span>First Line Text</span>
+          <span class="example-spacer"></span>
+          <button mat-icon-button>
+            <mat-icon>more_vert</mat-icon>
+          </button>
+        </mat-toolbar-row>
+      </mat-toolbar>
+    </div>
+  </section>
+
+  <!-- Toolbar with Menu -->
+  <section class="example-section">
+    <h3>Toolbar con Menú</h3>
+    <p class="description">Toolbar con un menú desplegable para acciones adicionales.</p>
+
+    <div class="example-container">
+      <mat-toolbar>
+        <button mat-icon-button>
+          <mat-icon>menu</mat-icon>
+        </button>
+        <span>My App</span>
+        <span class="example-spacer"></span>
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          @for (item of menuItems; track item.label) {
+            <button mat-menu-item (click)="onMenuClick(item.label)">
+              <mat-icon>{{ item.icon }}</mat-icon>
+              <span>{{ item.label }}</span>
+            </button>
+          }
+        </mat-menu>
+      </mat-toolbar>
+    </div>
+  </section>
+
+  <!-- Toolbar with Tooltips -->
+  <section class="example-section">
+    <h3>Toolbar con Tooltips</h3>
+    <p class="description">Toolbar con tooltips informativos en los botones.</p>
+
+    <div class="example-container">
+      <mat-toolbar color="warn">
+        @for (action of toolbarActions; track action.icon) {
+          <button mat-icon-button [matTooltip]="action.tooltip">
+            <mat-icon>{{ action.icon }}</mat-icon>
+          </button>
+        }
+      </mat-toolbar>
+    </div>
+  </section>
+
+  <!-- Toolbar with Custom Colors -->
+  <section class="example-section">
+    <h3>Toolbar con Colores Personalizados</h3>
+    <p class="description">Toolbar con colores de tema de Material Design.</p>
+
+    <div class="example-container">
+      <div class="color-variants">
+        <mat-toolbar color="primary">
+          <span>Primary Toolbar</span>
+        </mat-toolbar>
+
+        <mat-toolbar color="accent">
+          <span>Accent Toolbar</span>
+        </mat-toolbar>
+
+        <mat-toolbar color="warn">
+          <span>Warn Toolbar</span>
+        </mat-toolbar>
+
+        <mat-toolbar>
+          <span>Default Toolbar</span>
+        </mat-toolbar>
+      </div>
+    </div>
+  </section>
+
+  <!-- Toolbar with Left and Right Actions -->
+  <section class="example-section">
+    <h3>Toolbar con Acciones Izquierda y Derecha</h3>
+    <p class="description">Toolbar con acciones en ambos lados usando un spacer.</p>
+
+    <div class="example-container">
+      <mat-toolbar>
+        @for (action of leftActions; track action.icon) {
+          <button mat-icon-button [matTooltip]="action.tooltip" (click)="onActionClick(action)">
+            <mat-icon>{{ action.icon }}</mat-icon>
+          </button>
+        }
+        <span class="example-spacer"></span>
+        <span>Center Content</span>
+        <span class="example-spacer"></span>
+        @for (action of rightActions; track action.icon) {
+          <button mat-icon-button [matTooltip]="action.tooltip" (click)="onActionClick(action)">
+            <mat-icon>{{ action.icon }}</mat-icon>
+          </button>
+        }
+      </mat-toolbar>
+    </div>
+  </section>
+
+  <!-- Toolbar with Dense Variant -->
+  <section class="example-section">
+    <h3>Toolbar con Variante Dense</h3>
+    <p class="description">Toolbar con altura reducida para interfaces compactas.</p>
+
+    <div class="example-container">
+      <div class="dense-variants">
+        <mat-toolbar>
+          <span>Standard Toolbar</span>
+        </mat-toolbar>
+
+        <mat-toolbar class="example-dense-toolbar">
+          <span>Dense Toolbar</span>
+        </mat-toolbar>
+      </div>
+    </div>
+  </section>
+
+  <!-- AcpHeader Examples -->
+  <section class="example-section">
+    <h3>AcpHeader Básico</h3>
+    <p class="description">Header empresarial con branding y acciones.</p>
+
+    <div class="example-container">
+      <acp-header>
+        <acp-header-start>
+          <button mat-icon-button (click)="onActionClick({icon: 'menu'})">
+            <mat-icon>menu</mat-icon>
+          </button>
+        </acp-header-start>
+        
+        <acp-header-branding>
+          <acp-header-branding-content
+            [logo]="'images/acontplus.png'"
+            [name]="'ACONTPLUS'"
+            [showName]="true"
+          />
+        </acp-header-branding>
+        
+        <acp-header-center>
+          <span>Dashboard</span>
+        </acp-header-center>
+        
+        <acp-header-end>
+          <button mat-icon-button>
+            <mat-icon>search</mat-icon>
+          </button>
+          <button mat-icon-button>
+            <mat-icon>notifications</mat-icon>
+          </button>
+        </acp-header-end>
+      </acp-header>
+    </div>
+  </section>
+
+  <section class="example-section">
+    <h3>AcpHeader con Menú de Usuario</h3>
+    <p class="description">Header con menú de usuario y avatar.</p>
+
+    <div class="example-container">
+      <acp-header>
+        <acp-header-start>
+          <button mat-icon-button>
+            <mat-icon>menu</mat-icon>
+          </button>
+        </acp-header-start>
+        
+        <acp-header-branding>
+          <acp-header-branding-content
+            [logo]="'images/acontplus.png'"
+            [name]="'ACONTPLUS'"
+            [showName]="true"
+          />
+        </acp-header-branding>
+        
+        <acp-header-center></acp-header-center>
+        
+        <acp-header-end>
+          <button mat-icon-button>
+            <mat-icon>search</mat-icon>
+          </button>
+         
+        </acp-header-end>
+      </acp-header>
+    </div>
+  </section>
+
+  <section class="example-section">
+    <h3>AcpHeader con Badges</h3>
+    <p class="description">Header con badges de notificación en las acciones.</p>
+
+    <div class="example-container">
+      <acp-header>
+        <acp-header-start>
+          <button mat-icon-button>
+            <mat-icon>menu</mat-icon>
+          </button>
+        </acp-header-start>
+        
+        <acp-header-branding>
+          <acp-header-branding-content
+            [logo]="'images/acontplus.png'"
+            [name]="'ACONTPLUS'"
+            [showName]="true"
+          />
+        </acp-header-branding>
+        
+        <acp-header-center></acp-header-center>
+        
+        <acp-header-end>
+          <button mat-icon-button>
+            <mat-icon>search</mat-icon>
+          </button>
+          <button mat-icon-button>
+            <mat-icon>notifications</mat-icon>
+            <span class="acp-header__badge">3</span>
+          </button>
+        </acp-header-end>
+      </acp-header>
+    </div>
+  </section>
+
+  <section class="example-section">
+    <h3>AcpHeader con Elevación y Sticky</h3>
+    <p class="description">Header con sombra y posición sticky.</p>
+
+    <div class="example-container">
+      <acp-header [elevated]="true" [sticky]="true">
+        <acp-header-start>
+          <button mat-icon-button>
+            <mat-icon>menu</mat-icon>
+          </button>
+        </acp-header-start>
+        
+        <acp-header-branding>
+          <acp-header-branding-content
+            [logo]="'images/acontplus.png'"
+            [name]="'ACONTPLUS'"
+            [showName]="true"
+          />
+        </acp-header-branding>
+        
+        <acp-header-center></acp-header-center>
+        
+        <acp-header-end>
+          <button mat-icon-button>
+            <mat-icon>search</mat-icon>
+          </button>
+          <button mat-icon-button>
+            <mat-icon>notifications</mat-icon>
+          </button>
+        </acp-header-end>
+      </acp-header>
+    </div>
+  </section>
+
+  <section class="example-section">
+    <h3>AcpHeader con Componentes Adicionales</h3>
+    <p class="description">Header con componentes adicionales como búsqueda y breadcrumbs.</p>
+
+    <div class="example-container">
+      <acp-header>
+        <acp-header-start>
+          <button mat-icon-button>
+            <mat-icon>menu</mat-icon>
+          </button>
+        </acp-header-start>
+        
+        <acp-header-branding>
+          <acp-header-branding-content
+            [logo]="'images/acontplus.png'"
+            [name]="'ACONTPLUS'"
+            [showName]="true"
+          />
+        </acp-header-branding>
+        
+        <acp-header-center>
+          <acp-header-breadcrumb [items]="breadcrumbItems" />
+        </acp-header-center>
+        
+        <acp-header-end>
+          <acp-header-search [placeholder]="'Buscar...'" (searchSubmit)="onSearch($event)" />
+          <button mat-icon-button>
+            <mat-icon>notifications</mat-icon>
+          </button>
+         
+        </acp-header-end>
+      </acp-header>
+    </div>
+  </section>
+</div>

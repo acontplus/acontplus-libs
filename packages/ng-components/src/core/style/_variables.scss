@@ -1,0 +1,9 @@
+// Breakpoint values used by the bp-gt and bp-lt mixins.
+// Override these defaults by passing a custom $breakpoints map to the mixins.
+$breakpoints: (
+  xsmall: 0,
+  small: 600px,
+  medium: 960px,
+  large: 1280px,
+  xlarge: 1920px,
+) !default;

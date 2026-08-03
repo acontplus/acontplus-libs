@@ -2,11 +2,11 @@
 
 ### Features
 
-- ⚠️  **angular:** release Angular 22 majors ([#141](https://github.com/acontplus/acontplus-libs/pull/141))
+- ⚠️ **angular:** release Angular 22 majors ([#141](https://github.com/acontplus/acontplus-libs/pull/141))
 
-### ⚠️  Breaking Changes
+### ⚠️ Breaking Changes
 
-- **angular:** release Angular 22 majors  ([#141](https://github.com/acontplus/acontplus-libs/pull/141))
+- **angular:** release Angular 22 majors ([#141](https://github.com/acontplus/acontplus-libs/pull/141))
 
 ### 🧱 Updated Dependencies
 

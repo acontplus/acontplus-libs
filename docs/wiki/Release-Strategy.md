@@ -45,7 +45,11 @@ manifests untouched.
 | `docs`, `chore`, `ci`, `test`, `build`, `style` | No release     |
 
 Use `<type>(<scope>): <description>`. The Husky hook validates the accepted
-types and description length.
+types and description length. Nx does not use scopes to decide which project
+receives a version bump (`useCommitScope: false`); changed files and the project
+graph remain the source of that association. This lets one transversal breaking
+commit such as `feat(angular)!` produce major releases for each affected
+Angular package instead of reducing it to a patch.
 
 ## Framework compatibility releases
 
@@ -55,7 +59,7 @@ release every affected `ng-*` package with a SemVer major, even when its API
 source has not otherwise changed. Preview the selected packages first:
 
 ```bash
-pnpm exec nx release version --specifier major --projects=ng-auth,ng-common,... --dry-run
+pnpm exec nx release version major --projects=ng-auth,ng-common,... --dry-run
 ```
 
 Use a breaking Conventional Commit, for example:
@@ -69,6 +73,19 @@ BREAKING CHANGE: Angular libraries now require Angular ^22.1.0.
 Replace the abbreviated project list with the exact affected projects. The
 release workflow remains the normal authority for commits, tags, changelogs,
 and publishing; do not hand-edit version fields to simulate a release.
+
+When an already-merged release needs an explicit corrective bump, use the
+**Release & Publish to npm** workflow's manual dispatch instead of editing
+manifests or tags. It requires the selected projects and one SemVer specifier;
+for the Angular 22 correction, choose `major` and:
+
+```text
+ng-auth,ng-common,ng-components,ng-config,ng-customer,ng-infrastructure,ng-notifications
+```
+
+The dispatch runs `nx release --skip-publish` in CI, then performs the same
+commit, tags, and npm publish sequence as the automatic path. It is deliberately
+for exceptional, explicit releases; routine releases remain commit-driven.
 
 ## Release groups and dependency updates
 

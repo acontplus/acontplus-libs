@@ -1,3 +1,21 @@
+## 2.4.1 (2026-08-03)
+
+### Features
+
+- ⚠️  **angular:** release Angular 22 majors ([#141](https://github.com/acontplus/acontplus-libs/pull/141))
+
+### ⚠️  Breaking Changes
+
+- **angular:** release Angular 22 majors  ([#141](https://github.com/acontplus/acontplus-libs/pull/141))
+
+### 🧱 Updated Dependencies
+
+- Updated ui-kit to 1.0.4
+
+### ❤️ Thank You
+
+- Ivan Fernando Paz @iferpaz7
+
 ## 2.4.0 (2026-07-21)
 
 ### Features

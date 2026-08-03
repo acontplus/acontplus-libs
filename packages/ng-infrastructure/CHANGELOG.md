@@ -1,3 +1,24 @@
+## 2.2.1 (2026-08-03)
+
+### Features
+
+- ⚠️  **angular:** release Angular 22 majors ([#141](https://github.com/acontplus/acontplus-libs/pull/141))
+
+### ⚠️  Breaking Changes
+
+- **angular:** release Angular 22 majors  ([#141](https://github.com/acontplus/acontplus-libs/pull/141))
+
+### 🧱 Updated Dependencies
+
+- Updated core to 1.1.7
+- Updated ng-config to 2.0.6
+- Updated ng-notifications to 2.1.3
+- Updated ng-components to 2.4.1
+
+### ❤️ Thank You
+
+- Ivan Fernando Paz @iferpaz7
+
 ## 2.2.0 (2026-07-21)
 
 ### 🧱 Updated Dependencies

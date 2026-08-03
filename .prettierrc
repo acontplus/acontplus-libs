@@ -11,7 +11,7 @@
   "endOfLine": "lf",
   "quoteProps": "as-needed",
   "jsxSingleQuote": true,
-  "proseWrap": "preserve",
+  "proseWrap": "always",
   "htmlWhitespaceSensitivity": "css",
   "embeddedLanguageFormatting": "auto",
   "overrides": [
@@ -30,7 +30,7 @@
       }
     },
     {
-      "files": "*.yml",
+      "files": ["*.yml", "*.yaml"],
       "options": {
         "singleQuote": false
       }

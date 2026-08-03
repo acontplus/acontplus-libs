@@ -1,13 +1,6 @@
 export type AppTheme = 'light' | 'dark' | 'auto';
 export type AppThemeColor =
-  | 'blue'
-  | 'aqua'
-  | 'purple'
-  | 'green'
-  | 'cyan'
-  | 'orange'
-  | 'pink'
-  | 'rose';
+  'blue' | 'aqua' | 'purple' | 'green' | 'cyan' | 'orange' | 'pink' | 'rose';
 
 export interface AppSettings {
   navPos: 'side' | 'top';

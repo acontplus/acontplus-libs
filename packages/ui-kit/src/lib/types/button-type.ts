@@ -8,13 +8,7 @@ export type ButtonType = 'button' | 'submit' | 'reset';
  * Framework-agnostic color variants for button styling
  */
 export type ButtonVariant =
-  | 'primary'
-  | 'secondary'
-  | 'success'
-  | 'danger'
-  | 'warning'
-  | 'info'
-  | 'dark';
+  'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'dark';
 
 /**
  * Material Design button styles

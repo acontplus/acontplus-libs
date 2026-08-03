@@ -124,14 +124,14 @@ sequenceDiagram
   participant npm as npm Registry
 
   Dev->>GH: Open PR (feat/fix branch)
-  GH->>CI: nx affected -t lint, build
+  GH->>CI: nx affected -t lint, test, build
   CI-->>GH: checks pass
 
   Dev->>GH: Merge PR to main
   GH->>Release: triggered automatically
 
   Release->>Release: nx release --skip-publish
-  Note over Release: preVersionCommand builds dist/<br/>conventional commits determine bump<br/>CHANGELOG updated + git tag created
+  Note over Release: preVersionCommand builds dist/<br/>conventional commits determine bump<br/>source + dist manifests and project CHANGELOGs updated<br/>git tag created
 
   Release->>GH: Push version commit + tags
   Release->>Release: npm install -g npm@latest

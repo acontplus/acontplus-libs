@@ -126,6 +126,10 @@ jobs:
               pkg_version=$(node -p "require('./$dir/package.json').version")
               echo "::group::Publishing $pkg_name@$pkg_version"
 
+              # npm cannot publish workspace: references. Materialize them in the
+              # dist manifest using the versions selected by Nx Release.
+              node tools/prepare-dist-package-manifest.mjs "$dir"
+
               if npm publish "$dir" --access public --provenance; then
                 echo "✓ Published $pkg_name@$pkg_version"
                 published=$((published + 1))

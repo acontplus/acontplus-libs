@@ -50,11 +50,6 @@
       "continuous": true,
       "executor": "@angular/build:dev-server",
       "defaultConfiguration": "development",
-      "options": {
-        "ssl": true,
-        "sslCert": "./ssl/server.crt",
-        "sslKey": "./ssl/server.key"
-      },
       "configurations": {
         "production": {
           "buildTarget": "acontplus-erp:build:production"
@@ -65,10 +60,14 @@
       }
     },
     "test": {
-      "outputs": [
-        "{workspaceRoot}/coverage/{projectRoot}",
-        "{workspaceRoot}\\coverage\\apps\\acontplus-erp"
-      ]
+      "executor": "@angular/build:unit-test",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "runner": "vitest",
+        "runnerConfig": "vitest-base.config.ts",
+        "tsConfig": "apps/acontplus-erp/tsconfig.spec.json",
+        "watch": false
+      }
     },
     "serve-static": {
       "continuous": true,

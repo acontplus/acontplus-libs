@@ -1,14 +1,14 @@
 {
   "name": "@acontplus/ng-notifications",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "description": "Comprehensive Angular notification system with toast notifications (ngx-toastr), alerts (SweetAlert2), snackbars, theme detection, notification providers, and configurable styling. Supports multiple notification types with Angular Material integration.",
   "peerDependencies": {
     "@acontplus/ui-kit": "^1.0.2",
-    "@angular/common": "^22.0.0",
-    "@angular/core": "^22.0.0",
-    "@angular/material": "^22.0.0",
+    "@angular/common": "^22.1.0",
+    "@angular/core": "^22.1.0",
+    "@angular/material": "^22.1.0",
     "ngx-toastr": "^20.0.0",
-    "sweetalert2": "^11.26.2",
+    "sweetalert2": "^11.26.25",
     "rxjs": "^7.8.2"
   },
   "sideEffects": true,

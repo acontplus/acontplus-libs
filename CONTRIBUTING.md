@@ -57,25 +57,25 @@ participating in this project.
    functionality:
 
    ```bash
-   npx nx affected:test
+   pnpm exec nx affected -t test
    ```
 
 4. **Run affected linting** to check code quality:
 
    ```bash
-   npx nx affected:lint
+   pnpm exec nx affected -t lint
    ```
 
 5. **Build affected projects** to verify your changes compile:
 
    ```bash
-   npx nx affected:build
+   pnpm exec nx affected -t build
    ```
 
 6. **Format code** if needed:
 
    ```bash
-   npm run format
+   pnpm run format
    ```
 
 7. **Commit your changes** with a descriptive commit message:
@@ -101,17 +101,18 @@ participating in this project.
 
 - **Use affected commands** to only run operations on projects affected by your
   changes
-- **Check the dependency graph** with `npx nx graph` to understand project
+- **Check the dependency graph** with `pnpm exec nx graph` to understand project
   relationships
 - **Use Nx Console** in VS Code for visual command execution
-- **Run full test suite** before submitting PR: `npm run test`
+- **Run the affected test suite** before submitting a PR:
+  `pnpm exec nx affected -t test --base=origin/main --head=HEAD`
 - **Build all libraries** before submitting: `npm run build:libs`
 
 ## Pull Request Process
 
 1. **Update the README.md** with details of changes if applicable.
-2. **Update the CHANGELOG.md** following the
-   [Keep a Changelog](https://keepachangelog.com/) format.
+2. **Do not edit generated package changelogs manually.** Nx Release creates
+   project changelog entries for versioned releases.
 3. **Ensure all tests pass** and your code follows the project's coding
    standards.
 4. **Add appropriate labels** to your pull request.
@@ -136,11 +137,13 @@ this project. Additionally:
 
 ## Testing Guidelines
 
-- Write unit tests for all new functionality.
-- Place tests in `.spec.ts` files alongside the files they test.
-- Aim for high test coverage, especially for critical functionality.
-- Test edge cases and error conditions.
-- Follow the testing examples in the existing codebase.
+- Write unit tests for new behavior and regressions; place them beside the code as
+  `*.spec.ts` or `*.test.ts`.
+- Use `pnpm exec nx test <project>` for the smallest relevant test target.
+- Cover error paths and public behavior. Prioritize authentication, authorization,
+  calculations, persistence, and public package APIs.
+- Do not add Jest configuration or imports. This workspace uses Vitest; see the
+  [testing strategy](docs/wiki/Testing.md).
 
 ## Documentation Guidelines
 

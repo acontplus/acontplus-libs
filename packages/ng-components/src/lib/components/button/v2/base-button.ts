@@ -4,14 +4,7 @@ type AcpButtonVariant = 'basic' | 'icon' | 'fab' | 'mini-fab';
 type AcpButtonAppearance = 'text' | 'filled' | 'elevated' | 'outlined' | 'tonal';
 type AcpButtonType = 'button' | 'submit' | 'reset';
 type AcpButtonColor =
-  | 'primary'
-  | 'secondary'
-  | 'accent'
-  | 'error'
-  | 'success'
-  | 'warning'
-  | 'info'
-  | 'dark';
+  'primary' | 'secondary' | 'accent' | 'error' | 'success' | 'warning' | 'info' | 'dark';
 
 @Directive({
   host: {

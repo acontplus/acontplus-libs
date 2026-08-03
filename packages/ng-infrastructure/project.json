@@ -6,7 +6,11 @@
   "projectType": "library",
   "release": {
     "version": {
-      "manifestRootsToUpdate": ["dist/{projectRoot}"],
+      "manifestRootsToUpdate": [
+        { "path": "{projectRoot}", "preserveLocalDependencyProtocols": true },
+        { "path": "dist/{projectRoot}", "preserveLocalDependencyProtocols": false }
+      ],
+      "preserveLocalDependencyProtocols": true,
       "currentVersionResolver": "git-tag",
       "fallbackCurrentVersionResolver": "disk"
     }
@@ -14,6 +18,24 @@
   "tags": ["npm:public", "npm:acontplus", "npm:angular", "npm:infrastructure"],
   "implicitDependencies": ["ng-config"],
   "targets": {
+    "test": {
+      "executor": "@angular/build:unit-test",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "buildTarget": "ng-infrastructure:test-build",
+        "runner": "vitest",
+        "runnerConfig": "vitest-base.config.ts",
+        "tsConfig": "packages/ng-infrastructure/tsconfig.spec.json",
+        "watch": false
+      }
+    },
+    "test-build": {
+      "executor": "@angular/build:ng-packagr",
+      "options": {
+        "project": "packages/ng-infrastructure/ng-package.json",
+        "tsConfig": "packages/ng-infrastructure/tsconfig.lib.json"
+      }
+    },
     "build": {
       "executor": "@nx/angular:package",
       "outputs": ["{workspaceRoot}/dist/{projectRoot}"],

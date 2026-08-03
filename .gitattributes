@@ -1,2 +1,20 @@
 * text=auto eol=lf
 
+# Binary assets must not be line-ending normalized or shown as text diffs.
+*.ico binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+*.eot binary
+*.mp3 binary
+*.mp4 binary
+*.pdf binary
+
+# Nx graph output is generated and should not dominate source-language metrics.
+graph.json linguist-generated=true

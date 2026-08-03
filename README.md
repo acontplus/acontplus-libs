@@ -95,12 +95,6 @@ npm-compatible ranges in `dist/` just before publishing. Read the
 [release strategy](docs/wiki/Release-Strategy.md) before working on release
 behavior.
 
-If an already-versioned release is interrupted during npm publishing, use the
-restricted **Release & Publish to npm** manual operation
-`publish-angular-22-majors`. It only rebuilds and publishes the existing
-Angular 22 release versions, skipping any package already on npm; it never
-versions, tags, or writes a changelog.
-
 ## Documentation
 
 - [Architecture](docs/wiki/Architecture.md)

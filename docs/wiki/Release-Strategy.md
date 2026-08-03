@@ -96,17 +96,6 @@ Do not manually edit package versions, generated project changelogs, tags, or
 `dist/` manifests. Use the dry run to validate expected changes and let the
 release workflow perform the publish.
 
-## Interrupted publish recovery
-
-The workflow has one deliberately narrow manual recovery operation:
-`publish-angular-22-majors`. Use it only when the Angular 22 release was
-versioned and tagged successfully but its npm publish job was cancelled or
-failed. It rebuilds and publishes the existing versions of `ng-auth`,
-`ng-common`, `ng-components`, `ng-config`, `ng-customer`,
-`ng-infrastructure`, and `ng-notifications`. It checks npm first and skips a
-package that was already published, so retrying it is safe. It does not run Nx
-versioning, create tags, update changelogs, or change source manifests.
-
 ## Release validation
 
 For release, peer-dependency, package-boundary, or build-configuration

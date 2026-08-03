@@ -7,19 +7,6 @@ on:
     paths:
       # A release is deliberate: only a reviewed version plan can trigger it.
       - '.nx/version-plans/**'
-  workflow_dispatch:
-    inputs:
-      operation:
-        description: 'Recovery operation to run'
-        required: true
-        type: choice
-        options:
-          - publish-angular-22-majors
-      confirm:
-        description: 'I confirm this publishes the already-tagged Angular 22 major versions.'
-        required: true
-        type: boolean
-        default: false
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -162,95 +149,6 @@ jobs:
           done
 
           echo ""
-          echo "Summary: $published published, $skipped skipped, $failed failed"
-          if [ "$failed" -gt 0 ]; then
-            exit 1
-          fi
-        env:
-          NPM_CONFIG_PROVENANCE: 'true'
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-  publish-angular-22-majors-recovery:
-    # This is deliberately narrow: it recovers the one interrupted Angular 22
-    # publish without re-running Nx versioning, changelog generation, or tagging.
-    if: >-
-      github.event_name == 'workflow_dispatch' &&
-      inputs.operation == 'publish-angular-22-majors' &&
-      inputs.confirm
-    runs-on: ubuntu-latest
-    environment: npm-publish
-    permissions:
-      contents: read
-      id-token: write
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
-          filter: tree:0
-
-      - uses: pnpm/action-setup@v6
-
-      - uses: actions/setup-node@v6
-        with:
-          node-version: '24'
-          registry-url: 'https://registry.npmjs.org'
-          package-manager-cache: false
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Build the already-versioned Angular packages
-        run: >-
-          pnpm exec nx run-many -t build
-          --projects=ng-auth,ng-common,ng-components,ng-config,ng-customer,ng-infrastructure,ng-notifications
-          --parallel=3
-
-      - name: Upgrade npm for OIDC trusted publishing
-        run: |
-          npm install -g npm@latest
-          echo "$(npm config get prefix)/bin" >> $GITHUB_PATH
-
-      - name: Publish Angular 22 major recovery (OIDC trusted publishing)
-        # npm publish, rather than pnpm publish, is required for npm OIDC.
-        # Check first so a retry is idempotent if a previous run published only
-        # a subset of packages before it was cancelled.
-        run: |
-          echo "registry=https://registry.npmjs.org/" > "$NPM_CONFIG_USERCONFIG"
-          unset NODE_AUTH_TOKEN
-          npm --version
-
-          published=0
-          skipped=0
-          failed=0
-
-          for project in ng-auth ng-common ng-components ng-config ng-customer ng-infrastructure ng-notifications; do
-            dir="dist/packages/$project"
-            pkg_name=$(node -p "require('./$dir/package.json').name")
-            pkg_version=$(node -p "require('./$dir/package.json').version")
-            echo "::group::Publishing $pkg_name@$pkg_version"
-
-            if npm view "$pkg_name@$pkg_version" version 2>/dev/null | grep -Fxq "$pkg_version"; then
-              echo "⊘ Skipped $pkg_name@$pkg_version (already published)"
-              skipped=$((skipped + 1))
-              echo "::endgroup::"
-              continue
-            fi
-
-            node tools/prepare-dist-package-manifest.mjs "$dir"
-
-            if npm publish "$dir" --access public --provenance; then
-              echo "✓ Published $pkg_name@$pkg_version"
-              published=$((published + 1))
-            elif [ -n "$NPM_TOKEN" ] && NODE_AUTH_TOKEN="$NPM_TOKEN" npm publish "$dir" --access public; then
-              echo "✓ Published $pkg_name@$pkg_version (via token fallback)"
-              published=$((published + 1))
-            else
-              echo "✗ Failed to publish $pkg_name@$pkg_version"
-              failed=$((failed + 1))
-            fi
-            echo "::endgroup::"
-          done
-
           echo "Summary: $published published, $skipped skipped, $failed failed"
           if [ "$failed" -gt 0 ]; then
             exit 1

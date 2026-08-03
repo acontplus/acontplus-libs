@@ -1,3 +1,15 @@
+# 3.0.0 (2026-08-03)
+
+### ⚠️  Breaking Changes
+
+- Angular 22 compatibility release. ([a989c59](https://github.com/acontplus/acontplus-libs/commit/a989c59))
+
+  BREAKING CHANGE: The affected Angular libraries now require Angular ^22.1.0.
+
+### ❤️ Thank You
+
+- Ivan Paz
+
 ## 2.1.0 (2026-08-03)
 
 ### 🧱 Updated Dependencies

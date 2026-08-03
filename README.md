@@ -76,10 +76,11 @@ and the coverage policy.
 
 ## Releases
 
-Packages release independently through Nx Release. The current version comes
-from tags in the `{projectName}@{version}` form. A release updates both the
-source package manifest and the manifest under `dist/`; only `dist/packages/*`
-is published.
+Packages release independently through Nx Release version plans. The current
+version comes from tags in the `{projectName}@{version}` form. A reviewed plan
+under `.nx/version-plans/` selects the exact packages and SemVer bump; merging
+it triggers the release workflow. A release updates both the source package
+manifest and the manifest under `dist/`; only `dist/packages/*` is published.
 
 Preview release decisions without writing anything:
 
@@ -88,11 +89,12 @@ pnpm exec nx release --dry-run
 ```
 
 The `main` workflow performs versioning, project changelogs, tags, and npm
-publishing. Do not manually edit versions, generated changelogs, tags, or
-`dist/` manifests. Packages released together may use `workspace:^` internally;
-the workflow converts those values to npm-compatible ranges in `dist/` just
-before publishing. Read the [release strategy](docs/wiki/Release-Strategy.md)
-before working on release behavior.
+publishing only when a version plan is merged. Do not manually edit versions,
+generated changelogs, tags, or `dist/` manifests. Packages released together
+may use `workspace:^` internally; the workflow converts those values to
+npm-compatible ranges in `dist/` just before publishing. Read the
+[release strategy](docs/wiki/Release-Strategy.md) before working on release
+behavior.
 
 ## Documentation
 

@@ -4,34 +4,9 @@ on:
   push:
     branches:
       - main
-    paths-ignore:
-      # Wiki and standalone docs — never trigger a release
-      - 'docs/**'
-      - '.github/workflows/publish-wiki.yml'
-      # Root-level and app markdown — no package impact
-      - 'README.md'
-      - 'CONTRIBUTING.md'
-      - 'CHANGELOG.md'
-      - 'LICENSE'
-      - 'apps/**/*.md'
-      # NOTE: packages/*/README.md is intentionally NOT ignored —
-      # a fix(scope): commit updating a package README should trigger
-      # a release to republish that package with the updated npm README.
-  workflow_dispatch:
-    inputs:
-      projects:
-        description: 'Comma-separated projects to release (required for manual releases)'
-        required: true
-        type: string
-      specifier:
-        description: 'Explicit SemVer bump for the selected projects'
-        required: true
-        default: major
-        type: choice
-        options:
-          - major
-          - minor
-          - patch
+    paths:
+      # A release is deliberate: only a reviewed version plan can trigger it.
+      - '.nx/version-plans/**'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -45,8 +20,8 @@ permissions:
 
 jobs:
   release:
-    # Only run on merged PRs (not direct pushes)
-    if: github.event_name == 'workflow_dispatch' || github.event.head_commit.message != ''
+    # The release commit deletes the applied plan; do not run a second release.
+    if: "!startsWith(github.event.head_commit.message, 'chore(release):')"
     runs-on: ubuntu-latest
     # Must match the Environment name configured in the npm Trusted Publisher settings
     environment: npm-publish
@@ -89,13 +64,7 @@ jobs:
         # Tags are created atomically with the version commit in this step.
         id: version
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            pnpm exec nx release "${{ inputs.specifier }}" --skip-publish \
-              --projects="${{ inputs.projects }}" \
-              2>&1 | tee /tmp/nx-release.log
-          else
-            pnpm exec nx release --skip-publish 2>&1 | tee /tmp/nx-release.log
-          fi
+          pnpm exec nx release --skip-publish 2>&1 | tee /tmp/nx-release.log
           if git diff --name-only HEAD~1 HEAD 2>/dev/null | grep -q "package.json\|CHANGELOG"; then
             echo "changes=true" >> $GITHUB_OUTPUT
           else
@@ -121,6 +90,7 @@ jobs:
           echo "$(npm config get prefix)/bin" >> $GITHUB_PATH
 
       - name: Publish to npm (OIDC trusted publishing)
+        if: steps.version.outputs.changes == 'true'
         # pnpm publish has no OIDC support — call npm publish directly.
         #
         # KNOWN UPSTREAM BUG: npm/cli#8730 (open since Nov 2025) — OIDC trusted

@@ -55,6 +55,10 @@ jobs:
 
       - uses: nrwl/nx-set-shas@v5
 
+      - name: Check release version plans
+        if: github.event_name == 'pull_request'
+        run: pnpm exec nx release plan:check
+
       - name: Run lint and unit tests
         run: pnpm exec nx affected -t lint,test --exclude demo-app --parallel=3
 

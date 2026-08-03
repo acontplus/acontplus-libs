@@ -1,13 +1,14 @@
 # Release Strategy
 
-This monorepo uses Nx Release for independent, package-level releases. A push
-to `main` runs the release workflow, which versions qualifying packages,
-creates project changelogs and tags, then publishes built packages to npm.
+This monorepo uses Nx Release version plans for independent, package-level
+releases. A reviewed plan merged to `main` runs the release workflow, which
+versions only the listed packages, creates project changelogs and tags, then
+publishes built packages to npm.
 
 ## Release flow
 
 ```text
-conventional commit → CI → merge to main → nx release --skip-publish → npm publish dist/packages/*
+code change + version plan → CI plan check → merge to main → nx release --skip-publish → npm publish dist/packages/*
 ```
 
 The release workflow builds libraries before versioning. On a versioned release,
@@ -35,57 +36,35 @@ and changelog entries without changing files, commits, tags, remotes, or npm.
 If it reports no conventional changes, it intentionally leaves source and dist
 manifests untouched.
 
-## Commit types
+## Version plans
 
-| Commit type                                     | Version impact |
-| ----------------------------------------------- | -------------- |
-| `feat`                                          | Minor          |
-| `fix`, `perf`, `refactor`, `revert`             | Patch          |
-| `!` or `BREAKING CHANGE:`                       | Major          |
-| `docs`, `chore`, `ci`, `test`, `build`, `style` | No release     |
-
-Use `<type>(<scope>): <description>`. The Husky hook validates the accepted
-types and description length. Nx does not use scopes to decide which project
-receives a version bump (`useCommitScope: false`); changed files and the project
-graph remain the source of that association. This lets one transversal breaking
-commit such as `feat(angular)!` produce major releases for each affected
-Angular package instead of reducing it to a patch.
+Conventional Commits remain the repository's commit convention, but they do
+not select package versions. Each releasable change needs a tracked Markdown
+plan in `.nx/version-plans/`; CI runs `nx release plan:check` on pull requests
+to enforce this. The plan's YAML front matter maps exact project names to
+`major`, `minor`, or `patch`, and its Markdown body becomes the changelog entry.
+Test-only changes are exempt from the check.
 
 ## Framework compatibility releases
 
 A change to an Angular library's supported Angular major is a breaking public
 contract. When moving the Angular peer range from one major to the next,
 release every affected `ng-*` package with a SemVer major, even when its API
-source has not otherwise changed. Preview the selected packages first:
+source has not otherwise changed. Create one plan containing all affected
+projects, for example:
 
-```bash
-pnpm exec nx release version major --projects=ng-auth,ng-common,... --dry-run
+```md
+---
+ng-auth: major
+ng-common: major
+---
+
+Angular 22 compatibility release.
 ```
 
-Use a breaking Conventional Commit, for example:
-
-```text
-feat(angular)!: release Angular 22 majors
-
-BREAKING CHANGE: Angular libraries now require Angular ^22.1.0.
-```
-
-Replace the abbreviated project list with the exact affected projects. The
-release workflow remains the normal authority for commits, tags, changelogs,
-and publishing; do not hand-edit version fields to simulate a release.
-
-When an already-merged release needs an explicit corrective bump, use the
-**Release & Publish to npm** workflow's manual dispatch instead of editing
-manifests or tags. It requires the selected projects and one SemVer specifier;
-for the Angular 22 correction, choose `major` and:
-
-```text
-ng-auth,ng-common,ng-components,ng-config,ng-customer,ng-infrastructure,ng-notifications
-```
-
-The dispatch runs `nx release --skip-publish` in CI, then performs the same
-commit, tags, and npm publish sequence as the automatic path. It is deliberately
-for exceptional, explicit releases; routine releases remain commit-driven.
+Use `pnpm exec nx release plan` to generate a plan interactively, or add one
+manually. The release workflow remains the authority for version fields, tags,
+changelogs, and publishing; do not hand-edit generated output.
 
 ## Release groups and dependency updates
 

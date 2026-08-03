@@ -9,7 +9,9 @@ bazel-out/
 tmp/
 temp/
 .angular/
-.nx/
+.nx/*
+!.nx/version-plans/
+!.nx/version-plans/*.md
 *.tsbuildinfo
 *.timestamp*
 

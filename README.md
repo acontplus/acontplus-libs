@@ -71,8 +71,7 @@ and the coverage policy.
 - Follow Conventional Commits. The Husky hook accepts `build`, `chore`, `ci`,
   `docs`, `feat`, `fix`, `perf`, `refactor`, `revert`, `style`, and `test`.
 - Treat a supported Angular-major change as breaking for every affected Angular
-  package. Use the Conventional Commit breaking marker and footer, for example
-  `feat(angular)!: release Angular 22 majors` with a `BREAKING CHANGE:` footer.
+  package. Put `major` for each affected `ng-*` package in one version plan.
 
 ## Releases
 
@@ -95,6 +94,12 @@ may use `workspace:^` internally; the workflow converts those values to
 npm-compatible ranges in `dist/` just before publishing. Read the
 [release strategy](docs/wiki/Release-Strategy.md) before working on release
 behavior.
+
+If an already-versioned release is interrupted during npm publishing, use the
+restricted **Release & Publish to npm** manual operation
+`publish-angular-22-majors`. It only rebuilds and publishes the existing
+Angular 22 release versions, skipping any package already on npm; it never
+versions, tags, or writes a changelog.
 
 ## Documentation
 

@@ -1,6 +1,6 @@
 # 2.0.0 (2026-08-03)
 
-### ⚠️  Breaking Changes
+### ⚠️ Breaking Changes
 
 - Angular 22 compatibility release. ([a989c59](https://github.com/acontplus/acontplus-libs/commit/a989c59))
 

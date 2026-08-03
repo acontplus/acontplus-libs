@@ -1,3 +1,9 @@
+## 1.2.0 (2026-08-03)
+
+### 🧱 Updated Dependencies
+
+- Updated utils to 1.2.0
+
 ## 1.1.8 (2026-07-12)
 
 ### 🩹 Fixes

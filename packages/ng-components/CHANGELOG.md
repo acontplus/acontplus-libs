@@ -1,3 +1,17 @@
+## 2.5.0 (2026-08-03)
+
+### Features
+
+- **release:** add manual dispatch for explicit version releases ([#142](https://github.com/acontplus/acontplus-libs/pull/142))
+
+### 🧱 Updated Dependencies
+
+- Updated ui-kit to 1.1.0
+
+### ❤️ Thank You
+
+- Ivan Fernando Paz @iferpaz7
+
 ## 2.4.1 (2026-08-03)
 
 ### Features

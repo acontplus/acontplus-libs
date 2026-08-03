@@ -1,3 +1,20 @@
+## 2.4.0 (2026-08-03)
+
+### Features
+
+- **release:** add manual dispatch for explicit version releases ([#142](https://github.com/acontplus/acontplus-libs/pull/142))
+
+### 🧱 Updated Dependencies
+
+- Updated ui-kit to 1.1.0
+- Updated core to 1.2.0
+- Updated ng-config to 2.1.0
+- Updated ng-infrastructure to 2.3.0
+
+### ❤️ Thank You
+
+- Ivan Fernando Paz @iferpaz7
+
 ## 2.3.1 (2026-08-03)
 
 ### Features

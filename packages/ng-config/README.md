@@ -46,7 +46,7 @@ import { Environment } from '@acontplus/core';
 
 export const environment: Environment = {
   isProduction: false,
-  apiBaseUrl: 'http://localhost:3000/api/',
+  apiBaseUrl: 'http://localhost:3000/api',
   tokenKey: 'access_token',
   refreshTokenKey: 'refresh_token',
   clientId: 'my-app',
@@ -87,7 +87,7 @@ Injection token for environment configuration with default factory.
 ```typescript
 {
   isProduction: false,
-  apiBaseUrl: 'http://localhost:4200/api/',
+  apiBaseUrl: 'http://localhost:4200/api',
   tokenKey: 'access_token',
   refreshTokenKey: 'refresh_token',
   clientId: 'angular-app',
@@ -99,7 +99,7 @@ Injection token for environment configuration with default factory.
 
 ```typescript
 interface Environment {
-  apiBaseUrl: string; // Base URL for API requests
+  apiBaseUrl: string; // Base URL for API requests; use no trailing slash
   isProduction: boolean; // Production mode flag
   tokenKey: string; // Storage key for access token
   refreshTokenKey: string; // Storage key for refresh token
@@ -154,7 +154,7 @@ export class ConfigService {
 
 Injection token for authentication token configuration.
 
-**Type:** `InjectionToken<string>`
+**Type:** `InjectionToken<AuthTokenRepository>`
 
 **Usage:**
 
@@ -164,10 +164,10 @@ import { AUTH_TOKEN } from '@acontplus/ng-config';
 
 @Injectable({ providedIn: 'root' })
 export class TokenService {
-  private tokenKey = inject(AUTH_TOKEN);
+  private readonly tokenRepository = inject(AUTH_TOKEN);
 
-  getStorageKey(): string {
-    return this.tokenKey;
+  getToken(): string | null {
+    return this.tokenRepository.getToken();
   }
 }
 ```
@@ -181,11 +181,9 @@ Interface for authentication token storage and retrieval.
 ```typescript
 export interface AuthTokenRepository {
   getToken(): string | null;
-  setToken(token: string): void;
-  removeToken(): void;
-  getRefreshToken(): string | null;
-  setRefreshToken(token: string): void;
-  removeRefreshToken(): void;
+  isAuthenticated(): boolean;
+  getRefreshToken?(): string | null;
+  getUserData(): UserData | null;
 }
 ```
 
@@ -193,6 +191,7 @@ export interface AuthTokenRepository {
 
 ```typescript
 import { AuthTokenRepository } from '@acontplus/ng-config';
+import { UserData } from '@acontplus/core';
 
 @Injectable({ providedIn: 'root' })
 export class LocalStorageTokenRepository implements AuthTokenRepository {
@@ -200,24 +199,16 @@ export class LocalStorageTokenRepository implements AuthTokenRepository {
     return localStorage.getItem('access_token');
   }
 
-  setToken(token: string): void {
-    localStorage.setItem('access_token', token);
-  }
-
-  removeToken(): void {
-    localStorage.removeItem('access_token');
+  isAuthenticated(): boolean {
+    return this.getToken() !== null;
   }
 
   getRefreshToken(): string | null {
     return localStorage.getItem('refresh_token');
   }
 
-  setRefreshToken(token: string): void {
-    localStorage.setItem('refresh_token', token);
-  }
-
-  removeRefreshToken(): void {
-    localStorage.removeItem('refresh_token');
+  getUserData(): UserData | null {
+    return null;
   }
 }
 ```
@@ -228,11 +219,11 @@ Interface for common CRUD operations.
 
 ```typescript
 export interface BaseRepository<TEntity = any, TId = number> {
-  findById(id: TId): Observable<TEntity>;
-  findAll(): Observable<TEntity[]>;
-  create(entity: Omit<TEntity, 'id'>): Observable<TEntity>;
-  update(id: TId, entity: Partial<TEntity>): Observable<TEntity>;
-  delete(id: TId): Observable<void>;
+  getById?(id: TId): Observable<TEntity>;
+  getAll?(pagination?: PaginationParams): Observable<PagedResult<TEntity>>;
+  create?(entity: Partial<TEntity>): Observable<TEntity>;
+  update?(id: TId, entity: Partial<TEntity>): Observable<TEntity>;
+  remove?(id: TId): Observable<void>;
 }
 ```
 
@@ -243,6 +234,7 @@ import { BaseRepository } from '@acontplus/ng-config';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { PagedResult, PaginationParams } from '@acontplus/core';
 
 interface User {
   id: number;
@@ -254,12 +246,12 @@ interface User {
 export class UserRepository implements BaseRepository<User, number> {
   constructor(private http: HttpClient) {}
 
-  findById(id: number): Observable<User> {
+  getById(id: number): Observable<User> {
     return this.http.get<User>(`/api/users/${id}`);
   }
 
-  findAll(): Observable<User[]> {
-    return this.http.get<User[]>('/api/users');
+  getAll(pagination?: PaginationParams): Observable<PagedResult<User>> {
+    return this.http.get<PagedResult<User>>('/api/users');
   }
 
   create(user: Omit<User, 'id'>): Observable<User> {
@@ -270,7 +262,7 @@ export class UserRepository implements BaseRepository<User, number> {
     return this.http.put<User>(`/api/users/${id}`, user);
   }
 
-  delete(id: number): Observable<void> {
+  remove(id: number): Observable<void> {
     return this.http.delete<void>(`/api/users/${id}`);
   }
 }

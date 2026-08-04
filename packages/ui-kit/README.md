@@ -338,13 +338,13 @@ All modules are production-ready!
 
 ```bash
 # Build the library
-nx build ui-kit
+pnpm exec nx build ui-kit
 
 # Run tests
-nx test ui-kit
+pnpm exec nx test ui-kit
 
 # Lint code
-nx lint ui-kit
+pnpm exec nx lint ui-kit
 ```
 
 ## Contributing

@@ -9,6 +9,7 @@
     "@acontplus/ng-components": "workspace:^",
     "@angular/common": "^22.1.0",
     "@angular/core": "^22.1.0",
+    "@angular/router": "^22.1.0",
     "uuid": "13.0.0"
   },
   "sideEffects": false,

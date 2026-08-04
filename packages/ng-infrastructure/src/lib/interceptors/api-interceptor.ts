@@ -8,9 +8,15 @@ import {
 } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { catchError, switchMap, of, throwError, Observable } from 'rxjs';
-import { ApiResponse } from '@acontplus/core';
+import {
+  ApiResponse,
+  getLocalizedErrorMessage,
+  getLocalizedAppMessage,
+  AppMessageKey,
+} from '@acontplus/core';
 import { NotificationService } from '@acontplus/ng-notifications';
 import { AUTH_TOKEN } from '@acontplus/ng-config';
+import { LanguageInfo } from '../services/language-info';
 
 //const RETRY_COUNT = 2;
 
@@ -37,6 +43,7 @@ export const SHOW_NOTIFICATIONS = new HttpContextToken<boolean | undefined>(() =
 export const apiInterceptor: HttpInterceptorFn = (req, next) => {
   const toastr = inject(NotificationService);
   const tokenProvider = inject(AUTH_TOKEN, { optional: true });
+  const languageInfo = inject(LanguageInfo);
 
   // Attach Bearer token when available
   const token = tokenProvider?.getToken();
@@ -66,11 +73,11 @@ export const apiInterceptor: HttpInterceptorFn = (req, next) => {
     // (needed to properly throw ApiResponse errors into the RxJS stream).
     switchMap((event: HttpEvent<unknown>) => {
       if (event instanceof HttpResponse) {
-        const standardized = standardizeApiResponse(event.body);
-        handleToastNotifications(standardized, toastr, req);
+        const standardized = standardizeApiResponse(event.body, languageInfo);
+        handleToastNotifications(standardized, toastr, req, languageInfo);
 
         if (standardized.status === 'error') {
-          handleApiResponseError(standardized, toastr, req);
+          handleApiResponseError(standardized, toastr, req, languageInfo);
           return throwError(() => standardized);
         }
 
@@ -81,7 +88,7 @@ export const apiInterceptor: HttpInterceptorFn = (req, next) => {
 
     // Handle HTTP-level errors — show notification for critical errors, always re-throw.
     catchError((error: HttpErrorResponse) => {
-      return handleHttpError(error, toastr);
+      return handleHttpError(error, toastr, languageInfo);
     }),
   );
 };
@@ -90,22 +97,24 @@ export const apiInterceptor: HttpInterceptorFn = (req, next) => {
 // Standardisation
 // ---------------------------------------------------------------------------
 
-function standardizeApiResponse(body: unknown): ApiResponse<unknown> {
+function standardizeApiResponse(body: unknown, languageInfo: LanguageInfo): ApiResponse<unknown> {
   if (isValidApiResponse(body)) return body;
 
-  // Wrap any non-null/undefined body (including objects with non-standard status fields)
   if (body !== null && body !== undefined) {
-    return wrapSuccess(body);
+    return wrapSuccess(body, languageInfo);
   }
 
-  return wrapSuccess(undefined);
+  return wrapSuccess(undefined, languageInfo);
 }
 
-function wrapSuccess(data: unknown): ApiResponse<unknown> {
+function wrapSuccess(data: unknown, languageInfo: LanguageInfo): ApiResponse<unknown> {
   return {
     status: 'success',
     code: '200',
-    message: 'Operation completed successfully',
+    message: getLocalizedAppMessage(
+      AppMessageKey.OPERATION_COMPLETED,
+      languageInfo.getCurrentLanguage(),
+    ),
     data,
     timestamp: new Date().toISOString(),
   };
@@ -130,6 +139,7 @@ function handleToastNotifications(
   response: ApiResponse<unknown>,
   notificationService: NotificationService,
   req: HttpRequest<unknown>,
+  languageInfo: LanguageInfo,
 ): void {
   // SKIP_NOTIFICATION always wins — even over SHOW_NOTIFICATIONS
   if (req.context.get(SKIP_NOTIFICATION)) return;
@@ -151,13 +161,21 @@ function handleToastNotifications(
   // Secondary: show individual warnings only when no primary message covered them
   if (response.status === 'warning' && response.warnings?.length && response.message) {
     response.warnings.forEach((w) =>
-      notificationService.show({ type: 'warning', message: w.message }),
+      notificationService.show({
+        type: 'warning',
+        message: getLocalizedErrorMessage(w.code, languageInfo.getCurrentLanguage(), w.message),
+      }),
     );
   }
 
   // Secondary: show individual errors only when no primary message covered them
   if (response.status === 'error' && response.errors?.length && response.message) {
-    response.errors.forEach((e) => notificationService.show({ type: 'error', message: e.message }));
+    response.errors.forEach((e) =>
+      notificationService.show({
+        type: 'error',
+        message: getLocalizedErrorMessage(e.code, languageInfo.getCurrentLanguage(), e.message),
+      }),
+    );
   }
 }
 
@@ -165,11 +183,17 @@ function handleApiResponseError(
   response: ApiResponse<unknown>,
   notificationService: NotificationService,
   req: HttpRequest<unknown>,
+  languageInfo: LanguageInfo,
 ): void {
   if (req.context.get(SKIP_NOTIFICATION)) return;
 
+  const language = languageInfo.getCurrentLanguage();
+  const serverMessage = response.message || response.errors?.[0]?.message;
+  const errorCode = response.errors?.[0]?.code ?? '';
   const message =
-    response.message || response.errors?.[0]?.message || 'An unexpected error occurred';
+    serverMessage ||
+    getLocalizedErrorMessage(errorCode, language) ||
+    getLocalizedAppMessage(AppMessageKey.UNEXPECTED_ERROR, language);
 
   notificationService.error({ message, config: { duration: 5000 } });
 }
@@ -203,11 +227,12 @@ function transformResponseForConsumers(
 function handleHttpError(
   error: HttpErrorResponse,
   notificationService: NotificationService,
+  languageInfo: LanguageInfo,
 ): Observable<never> {
   if (shouldShowCriticalErrorNotification(error.status)) {
     notificationService.error({
-      message: getCriticalErrorMessage(error),
-      title: getErrorTitle(error.status),
+      message: getCriticalErrorMessage(error, languageInfo),
+      title: getErrorTitle(error.status, languageInfo),
       config: { duration: 5000 },
     });
   }
@@ -218,22 +243,35 @@ function shouldShowCriticalErrorNotification(status: number): boolean {
   return status === 0 || (status >= 500 && status < 600);
 }
 
-function getErrorTitle(status: number): string {
-  if (status === 0) return 'Connection Error';
-  if (status >= 500) return 'Server Error';
-  return 'Error';
+function getErrorTitle(status: number, languageInfo: LanguageInfo): string {
+  const lang = languageInfo.getCurrentLanguage();
+  if (status === 0) return getLocalizedAppMessage(AppMessageKey.CONNECTION_ERROR, lang);
+  if (status >= 500) return getLocalizedAppMessage(AppMessageKey.SERVER_ERROR, lang);
+  return getLocalizedAppMessage(AppMessageKey.ERROR, lang);
 }
 
-function getCriticalErrorMessage(error: HttpErrorResponse): string {
+function getCriticalErrorMessage(error: HttpErrorResponse, languageInfo: LanguageInfo): string {
+  const lang = languageInfo.getCurrentLanguage();
   if (error.status === 0) {
-    return 'Unable to connect to the server. Please check your network connection.';
+    return (
+      getLocalizedErrorMessage('NETWORK_ERROR', lang) ||
+      getLocalizedAppMessage(AppMessageKey.NETWORK_UNAVAILABLE, lang)
+    );
   }
   if (error.status >= 500) {
     return (
-      error.error?.message ?? error.message ?? 'A server error occurred. Please try again later.'
+      error.error?.message ??
+      getLocalizedErrorMessage('INTERNAL_ERROR', lang) ??
+      error.message ??
+      getLocalizedAppMessage(AppMessageKey.UNEXPECTED_ERROR, lang)
     );
   }
-  return error.error?.message ?? error.message ?? 'An unexpected error occurred';
+  return (
+    error.error?.message ??
+    getLocalizedErrorMessage('UNHANDLED_ERROR', lang) ??
+    error.message ??
+    getLocalizedAppMessage(AppMessageKey.UNEXPECTED_ERROR, lang)
+  );
 }
 
 // ---------------------------------------------------------------------------

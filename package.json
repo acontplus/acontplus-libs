@@ -2,8 +2,8 @@
   "name": "acontplus-libs",
   "version": "1.0.0",
   "scripts": {
-    "start": "nx serve demo-app --ssl --hmr",
-    "start:erp": "nx serve acontplus-erp --ssl --hmr --port 4300",
+    "start": "nx serve demo-app --hmr",
+    "start:erp": "nx serve acontplus-erp --hmr --port 4300",
     "build": "nx build demo-app",
     "watch": "nx build demo-app --watch --configuration development",
     "build:all": "nx run-many --target=build --all",

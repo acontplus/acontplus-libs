@@ -1,84 +1,158 @@
 # @acontplus/ng-infrastructure
 
-Angular infrastructure library providing HTTP interceptors, repositories,
-adapters, and core services following clean architecture patterns for robust
-enterprise applications.
+Angular infrastructure library providing HTTP interceptors with multi-language
+support, repositories, adapters, and core services following clean architecture
+patterns for robust enterprise applications.
 
 ## Installation
 
 ```bash
-# Using npm
 npm install @acontplus/ng-infrastructure
-
-# Using pnpm
+# or
 pnpm add @acontplus/ng-infrastructure
 ```
 
+## Peer Dependencies
+
+- `@angular/common`: ^22.1.0
+- `@angular/core`: ^22.1.0
+- `@angular/router`: ^22.1.0
+- `@acontplus/core`: ^1.2.0
+- `@acontplus/ng-config`: ^1.1.0
+- `@acontplus/ng-notifications`: ^1.0.0
+
 ## Features
 
-- **HTTP Interceptors**: API request/response handling, HTTP context management,
-  and loading indicators
+- **HTTP Interceptors**: API request/response handling with localized error messages,
+  `Accept-Language` header injection, HTTP context management, and loading indicators
+- **Language Detection**: `LanguageInfo` service resolves language from JWT claims,
+  session storage, and browser settings
 - **Repository Pattern**: Base HTTP repository, generic repository, and
   repository factory
-- **HTTP Adapters**: Angular HTTP client adapter for external service
-  integration
-- **Core Services**: Configuration, correlation tracking, logging, and tenant
-  management
+- **HTTP Adapters**: Angular HTTP client adapter for external service integration
+- **Core Services**: Configuration, correlation tracking, language info, logging,
+  and tenant management
 - **Use Cases**: Base use case patterns with command and query separation (CQRS)
-- **Clean Architecture**: Separation of concerns with infrastructure layer
-  abstractions
-- **TypeScript Support**: Full type safety with comprehensive interfaces
+- **Clean Architecture**: Separation of concerns with infrastructure layer abstractions
 
 ## Quick Start
 
 ### Configure Interceptors
+
+The recommended interceptor order is **httpContextInterceptor first**, then
+apiInterceptor, then others:
 
 ```typescript
 import {
   apiInterceptor,
   httpContextInterceptor,
   spinnerInterceptor,
+  provideHttpContext,
 } from '@acontplus/ng-infrastructure';
 
-// In app.config.ts
 export const appConfig: ApplicationConfig = {
   providers: [
     provideHttpClient(
-      withInterceptors([apiInterceptor, spinnerInterceptor, httpContextInterceptor]),
+      withInterceptors([
+        httpContextInterceptor, // 1st: URL resolution, headers, Accept-Language, 401 refresh
+        apiInterceptor, // 2nd: response normalization, localized toasts, Bearer tokens
+        spinnerInterceptor, // 3rd: loading indicator
+        // csrfInterceptor,       // 4th: CSRF tokens (from @acontplus/ng-auth)
+      ]),
     ),
+    provideHttpContext({
+      enableLanguageHeader: true, // sends Accept-Language header
+    }),
   ],
 };
+```
+
+`provideHttpContext()` configures the `httpContextInterceptor`. Enable features
+matching your backend contract:
+
+```typescript
+provideHttpContext({
+  enableLanguageHeader: true, // add Accept-Language header (default: true)
+  enableCorrelationTracking: true, // add Correlation-Id header (default: true)
+  includeAuthToken: true, // add Authorization: Bearer header (default: true)
+  baseUrlInjection: true, // prepend apiBaseUrl (default: true)
+  refreshTokenCallback: () => authService.refreshToken(), // 401 refresh handler
+  logoutCallback: () => authService.logout(), // failed refresh handler
+});
 ```
 
 ## HTTP Interceptors
 
 ### API Interceptor
 
-Handles API request/response transformation and error handling.
+Handles API request/response transformation, **localized error messages**, and
+notification display. Uses `@acontplus/core` `getLocalizedErrorMessage()` and
+`getLocalizedAppMessage()` to show translated notifications based on the current
+language.
 
 ```typescript
 import { apiInterceptor } from '@acontplus/ng-infrastructure';
 
 // Automatically handles:
-// - Request/response transformation
-// - Error standardization
-// - API base URL configuration
-// - Response format normalization
+// - Response standardization into ApiResponse envelope
+// - Data unwrapping for success/warning responses
+// - Localized toast notifications via LanguageInfo + AppMessageKey
+// - Individual ApiError entries translated by error code
+// - HTTP-level errors (0, 5xx) with localized titles and messages
+// - SKIP_NOTIFICATION / SHOW_NOTIFICATIONS HttpContext tokens
+```
+
+#### HttpContext Tokens
+
+```typescript
+import { HttpContext } from '@angular/common/http';
+import { SKIP_NOTIFICATION, SHOW_NOTIFICATIONS } from '@acontplus/ng-infrastructure';
+
+// Suppress all toast notifications for this request
+this.http.get('/api/health', { context: new HttpContext().set(SKIP_NOTIFICATION, true) });
+
+// Force-show notifications even on GET requests or excluded URLs
+this.http.get('/api/export', { context: new HttpContext().set(SHOW_NOTIFICATIONS, true) });
 ```
 
 ### HTTP Context Interceptor
 
-Manages HTTP context and correlation IDs for request tracing.
+Adds standard headers (`Correlation-Id`, `Tenant-Id`, `Request-Id`, `Accept-Language`,
+`Client-Version`, `Client-Id`), resolves request URLs against `apiBaseUrl`, and
+handles 401 token refresh, 403 forbidden, and 429 rate-limiting events.
 
 ```typescript
 import { httpContextInterceptor } from '@acontplus/ng-infrastructure';
 
 // Automatically adds:
-// - Correlation IDs to requests
-// - Request context information
-// - Tenant information
-// - Request metadata
+// - Accept-Language: <bcp47 tag> (from LanguageInfo)
+// - Correlation-Id, Request-Id, Timestamp
+// - Tenant-Id (when multi-tenancy is enabled)
+// - Client-Version, Client-Id
+// - Authorization: Bearer (when auth token available)
+// - Content-Type: application/json (for POST/PUT/PATCH with JSON body)
 ```
+
+#### `Accept-Language` header
+
+The interceptor resolves the current language from `LanguageInfo` (priority:
+JWT `locale` claim → `sessionStorage` cache → browser `navigator.languages`)
+and sends the corresponding BCP47 tag. Disable with `enableLanguageHeader: false`.
+
+#### API base URL convention
+
+Configure `Environment.apiBaseUrl` without a trailing slash. The interceptor safely joins it
+with request paths, accepting paths with or without a leading slash.
+
+```typescript
+apiBaseUrl: 'https://api.example.com/gateway';
+```
+
+For example, both `auth/login` and `/auth/login` resolve to
+`https://api.example.com/gateway/auth/login`. Absolute and protocol-relative URLs are left
+unchanged. The interceptor deliberately does not use `new URL(path, baseUrl)`: it joins an API
+prefix and endpoint rather than resolving an RFC 3986 relative reference, which could discard a
+base path such as `/gateway`.
 
 ### Spinner Interceptor
 
@@ -103,7 +177,8 @@ Abstract base class for HTTP-based data access.
 ```typescript
 import { BaseHttpRepository } from '@acontplus/ng-infrastructure';
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { RepositoryConfig } from '@acontplus/core';
 
 interface User {
   id: number;
@@ -112,17 +187,15 @@ interface User {
 }
 
 @Injectable({ providedIn: 'root' })
-export class UserRepository extends BaseHttpRepository<User> {
-  constructor(http: HttpClient) {
-    super(http, '/api/users');
-  }
+export class UserRepository extends BaseHttpRepository {
+  protected override config: RepositoryConfig = {
+    baseUrl: '/api',
+    endpoint: 'users',
+  };
 
-  // Inherits common CRUD operations:
-  // - getById(id: number)
-  // - getAll()
-  // - create(entity: User)
-  // - update(id: number, entity: Partial<User>)
-  // - delete(id: number)
+  findAll(): Observable<User[]> {
+    return this.get<User[]>();
+  }
 }
 ```
 
@@ -130,21 +203,9 @@ export class UserRepository extends BaseHttpRepository<User> {
 
 Generic repository implementation with type safety.
 
-```typescript
-import { GenericRepository } from '@acontplus/ng-infrastructure';
-
-@Injectable({ providedIn: 'root' })
-export class CustomerRepository extends GenericRepository<Customer, number> {
-  constructor(http: HttpClient) {
-    super(http, '/api/customers');
-  }
-
-  // Custom business methods
-  async findByEmail(email: string): Promise<Customer[]> {
-    return this.http.get<Customer[]>(`${this.baseUrl}/search?email=${email}`).toPromise() || [];
-  }
-}
-```
+`GenericRepository` receives its `RepositoryConfig` through `REPOSITORY_CONFIG`.
+For application services, prefer `RepositoryFactory` when a reusable CRUD
+repository is sufficient.
 
 ### Repository Factory
 
@@ -152,17 +213,18 @@ Factory pattern for creating repository instances.
 
 ```typescript
 import { RepositoryFactory } from '@acontplus/ng-infrastructure';
+import { Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class DataService {
   constructor(private repositoryFactory: RepositoryFactory) {}
 
   getUserRepository() {
-    return this.repositoryFactory.create<User>('users');
+    return this.repositoryFactory.create<User>({ baseUrl: '/api', endpoint: 'users' });
   }
 
   getCustomerRepository() {
-    return this.repositoryFactory.create<Customer>('customers');
+    return this.repositoryFactory.create<Customer>({ baseUrl: '/api', endpoint: 'customers' });
   }
 }
 ```
@@ -174,23 +236,68 @@ export class DataService {
 Adapter for Angular HTTP client integration.
 
 ```typescript
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
 import { AngularHttpAdapter } from '@acontplus/ng-infrastructure';
 
 @Injectable({ providedIn: 'root' })
 export class ExternalApiService {
-  constructor(private httpAdapter: AngularHttpAdapter) {}
+  private readonly httpAdapter = new AngularHttpAdapter(
+    inject(HttpClient),
+    'https://api.example.com',
+  );
 
-  async fetchExternalData(url: string): Promise<any> {
-    return this.httpAdapter.get(url);
+  async fetchExternalData(): Promise<unknown> {
+    return this.httpAdapter.get('data');
   }
 
-  async postData(url: string, data: any): Promise<any> {
-    return this.httpAdapter.post(url, data);
+  async postData(data: unknown): Promise<unknown> {
+    return this.httpAdapter.post('data', data);
   }
 }
 ```
 
 ## Core Services
+
+### LanguageInfo Service
+
+Detects and manages the current application language with a priority chain:
+JWT `locale` claim → `sessionStorage` cache → browser `navigator.languages`.
+
+```typescript
+import { LanguageInfo } from '@acontplus/ng-infrastructure';
+import { Language, languageToBcp47 } from '@acontplus/core';
+import { Injectable } from '@angular/core';
+
+@Injectable({ providedIn: 'root' })
+export class LocaleService {
+  constructor(private languageInfo: LanguageInfo) {}
+
+  getCurrentLanguage(): Language {
+    return this.languageInfo.getCurrentLanguage();
+  }
+
+  getBcp47Tag(): string {
+    return this.languageInfo.getBcp47Tag();
+  }
+
+  setLanguage(language: Language): void {
+    this.languageInfo.setLanguage(language);
+    // persists to sessionStorage automatically
+  }
+}
+```
+
+The `httpContextInterceptor` consumes `LanguageInfo` to set the `Accept-Language`
+header on every request. The `apiInterceptor` uses it for localized toast
+notifications.
+
+**Signals**:
+
+```typescript
+const lang = this.languageInfo.language(); // Signal<Language>
+const tag = this.languageInfo.bcp47Tag(); // Signal<string>
+```
 
 ### Core Config Service
 
@@ -198,17 +305,18 @@ Manages application configuration and settings.
 
 ```typescript
 import { CoreConfigService } from '@acontplus/ng-infrastructure';
+import { Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class AppService {
   constructor(private configService: CoreConfigService) {}
 
   getApiBaseUrl(): string {
-    return this.configService.getApiBaseUrl();
+    return this.configService.getConfig().apiBaseUrl;
   }
 
-  getTimeout(): number {
-    return this.configService.getTimeout();
+  getTimeout(): number | undefined {
+    return this.configService.get('apiTimeout');
   }
 }
 ```
@@ -219,17 +327,18 @@ Handles correlation IDs for distributed request tracing.
 
 ```typescript
 import { CorrelationInfo } from '@acontplus/ng-infrastructure';
+import { Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class TrackingService {
   constructor(private correlationInfo: CorrelationInfo) {}
 
   getCurrentCorrelationId(): string {
-    return this.correlationInfo.getCorrelationId();
+    return this.correlationInfo.getId();
   }
 
-  generateNewCorrelationId(): string {
-    return this.correlationInfo.generateCorrelationId();
+  resetCorrelationId(): void {
+    this.correlationInfo.resetCorrelationId();
   }
 }
 ```
@@ -240,6 +349,7 @@ Structured logging with correlation tracking.
 
 ```typescript
 import { LoggingService } from '@acontplus/ng-infrastructure';
+import { Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class BusinessService {
@@ -266,8 +376,13 @@ export class BusinessService {
 
 Abstract base class for business logic encapsulation.
 
+`Command` and `Query` capture `LoggingService` while Angular creates the
+subclass. Register concrete subclasses with Angular DI; do not instantiate
+them outside an injection context.
+
 ```typescript
 import { BaseUseCase } from '@acontplus/ng-infrastructure';
+import { Observable } from 'rxjs';
 
 export class CreateUserUseCase extends BaseUseCase<CreateUserCommand, User> {
   constructor(
@@ -277,20 +392,17 @@ export class CreateUserUseCase extends BaseUseCase<CreateUserCommand, User> {
     super();
   }
 
-  async execute(command: CreateUserCommand): Promise<User> {
+  execute(command: CreateUserCommand): Observable<User> {
     this.logger.info('Creating user', { email: command.email });
 
     // Validation
     this.validateCommand(command);
 
     // Business logic
-    const user = await this.userRepository.create({
+    return this.userRepository.create({
       name: command.name,
       email: command.email,
     });
-
-    this.logger.info('User created successfully', { userId: user.id });
-    return user;
   }
 
   private validateCommand(command: CreateUserCommand): void {
@@ -306,42 +418,34 @@ export class CreateUserUseCase extends BaseUseCase<CreateUserCommand, User> {
 Separation of read and write operations.
 
 ```typescript
-import { Commands, Queries } from '@acontplus/ng-infrastructure';
+import { Command, Query } from '@acontplus/ng-infrastructure';
+import { Observable } from 'rxjs';
 
 // Command for write operations
-export class UpdateUserCommand extends Commands.BaseCommand {
-  constructor(
-    public readonly userId: number,
-    public readonly name: string,
-    public readonly email: string,
-  ) {
+export interface UpdateUserRequest {
+  userId: number;
+  name: string;
+  email: string;
+}
+
+export class UpdateUserCommand extends Command<UpdateUserRequest, User> {
+  constructor(private readonly userRepository: UserRepository) {
     super();
+  }
+
+  protected executeInternal(request: UpdateUserRequest): Observable<User> {
+    return this.userRepository.update(request.userId, request);
   }
 }
 
 // Query for read operations
-export class GetUserQuery extends Queries.BaseQuery<User> {
-  constructor(public readonly userId: number) {
+export class GetUserQuery extends Query<number, User> {
+  constructor(private readonly userRepository: UserRepository) {
     super();
   }
-}
 
-// Usage
-@Injectable({ providedIn: 'root' })
-export class UserService {
-  constructor(
-    private updateUserUseCase: UpdateUserUseCase,
-    private getUserUseCase: GetUserUseCase,
-  ) {}
-
-  async updateUser(userId: number, name: string, email: string): Promise<User> {
-    const command = new UpdateUserCommand(userId, name, email);
-    return this.updateUserUseCase.execute(command);
-  }
-
-  async getUser(userId: number): Promise<User> {
-    const query = new GetUserQuery(userId);
-    return this.getUserUseCase.execute(query);
+  protected executeInternal(userId: number): Observable<User> {
+    return this.userRepository.getById(userId);
   }
 }
 ```

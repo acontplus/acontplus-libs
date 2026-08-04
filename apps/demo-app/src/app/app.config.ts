@@ -5,25 +5,24 @@ import {
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { appRoutes } from './app.routes';
-import { provideHttpClient, withInterceptors, withFetch } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { environment } from '../environments/environment';
 import { provideTransloco } from '@jsverse/transloco';
 import { TranslocoHttpLoader } from './providers';
 
-import { AUTH_TOKEN, ENVIRONMENT } from '@acontplus/ng-config';
+import { ENVIRONMENT } from '@acontplus/ng-config';
 import {
   apiInterceptor,
   httpContextInterceptor,
   spinnerInterceptor,
+  provideHttpContext,
 } from '@acontplus/ng-infrastructure';
-import { csrfInterceptor } from '@acontplus/ng-auth';
-import { provideNotifications } from '../../../../packages/ng-notifications/src/lib/providers';
+import { authProviders, csrfInterceptor } from '@acontplus/ng-auth';
+import { provideNotifications } from '@acontplus/ng-notifications';
 import { companyCustomerProvider } from './modules/company-customer/company-customer-provider';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
-import { TokenLocalStorageRepository } from './core/token-local-storage.repository';
 import { SettingsService } from './core/settings.service';
 
-// WhatsApp providers
 import {
   WHATSAPP_MESSAGING_PORT,
   MetaWhatsAppAdapter,
@@ -33,7 +32,6 @@ import {
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    // Core Angular providers
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({
       eventCoalescing: true,
@@ -41,30 +39,27 @@ export const appConfig: ApplicationConfig = {
     }),
     provideRouter(appRoutes),
 
-    // Enable hydration with timeout handling
-    //  provideClientHydration(withEventReplay()),
-
-    // HTTP configuration
     provideHttpClient(
       withInterceptors([
+        httpContextInterceptor,
         apiInterceptor,
         spinnerInterceptor,
         csrfInterceptor,
-        httpContextInterceptor,
       ]),
-      withFetch(),
     ),
 
-    // Authentication
-    //  ...authProviders,
+    provideHttpContext({
+      enableLanguageHeader: true,
+    }),
+
+    ...authProviders,
 
     ...companyCustomerProvider,
 
-    // Internationalization
     provideTransloco({
       config: {
         availableLangs: ['en', 'es'],
-        defaultLang: 'es',
+        defaultLang: 'en',
         reRenderOnLangChange: true,
         missingHandler: {
           useFallbackTranslation: true,
@@ -73,27 +68,18 @@ export const appConfig: ApplicationConfig = {
       loader: TranslocoHttpLoader,
     }),
 
-    // Notifications
     provideNotifications({
       defaultProvider: 'sweetalert',
     }),
 
-    // Environment
     { provide: ENVIRONMENT, useValue: environment },
-    { provide: AUTH_TOKEN, useClass: TokenLocalStorageRepository },
-
-    // Theme settings
     SettingsService,
 
-    // WhatsApp providers
     { provide: WHATSAPP_MESSAGING_PORT, useClass: MetaWhatsAppAdapter },
-
-    // Report providers
     { provide: REPORT_PORT, useClass: ReportAdapter },
 
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
-
       useValue: { appearance: 'outline', subscriptSizing: 'dynamic' },
     },
   ],

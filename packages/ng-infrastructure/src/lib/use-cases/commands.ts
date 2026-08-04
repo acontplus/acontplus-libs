@@ -6,6 +6,8 @@ import { LoggingService } from '../services/logging-service';
 
 // Only create commands if you have complex validation logic
 export abstract class Command<TRequest, TResponse = void> extends BaseUseCase<TRequest, TResponse> {
+  private readonly logger = inject(LoggingService);
+
   // Simple validation - override only when needed
   protected validate(_request: TRequest): string[] {
     return []; // Return array of error messages
@@ -26,8 +28,7 @@ export abstract class Command<TRequest, TResponse = void> extends BaseUseCase<TR
     return this.executeInternal(request).pipe(
       catchError((error) => {
         // Log the error for debugging
-        const logger = inject(LoggingService);
-        logger.error('An error occurred during command execution:', error);
+        this.logger.error('An error occurred during command execution:', error);
 
         // Re-throw the error so the caller can handle it
         return throwError(() => error);

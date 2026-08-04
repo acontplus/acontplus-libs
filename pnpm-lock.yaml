@@ -311,7 +311,7 @@ importers:
     dependencies:
       '@acontplus/utils':
         specifier: ^1.1.0
-        version: 1.1.2(decimal.js@10.6.0)(tslib@2.8.1)(typescript@5.9.3)
+        version: link:../utils
       tslib:
         specifier: ^2.8.1
         version: 2.8.1
@@ -323,7 +323,7 @@ importers:
     dependencies:
       '@acontplus/core':
         specifier: ^1.1.4
-        version: 1.1.6(@acontplus/utils@packages+utils)(tslib@2.8.1)(typescript@6.0.3)
+        version: link:../core
       '@acontplus/ng-config':
         specifier: workspace:^
         version: link:../ng-config
@@ -332,7 +332,7 @@ importers:
         version: link:../ng-infrastructure
       '@acontplus/ui-kit':
         specifier: ^1.0.2
-        version: 1.0.3(tslib@2.8.1)(typescript@6.0.3)
+        version: link:../ui-kit
       '@angular/common':
         specifier: ^22.1.0
         version: 22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2)
@@ -380,7 +380,7 @@ importers:
     dependencies:
       '@acontplus/ui-kit':
         specifier: ^1.0.2
-        version: 1.0.3(tslib@2.8.1)(typescript@6.0.3)
+        version: link:../ui-kit
       '@angular/cdk':
         specifier: ^22.1.0
         version: 22.1.0(@angular/common@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(@angular/platform-browser@22.1.0(@angular/animations@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2)))(@angular/common@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2)))(rxjs@7.8.2)
@@ -390,9 +390,18 @@ importers:
       '@angular/core':
         specifier: ^22.1.0
         version: 22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2)
+      '@angular/forms':
+        specifier: ^22.1.0
+        version: 22.1.0(@angular/common@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(@angular/platform-browser@22.1.0(@angular/animations@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2)))(@angular/common@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2)))(rxjs@7.8.2)
       '@angular/material':
         specifier: ^22.1.0
         version: 22.1.0(1d5b48d6601505eec7b597e3914980b4)
+      '@angular/platform-browser':
+        specifier: ^22.1.0
+        version: 22.1.0(@angular/animations@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2)))(@angular/common@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))
+      '@angular/router':
+        specifier: ^22.1.0
+        version: 22.1.0(@angular/common@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(@angular/platform-browser@22.1.0(@angular/animations@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2)))(@angular/common@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2)))(rxjs@7.8.2)
       '@formkit/tempo':
         specifier: ^1.1.0
         version: 1.1.0
@@ -407,7 +416,7 @@ importers:
     dependencies:
       '@acontplus/core':
         specifier: ^1.1.4
-        version: 1.1.6(@acontplus/utils@packages+utils)(tslib@2.8.1)(typescript@6.0.3)
+        version: link:../core
       '@angular/common':
         specifier: ^22.1.0
         version: 22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2)
@@ -423,12 +432,18 @@ importers:
       '@angular/core':
         specifier: ^22.1.0
         version: 22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2)
+      '@angular/forms':
+        specifier: ^22.1.0
+        version: 22.1.0(@angular/common@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(@angular/platform-browser@22.1.0(@angular/animations@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2)))(@angular/common@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2)))(rxjs@7.8.2)
+      '@angular/material':
+        specifier: ^22.1.0
+        version: 22.1.0(1d5b48d6601505eec7b597e3914980b4)
 
   packages/ng-infrastructure:
     dependencies:
       '@acontplus/core':
         specifier: ^1.1.4
-        version: 1.1.6(@acontplus/utils@packages+utils)(tslib@2.8.1)(typescript@6.0.3)
+        version: link:../core
       '@acontplus/ng-components':
         specifier: workspace:^
         version: link:../ng-components
@@ -444,6 +459,9 @@ importers:
       '@angular/core':
         specifier: ^22.1.0
         version: 22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2)
+      '@angular/router':
+        specifier: ^22.1.0
+        version: 22.1.0(@angular/common@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(@angular/platform-browser@22.1.0(@angular/animations@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2)))(@angular/common@22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2)))(rxjs@7.8.2)
       uuid:
         specifier: 13.0.0
         version: 13.0.0
@@ -452,7 +470,7 @@ importers:
     dependencies:
       '@acontplus/ui-kit':
         specifier: ^1.0.2
-        version: 1.0.3(tslib@2.8.1)(typescript@6.0.3)
+        version: link:../ui-kit
       '@angular/common':
         specifier: ^22.1.0
         version: 22.1.0(@angular/core@22.1.0(@angular/compiler@22.1.0)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2)
@@ -497,26 +515,6 @@ packages:
 
   '@acemir/cssom@0.9.31':
     resolution: {integrity: sha512-ZnR3GSaH+/vJ0YlHau21FjfLYjMpYVIzTD8M8vIEQvIGxeOXyXdzCI140rrCY862p/C/BbzWsjc1dgnM9mkoTA==}
-
-  '@acontplus/core@1.1.6':
-    resolution: {integrity: sha512-sjFScD1HyLZZ3N7fre4lPM6XsEXH1UK50BGiUu3i9akz8c9erCbo04Sjj5MYiKTXxB0M0iZ4DZ0+th2XCkzmOw==}
-    peerDependencies:
-      '@acontplus/utils': ^1.1.0
-      tslib: ^2.8.1
-      typescript: ^5.9.2
-
-  '@acontplus/ui-kit@1.0.3':
-    resolution: {integrity: sha512-azYIoLZsFPlkgV/TcBaRf6J4sanIf8alnv4EcdWmcZel3L989wGIJwygwFkpaOph7mwQ87ZaiYJy1rvClpcQLQ==}
-    peerDependencies:
-      tslib: ^2.8.1
-      typescript: ^5.9.2
-
-  '@acontplus/utils@1.1.2':
-    resolution: {integrity: sha512-Sj9Vk12vCNbLNeLa3ZlI/93I2JIAnbIEG9oCjfs9bZWMLORoJDtp8bvBScpTsUYM60Ww2S/mTygWlSuC0ASZlg==}
-    peerDependencies:
-      decimal.js: ^10.6.0
-      tslib: ^2.8.1
-      typescript: ^5.9.2
 
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
@@ -9111,23 +9109,6 @@ snapshots:
 
   '@acemir/cssom@0.9.31':
     optional: true
-
-  '@acontplus/core@1.1.6(@acontplus/utils@packages+utils)(tslib@2.8.1)(typescript@6.0.3)':
-    dependencies:
-      '@acontplus/utils': link:packages/utils
-      tslib: 2.8.1
-      typescript: 6.0.3
-
-  '@acontplus/ui-kit@1.0.3(tslib@2.8.1)(typescript@6.0.3)':
-    dependencies:
-      tslib: 2.8.1
-      typescript: 6.0.3
-
-  '@acontplus/utils@1.1.2(decimal.js@10.6.0)(tslib@2.8.1)(typescript@5.9.3)':
-    dependencies:
-      decimal.js: 10.6.0
-      tslib: 2.8.1
-      typescript: 5.9.3
 
   '@ampproject/remapping@2.3.0':
     dependencies:

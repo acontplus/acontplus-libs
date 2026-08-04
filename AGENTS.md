@@ -27,6 +27,17 @@
 - Prettier is authoritative: 100-character width and single quotes; HTML uses the Angular parser. Do not hand-format generated output.
 - Do not add dependencies, change peer-dependency ranges, edit lockfiles, or alter generated `dist/` output unless the task requires it. Never commit credentials or private keys.
 
+## Internationalization (i18n) and multi-language support
+
+- The `Language` enum in `@acontplus/core` mirrors the .NET backend `Acontplus.Core.Enums.Language` enum (20 languages, 1-20). Both sides must stay synchronized.
+- `Accept-Language` header is sent on every HTTP request by `httpContextInterceptor`. The header value is a BCP47 tag resolved from `LanguageInfo` with this priority chain: JWT `locale` claim → `sessionStorage` cache → browser `navigator.languages`.
+- `apiInterceptor` localizes toast notification messages using `getLocalizedErrorMessage()` (for API error codes like `BAD_REQUEST`, `NOT_FOUND`) and `getLocalizedAppMessage()` (for UI strings like `OPERATION_COMPLETED`, `DATA_SAVED`). Individual `ApiError` entries are translated by their `code` field, falling back to the server-provided `message` when the code has no known translation.
+- When adding a new error code to the backend's `ApiExceptionMiddleware`, also add it to `ApiErrorCode` in `packages/core/src/lib/enums/api-error-codes.ts` with translations for all supported languages.
+- When adding a new user-facing message to the interceptor or notification pipeline, add it to `AppMessageKey` in `packages/core/src/lib/enums/app-messages.ts`.
+- Interceptor order matters: `httpContextInterceptor` must be registered **before** `apiInterceptor` so that `Accept-Language`, URL resolution, and correlation headers are applied before the API response layer processes the result.
+- Use `provideHttpContext({ enableLanguageHeader: true })` to explicitly enable the language header. It defaults to `true`.
+- Do not hardcode English strings in interceptor or notification code. Use `getLocalizedAppMessage()` or `getLocalizedErrorMessage()` instead.
+
 ## Development and validation
 
 - Install with `pnpm install --frozen-lockfile` when reproducing CI; CI uses Node 24 (packages declare Node 18+ compatibility).

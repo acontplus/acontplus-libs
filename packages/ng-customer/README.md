@@ -12,6 +12,13 @@ npm install @acontplus/ng-customer
 pnpm add @acontplus/ng-customer
 ```
 
+## Peer Dependencies
+
+- `@angular/common`: ^22.1.0
+- `@angular/core`: ^22.1.0
+- `@angular/forms`: ^22.1.0
+- `@angular/material`: ^22.1.0
+
 ## Features
 
 - **Clean Architecture**: Domain, Application, Infrastructure, and UI layers

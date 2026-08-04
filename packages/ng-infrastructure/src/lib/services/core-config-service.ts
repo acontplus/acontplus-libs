@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { CORE_CONFIG, DEFAULT_CONFIG, ENVIRONMENT } from '@acontplus/ng-config';
 import { CoreConfig } from '@acontplus/core';
+import { joinApiUrl } from '../utils/url';
 
 @Injectable({
   providedIn: 'root',
@@ -64,7 +65,7 @@ export class CoreConfigService {
   getApiUrl(entityName?: string): string {
     const baseUrl = this.config.apiBaseUrl;
     if (!entityName) return baseUrl;
-    return `${baseUrl}/${entityName}`.replaceAll(/\/+/g, '/');
+    return joinApiUrl(baseUrl, entityName);
   }
 
   /**

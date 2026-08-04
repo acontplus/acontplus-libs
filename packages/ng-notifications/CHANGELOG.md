@@ -1,3 +1,9 @@
+## 3.0.1 (2026-08-04)
+
+### 🧱 Updated Dependencies
+
+- Updated ui-kit to 1.1.1
+
 # 3.0.0 (2026-08-03)
 
 ### ⚠️ Breaking Changes

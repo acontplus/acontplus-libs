@@ -76,36 +76,30 @@ export class AdminLayout implements OnDestroy {
   readonly menuItemsSafe = computed<MenuItem[]>(() => {
     const menus = this.menuService.getAll() as unknown as Menu[] | undefined;
     if (!menus) return [];
-    return menus.map(
-      (menu): MenuItem => ({
-        route: menu.route,
-        name: menu.name,
-        type: menu.type,
-        icon: menu.icon,
-        label: menu.label,
-        badge: menu.badge,
-        permissions: menu.permissions,
-        children: menu.children?.map(
-          (child): MenuItem => ({
-            route: child.route,
-            name: child.name,
-            type: child.type,
-            children: child.children?.map(
-              (grandchild): MenuItem => ({
-                route: grandchild.route,
-                name: grandchild.name,
-                type: grandchild.type,
-                children: grandchild.children?.map((ggchild) => ({
-                  route: ggchild.route,
-                  name: ggchild.name,
-                  type: ggchild.type,
-                })),
-              }),
-            ),
-          }),
-        ),
-      }),
-    );
+    return menus.map((menu): MenuItem => ({
+      route: menu.route,
+      name: menu.name,
+      type: menu.type,
+      icon: menu.icon,
+      label: menu.label,
+      badge: menu.badge,
+      permissions: menu.permissions,
+      children: menu.children?.map((child): MenuItem => ({
+        route: child.route,
+        name: child.name,
+        type: child.type,
+        children: child.children?.map((grandchild): MenuItem => ({
+          route: grandchild.route,
+          name: grandchild.name,
+          type: grandchild.type,
+          children: grandchild.children?.map((ggchild) => ({
+            route: ggchild.route,
+            name: ggchild.name,
+            type: ggchild.type,
+          })),
+        })),
+      })),
+    }));
   });
 
   private isMobileScreen = false;

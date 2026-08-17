@@ -24,11 +24,7 @@ export type AcpThemeVariant = 'light' | 'dark' | 'auto';
 @Component({
   selector: 'acp-header-theme',
   template: `
-    <button
-      mat-icon-button
-      [matMenuTriggerFor]="menu"
-      class="acp-header__theme-button"
-    >
+    <button mat-icon-button [matMenuTriggerFor]="menu" class="acp-header__theme-button">
       <mat-icon>{{ getThemeIcon() }}</mat-icon>
     </button>
 

@@ -42,15 +42,7 @@ export interface DataGridColumnPinOption {
 }
 
 export declare type DataGridColumnType =
-  | 'button'
-  | 'tag'
-  | 'link'
-  | 'image'
-  | 'boolean'
-  | 'number'
-  | 'currency'
-  | 'percent'
-  | 'date';
+  'button' | 'tag' | 'link' | 'image' | 'boolean' | 'number' | 'currency' | 'percent' | 'date';
 
 export interface DataGridColumnTypeParameter {
   currencyCode?: string;

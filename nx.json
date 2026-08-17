@@ -40,9 +40,7 @@
       "!{projectRoot}/.eslintrc.json",
       "!{projectRoot}/eslint.config.cjs",
       "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
-      "!{projectRoot}/jest.config.[jt]s",
-      "!{projectRoot}/src/test-setup.[jt]s",
-      "!{projectRoot}/test-setup.[jt]s"
+      "!{projectRoot}/vitest.config.[jt]s"
     ]
   },
   "nxCloudId": "68d20e567c8b4045e00aa2b7",
@@ -80,29 +78,13 @@
     },
     "version": {
       "preVersionCommand": "pnpm exec nx run-many -t build --exclude demo-app,acontplus-erp --parallel=3",
-      "conventionalCommits": true,
       "updateDependents": "auto",
       "preserveLocalDependencyProtocols": false
     },
-    "conventionalCommits": {
-      "types": {
-        "feat": { "semverBump": "minor", "changelog": { "title": "Features" } },
-        "fix": { "semverBump": "patch", "changelog": { "title": "Bug Fixes" } },
-        "perf": { "semverBump": "patch", "changelog": { "title": "Performance Improvements" } },
-        "refactor": { "semverBump": "patch", "changelog": { "title": "Refactoring" } },
-        "docs": { "semverBump": "none", "changelog": { "hidden": true } },
-        "chore": { "semverBump": "none", "changelog": { "hidden": true } },
-        "ci": { "semverBump": "none", "changelog": false },
-        "test": { "semverBump": "none", "changelog": { "hidden": true } },
-        "build": { "semverBump": "none", "changelog": { "hidden": true } },
-        "style": { "semverBump": "none", "changelog": { "hidden": true } },
-        "revert": { "semverBump": "patch", "changelog": { "title": "Reverts" } }
-      }
+    "versionPlans": {
+      "ignorePatternsForPlanCheck": ["**/*.spec.ts", "**/*.test.ts"]
     },
     "changelog": {
-      "workspaceChangelog": {
-        "createRelease": "github"
-      },
       "projectChangelogs": true
     },
     "releaseTag": {
@@ -117,16 +99,9 @@
       }
     },
     {
-      "plugin": "@nx/jest/plugin",
-      "options": {
-        "targetName": "test"
-      }
-    },
-    {
       "plugin": "@nx/vite/plugin",
       "options": {
         "buildTargetName": "build",
-        "testTargetName": "test",
         "serveTargetName": "serve",
         "devTargetName": "dev",
         "previewTargetName": "preview",
@@ -134,6 +109,13 @@
         "typecheckTargetName": "typecheck",
         "buildDepsTargetName": "build-deps",
         "watchDepsTargetName": "watch-deps"
+      }
+    },
+    {
+      "plugin": "@nx/vitest",
+      "options": {
+        "testTargetName": "test",
+        "testMode": "run"
       }
     },
     {
@@ -163,7 +145,7 @@
   "generators": {
     "@nx/angular:library": {
       "linter": "eslint",
-      "unitTestRunner": "jest"
+      "unitTestRunner": "vitest"
     },
     "@nx/angular:component": {
       "style": "css"
@@ -172,7 +154,7 @@
       "e2eTestRunner": "playwright",
       "linter": "eslint",
       "style": "scss",
-      "unitTestRunner": "jest"
+      "unitTestRunner": "vitest"
     }
   },
   "analytics": false

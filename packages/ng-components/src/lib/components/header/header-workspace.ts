@@ -30,11 +30,7 @@ export interface AcpWorkspaceItem {
 @Component({
   selector: 'acp-header-workspace',
   template: `
-    <button
-      mat-button
-      [matMenuTriggerFor]="menu"
-      class="acp-header__workspace-button"
-    >
+    <button mat-button [matMenuTriggerFor]="menu" class="acp-header__workspace-button">
       @if (currentWorkspace()?.icon) {
         <mat-icon>{{ currentWorkspace()!.icon }}</mat-icon>
       }

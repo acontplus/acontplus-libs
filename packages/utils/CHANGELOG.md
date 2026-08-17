@@ -1,3 +1,7 @@
+## 1.2.0 (2026-08-03)
+
+This was a version bump only for utils to align it with other projects, there were no code changes.
+
 ## 1.1.4 (2026-07-12)
 
 ### 🩹 Fixes

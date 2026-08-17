@@ -28,7 +28,10 @@
       "@acontplus/ui-kit": ["packages/ui-kit/src/index.ts"],
       "@acontplus/utils": ["packages/utils/src/index.ts"],
       "@acontplus/ng-common": ["packages/ng-common/src/index.ts"]
-    }
+    },
+    "noUncheckedSideEffectImports": false,
+    "types": ["*"],
+    "esModuleInterop": false
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

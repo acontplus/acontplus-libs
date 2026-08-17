@@ -1,11 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { lastValueFrom } from 'rxjs';
 import { HttpOptions, HttpPort } from '@acontplus/core';
-
-function mergeUrl(baseURL: string | undefined, endpoint: string): string {
-  if (!baseURL) return endpoint;
-  return `${baseURL.replace(/\/+$/, '')}/${endpoint.replace(/^\/+/, '')}`;
-}
+import { joinApiUrl } from '../utils/url';
 
 export class AngularHttpAdapter implements HttpPort {
   constructor(
@@ -26,7 +22,7 @@ export class AngularHttpAdapter implements HttpPort {
     data?: unknown;
     options?: HttpOptions;
   }): Promise<T> {
-    const fullUrl = mergeUrl(this.baseURL, params.url);
+    const fullUrl = this.baseURL ? joinApiUrl(this.baseURL, params.url) : params.url;
     const httpOptions = this.buildOptions(params.options);
 
     const observable = this.http.request<T>(params.method, fullUrl, {

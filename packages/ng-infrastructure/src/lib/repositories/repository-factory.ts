@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { PagedResult, PaginationParams, RepositoryConfig } from '@acontplus/core';
 import { BaseRepository } from '@acontplus/ng-config';
+import { joinApiUrl } from '../utils/url';
 
 @Injectable({ providedIn: 'root' })
 export class RepositoryFactory {
@@ -12,9 +13,10 @@ export class RepositoryFactory {
   ): BaseRepository<TEntity, TId> {
     const buildUrl = (path = '') => {
       const baseUrl = config.baseUrl || '/api';
-      const version = config.version ? `/v${config.version}` : '';
-      const endpoint = path ? `${config.endpoint}/${path}` : config.endpoint;
-      return `${baseUrl}${version}/${endpoint}`.replaceAll(/\/+/g, '/');
+      const version = config.version ? `v${config.version}` : '';
+      const versionedBaseUrl = version ? joinApiUrl(baseUrl, version) : baseUrl;
+      const endpoint = path ? joinApiUrl(config.endpoint, path) : config.endpoint;
+      return joinApiUrl(versionedBaseUrl, endpoint);
     };
 
     const buildParams = (pagination?: PaginationParams) => {

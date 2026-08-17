@@ -99,9 +99,8 @@ export interface AcpHeaderAction {
    * Can be a number (for notification count) or a string.
    */
   badge?: number | string;
- 
 
-  click?: ( $event?: MouseEvent, action?: AcpHeaderAction ) => void;
+  click?: ($event?: MouseEvent, action?: AcpHeaderAction) => void;
 }
 
 /**

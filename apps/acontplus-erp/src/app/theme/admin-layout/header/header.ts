@@ -15,7 +15,7 @@ import {
   type UserMenuItem,
   type UserProfile,
 } from '@acontplus/ng-components';
-import { SettingsService, AuthService,  } from '@core';
+import { SettingsService, AuthService } from '@core';
 
 @Component({
   selector: 'app-header',
@@ -69,61 +69,59 @@ export class Header {
   };
 
   readonly leftActions = computed<AcpHeaderAction[]>(() => [
-    { 
+    {
       id: 'toggle-sidenav',
-       icon: 'menu', 
-       tooltip: 'Toggle Sidebar',
-       visible: this.showToggle(),
-       click: () => {
+      icon: 'menu',
+      tooltip: 'Toggle Sidebar',
+      visible: this.showToggle(),
+      click: () => {
         this.toggleSidenav.emit();
-       }
       },
+    },
   ]);
 
   readonly rightActions: AcpHeaderAction[] = [
-    { 
-      id: 'notifications', 
+    {
+      id: 'notifications',
       icon: 'notifications',
-       tooltip: 'Notifications',
-       click: () => {
+      tooltip: 'Notifications',
+      click: () => {
         this.toggleSidenavNotice.emit();
-       }
       },
+    },
   ];
 
   readonly userMenuItems: UserMenuItem[] = [
     {
-       id: 'profile', 
-       label: 'Profile',
-        icon: 'person',
-         click: (item) =>  {
-          this.router.navigate(['/profile/overview']);
-         } 
-  },
-    { 
-      id: 'settings', 
-      label: 'Settings', 
-      icon: 'settings', 
-      click: (item) => {
-        this.router.navigate(['/settings']);
-      } 
+      id: 'profile',
+      label: 'Profile',
+      icon: 'person',
+      click: (_item) => {
+        this.router.navigate(['/profile/overview']);
+      },
     },
-    { 
-      id: 'logout', 
-      label: 'Logout', 
-      icon: 'logout', 
-      danger: true, 
-      click: (item) => {
+    {
+      id: 'settings',
+      label: 'Settings',
+      icon: 'settings',
+      click: (_item) => {
+        this.router.navigate(['/settings']);
+      },
+    },
+    {
+      id: 'logout',
+      label: 'Logout',
+      icon: 'logout',
+      danger: true,
+      click: (_item) => {
         this.auth.logout().subscribe(() => {
           this.router.navigateByUrl('/auth/login');
         });
-      } 
+      },
     },
   ];
- 
 
   onBranding() {
     this.router.navigate(['/']);
   }
- 
 }

@@ -1,3 +1,20 @@
+## 1.3.0 (2026-08-04)
+
+### 🚀 Features
+
+- Normalize API base URL and endpoint joining without corrupting absolute URLs. ([#143](https://github.com/acontplus/acontplus-libs/pull/143))
+  Align package documentation with the current Angular 22 APIs and configuration contracts.
+
+### ❤️ Thank You
+
+- Ivan Fernando Paz @iferpaz7
+
+## 1.2.0 (2026-08-03)
+
+### 🧱 Updated Dependencies
+
+- Updated utils to 1.2.0
+
 ## 1.1.8 (2026-07-12)
 
 ### 🩹 Fixes

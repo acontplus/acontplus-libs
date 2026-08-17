@@ -9,14 +9,12 @@ module.exports = [
       parser: require('jsonc-eslint-parser'),
     },
   },
-  {
-    ignores: ['**/*.spec.ts', '**/*.test.ts'],
-  },
   ...nx.configs['flat/angular'],
   ...nx.configs['flat/angular-template'],
   {
     files: ['**/*.ts'],
     rules: {
+      '@angular-eslint/prefer-on-push-component-change-detection': 'off',
       '@angular-eslint/directive-selector': [
         'error',
         {
@@ -46,7 +44,6 @@ module.exports = [
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
       'no-console': 'off',
-      '@typescript-eslint/no-unused-vars': 'off',
     },
   },
 ];

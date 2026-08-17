@@ -2,12 +2,7 @@
  * Card appearance variants
  */
 export type AcpCardAppearance =
-  | 'default'
-  | 'outlined'
-  | 'elevated'
-  | 'filled'
-  | 'interactive'
-  | 'compact';
+  'default' | 'outlined' | 'elevated' | 'filled' | 'interactive' | 'compact';
 
 /**
  * Card elevation levels (Material Design)

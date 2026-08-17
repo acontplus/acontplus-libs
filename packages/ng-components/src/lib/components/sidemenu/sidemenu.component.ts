@@ -123,8 +123,8 @@ import { NavAccordionToggleDirective } from './nav-accordion-toggle.directive';
 export class SidemenuComponent {
   readonly menuItems = input<MenuItem[]>([]);
 
-  ngOnInit(){
-    console.log(this.menuItems())
+  ngOnInit() {
+    console.log(this.menuItems());
   }
   buildRoute(routeArr: string[]) {
     let route = '';

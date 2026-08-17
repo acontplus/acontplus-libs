@@ -27,6 +27,52 @@ pnpm add @acontplus/ng-components
 
 ## Components
 
+### DateRangePicker
+
+Standalone date-range form control built on `ngx-datex`. It implements
+`ControlValueAccessor`, includes Spanish preset ranges, and can emit either
+formatted strings or `Date` objects.
+
+Install its peer dependencies with the package:
+
+```bash
+pnpm add @acontplus/ng-components ngx-datex@1.0.5 @formkit/tempo
+```
+
+```typescript
+import { Component } from '@angular/core';
+import { DateRangePicker, DateRangeValue } from '@acontplus/ng-components';
+
+@Component({
+  standalone: true,
+  imports: [DateRangePicker],
+  template: `
+    <acp-date-range-picker
+      label="Periodo"
+      [formatOutputAsString]="false"
+      [timePicker]="true"
+      (dateRangeSelected)="onRangeSelected($event)"
+    />
+  `,
+})
+export class ReportComponent {
+  onRangeSelected(range: DateRangeValue<false>): void {
+    console.log(range.from, range.to);
+  }
+}
+```
+
+Use `formControlName` or `[(ngModel)]` as with any Angular form control. Its
+main inputs are `options`, `formatOutputAsString`, `startDate`, `endDate`,
+`minDate`, `maxDate`, `singleDatePicker`, and the time-picker settings. The
+outputs are `dateRangeSelected`, `pickerShow`, `pickerHide`, `pickerApply`,
+`pickerCancel`, and `checkboxChange`.
+
+`DateRangePickerOptions` accepts `locale`, `theme`, custom `ranges`, date
+bounds, and the `ngx-datex` behavior options. `MATERIAL_LIGHT_THEME`,
+`SPANISH_LOCALE`, and the relevant `ngx-datex` types are re-exported from
+`@acontplus/ng-components`.
+
 ### Cards
 
 #### DynamicCard
@@ -362,7 +408,7 @@ import { DataGrid, DataGridColumn, TabulatorTable } from '@acontplus/ng-componen
 
 #### Data Grid Features
 
-The DataGrid is the primary table component, built with modern Angular 21+ patterns:
+The DataGrid is the primary table component, built with modern Angular 22+ patterns:
 
 - **Signals Architecture**: Uses `signal()`, `computed()`, `effect()` for reactive state
 - **Modern APIs**: Uses `input()` and `output()` functions
@@ -671,8 +717,11 @@ function getStatusStyle(status: string) {
 
 ## Peer Dependencies
 
-- `@angular/cdk`: ^20.2.5
-- `@angular/common`: ^20.3.2
-- `@angular/core`: ^20.3.2
-- `@angular/material`: ^20.2.5
-- `tabulator-tables`: ^6.3.1
+- `@angular/cdk`: ^22.1.0
+- `@angular/common`: ^22.1.0
+- `@angular/core`: ^22.1.0
+- `@angular/forms`: ^22.1.0
+- `@angular/material`: ^22.1.0
+- `@angular/platform-browser`: ^22.1.0
+- `@angular/router`: ^22.1.0
+- `tabulator-tables`: ^6.5.2

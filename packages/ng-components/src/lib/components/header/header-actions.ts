@@ -1,9 +1,9 @@
-import { Component, input, output, computed  } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-import type { AcpHeaderAction, AcpHeaderActionEvent } from './header.types';
+import type { AcpHeaderAction } from './header.types';
 
 /**
  * AcpHeaderActions Component
@@ -51,6 +51,4 @@ export class AcpHeaderActions {
    * Array of actions to display. Can be a signal or a plain array.
    */
   readonly actions = input<AcpHeaderAction[]>([]);
-  
-  
 }

@@ -9,25 +9,28 @@
           "targets": {
             "eslint:lint": {
               "cache": true,
-              "options": {
-                "cwd": "packages/ng-infrastructure",
-                "command": "eslint ."
-              },
               "inputs": [
                 "default",
                 "^default",
                 "{workspaceRoot}/eslint.config.js",
+                "{workspaceRoot}/packages/ng-infrastructure/eslint.config.cjs",
                 "{workspaceRoot}/tools/eslint-rules/**/*",
                 {
-                  "externalDependencies": ["eslint"]
+                  "externalDependencies": [
+                    "eslint"
+                  ]
                 }
               ],
-              "outputs": ["{options.outputFile}"],
+              "outputs": [
+                "{options.outputFile}"
+              ],
               "metadata": {
-                "technologies": ["eslint"],
+                "technologies": [
+                  "eslint"
+                ],
                 "description": "Runs ESLint on project",
                 "help": {
-                  "command": "npx eslint --help",
+                  "command": "pnpm exec eslint --help",
                   "example": {
                     "options": {
                       "max-warnings": 0
@@ -36,47 +39,118 @@
                 }
               },
               "executor": "nx:run-commands",
+              "options": {
+                "cwd": "packages/ng-infrastructure",
+                "command": "eslint ."
+              },
               "configurations": {},
               "parallelism": true
             },
-            "nx-release-publish": {
-              "executor": "@nx/js:release-publish",
-              "dependsOn": ["^nx-release-publish"],
-              "options": {},
+            "lint": {
+              "cache": true,
+              "inputs": [
+                "default"
+              ],
+              "outputs": [
+                "{options.outputFile}"
+              ],
+              "metadata": {
+                "technologies": [
+                  "eslint"
+                ],
+                "description": "Runs ESLint on project",
+                "help": {
+                  "command": "pnpm exec eslint --help",
+                  "example": {
+                    "options": {
+                      "max-warnings": 0
+                    }
+                  }
+                }
+              },
+              "executor": "nx:run-commands",
+              "options": {
+                "cwd": "packages/ng-infrastructure",
+                "command": "eslint ."
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "test": {
+              "cache": true,
+              "inputs": [
+                "default",
+                "^production"
+              ],
+              "executor": "@angular/build:unit-test",
+              "outputs": [
+                "{workspaceRoot}/coverage/{projectRoot}"
+              ],
+              "options": {
+                "buildTarget": "ng-infrastructure:test-build",
+                "runner": "vitest",
+                "runnerConfig": "vitest-base.config.ts",
+                "tsConfig": "packages/ng-infrastructure/tsconfig.spec.json",
+                "watch": false
+              },
               "configurations": {},
               "parallelism": true
             },
             "build": {
+              "cache": true,
+              "dependsOn": [
+                "^build"
+              ],
+              "inputs": [
+                "production",
+                "^production"
+              ],
               "executor": "@nx/angular:package",
-              "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
+              "outputs": [
+                "{workspaceRoot}/dist/{projectRoot}"
+              ],
+              "defaultConfiguration": "production",
               "options": {
-                "project": "packages/ng-infrastructure/ng-package.json"
+                "project": "packages/ng-infrastructure/ng-package.json",
+                "tsConfig": "packages/ng-infrastructure/tsconfig.lib.json"
+              },
+              "configurations": {
+                "production": {
+                  "tsConfig": "packages/ng-infrastructure/tsconfig.lib.prod.json"
+                },
+                "development": {}
+              },
+              "parallelism": true
+            },
+            "nx-release-publish": {
+              "executor": "@nx/js:release-publish",
+              "dependsOn": [
+                "^nx-release-publish"
+              ],
+              "options": {
+                "packageRoot": "dist/packages/ng-infrastructure"
               },
               "configurations": {},
-              "parallelism": true,
-              "cache": true,
-              "dependsOn": ["^build"],
-              "inputs": ["production", "^production"]
+              "parallelism": true
             },
-            "test": {
-              "executor": "@nx/jest:jest",
-              "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+            "test-build": {
+              "executor": "@angular/build:ng-packagr",
               "options": {
-                "jestConfig": "packages/ng-infrastructure/jest.config.ts",
-                "tsConfig": "packages/ng-infrastructure/tsconfig.spec.json"
+                "project": "packages/ng-infrastructure/ng-package.json",
+                "tsConfig": "packages/ng-infrastructure/tsconfig.lib.json"
               },
               "configurations": {},
-              "parallelism": true,
-              "cache": true,
-              "inputs": ["default", "^production"]
+              "parallelism": true
             },
-            "lint": {
-              "executor": "@nx/eslint:lint",
+            "publish": {
+              "executor": "nx:run-commands",
+              "options": {
+                "command": "npm publish --access=public",
+                "cwd": "dist/packages/ng-infrastructure",
+                "parallel": false
+              },
               "configurations": {},
-              "options": {},
-              "parallelism": true,
-              "cache": true,
-              "inputs": ["default"]
+              "parallelism": true
             }
           },
           "name": "ng-infrastructure",
@@ -85,27 +159,57 @@
             "npm:acontplus",
             "npm:angular",
             "npm:infrastructure",
-            "npm:interceptors",
-            "npm:repositories",
+            "npm:http-interceptors",
+            "npm:api-interceptor",
+            "npm:spinner-interceptor",
+            "npm:http-context-interceptor",
+            "npm:base-repository",
+            "npm:generic-repository",
+            "npm:repository-factory",
+            "npm:angular-http-adapter",
+            "npm:correlation-service",
+            "npm:logging-service",
+            "npm:tenant-service",
+            "npm:core-config-service",
+            "npm:base-use-case",
+            "npm:commands",
+            "npm:queries",
+            "npm:cqrs",
+            "npm:ddd",
+            "npm:clean-architecture",
+            "npm:hexagonal-architecture",
+            "npm:dependency-injection",
             "npm:typescript",
-            "npm:frontend",
-            "npm:library"
+            "npm:enterprise",
+            "npm:frontend"
           ],
           "metadata": {
             "targetGroups": {},
-            "description": "Acontplus Angular Infrastructure Module",
+            "description": "Angular infrastructure library implementing clean architecture patterns with HTTP interceptors, repository implementations, adapters, dependency injection providers, and core infrastructure services for enterprise applications.",
             "js": {
               "packageName": "@acontplus/ng-infrastructure",
-              "packageVersion": "1.0.0",
+              "packageVersion": "2.0.16",
               "packageMain": "fesm2022/acontplus-ng-infrastructure.mjs",
               "isInPackageManagerWorkspaces": true
             }
           },
           "$schema": "../../node_modules/nx/schemas/project-schema.json",
           "sourceRoot": "packages/ng-infrastructure/src",
-          "prefix": "lib",
+          "prefix": "acp",
           "projectType": "library",
-          "implicitDependencies": ["ng-config"]
+          "release": {
+            "version": {
+              "manifestRootsToUpdate": [
+                "{projectRoot}",
+                "dist/{projectRoot}"
+              ],
+              "currentVersionResolver": "git-tag",
+              "fallbackCurrentVersionResolver": "disk"
+            }
+          },
+          "implicitDependencies": [
+            "ng-config"
+          ]
         }
       },
       "ng-notifications": {
@@ -116,10 +220,6 @@
           "targets": {
             "eslint:lint": {
               "cache": true,
-              "options": {
-                "cwd": "packages/ng-notifications",
-                "command": "eslint ."
-              },
               "inputs": [
                 "default",
                 "^default",
@@ -127,15 +227,21 @@
                 "{workspaceRoot}/packages/ng-notifications/eslint.config.cjs",
                 "{workspaceRoot}/tools/eslint-rules/**/*",
                 {
-                  "externalDependencies": ["eslint"]
+                  "externalDependencies": [
+                    "eslint"
+                  ]
                 }
               ],
-              "outputs": ["{options.outputFile}"],
+              "outputs": [
+                "{options.outputFile}"
+              ],
               "metadata": {
-                "technologies": ["eslint"],
+                "technologies": [
+                  "eslint"
+                ],
                 "description": "Runs ESLint on project",
                 "help": {
-                  "command": "npx eslint --help",
+                  "command": "pnpm exec eslint --help",
                   "example": {
                     "options": {
                       "max-warnings": 0
@@ -144,33 +250,57 @@
                 }
               },
               "executor": "nx:run-commands",
+              "options": {
+                "cwd": "packages/ng-notifications",
+                "command": "eslint ."
+              },
               "configurations": {},
               "parallelism": true
             },
-            "test": {
-              "executor": "@nx/jest:jest",
-              "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
-              "options": {
-                "jestConfig": "packages/ng-notifications/jest.config.ts",
-                "tsConfig": "packages/ng-notifications/tsconfig.spec.json"
-              },
-              "configurations": {},
-              "parallelism": true,
+            "lint": {
               "cache": true,
-              "inputs": ["default", "^production"]
-            },
-            "nx-release-publish": {
-              "executor": "@nx/js:release-publish",
-              "dependsOn": ["^nx-release-publish"],
+              "inputs": [
+                "default"
+              ],
+              "outputs": [
+                "{options.outputFile}"
+              ],
+              "metadata": {
+                "technologies": [
+                  "eslint"
+                ],
+                "description": "Runs ESLint on project",
+                "help": {
+                  "command": "pnpm exec eslint --help",
+                  "example": {
+                    "options": {
+                      "max-warnings": 0
+                    }
+                  }
+                }
+              },
+              "executor": "nx:run-commands",
               "options": {
-                "packageRoot": "dist/packages/ng-notifications"
+                "cwd": "packages/ng-notifications",
+                "command": "eslint ."
               },
               "configurations": {},
               "parallelism": true
             },
             "build": {
+              "cache": true,
+              "dependsOn": [
+                "^build"
+              ],
+              "inputs": [
+                "production",
+                "^production"
+              ],
               "executor": "@nx/angular:package",
-              "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
+              "outputs": [
+                "{workspaceRoot}/dist/{projectRoot}"
+              ],
+              "defaultConfiguration": "production",
               "options": {
                 "project": "packages/ng-notifications/ng-package.json",
                 "tsConfig": "packages/ng-notifications/tsconfig.lib.json"
@@ -181,11 +311,18 @@
                 },
                 "development": {}
               },
-              "defaultConfiguration": "production",
-              "parallelism": true,
-              "cache": true,
-              "dependsOn": ["^build"],
-              "inputs": ["production", "^production"]
+              "parallelism": true
+            },
+            "nx-release-publish": {
+              "executor": "@nx/js:release-publish",
+              "dependsOn": [
+                "^nx-release-publish"
+              ],
+              "options": {
+                "packageRoot": "dist/packages/ng-notifications"
+              },
+              "configurations": {},
+              "parallelism": true
             },
             "publish": {
               "executor": "nx:run-commands",
@@ -196,14 +333,6 @@
               },
               "configurations": {},
               "parallelism": true
-            },
-            "lint": {
-              "executor": "@nx/eslint:lint",
-              "configurations": {},
-              "options": {},
-              "parallelism": true,
-              "cache": true,
-              "inputs": ["default"]
             }
           },
           "name": "ng-notifications",
@@ -213,25 +342,29 @@
             "npm:angular",
             "npm:angular-material",
             "npm:material-design",
-            "npm:ui-components",
             "npm:notifications",
             "npm:ngx-toastr",
             "npm:sweetalert2",
-            "npm:alerts",
+            "npm:toast-notifications",
             "npm:snackbar",
-            "npm:scss",
-            "npm:styling",
-            "npm:components",
+            "npm:notification-system",
+            "npm:notification-providers",
+            "npm:theme-detection",
+            "npm:dark-mode-detection",
+            "npm:configurable-styling",
+            "npm:notification-types",
+            "npm:material-integration",
+            "npm:scss-theming",
             "npm:typescript",
-            "npm:frontend",
-            "npm:library"
+            "npm:enterprise",
+            "npm:frontend"
           ],
           "metadata": {
             "targetGroups": {},
-            "description": "A library of Angular components for notifications, including custom buttons, dialogs, and snackbars, built with Angular Material and styled with SCSS.",
+            "description": "Comprehensive Angular notification system with toast notifications (ngx-toastr), alerts (SweetAlert2), snackbars, theme detection, notification providers, and configurable styling. Supports multiple notification types with Angular Material integration.",
             "js": {
               "packageName": "@acontplus/ng-notifications",
-              "packageVersion": "1.0.7",
+              "packageVersion": "2.1.0",
               "packageMain": "fesm2022/acontplus-ng-notifications.mjs",
               "isInPackageManagerWorkspaces": true
             }
@@ -242,12 +375,271 @@
           "projectType": "library",
           "release": {
             "version": {
-              "manifestRootsToUpdate": ["dist/{projectRoot}"],
+              "manifestRootsToUpdate": [
+                "{projectRoot}",
+                "dist/{projectRoot}"
+              ],
               "currentVersionResolver": "git-tag",
               "fallbackCurrentVersionResolver": "disk"
             }
           },
-          "implicitDependencies": []
+          "implicitDependencies": [
+            "ui-kit"
+          ]
+        }
+      },
+      "acontplus-erp-e2e": {
+        "name": "acontplus-erp-e2e",
+        "type": "e2e",
+        "data": {
+          "root": "apps/acontplus-erp-e2e",
+          "targets": {
+            "eslint:lint": {
+              "cache": true,
+              "inputs": [
+                "default",
+                "^default",
+                "{workspaceRoot}/eslint.config.js",
+                "{workspaceRoot}/apps/acontplus-erp-e2e/eslint.config.cjs",
+                "{workspaceRoot}/tools/eslint-rules/**/*",
+                {
+                  "externalDependencies": [
+                    "eslint"
+                  ]
+                }
+              ],
+              "outputs": [
+                "{options.outputFile}"
+              ],
+              "metadata": {
+                "technologies": [
+                  "eslint"
+                ],
+                "description": "Runs ESLint on project",
+                "help": {
+                  "command": "pnpm exec eslint --help",
+                  "example": {
+                    "options": {
+                      "max-warnings": 0
+                    }
+                  }
+                }
+              },
+              "executor": "nx:run-commands",
+              "options": {
+                "cwd": "apps/acontplus-erp-e2e",
+                "command": "eslint ."
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "e2e": {
+              "metadata": {
+                "technologies": [
+                  "playwright"
+                ],
+                "description": "Runs Playwright Tests",
+                "help": {
+                  "command": "pnpm exec playwright test --help",
+                  "example": {
+                    "options": {
+                      "workers": 1
+                    }
+                  }
+                }
+              },
+              "parallelism": false,
+              "cache": true,
+              "inputs": [
+                "default",
+                "^production",
+                "^{projectRoot}/tsconfig*.json",
+                {
+                  "json": "{workspaceRoot}/tsconfig.json",
+                  "fields": [
+                    "compilerOptions",
+                    "extends",
+                    "files",
+                    "include"
+                  ]
+                },
+                {
+                  "externalDependencies": [
+                    "@playwright/test"
+                  ]
+                }
+              ],
+              "outputs": [
+                "{workspaceRoot}/dist/.playwright/apps/acontplus-erp-e2e/test-output",
+                "{workspaceRoot}/dist/.playwright/apps/acontplus-erp-e2e/playwright-report"
+              ],
+              "executor": "nx:run-commands",
+              "options": {
+                "cwd": "apps/acontplus-erp-e2e",
+                "command": "playwright test"
+              },
+              "configurations": {}
+            },
+            "e2e-ci--src/example.spec.ts": {
+              "metadata": {
+                "technologies": [
+                  "playwright"
+                ],
+                "description": "Runs Playwright Tests in src/example.spec.ts in CI",
+                "help": {
+                  "command": "pnpm exec playwright test --help",
+                  "example": {
+                    "options": {
+                      "workers": 1
+                    }
+                  }
+                }
+              },
+              "parallelism": false,
+              "cache": true,
+              "inputs": [
+                "default",
+                "^production",
+                "^{projectRoot}/tsconfig*.json",
+                {
+                  "json": "{workspaceRoot}/tsconfig.json",
+                  "fields": [
+                    "compilerOptions",
+                    "extends",
+                    "files",
+                    "include"
+                  ]
+                },
+                {
+                  "externalDependencies": [
+                    "@playwright/test"
+                  ]
+                }
+              ],
+              "outputs": [
+                "{workspaceRoot}/dist/.playwright/apps/acontplus-erp-e2e/test-output/src-example-spec-ts",
+                "{workspaceRoot}/dist/.playwright/apps/acontplus-erp-e2e/playwright-report/src-example-spec-ts"
+              ],
+              "executor": "nx:run-commands",
+              "options": {
+                "cwd": "apps/acontplus-erp-e2e",
+                "env": {
+                  "PLAYWRIGHT_HTML_OUTPUT_DIR": "../../dist/.playwright/apps/acontplus-erp-e2e/playwright-report/src-example-spec-ts",
+                  "PLAYWRIGHT_HTML_REPORT": "../../dist/.playwright/apps/acontplus-erp-e2e/playwright-report/src-example-spec-ts"
+                },
+                "command": "playwright test src/example.spec.ts --output=../../dist/.playwright/apps/acontplus-erp-e2e/test-output/src-example-spec-ts"
+              },
+              "configurations": {}
+            },
+            "e2e-ci": {
+              "executor": "nx:noop",
+              "cache": true,
+              "inputs": [
+                "default",
+                "^production",
+                "^{projectRoot}/tsconfig*.json",
+                {
+                  "json": "{workspaceRoot}/tsconfig.json",
+                  "fields": [
+                    "compilerOptions",
+                    "extends",
+                    "files",
+                    "include"
+                  ]
+                },
+                {
+                  "externalDependencies": [
+                    "@playwright/test"
+                  ]
+                }
+              ],
+              "outputs": [
+                "{workspaceRoot}/dist/.playwright/apps/acontplus-erp-e2e/test-output",
+                "{workspaceRoot}/dist/.playwright/apps/acontplus-erp-e2e/playwright-report"
+              ],
+              "dependsOn": [
+                {
+                  "target": "e2e-ci--src/example.spec.ts",
+                  "params": "forward",
+                  "options": "forward"
+                }
+              ],
+              "metadata": {
+                "technologies": [
+                  "playwright"
+                ],
+                "description": "Runs Playwright Tests in CI",
+                "nonAtomizedTarget": "e2e",
+                "help": {
+                  "command": "pnpm exec playwright test --help",
+                  "example": {
+                    "options": {
+                      "workers": 1
+                    }
+                  }
+                }
+              },
+              "parallelism": false,
+              "configurations": {},
+              "options": {}
+            },
+            "e2e-ci--merge-reports": {
+              "executor": "@nx/playwright:merge-reports",
+              "continuous": false,
+              "cache": true,
+              "inputs": [
+                "default",
+                "^production",
+                "^{projectRoot}/tsconfig*.json",
+                {
+                  "json": "{workspaceRoot}/tsconfig.json",
+                  "fields": [
+                    "compilerOptions",
+                    "extends",
+                    "files",
+                    "include"
+                  ]
+                },
+                {
+                  "externalDependencies": [
+                    "@playwright/test"
+                  ]
+                }
+              ],
+              "outputs": [
+                "{workspaceRoot}/dist/.playwright/apps/acontplus-erp-e2e/playwright-report"
+              ],
+              "metadata": {
+                "technologies": [
+                  "playwright"
+                ],
+                "description": "Merges Playwright blob reports from atomized tasks to produce unified reports for the configured reporters."
+              },
+              "options": {
+                "config": "playwright.config.ts",
+                "expectedSuites": 1
+              },
+              "configurations": {},
+              "parallelism": true
+            }
+          },
+          "metadata": {
+            "targetGroups": {
+              "E2E (CI)": [
+                "e2e-ci--src/example.spec.ts",
+                "e2e-ci",
+                "e2e-ci--merge-reports"
+              ]
+            }
+          },
+          "name": "acontplus-erp-e2e",
+          "$schema": "../../node_modules/nx/schemas/project-schema.json",
+          "projectType": "application",
+          "sourceRoot": "apps/acontplus-erp-e2e/src",
+          "implicitDependencies": [
+            "acontplus-erp"
+          ],
+          "tags": []
         }
       },
       "ng-components": {
@@ -258,10 +650,6 @@
           "targets": {
             "eslint:lint": {
               "cache": true,
-              "options": {
-                "cwd": "packages/ng-components",
-                "command": "eslint ."
-              },
               "inputs": [
                 "default",
                 "^default",
@@ -269,15 +657,21 @@
                 "{workspaceRoot}/packages/ng-components/eslint.config.cjs",
                 "{workspaceRoot}/tools/eslint-rules/**/*",
                 {
-                  "externalDependencies": ["eslint"]
+                  "externalDependencies": [
+                    "eslint"
+                  ]
                 }
               ],
-              "outputs": ["{options.outputFile}"],
+              "outputs": [
+                "{options.outputFile}"
+              ],
               "metadata": {
-                "technologies": ["eslint"],
+                "technologies": [
+                  "eslint"
+                ],
                 "description": "Runs ESLint on project",
                 "help": {
-                  "command": "npx eslint --help",
+                  "command": "pnpm exec eslint --help",
                   "example": {
                     "options": {
                       "max-warnings": 0
@@ -286,33 +680,57 @@
                 }
               },
               "executor": "nx:run-commands",
+              "options": {
+                "cwd": "packages/ng-components",
+                "command": "eslint ."
+              },
               "configurations": {},
               "parallelism": true
             },
-            "test": {
-              "executor": "@nx/jest:jest",
-              "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
-              "options": {
-                "jestConfig": "packages/ng-components/jest.config.ts",
-                "tsConfig": "packages/ng-components/tsconfig.spec.json"
-              },
-              "configurations": {},
-              "parallelism": true,
+            "lint": {
               "cache": true,
-              "inputs": ["default", "^production"]
-            },
-            "nx-release-publish": {
-              "executor": "@nx/js:release-publish",
-              "dependsOn": ["^nx-release-publish"],
+              "inputs": [
+                "default"
+              ],
+              "outputs": [
+                "{options.outputFile}"
+              ],
+              "metadata": {
+                "technologies": [
+                  "eslint"
+                ],
+                "description": "Runs ESLint on project",
+                "help": {
+                  "command": "pnpm exec eslint --help",
+                  "example": {
+                    "options": {
+                      "max-warnings": 0
+                    }
+                  }
+                }
+              },
+              "executor": "nx:run-commands",
               "options": {
-                "packageRoot": "dist/packages/ng-components"
+                "cwd": "packages/ng-components",
+                "command": "eslint ."
               },
               "configurations": {},
               "parallelism": true
             },
             "build": {
+              "cache": true,
+              "dependsOn": [
+                "^build"
+              ],
+              "inputs": [
+                "production",
+                "^production"
+              ],
               "executor": "@nx/angular:package",
-              "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
+              "outputs": [
+                "{workspaceRoot}/dist/{projectRoot}"
+              ],
+              "defaultConfiguration": "production",
               "options": {
                 "project": "packages/ng-components/ng-package.json",
                 "tsConfig": "packages/ng-components/tsconfig.lib.json"
@@ -323,11 +741,18 @@
                 },
                 "development": {}
               },
-              "defaultConfiguration": "production",
-              "parallelism": true,
-              "cache": true,
-              "dependsOn": ["^build"],
-              "inputs": ["production", "^production"]
+              "parallelism": true
+            },
+            "nx-release-publish": {
+              "executor": "@nx/js:release-publish",
+              "dependsOn": [
+                "^nx-release-publish"
+              ],
+              "options": {
+                "packageRoot": "dist/packages/ng-components"
+              },
+              "configurations": {},
+              "parallelism": true
             },
             "publish": {
               "executor": "nx:run-commands",
@@ -338,14 +763,6 @@
               },
               "configurations": {},
               "parallelism": true
-            },
-            "lint": {
-              "executor": "@nx/eslint:lint",
-              "configurations": {},
-              "options": {},
-              "parallelism": true,
-              "cache": true,
-              "inputs": ["default"]
             }
           },
           "name": "ng-components",
@@ -356,35 +773,67 @@
             "npm:angular-material",
             "npm:material-design",
             "npm:ui-components",
-            "npm:dynamic-table",
-            "npm:tabulator",
+            "npm:tabulator-tables",
+            "npm:dynamic-tables",
+            "npm:data-tables",
             "npm:cards",
-            "npm:dialog",
-            "npm:snackbar",
-            "npm:theme",
-            "npm:theming",
+            "npm:dialog-wrapper",
+            "npm:theme-toggle",
             "npm:dark-mode",
-            "npm:overlay",
-            "npm:autocomplete",
+            "npm:theme-switcher",
+            "npm:overlay-service",
+            "npm:autocomplete-wrapper",
             "npm:spinner",
-            "npm:interceptors",
-            "npm:customer-ui",
-            "npm:form-controls",
-            "npm:directives",
-            "npm:pipes",
-            "npm:scss",
-            "npm:styling",
-            "npm:components",
+            "npm:buttons",
+            "npm:icons",
+            "npm:input-chip",
+            "npm:to-uppercase-directive",
+            "npm:status-display-pipe",
+            "npm:get-total-pipe",
+            "npm:pagination",
+            "npm:scss-mixins",
+            "npm:scss-variables",
+            "npm:custom-dialog",
+            "npm:mat-table",
             "npm:typescript",
-            "npm:frontend",
-            "npm:library"
+            "npm:enterprise",
+            "npm:frontend"
           ],
           "metadata": {
             "targetGroups": {},
-            "description": "Angular Material UI component library with dynamic tables, theming support, dialog wrappers, and comprehensive styling utilities",
+            "description": "Comprehensive Angular Material UI component library featuring dynamic Tabulator tables, theme toggle with dark mode, dialog wrappers, autocomplete components, cards, buttons, icons, input chips, spinners, directives, pipes, and SCSS styling utilities.",
             "js": {
               "packageName": "@acontplus/ng-components",
-              "packageVersion": "1.0.10",
+              "packageVersion": "2.1.30",
+              "packageExports": {
+                ".": {
+                  "sass": "./src/_index.scss"
+                },
+                "./prebuilt-themes/blue": {
+                  "sass": "./src/core/theming/prebuilt/blue.scss"
+                },
+                "./prebuilt-themes/aqua": {
+                  "sass": "./src/core/theming/prebuilt/aqua.scss"
+                },
+                "./prebuilt-themes/purple": {
+                  "sass": "./src/core/theming/prebuilt/purple.scss"
+                },
+                "./prebuilt-themes/green": {
+                  "sass": "./src/core/theming/prebuilt/green.scss"
+                },
+                "./prebuilt-themes/cyan": {
+                  "sass": "./src/core/theming/prebuilt/cyan.scss"
+                },
+                "./prebuilt-themes/orange": {
+                  "sass": "./src/core/theming/prebuilt/orange.scss"
+                },
+                "./prebuilt-themes/pink": {
+                  "sass": "./src/core/theming/prebuilt/pink.scss"
+                },
+                "./prebuilt-themes/rose": {
+                  "sass": "./src/core/theming/prebuilt/rose.scss"
+                }
+              },
               "packageMain": "fesm2022/acontplus-ng-components.mjs",
               "isInPackageManagerWorkspaces": true
             }
@@ -395,12 +844,17 @@
           "projectType": "library",
           "release": {
             "version": {
-              "manifestRootsToUpdate": ["dist/{projectRoot}"],
+              "manifestRootsToUpdate": [
+                "{projectRoot}",
+                "dist/{projectRoot}"
+              ],
               "currentVersionResolver": "git-tag",
               "fallbackCurrentVersionResolver": "disk"
             }
           },
-          "implicitDependencies": []
+          "implicitDependencies": [
+            "ui-kit"
+          ]
         }
       },
       "ng-customer": {
@@ -411,10 +865,6 @@
           "targets": {
             "eslint:lint": {
               "cache": true,
-              "options": {
-                "cwd": "packages/ng-customer",
-                "command": "eslint ."
-              },
               "inputs": [
                 "default",
                 "^default",
@@ -422,15 +872,21 @@
                 "{workspaceRoot}/packages/ng-customer/eslint.config.cjs",
                 "{workspaceRoot}/tools/eslint-rules/**/*",
                 {
-                  "externalDependencies": ["eslint"]
+                  "externalDependencies": [
+                    "eslint"
+                  ]
                 }
               ],
-              "outputs": ["{options.outputFile}"],
+              "outputs": [
+                "{options.outputFile}"
+              ],
               "metadata": {
-                "technologies": ["eslint"],
+                "technologies": [
+                  "eslint"
+                ],
                 "description": "Runs ESLint on project",
                 "help": {
-                  "command": "npx eslint --help",
+                  "command": "pnpm exec eslint --help",
                   "example": {
                     "options": {
                       "max-warnings": 0
@@ -439,33 +895,57 @@
                 }
               },
               "executor": "nx:run-commands",
+              "options": {
+                "cwd": "packages/ng-customer",
+                "command": "eslint ."
+              },
               "configurations": {},
               "parallelism": true
             },
-            "test": {
-              "executor": "@nx/jest:jest",
-              "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
-              "options": {
-                "jestConfig": "packages/ng-customer/jest.config.ts",
-                "tsConfig": "packages/ng-customer/tsconfig.spec.json"
-              },
-              "configurations": {},
-              "parallelism": true,
+            "lint": {
               "cache": true,
-              "inputs": ["default", "^production"]
-            },
-            "nx-release-publish": {
-              "executor": "@nx/js:release-publish",
-              "dependsOn": ["^nx-release-publish"],
+              "inputs": [
+                "default"
+              ],
+              "outputs": [
+                "{options.outputFile}"
+              ],
+              "metadata": {
+                "technologies": [
+                  "eslint"
+                ],
+                "description": "Runs ESLint on project",
+                "help": {
+                  "command": "pnpm exec eslint --help",
+                  "example": {
+                    "options": {
+                      "max-warnings": 0
+                    }
+                  }
+                }
+              },
+              "executor": "nx:run-commands",
               "options": {
-                "packageRoot": "dist/packages/ng-customer"
+                "cwd": "packages/ng-customer",
+                "command": "eslint ."
               },
               "configurations": {},
               "parallelism": true
             },
             "build": {
+              "cache": true,
+              "dependsOn": [
+                "^build"
+              ],
+              "inputs": [
+                "production",
+                "^production"
+              ],
               "executor": "@nx/angular:package",
-              "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
+              "outputs": [
+                "{workspaceRoot}/dist/{projectRoot}"
+              ],
+              "defaultConfiguration": "production",
               "options": {
                 "project": "packages/ng-customer/ng-package.json",
                 "tsConfig": "packages/ng-customer/tsconfig.lib.json"
@@ -476,11 +956,18 @@
                 },
                 "development": {}
               },
-              "defaultConfiguration": "production",
-              "parallelism": true,
-              "cache": true,
-              "dependsOn": ["^build"],
-              "inputs": ["production", "^production"]
+              "parallelism": true
+            },
+            "nx-release-publish": {
+              "executor": "@nx/js:release-publish",
+              "dependsOn": [
+                "^nx-release-publish"
+              ],
+              "options": {
+                "packageRoot": "dist/packages/ng-customer"
+              },
+              "configurations": {},
+              "parallelism": true
             },
             "publish": {
               "executor": "nx:run-commands",
@@ -491,14 +978,6 @@
               },
               "configurations": {},
               "parallelism": true
-            },
-            "lint": {
-              "executor": "@nx/eslint:lint",
-              "configurations": {},
-              "options": {},
-              "parallelism": true,
-              "cache": true,
-              "inputs": ["default"]
             }
           },
           "name": "ng-customer",
@@ -507,18 +986,25 @@
             "npm:acontplus",
             "npm:angular",
             "npm:angular-material",
+            "npm:customer-management",
             "npm:customer-ui",
-            "npm:components",
+            "npm:customer-components",
+            "npm:crm",
+            "npm:business-logic",
+            "npm:notification-integration",
+            "npm:ddd",
+            "npm:clean-architecture",
+            "npm:domain-driven-design",
             "npm:typescript",
-            "npm:frontend",
-            "npm:library"
+            "npm:enterprise",
+            "npm:frontend"
           ],
           "metadata": {
             "targetGroups": {},
-            "description": "Acontplus Angular Customer Module",
+            "description": "Angular customer management module following clean architecture principles. Provides customer UI components, business logic, and integrates with notification systems for comprehensive customer relationship management.",
             "js": {
               "packageName": "@acontplus/ng-customer",
-              "packageVersion": "1.0.6",
+              "packageVersion": "2.2.5",
               "packageMain": "fesm2022/acontplus-ng-customer.mjs",
               "isInPackageManagerWorkspaces": true
             }
@@ -529,7 +1015,365 @@
           "projectType": "library",
           "release": {
             "version": {
-              "manifestRootsToUpdate": ["dist/{projectRoot}"],
+              "manifestRootsToUpdate": [
+                "{projectRoot}",
+                "dist/{projectRoot}"
+              ],
+              "currentVersionResolver": "git-tag",
+              "fallbackCurrentVersionResolver": "disk"
+            }
+          },
+          "implicitDependencies": []
+        }
+      },
+      "acontplus-erp": {
+        "name": "acontplus-erp",
+        "type": "app",
+        "data": {
+          "root": "apps/acontplus-erp",
+          "targets": {
+            "eslint:lint": {
+              "cache": true,
+              "inputs": [
+                "default",
+                "^default",
+                "{workspaceRoot}/eslint.config.js",
+                "{workspaceRoot}/apps/acontplus-erp/eslint.config.cjs",
+                "{workspaceRoot}/tools/eslint-rules/**/*",
+                {
+                  "externalDependencies": [
+                    "eslint"
+                  ]
+                }
+              ],
+              "outputs": [
+                "{options.outputFile}"
+              ],
+              "metadata": {
+                "technologies": [
+                  "eslint"
+                ],
+                "description": "Runs ESLint on project",
+                "help": {
+                  "command": "pnpm exec eslint --help",
+                  "example": {
+                    "options": {
+                      "max-warnings": 0
+                    }
+                  }
+                }
+              },
+              "executor": "nx:run-commands",
+              "options": {
+                "cwd": "apps/acontplus-erp",
+                "command": "eslint ."
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "lint": {
+              "cache": true,
+              "inputs": [
+                "default"
+              ],
+              "outputs": [
+                "{options.outputFile}"
+              ],
+              "metadata": {
+                "technologies": [
+                  "eslint"
+                ],
+                "description": "Runs ESLint on project",
+                "help": {
+                  "command": "pnpm exec eslint --help",
+                  "example": {
+                    "options": {
+                      "max-warnings": 0
+                    }
+                  }
+                }
+              },
+              "executor": "nx:run-commands",
+              "options": {
+                "cwd": "apps/acontplus-erp",
+                "command": "eslint ."
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "build": {
+              "cache": true,
+              "dependsOn": [
+                "^build"
+              ],
+              "inputs": [
+                "production",
+                "^production"
+              ],
+              "executor": "@angular/build:application",
+              "outputs": [
+                "{options.outputPath}"
+              ],
+              "defaultConfiguration": "production",
+              "options": {
+                "outputPath": "dist/apps/acontplus-erp",
+                "browser": "apps/acontplus-erp/src/main.ts",
+                "tsConfig": "apps/acontplus-erp/tsconfig.app.json",
+                "inlineStyleLanguage": "scss",
+                "assets": [
+                  {
+                    "glob": "**/*",
+                    "input": "apps/acontplus-erp/public"
+                  }
+                ],
+                "styles": [
+                  "apps/acontplus-erp/src/styles.scss"
+                ]
+              },
+              "configurations": {
+                "production": {
+                  "budgets": [
+                    {
+                      "type": "initial",
+                      "maximumWarning": "2mb",
+                      "maximumError": "2.5mb"
+                    },
+                    {
+                      "type": "anyComponentStyle",
+                      "maximumWarning": "12kb",
+                      "maximumError": "16kb"
+                    }
+                  ],
+                  "outputHashing": "all"
+                },
+                "development": {
+                  "optimization": false,
+                  "extractLicenses": false,
+                  "sourceMap": true
+                }
+              },
+              "parallelism": true
+            },
+            "test": {
+              "cache": true,
+              "inputs": [
+                "default",
+                "^production"
+              ],
+              "executor": "@angular/build:unit-test",
+              "outputs": [
+                "{workspaceRoot}/coverage/{projectRoot}"
+              ],
+              "options": {
+                "runner": "vitest",
+                "runnerConfig": "vitest-base.config.ts",
+                "tsConfig": "apps/acontplus-erp/tsconfig.spec.json",
+                "watch": false
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "serve": {
+              "continuous": true,
+              "executor": "@angular/build:dev-server",
+              "defaultConfiguration": "development",
+              "configurations": {
+                "production": {
+                  "buildTarget": "acontplus-erp:build:production"
+                },
+                "development": {
+                  "buildTarget": "acontplus-erp:build:development"
+                }
+              },
+              "options": {},
+              "parallelism": true
+            },
+            "serve-static": {
+              "continuous": true,
+              "executor": "@nx/web:file-server",
+              "options": {
+                "buildTarget": "acontplus-erp:build",
+                "port": 4200,
+                "staticFilePath": "dist/apps/acontplus-erp/browser",
+                "spa": true
+              },
+              "configurations": {},
+              "parallelism": true
+            }
+          },
+          "name": "acontplus-erp",
+          "$schema": "../../node_modules/nx/schemas/project-schema.json",
+          "projectType": "application",
+          "prefix": "app",
+          "sourceRoot": "apps/acontplus-erp/src",
+          "tags": [],
+          "implicitDependencies": []
+        }
+      },
+      "ng-common": {
+        "name": "ng-common",
+        "type": "lib",
+        "data": {
+          "root": "packages/ng-common",
+          "targets": {
+            "eslint:lint": {
+              "cache": true,
+              "inputs": [
+                "default",
+                "^default",
+                "{workspaceRoot}/eslint.config.js",
+                "{workspaceRoot}/packages/ng-common/eslint.config.cjs",
+                "{workspaceRoot}/tools/eslint-rules/**/*",
+                {
+                  "externalDependencies": [
+                    "eslint"
+                  ]
+                }
+              ],
+              "outputs": [
+                "{options.outputFile}"
+              ],
+              "metadata": {
+                "technologies": [
+                  "eslint"
+                ],
+                "description": "Runs ESLint on project",
+                "help": {
+                  "command": "pnpm exec eslint --help",
+                  "example": {
+                    "options": {
+                      "max-warnings": 0
+                    }
+                  }
+                }
+              },
+              "executor": "nx:run-commands",
+              "options": {
+                "cwd": "packages/ng-common",
+                "command": "eslint ."
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "lint": {
+              "cache": true,
+              "inputs": [
+                "default"
+              ],
+              "outputs": [
+                "{options.outputFile}"
+              ],
+              "metadata": {
+                "technologies": [
+                  "eslint"
+                ],
+                "description": "Runs ESLint on project",
+                "help": {
+                  "command": "pnpm exec eslint --help",
+                  "example": {
+                    "options": {
+                      "max-warnings": 0
+                    }
+                  }
+                }
+              },
+              "executor": "nx:run-commands",
+              "options": {
+                "cwd": "packages/ng-common",
+                "command": "eslint ."
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "build": {
+              "cache": true,
+              "dependsOn": [
+                "^build"
+              ],
+              "inputs": [
+                "production",
+                "^production"
+              ],
+              "executor": "@nx/angular:package",
+              "outputs": [
+                "{workspaceRoot}/dist/{projectRoot}"
+              ],
+              "defaultConfiguration": "production",
+              "options": {
+                "project": "packages/ng-common/ng-package.json"
+              },
+              "configurations": {
+                "production": {
+                  "tsConfig": "packages/ng-common/tsconfig.lib.prod.json"
+                },
+                "development": {}
+              },
+              "parallelism": true
+            },
+            "nx-release-publish": {
+              "executor": "@nx/js:release-publish",
+              "dependsOn": [
+                "^nx-release-publish"
+              ],
+              "options": {
+                "packageRoot": "dist/packages/ng-common"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "publish": {
+              "executor": "nx:run-commands",
+              "options": {
+                "command": "npm publish --access=public",
+                "cwd": "dist/packages/ng-common",
+                "parallel": false
+              },
+              "configurations": {},
+              "parallelism": true
+            }
+          },
+          "name": "ng-common",
+          "tags": [
+            "npm:public",
+            "npm:acontplus",
+            "npm:angular",
+            "npm:common",
+            "npm:shared",
+            "npm:utilities",
+            "npm:components",
+            "npm:services",
+            "npm:whatsapp",
+            "npm:messaging",
+            "npm:reports",
+            "npm:printing",
+            "npm:material-design",
+            "npm:ui-library",
+            "npm:enterprise",
+            "npm:reusable",
+            "npm:clean-architecture",
+            "npm:typescript",
+            "npm:frontend"
+          ],
+          "metadata": {
+            "targetGroups": {},
+            "description": "Common Angular library with shared components, services, and utilities for enterprise applications. Includes WhatsApp messaging, report generation, document printing, and reusable UI components built with clean architecture patterns.",
+            "js": {
+              "packageName": "@acontplus/ng-common",
+              "packageVersion": "1.0.12",
+              "packageMain": "fesm2022/acontplus-ng-common.mjs",
+              "isInPackageManagerWorkspaces": true
+            }
+          },
+          "$schema": "../../node_modules/nx/schemas/project-schema.json",
+          "sourceRoot": "packages/ng-common/src",
+          "prefix": "acp",
+          "projectType": "library",
+          "release": {
+            "version": {
+              "manifestRootsToUpdate": [
+                "{projectRoot}",
+                "dist/{projectRoot}"
+              ],
               "currentVersionResolver": "git-tag",
               "fallbackCurrentVersionResolver": "disk"
             }
@@ -545,10 +1389,6 @@
           "targets": {
             "eslint:lint": {
               "cache": true,
-              "options": {
-                "cwd": "packages/ng-config",
-                "command": "eslint ."
-              },
               "inputs": [
                 "default",
                 "^default",
@@ -556,15 +1396,21 @@
                 "{workspaceRoot}/packages/ng-config/eslint.config.cjs",
                 "{workspaceRoot}/tools/eslint-rules/**/*",
                 {
-                  "externalDependencies": ["eslint"]
+                  "externalDependencies": [
+                    "eslint"
+                  ]
                 }
               ],
-              "outputs": ["{options.outputFile}"],
+              "outputs": [
+                "{options.outputFile}"
+              ],
               "metadata": {
-                "technologies": ["eslint"],
+                "technologies": [
+                  "eslint"
+                ],
                 "description": "Runs ESLint on project",
                 "help": {
-                  "command": "npx eslint --help",
+                  "command": "pnpm exec eslint --help",
                   "example": {
                     "options": {
                       "max-warnings": 0
@@ -573,47 +1419,89 @@
                 }
               },
               "executor": "nx:run-commands",
+              "options": {
+                "cwd": "packages/ng-config",
+                "command": "eslint ."
+              },
               "configurations": {},
               "parallelism": true
             },
-            "test": {
-              "executor": "@nx/jest:jest",
-              "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
-              "options": {
-                "jestConfig": "packages/ng-config/jest.config.ts",
-                "tsConfig": "packages/ng-config/tsconfig.spec.json"
-              },
-              "configurations": {},
-              "parallelism": true,
+            "lint": {
               "cache": true,
-              "inputs": ["default", "^production"]
-            },
-            "nx-release-publish": {
-              "executor": "@nx/js:release-publish",
-              "dependsOn": ["^nx-release-publish"],
-              "options": {},
+              "inputs": [
+                "default"
+              ],
+              "outputs": [
+                "{options.outputFile}"
+              ],
+              "metadata": {
+                "technologies": [
+                  "eslint"
+                ],
+                "description": "Runs ESLint on project",
+                "help": {
+                  "command": "pnpm exec eslint --help",
+                  "example": {
+                    "options": {
+                      "max-warnings": 0
+                    }
+                  }
+                }
+              },
+              "executor": "nx:run-commands",
+              "options": {
+                "cwd": "packages/ng-config",
+                "command": "eslint ."
+              },
               "configurations": {},
               "parallelism": true
             },
             "build": {
+              "cache": true,
+              "dependsOn": [
+                "^build"
+              ],
+              "inputs": [
+                "production",
+                "^production"
+              ],
               "executor": "@nx/angular:package",
-              "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
+              "outputs": [
+                "{workspaceRoot}/dist/{projectRoot}"
+              ],
+              "defaultConfiguration": "production",
               "options": {
-                "project": "packages/ng-config/ng-package.json"
+                "project": "packages/ng-config/ng-package.json",
+                "tsConfig": "packages/ng-config/tsconfig.lib.json"
+              },
+              "configurations": {
+                "production": {
+                  "tsConfig": "packages/ng-config/tsconfig.lib.prod.json"
+                },
+                "development": {}
+              },
+              "parallelism": true
+            },
+            "nx-release-publish": {
+              "executor": "@nx/js:release-publish",
+              "dependsOn": [
+                "^nx-release-publish"
+              ],
+              "options": {
+                "packageRoot": "dist/packages/ng-config"
               },
               "configurations": {},
-              "parallelism": true,
-              "cache": true,
-              "dependsOn": ["^build"],
-              "inputs": ["production", "^production"]
+              "parallelism": true
             },
-            "lint": {
-              "executor": "@nx/eslint:lint",
+            "publish": {
+              "executor": "nx:run-commands",
+              "options": {
+                "command": "npm publish --access=public",
+                "cwd": "dist/packages/ng-config",
+                "parallel": false
+              },
               "configurations": {},
-              "options": {},
-              "parallelism": true,
-              "cache": true,
-              "inputs": ["default"]
+              "parallelism": true
             }
           },
           "name": "ng-config",
@@ -622,25 +1510,42 @@
             "npm:acontplus",
             "npm:angular",
             "npm:configuration",
-            "npm:environment",
+            "npm:environment-tokens",
+            "npm:app-config",
+            "npm:runtime-configuration",
+            "npm:settings-management",
+            "npm:injection-tokens",
+            "npm:dependency-injection",
+            "npm:config-services",
+            "npm:environment-management",
             "npm:typescript",
-            "npm:frontend",
-            "npm:library"
+            "npm:enterprise",
+            "npm:frontend"
           ],
           "metadata": {
             "targetGroups": {},
-            "description": "Acontplus Angular Configuration Module",
+            "description": "Angular configuration management library providing environment tokens, application settings, dependency injection patterns, and runtime configuration services for enterprise applications.",
             "js": {
               "packageName": "@acontplus/ng-config",
-              "packageVersion": "1.0.0",
+              "packageVersion": "2.0.3",
               "packageMain": "fesm2022/acontplus-ng-config.mjs",
               "isInPackageManagerWorkspaces": true
             }
           },
           "$schema": "../../node_modules/nx/schemas/project-schema.json",
           "sourceRoot": "packages/ng-config/src",
-          "prefix": "lib",
+          "prefix": "acp",
           "projectType": "library",
+          "release": {
+            "version": {
+              "manifestRootsToUpdate": [
+                "{projectRoot}",
+                "dist/{projectRoot}"
+              ],
+              "currentVersionResolver": "git-tag",
+              "fallbackCurrentVersionResolver": "disk"
+            }
+          },
           "implicitDependencies": []
         }
       },
@@ -652,10 +1557,6 @@
           "targets": {
             "eslint:lint": {
               "cache": true,
-              "options": {
-                "cwd": "apps/demo-app-e2e",
-                "command": "eslint ."
-              },
               "inputs": [
                 "default",
                 "^default",
@@ -663,15 +1564,21 @@
                 "{workspaceRoot}/apps/demo-app-e2e/eslint.config.cjs",
                 "{workspaceRoot}/tools/eslint-rules/**/*",
                 {
-                  "externalDependencies": ["eslint"]
+                  "externalDependencies": [
+                    "eslint"
+                  ]
                 }
               ],
-              "outputs": ["{options.outputFile}"],
+              "outputs": [
+                "{options.outputFile}"
+              ],
               "metadata": {
-                "technologies": ["eslint"],
+                "technologies": [
+                  "eslint"
+                ],
                 "description": "Runs ESLint on project",
                 "help": {
-                  "command": "npx eslint --help",
+                  "command": "pnpm exec eslint --help",
                   "example": {
                     "options": {
                       "max-warnings": 0
@@ -680,19 +1587,21 @@
                 }
               },
               "executor": "nx:run-commands",
+              "options": {
+                "cwd": "apps/demo-app-e2e",
+                "command": "eslint ."
+              },
               "configurations": {},
               "parallelism": true
             },
             "e2e": {
-              "options": {
-                "cwd": "apps/demo-app-e2e",
-                "command": "playwright test"
-              },
               "metadata": {
-                "technologies": ["playwright"],
+                "technologies": [
+                  "playwright"
+                ],
                 "description": "Runs Playwright Tests",
                 "help": {
-                  "command": "npx playwright test --help",
+                  "command": "pnpm exec playwright test --help",
                   "example": {
                     "options": {
                       "workers": 1
@@ -700,18 +1609,25 @@
                   }
                 }
               },
-              "dependsOn": [
-                {
-                  "projects": ["demo-app"],
-                  "target": "serve"
-                }
-              ],
+              "parallelism": false,
               "cache": true,
               "inputs": [
                 "default",
                 "^production",
+                "^{projectRoot}/tsconfig*.json",
                 {
-                  "externalDependencies": ["@playwright/test"]
+                  "json": "{workspaceRoot}/tsconfig.json",
+                  "fields": [
+                    "compilerOptions",
+                    "extends",
+                    "files",
+                    "include"
+                  ]
+                },
+                {
+                  "externalDependencies": [
+                    "@playwright/test"
+                  ]
                 }
               ],
               "outputs": [
@@ -719,51 +1635,11 @@
                 "{workspaceRoot}/dist/.playwright/apps/demo-app-e2e/playwright-report"
               ],
               "executor": "nx:run-commands",
-              "configurations": {},
-              "parallelism": true
-            },
-            "e2e-ci--src/example.spec.ts": {
               "options": {
                 "cwd": "apps/demo-app-e2e",
-                "env": {
-                  "PLAYWRIGHT_HTML_OUTPUT_DIR": "..\\..\\dist\\.playwright\\apps\\demo-app-e2e\\playwright-report\\src-example-spec-ts",
-                  "PLAYWRIGHT_HTML_REPORT": "..\\..\\dist\\.playwright\\apps\\demo-app-e2e\\playwright-report\\src-example-spec-ts"
-                },
-                "command": "playwright test src/example.spec.ts --output=..\\..\\dist\\.playwright\\apps\\demo-app-e2e\\test-output\\src-example-spec-ts"
+                "command": "playwright test"
               },
-              "metadata": {
-                "technologies": ["playwright"],
-                "description": "Runs Playwright Tests in src/example.spec.ts in CI",
-                "help": {
-                  "command": "npx playwright test --help",
-                  "example": {
-                    "options": {
-                      "workers": 1
-                    }
-                  }
-                }
-              },
-              "dependsOn": [
-                {
-                  "projects": ["demo-app"],
-                  "target": "serve"
-                }
-              ],
-              "cache": true,
-              "inputs": [
-                "default",
-                "^production",
-                {
-                  "externalDependencies": ["@playwright/test"]
-                }
-              ],
-              "outputs": [
-                "{workspaceRoot}/dist/.playwright/apps/demo-app-e2e/test-output/src-example-spec-ts",
-                "{workspaceRoot}/dist/.playwright/apps/demo-app-e2e/playwright-report/src-example-spec-ts"
-              ],
-              "executor": "nx:run-commands",
-              "configurations": {},
-              "parallelism": true
+              "configurations": {}
             },
             "e2e-ci": {
               "executor": "nx:noop",
@@ -771,28 +1647,35 @@
               "inputs": [
                 "default",
                 "^production",
+                "^{projectRoot}/tsconfig*.json",
                 {
-                  "externalDependencies": ["@playwright/test"]
+                  "json": "{workspaceRoot}/tsconfig.json",
+                  "fields": [
+                    "compilerOptions",
+                    "extends",
+                    "files",
+                    "include"
+                  ]
+                },
+                {
+                  "externalDependencies": [
+                    "@playwright/test"
+                  ]
                 }
               ],
               "outputs": [
                 "{workspaceRoot}/dist/.playwright/apps/demo-app-e2e/test-output",
                 "{workspaceRoot}/dist/.playwright/apps/demo-app-e2e/playwright-report"
               ],
-              "dependsOn": [
-                {
-                  "target": "e2e-ci--src/example.spec.ts",
-                  "projects": "self",
-                  "params": "forward",
-                  "options": "forward"
-                }
-              ],
+              "dependsOn": [],
               "metadata": {
-                "technologies": ["playwright"],
+                "technologies": [
+                  "playwright"
+                ],
                 "description": "Runs Playwright Tests in CI",
                 "nonAtomizedTarget": "e2e",
                 "help": {
-                  "command": "npx playwright test --help",
+                  "command": "pnpm exec playwright test --help",
                   "example": {
                     "options": {
                       "workers": 1
@@ -800,28 +1683,45 @@
                   }
                 }
               },
+              "parallelism": false,
               "configurations": {},
-              "options": {},
-              "parallelism": true
+              "options": {}
             },
             "e2e-ci--merge-reports": {
               "executor": "@nx/playwright:merge-reports",
+              "continuous": false,
               "cache": true,
               "inputs": [
                 "default",
                 "^production",
+                "^{projectRoot}/tsconfig*.json",
                 {
-                  "externalDependencies": ["@playwright/test"]
+                  "json": "{workspaceRoot}/tsconfig.json",
+                  "fields": [
+                    "compilerOptions",
+                    "extends",
+                    "files",
+                    "include"
+                  ]
+                },
+                {
+                  "externalDependencies": [
+                    "@playwright/test"
+                  ]
                 }
               ],
-              "outputs": ["{workspaceRoot}/dist/.playwright/apps/demo-app-e2e/playwright-report"],
+              "outputs": [
+                "{workspaceRoot}/dist/.playwright/apps/demo-app-e2e/playwright-report"
+              ],
+              "metadata": {
+                "technologies": [
+                  "playwright"
+                ],
+                "description": "Merges Playwright blob reports from atomized tasks to produce unified reports for the configured reporters."
+              },
               "options": {
                 "config": "playwright.config.ts",
-                "expectedSuites": 1
-              },
-              "metadata": {
-                "technologies": ["playwright"],
-                "description": "Merges Playwright blob reports from atomized tasks to produce unified reports for the configured reporters."
+                "expectedSuites": 0
               },
               "configurations": {},
               "parallelism": true
@@ -829,14 +1729,19 @@
           },
           "metadata": {
             "targetGroups": {
-              "E2E (CI)": ["e2e-ci--src/example.spec.ts", "e2e-ci", "e2e-ci--merge-reports"]
+              "E2E (CI)": [
+                "e2e-ci",
+                "e2e-ci--merge-reports"
+              ]
             }
           },
           "name": "demo-app-e2e",
           "$schema": "../../node_modules/nx/schemas/project-schema.json",
           "projectType": "application",
           "sourceRoot": "apps/demo-app-e2e/src",
-          "implicitDependencies": ["demo-app"],
+          "implicitDependencies": [
+            "demo-app"
+          ],
           "tags": []
         }
       },
@@ -848,25 +1753,28 @@
           "targets": {
             "eslint:lint": {
               "cache": true,
-              "options": {
-                "cwd": "packages/ng-auth",
-                "command": "eslint ."
-              },
               "inputs": [
                 "default",
                 "^default",
                 "{workspaceRoot}/eslint.config.js",
+                "{workspaceRoot}/packages/ng-auth/eslint.config.cjs",
                 "{workspaceRoot}/tools/eslint-rules/**/*",
                 {
-                  "externalDependencies": ["eslint"]
+                  "externalDependencies": [
+                    "eslint"
+                  ]
                 }
               ],
-              "outputs": ["{options.outputFile}"],
+              "outputs": [
+                "{options.outputFile}"
+              ],
               "metadata": {
-                "technologies": ["eslint"],
+                "technologies": [
+                  "eslint"
+                ],
                 "description": "Runs ESLint on project",
                 "help": {
-                  "command": "npx eslint --help",
+                  "command": "pnpm exec eslint --help",
                   "example": {
                     "options": {
                       "max-warnings": 0
@@ -875,47 +1783,88 @@
                 }
               },
               "executor": "nx:run-commands",
+              "options": {
+                "cwd": "packages/ng-auth",
+                "command": "eslint ."
+              },
               "configurations": {},
               "parallelism": true
             },
-            "nx-release-publish": {
-              "executor": "@nx/js:release-publish",
-              "dependsOn": ["^nx-release-publish"],
-              "options": {},
+            "lint": {
+              "cache": true,
+              "inputs": [
+                "default"
+              ],
+              "outputs": [
+                "{options.outputFile}"
+              ],
+              "metadata": {
+                "technologies": [
+                  "eslint"
+                ],
+                "description": "Runs ESLint on project",
+                "help": {
+                  "command": "pnpm exec eslint --help",
+                  "example": {
+                    "options": {
+                      "max-warnings": 0
+                    }
+                  }
+                }
+              },
+              "executor": "nx:run-commands",
+              "options": {
+                "cwd": "packages/ng-auth",
+                "command": "eslint ."
+              },
               "configurations": {},
               "parallelism": true
             },
             "build": {
+              "cache": true,
+              "dependsOn": [
+                "^build"
+              ],
+              "inputs": [
+                "production",
+                "^production"
+              ],
               "executor": "@nx/angular:package",
-              "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
+              "outputs": [
+                "{workspaceRoot}/dist/{projectRoot}"
+              ],
+              "defaultConfiguration": "production",
               "options": {
                 "project": "packages/ng-auth/ng-package.json"
               },
-              "configurations": {},
-              "parallelism": true,
-              "cache": true,
-              "dependsOn": ["^build"],
-              "inputs": ["production", "^production"]
+              "configurations": {
+                "production": {
+                  "tsConfig": "packages/ng-auth/tsconfig.lib.prod.json"
+                },
+                "development": {}
+              },
+              "parallelism": true
             },
-            "test": {
-              "executor": "@nx/jest:jest",
-              "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+            "nx-release-publish": {
+              "executor": "@nx/js:release-publish",
+              "dependsOn": [
+                "^nx-release-publish"
+              ],
               "options": {
-                "jestConfig": "packages/ng-auth/jest.config.ts",
-                "tsConfig": "packages/ng-auth/tsconfig.spec.json"
+                "packageRoot": "dist/packages/ng-auth"
               },
               "configurations": {},
-              "parallelism": true,
-              "cache": true,
-              "inputs": ["default", "^production"]
+              "parallelism": true
             },
-            "lint": {
-              "executor": "@nx/eslint:lint",
+            "publish": {
+              "executor": "nx:run-commands",
+              "options": {
+                "command": "npm publish --access=public",
+                "cwd": "dist/packages/ng-auth",
+                "parallel": false
+              },
               "configurations": {},
-              "options": {},
-              "parallelism": true,
-              "cache": true,
-              "inputs": ["default"]
+              "parallelism": true
             }
           },
           "name": "ng-auth",
@@ -925,26 +1874,57 @@
             "npm:angular",
             "npm:authentication",
             "npm:jwt",
-            "npm:guards",
+            "npm:jwt-decode",
+            "npm:auth-guard",
+            "npm:route-guards",
+            "npm:auth-interceptor",
+            "npm:csrf-interceptor",
+            "npm:csrf-protection",
+            "npm:url-redirect",
+            "npm:session-management",
+            "npm:token-management",
+            "npm:login-component",
+            "npm:auth-providers",
+            "npm:auth-repository",
+            "npm:auth-stores",
+            "npm:ddd",
+            "npm:clean-architecture",
+            "npm:hexagonal-architecture",
+            "npm:use-cases",
+            "npm:domain-models",
             "npm:typescript",
-            "npm:frontend",
-            "npm:library"
+            "npm:angular-material",
+            "npm:enterprise",
+            "npm:frontend"
           ],
           "metadata": {
             "targetGroups": {},
-            "description": "Acontplus Angular Authentication Module",
+            "description": "Comprehensive Angular authentication module with JWT token management, route guards, CSRF protection, URL redirection, session handling, and clean architecture patterns. Includes login components, auth interceptors, and DDD-based repositories.",
             "js": {
               "packageName": "@acontplus/ng-auth",
-              "packageVersion": "1.0.0",
+              "packageVersion": "2.1.15",
               "packageMain": "fesm2022/acontplus-ng-auth.mjs",
               "isInPackageManagerWorkspaces": true
             }
           },
           "$schema": "../../node_modules/nx/schemas/project-schema.json",
           "sourceRoot": "packages/ng-auth/src",
-          "prefix": "lib",
+          "prefix": "acp",
           "projectType": "library",
-          "implicitDependencies": ["ng-infrastructure", "ng-config"]
+          "release": {
+            "version": {
+              "manifestRootsToUpdate": [
+                "{projectRoot}",
+                "dist/{projectRoot}"
+              ],
+              "currentVersionResolver": "git-tag",
+              "fallbackCurrentVersionResolver": "disk"
+            }
+          },
+          "implicitDependencies": [
+            "ng-infrastructure",
+            "ng-config"
+          ]
         }
       },
       "ui-kit": {
@@ -955,26 +1935,29 @@
           "targets": {
             "eslint:lint": {
               "cache": true,
-              "options": {
-                "cwd": "packages/ui-kit",
-                "command": "eslint ."
-              },
               "inputs": [
                 "default",
                 "^default",
                 "{workspaceRoot}/eslint.config.js",
                 "{workspaceRoot}/packages/ui-kit/eslint.config.cjs",
+                "{workspaceRoot}/tsconfig.json",
                 "{workspaceRoot}/tools/eslint-rules/**/*",
                 {
-                  "externalDependencies": ["eslint"]
+                  "externalDependencies": [
+                    "eslint"
+                  ]
                 }
               ],
-              "outputs": ["{options.outputFile}"],
+              "outputs": [
+                "{options.outputFile}"
+              ],
               "metadata": {
-                "technologies": ["eslint"],
+                "technologies": [
+                  "eslint"
+                ],
                 "description": "Runs ESLint on project",
                 "help": {
-                  "command": "npx eslint --help",
+                  "command": "pnpm exec eslint --help",
                   "example": {
                     "options": {
                       "max-warnings": 0
@@ -983,191 +1966,88 @@
                 }
               },
               "executor": "nx:run-commands",
+              "options": {
+                "cwd": "packages/ui-kit",
+                "command": "eslint ."
+              },
               "configurations": {},
               "parallelism": true
             },
             "test": {
-              "options": {
-                "cwd": "packages/ui-kit",
-                "env": {
-                  "TS_NODE_COMPILER_OPTIONS": "{\"moduleResolution\":\"node10\",\"module\":\"commonjs\",\"customConditions\":null}"
-                },
-                "command": "jest"
-              },
+              "cache": true,
+              "inputs": [
+                "default",
+                "^production"
+              ],
+              "outputs": [
+                "{workspaceRoot}/coverage/{projectRoot}"
+              ],
               "metadata": {
-                "technologies": ["jest"],
-                "description": "Run Jest Tests",
+                "technologies": [
+                  "vitest"
+                ],
+                "description": "Run Vitest tests",
                 "help": {
-                  "command": "npx jest --help",
+                  "command": "pnpm exec vitest --help",
                   "example": {
                     "options": {
+                      "bail": 1,
                       "coverage": true
                     }
                   }
                 }
               },
-              "cache": true,
-              "inputs": ["default", "^production"],
-              "outputs": ["{workspaceRoot}\\coverage\\packages\\ui-kit"],
               "executor": "nx:run-commands",
+              "options": {
+                "cwd": "packages/ui-kit",
+                "command": "vitest run"
+              },
               "configurations": {},
               "parallelism": true
             },
             "build": {
-              "options": {
-                "cwd": "packages/ui-kit",
-                "command": "vite build"
-              },
               "cache": true,
-              "dependsOn": ["^build"],
-              "inputs": ["production", "^production"],
-              "outputs": ["{workspaceRoot}\\dist\\packages\\ui-kit"],
-              "metadata": {
-                "technologies": ["vite"],
-                "description": "Run Vite build",
-                "help": {
-                  "command": "npx vite build --help",
-                  "example": {
-                    "options": {
-                      "sourcemap": true,
-                      "manifest": "manifest.json"
-                    }
-                  }
-                }
-              },
-              "executor": "nx:run-commands",
-              "configurations": {},
-              "parallelism": true
-            },
-            "serve": {
-              "continuous": true,
-              "options": {
-                "cwd": "packages/ui-kit",
-                "command": "vite"
-              },
-              "metadata": {
-                "technologies": ["vite"],
-                "description": "Starts Vite dev server",
-                "help": {
-                  "command": "npx vite --help",
-                  "example": {
-                    "options": {
-                      "port": 3000
-                    }
-                  }
-                },
-                "deprecated": "Use devTargetName instead. This option will be removed in Nx 22."
-              },
-              "executor": "nx:run-commands",
-              "configurations": {},
-              "parallelism": true
-            },
-            "dev": {
-              "continuous": true,
-              "options": {
-                "cwd": "packages/ui-kit",
-                "command": "vite"
-              },
-              "metadata": {
-                "technologies": ["vite"],
-                "description": "Starts Vite dev server",
-                "help": {
-                  "command": "npx vite --help",
-                  "example": {
-                    "options": {
-                      "port": 3000
-                    }
-                  }
-                }
-              },
-              "executor": "nx:run-commands",
-              "configurations": {},
-              "parallelism": true
-            },
-            "preview": {
-              "continuous": true,
-              "dependsOn": ["build"],
-              "options": {
-                "cwd": "packages/ui-kit",
-                "command": "vite preview"
-              },
-              "metadata": {
-                "technologies": ["vite"],
-                "description": "Locally preview Vite production build",
-                "help": {
-                  "command": "npx vite preview --help",
-                  "example": {
-                    "options": {
-                      "port": 3000
-                    }
-                  }
-                }
-              },
-              "executor": "nx:run-commands",
-              "configurations": {},
-              "parallelism": true
-            },
-            "serve-static": {
-              "continuous": true,
-              "executor": "@nx/web:file-server",
-              "options": {
-                "buildTarget": "build",
-                "spa": true
-              },
-              "configurations": {},
-              "parallelism": true
-            },
-            "typecheck": {
-              "cache": true,
+              "dependsOn": [
+                "^build"
+              ],
               "inputs": [
                 "production",
-                "^production",
-                {
-                  "externalDependencies": ["typescript"]
-                }
+                "^production"
+              ],
+              "executor": "@nx/js:tsc",
+              "outputs": [
+                "{options.outputPath}"
               ],
               "options": {
-                "cwd": "packages/ui-kit",
-                "command": "tsc --noEmit -p tsconfig.lib.json"
-              },
-              "metadata": {
-                "description": "Runs type-checking for the project.",
-                "technologies": ["typescript"],
-                "help": {
-                  "command": "npx tsc -p tsconfig.lib.json --help",
-                  "example": {
-                    "options": {
-                      "noEmit": true
-                    }
-                  }
-                }
-              },
-              "executor": "nx:run-commands",
-              "configurations": {},
-              "parallelism": true
-            },
-            "build-deps": {
-              "dependsOn": ["^build"],
-              "configurations": {},
-              "options": {},
-              "parallelism": true,
-              "executor": "nx:noop"
-            },
-            "watch-deps": {
-              "continuous": true,
-              "dependsOn": ["build-deps"],
-              "executor": "nx:run-commands",
-              "options": {
-                "command": "npx nx watch --projects ui-kit --includeDependentProjects -- npx nx build-deps ui-kit"
+                "outputPath": "dist/packages/ui-kit",
+                "main": "packages/ui-kit/src/index.ts",
+                "tsConfig": "packages/ui-kit/tsconfig.lib.json",
+                "assets": [
+                  "packages/ui-kit/*.md"
+                ],
+                "clean": false,
+                "packageJson": "packages/ui-kit/package.json"
               },
               "configurations": {},
               "parallelism": true
             },
             "nx-release-publish": {
               "executor": "@nx/js:release-publish",
-              "dependsOn": ["^nx-release-publish"],
+              "dependsOn": [
+                "^nx-release-publish"
+              ],
               "options": {
                 "packageRoot": "dist/packages/ui-kit"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "publish": {
+              "executor": "nx:run-commands",
+              "options": {
+                "command": "npm publish --access=public",
+                "cwd": "dist/packages/ui-kit",
+                "parallel": false
               },
               "configurations": {},
               "parallelism": true
@@ -1176,27 +2056,57 @@
           "projectType": "library",
           "metadata": {
             "targetGroups": {},
+            "description": "Framework-agnostic UI kit library providing reusable design assets, SVG icon definitions, button types, select options, and design system elements for consistent user interfaces across any JavaScript framework.",
             "js": {
               "packageName": "@acontplus/ui-kit",
-              "packageVersion": "0.0.1",
+              "packageVersion": "1.0.2",
               "packageExports": {
                 ".": {
-                  "import": "./index.js",
-                  "types": "./index.d.ts"
+                  "import": "./src/index.js",
+                  "types": "./src/index.d.ts"
                 },
                 "./package.json": "./package.json"
               },
-              "packageMain": "./index.js",
+              "packageMain": "./src/index.js",
               "isInPackageManagerWorkspaces": true
             }
           },
           "name": "ui-kit",
-          "tags": ["npm:public"],
+          "tags": [
+            "npm:public",
+            "npm:acontplus",
+            "npm:ui-kit",
+            "npm:design-system",
+            "npm:design-tokens",
+            "npm:icons",
+            "npm:svg-icons",
+            "npm:icon-definitions",
+            "npm:button-types",
+            "npm:select-options",
+            "npm:report-formats",
+            "npm:framework-agnostic",
+            "npm:material-design",
+            "npm:reusable-components",
+            "npm:ui-elements",
+            "npm:standardized-ui",
+            "npm:consistent-interfaces",
+            "npm:design-patterns",
+            "npm:typescript",
+            "npm:react",
+            "npm:vue",
+            "npm:angular",
+            "npm:svelte",
+            "npm:enterprise",
+            "npm:frontend"
+          ],
           "$schema": "../../node_modules/nx/schemas/project-schema.json",
           "sourceRoot": "packages/ui-kit/src",
           "release": {
             "version": {
-              "manifestRootsToUpdate": ["dist/{projectRoot}"],
+              "manifestRootsToUpdate": [
+                "{projectRoot}",
+                "dist/{projectRoot}"
+              ],
               "currentVersionResolver": "git-tag",
               "fallbackCurrentVersionResolver": "disk"
             }
@@ -1212,26 +2122,29 @@
           "targets": {
             "eslint:lint": {
               "cache": true,
-              "options": {
-                "cwd": "packages/utils",
-                "command": "eslint ."
-              },
               "inputs": [
                 "default",
                 "^default",
                 "{workspaceRoot}/eslint.config.js",
                 "{workspaceRoot}/packages/utils/eslint.config.cjs",
+                "{workspaceRoot}/tsconfig.json",
                 "{workspaceRoot}/tools/eslint-rules/**/*",
                 {
-                  "externalDependencies": ["eslint"]
+                  "externalDependencies": [
+                    "eslint"
+                  ]
                 }
               ],
-              "outputs": ["{options.outputFile}"],
+              "outputs": [
+                "{options.outputFile}"
+              ],
               "metadata": {
-                "technologies": ["eslint"],
+                "technologies": [
+                  "eslint"
+                ],
                 "description": "Runs ESLint on project",
                 "help": {
-                  "command": "npx eslint --help",
+                  "command": "pnpm exec eslint --help",
                   "example": {
                     "options": {
                       "max-warnings": 0
@@ -1240,58 +2153,81 @@
                 }
               },
               "executor": "nx:run-commands",
+              "options": {
+                "cwd": "packages/utils",
+                "command": "eslint ."
+              },
               "configurations": {},
               "parallelism": true
             },
             "test": {
-              "executor": "nx:run-script",
-              "options": {
-                "script": "test"
-              },
+              "cache": true,
+              "inputs": [
+                "default",
+                "^production"
+              ],
+              "outputs": [
+                "{workspaceRoot}/coverage/{projectRoot}"
+              ],
               "metadata": {
-                "technologies": ["jest"],
-                "description": "Run Jest Tests",
+                "technologies": [
+                  "vitest"
+                ],
+                "description": "Run Vitest tests",
                 "help": {
-                  "command": "npx jest --help",
+                  "command": "pnpm exec vitest --help",
                   "example": {
                     "options": {
+                      "bail": 1,
                       "coverage": true
                     }
                   }
-                },
-                "scriptContent": "nx test utils",
-                "runCommand": "npm run test"
+                }
               },
-              "configurations": {},
-              "parallelism": true,
-              "cache": true,
-              "inputs": ["default", "^production"]
-            },
-            "nx-release-publish": {
-              "executor": "@nx/js:release-publish",
-              "dependsOn": ["^nx-release-publish"],
+              "executor": "nx:run-commands",
               "options": {
-                "packageRoot": "dist/packages/utils"
+                "cwd": "packages/utils",
+                "command": "vitest run"
               },
               "configurations": {},
               "parallelism": true
             },
             "build": {
+              "cache": true,
+              "dependsOn": [
+                "^build"
+              ],
+              "inputs": [
+                "production",
+                "^production"
+              ],
               "executor": "@nx/js:tsc",
-              "outputs": ["{options.outputPath}"],
+              "outputs": [
+                "{options.outputPath}"
+              ],
               "options": {
                 "outputPath": "dist/packages/utils",
                 "main": "packages/utils/src/index.ts",
                 "tsConfig": "packages/utils/tsconfig.lib.json",
-                "assets": ["packages/utils/*.md"],
+                "assets": [
+                  "packages/utils/*.md"
+                ],
                 "clean": false,
                 "packageJson": "packages/utils/package.json"
               },
               "configurations": {},
-              "parallelism": true,
-              "cache": true,
-              "dependsOn": ["^build"],
-              "inputs": ["production", "^production"]
+              "parallelism": true
+            },
+            "nx-release-publish": {
+              "executor": "@nx/js:release-publish",
+              "dependsOn": [
+                "^nx-release-publish"
+              ],
+              "options": {
+                "packageRoot": "dist/packages/utils"
+              },
+              "configurations": {},
+              "parallelism": true
             },
             "publish": {
               "executor": "nx:run-commands",
@@ -1304,16 +2240,13 @@
               "parallelism": true
             }
           },
-          "name": "utils",
-          "tags": ["npm:public", "npm:utilities", "npm:typescript", "npm:utils", "npm:helpers"],
+          "projectType": "library",
           "metadata": {
-            "targetGroups": {
-              "NPM Scripts": ["test"]
-            },
-            "description": "Utility library",
+            "targetGroups": {},
+            "description": "Comprehensive utility library with converters (color, decimal, JSON), formatters (date, number, string), validators (regex, parameter), helpers (array, object, field), error handling, and type definitions for TypeScript applications.",
             "js": {
               "packageName": "@acontplus/utils",
-              "packageVersion": "1.0.5",
+              "packageVersion": "1.1.0",
               "packageExports": {
                 ".": {
                   "import": "./src/index.js",
@@ -1325,12 +2258,44 @@
               "isInPackageManagerWorkspaces": true
             }
           },
+          "name": "utils",
+          "tags": [
+            "npm:public",
+            "npm:acontplus",
+            "npm:utilities",
+            "npm:utils",
+            "npm:helpers",
+            "npm:converters",
+            "npm:formatters",
+            "npm:validators",
+            "npm:array-helper",
+            "npm:object-helper",
+            "npm:field-helper",
+            "npm:date-formatter",
+            "npm:number-formatter",
+            "npm:string-formatter",
+            "npm:decimal-converter",
+            "npm:color-converter",
+            "npm:json-converter",
+            "npm:regex-validator",
+            "npm:parameter-validator",
+            "npm:decimal-js",
+            "npm:error-handling",
+            "npm:invalid-parameter-error",
+            "npm:decimal-error",
+            "npm:decimal-options",
+            "npm:date-types",
+            "npm:typescript",
+            "npm:enterprise"
+          ],
           "$schema": "../../node_modules/nx/schemas/project-schema.json",
           "sourceRoot": "packages/utils/src",
-          "projectType": "library",
           "release": {
             "version": {
-              "manifestRootsToUpdate": ["dist/{projectRoot}"],
+              "manifestRootsToUpdate": [
+                "{projectRoot}",
+                "dist/{projectRoot}"
+              ],
               "currentVersionResolver": "git-tag",
               "fallbackCurrentVersionResolver": "disk"
             }
@@ -1346,26 +2311,29 @@
           "targets": {
             "eslint:lint": {
               "cache": true,
-              "options": {
-                "cwd": "packages/core",
-                "command": "eslint ."
-              },
               "inputs": [
                 "default",
                 "^default",
                 "{workspaceRoot}/eslint.config.js",
                 "{workspaceRoot}/packages/core/eslint.config.cjs",
+                "{workspaceRoot}/tsconfig.json",
                 "{workspaceRoot}/tools/eslint-rules/**/*",
                 {
-                  "externalDependencies": ["eslint"]
+                  "externalDependencies": [
+                    "eslint"
+                  ]
                 }
               ],
-              "outputs": ["{options.outputFile}"],
+              "outputs": [
+                "{options.outputFile}"
+              ],
               "metadata": {
-                "technologies": ["eslint"],
+                "technologies": [
+                  "eslint"
+                ],
                 "description": "Runs ESLint on project",
                 "help": {
-                  "command": "npx eslint --help",
+                  "command": "pnpm exec eslint --help",
                   "example": {
                     "options": {
                       "max-warnings": 0
@@ -1374,58 +2342,81 @@
                 }
               },
               "executor": "nx:run-commands",
+              "options": {
+                "cwd": "packages/core",
+                "command": "eslint ."
+              },
               "configurations": {},
               "parallelism": true
             },
             "test": {
-              "executor": "nx:run-script",
-              "options": {
-                "script": "test"
-              },
+              "cache": true,
+              "inputs": [
+                "default",
+                "^production"
+              ],
+              "outputs": [
+                "{workspaceRoot}/coverage/{projectRoot}"
+              ],
               "metadata": {
-                "technologies": ["jest"],
-                "description": "Run Jest Tests",
+                "technologies": [
+                  "vitest"
+                ],
+                "description": "Run Vitest tests",
                 "help": {
-                  "command": "npx jest --help",
+                  "command": "pnpm exec vitest --help",
                   "example": {
                     "options": {
+                      "bail": 1,
                       "coverage": true
                     }
                   }
-                },
-                "scriptContent": "nx test core",
-                "runCommand": "npm run test"
+                }
               },
-              "configurations": {},
-              "parallelism": true,
-              "cache": true,
-              "inputs": ["default", "^production"]
-            },
-            "nx-release-publish": {
-              "executor": "@nx/js:release-publish",
-              "dependsOn": ["^nx-release-publish"],
+              "executor": "nx:run-commands",
               "options": {
-                "packageRoot": "dist/packages/core"
+                "cwd": "packages/core",
+                "command": "vitest run"
               },
               "configurations": {},
               "parallelism": true
             },
             "build": {
+              "cache": true,
+              "dependsOn": [
+                "^build"
+              ],
+              "inputs": [
+                "production",
+                "^production"
+              ],
               "executor": "@nx/js:tsc",
-              "outputs": ["{options.outputPath}"],
+              "outputs": [
+                "{options.outputPath}"
+              ],
               "options": {
                 "outputPath": "dist/packages/core",
                 "main": "packages/core/src/index.ts",
                 "tsConfig": "packages/core/tsconfig.lib.json",
-                "assets": ["packages/core/*.md"],
+                "assets": [
+                  "packages/core/*.md"
+                ],
                 "clean": false,
                 "packageJson": "packages/core/package.json"
               },
               "configurations": {},
-              "parallelism": true,
-              "cache": true,
-              "dependsOn": ["^build"],
-              "inputs": ["production", "^production"]
+              "parallelism": true
+            },
+            "nx-release-publish": {
+              "executor": "@nx/js:release-publish",
+              "dependsOn": [
+                "^nx-release-publish"
+              ],
+              "options": {
+                "packageRoot": "dist/packages/core"
+              },
+              "configurations": {},
+              "parallelism": true
             },
             "publish": {
               "executor": "nx:run-commands",
@@ -1438,23 +2429,13 @@
               "parallelism": true
             }
           },
-          "name": "core",
-          "tags": [
-            "npm:public",
-            "npm:calculations",
-            "npm:constants",
-            "npm:environment",
-            "npm:pricing",
-            "npm:typescript"
-          ],
+          "projectType": "library",
           "metadata": {
-            "targetGroups": {
-              "NPM Scripts": ["test"]
-            },
-            "description": "Core library for Acontplus projects, providing essential utilities and functionalities.",
+            "targetGroups": {},
+            "description": "Enterprise-grade core library implementing Domain-Driven Design (DDD) and Clean Architecture patterns. Provides value objects, use cases, entities, HTTP adapters, pricing calculations, API response handling, and foundational utilities for Angular applications.",
             "js": {
               "packageName": "@acontplus/core",
-              "packageVersion": "1.0.11",
+              "packageVersion": "1.1.4",
               "packageExports": {
                 ".": {
                   "import": "./src/index.js",
@@ -1466,12 +2447,47 @@
               "isInPackageManagerWorkspaces": true
             }
           },
+          "name": "core",
+          "tags": [
+            "npm:public",
+            "npm:acontplus",
+            "npm:core",
+            "npm:ddd",
+            "npm:domain-driven-design",
+            "npm:clean-architecture",
+            "npm:hexagonal-architecture",
+            "npm:use-cases",
+            "npm:value-objects",
+            "npm:entities",
+            "npm:adapters",
+            "npm:ports",
+            "npm:pricing-calculator",
+            "npm:tax-calculator",
+            "npm:discount-calculator",
+            "npm:profit-calculator",
+            "npm:money-value-object",
+            "npm:http-client-factory",
+            "npm:api-response-handling",
+            "npm:pagination",
+            "npm:jwt-tokens",
+            "npm:base-entity",
+            "npm:identification-number",
+            "npm:entity-id",
+            "npm:auth-tokens",
+            "npm:axios-adapter",
+            "npm:fetch-adapter",
+            "npm:typescript",
+            "npm:angular",
+            "npm:enterprise"
+          ],
           "$schema": "../../node_modules/nx/schemas/project-schema.json",
           "sourceRoot": "packages/core/src",
-          "projectType": "library",
           "release": {
             "version": {
-              "manifestRootsToUpdate": ["dist/{projectRoot}"],
+              "manifestRootsToUpdate": [
+                "{projectRoot}",
+                "dist/{projectRoot}"
+              ],
               "currentVersionResolver": "git-tag",
               "fallbackCurrentVersionResolver": "disk"
             }
@@ -1487,10 +2503,6 @@
           "targets": {
             "eslint:lint": {
               "cache": true,
-              "options": {
-                "cwd": "apps/demo-app",
-                "command": "eslint ."
-              },
               "inputs": [
                 "default",
                 "^default",
@@ -1498,15 +2510,21 @@
                 "{workspaceRoot}/apps/demo-app/eslint.config.cjs",
                 "{workspaceRoot}/tools/eslint-rules/**/*",
                 {
-                  "externalDependencies": ["eslint"]
+                  "externalDependencies": [
+                    "eslint"
+                  ]
                 }
               ],
-              "outputs": ["{options.outputFile}"],
+              "outputs": [
+                "{options.outputFile}"
+              ],
               "metadata": {
-                "technologies": ["eslint"],
+                "technologies": [
+                  "eslint"
+                ],
                 "description": "Runs ESLint on project",
                 "help": {
-                  "command": "npx eslint --help",
+                  "command": "pnpm exec eslint --help",
                   "example": {
                     "options": {
                       "max-warnings": 0
@@ -1515,28 +2533,63 @@
                 }
               },
               "executor": "nx:run-commands",
+              "options": {
+                "cwd": "apps/demo-app",
+                "command": "eslint ."
+              },
               "configurations": {},
               "parallelism": true
             },
-            "test": {
-              "executor": "@nx/jest:jest",
-              "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+            "lint": {
+              "cache": true,
+              "inputs": [
+                "default"
+              ],
+              "outputs": [
+                "{options.outputFile}"
+              ],
+              "metadata": {
+                "technologies": [
+                  "eslint"
+                ],
+                "description": "Runs ESLint on project",
+                "help": {
+                  "command": "pnpm exec eslint --help",
+                  "example": {
+                    "options": {
+                      "max-warnings": 0
+                    }
+                  }
+                }
+              },
+              "executor": "nx:run-commands",
               "options": {
-                "jestConfig": "apps/demo-app/jest.config.ts",
-                "tsConfig": "apps/demo-app/tsconfig.spec.json"
+                "cwd": "apps/demo-app",
+                "command": "eslint ."
               },
               "configurations": {},
-              "parallelism": true,
-              "cache": true,
-              "inputs": ["default", "^production"]
+              "parallelism": true
             },
             "build": {
+              "cache": true,
+              "dependsOn": [
+                "^build"
+              ],
+              "inputs": [
+                "production",
+                "^production"
+              ],
               "executor": "@angular/build:application",
-              "outputs": ["{options.outputPath}"],
+              "outputs": [
+                "{options.outputPath}"
+              ],
+              "defaultConfiguration": "production",
               "options": {
                 "outputPath": "dist/apps/demo-app",
                 "browser": "apps/demo-app/src/main.ts",
-                "polyfills": ["zone.js"],
+                "polyfills": [
+                  "zone.js"
+                ],
                 "tsConfig": "apps/demo-app/tsconfig.app.json",
                 "inlineStyleLanguage": "scss",
                 "assets": [
@@ -1545,11 +2598,16 @@
                     "input": "apps/demo-app/public"
                   }
                 ],
-                "styles": ["apps/demo-app/src/styles.scss"],
-                "allowedCommonJsDependencies": ["sweetalert2"]
+                "styles": [
+                  "apps/demo-app/src/styles.scss"
+                ],
+                "allowedCommonJsDependencies": [
+                  "sweetalert2"
+                ]
               },
               "configurations": {
                 "production": {
+                  "baseHref": "/acontplus-libs/",
                   "budgets": [
                     {
                       "type": "initial",
@@ -1570,15 +2628,12 @@
                   "sourceMap": true
                 }
               },
-              "defaultConfiguration": "production",
-              "parallelism": true,
-              "cache": true,
-              "dependsOn": ["^build"],
-              "inputs": ["production", "^production"]
+              "parallelism": true
             },
             "serve": {
               "continuous": true,
               "executor": "@angular/build:dev-server",
+              "defaultConfiguration": "development",
               "configurations": {
                 "production": {
                   "buildTarget": "demo-app:build:production"
@@ -1587,12 +2642,7 @@
                   "buildTarget": "demo-app:build:development"
                 }
               },
-              "defaultConfiguration": "development",
-              "options": {
-                "ssl": true,
-                "sslCert": "./ssl/server.crt",
-                "sslKey": "./ssl/server.key"
-              },
+              "options": {},
               "parallelism": true
             },
             "extract-i18n": {
@@ -1602,14 +2652,6 @@
               },
               "configurations": {},
               "parallelism": true
-            },
-            "lint": {
-              "executor": "@nx/eslint:lint",
-              "configurations": {},
-              "options": {},
-              "parallelism": true,
-              "cache": true,
-              "inputs": ["default"]
             },
             "serve-static": {
               "continuous": true,
@@ -1638,34 +2680,20 @@
         "type": "app",
         "data": {
           "root": ".",
+          "name": "acontplus-libs",
+          "includedScripts": [],
+          "tags": [
+            "npm:private"
+          ],
+          "metadata": {
+            "targetGroups": {},
+            "js": {
+              "packageName": "acontplus-libs",
+              "packageVersion": "1.0.0",
+              "isInPackageManagerWorkspaces": true
+            }
+          },
           "targets": {
-            "test": {
-              "options": {
-                "cwd": ".",
-                "env": {
-                  "TS_NODE_COMPILER_OPTIONS": "{\"moduleResolution\":\"node10\",\"module\":\"commonjs\",\"customConditions\":null}"
-                },
-                "command": "jest"
-              },
-              "metadata": {
-                "technologies": ["jest"],
-                "description": "Run Jest Tests",
-                "help": {
-                  "command": "npx jest --help",
-                  "example": {
-                    "options": {
-                      "coverage": true
-                    }
-                  }
-                }
-              },
-              "cache": true,
-              "inputs": ["default", "^production"],
-              "outputs": ["{projectRoot}\\<rootDir>\\coverage"],
-              "executor": "nx:run-commands",
-              "configurations": {},
-              "parallelism": true
-            },
             "local-registry": {
               "executor": "@nx/js:verdaccio",
               "options": {
@@ -1676,17 +2704,6 @@
               "configurations": {},
               "parallelism": true,
               "continuous": true
-            }
-          },
-          "name": "acontplus-libs",
-          "includedScripts": [],
-          "tags": ["npm:private"],
-          "metadata": {
-            "targetGroups": {},
-            "js": {
-              "packageName": "acontplus-libs",
-              "packageVersion": "1.0.0",
-              "isInPackageManagerWorkspaces": true
             }
           },
           "$schema": "node_modules/nx/schemas/project-schema.json",
@@ -1708,33 +2725,52 @@
         },
         {
           "source": "ng-infrastructure",
+          "target": "ng-config",
+          "type": "static"
+        },
+        {
+          "source": "ng-infrastructure",
           "target": "ng-notifications",
           "type": "static"
         },
         {
           "source": "ng-infrastructure",
-          "target": "ng-config",
+          "target": "ng-components",
           "type": "static"
         }
       ],
-      "ng-notifications": [],
-      "ng-components": [],
+      "ng-notifications": [
+        {
+          "source": "ng-notifications",
+          "target": "ui-kit",
+          "type": "implicit"
+        },
+        {
+          "source": "ng-notifications",
+          "target": "ui-kit",
+          "type": "static"
+        }
+      ],
+      "acontplus-erp-e2e": [
+        {
+          "source": "acontplus-erp-e2e",
+          "target": "acontplus-erp",
+          "type": "implicit"
+        }
+      ],
+      "ng-components": [
+        {
+          "source": "ng-components",
+          "target": "ui-kit",
+          "type": "implicit"
+        },
+        {
+          "source": "ng-components",
+          "target": "ui-kit",
+          "type": "static"
+        }
+      ],
       "ng-customer": [
-        {
-          "source": "ng-customer",
-          "target": "ng-components",
-          "type": "static"
-        },
-        {
-          "source": "ng-customer",
-          "target": "ng-auth",
-          "type": "static"
-        },
-        {
-          "source": "ng-customer",
-          "target": "ng-notifications",
-          "type": "static"
-        },
         {
           "source": "ng-customer",
           "target": "core",
@@ -1744,8 +2780,26 @@
           "source": "ng-customer",
           "target": "utils",
           "type": "static"
+        },
+        {
+          "source": "ng-customer",
+          "target": "ng-components",
+          "type": "static"
+        },
+        {
+          "source": "ng-customer",
+          "target": "ng-notifications",
+          "type": "static"
         }
       ],
+      "acontplus-erp": [
+        {
+          "source": "acontplus-erp",
+          "target": "ng-components",
+          "type": "static"
+        }
+      ],
+      "ng-common": [],
       "ng-config": [
         {
           "source": "ng-config",
@@ -1785,6 +2839,11 @@
           "source": "ng-auth",
           "target": "ng-config",
           "type": "static"
+        },
+        {
+          "source": "ng-auth",
+          "target": "ui-kit",
+          "type": "static"
         }
       ],
       "ui-kit": [],
@@ -1819,22 +2878,22 @@
         },
         {
           "source": "demo-app",
+          "target": "ng-common",
+          "type": "static"
+        },
+        {
+          "source": "demo-app",
           "target": "ng-components",
           "type": "static"
         },
         {
           "source": "demo-app",
-          "target": "core",
+          "target": "ui-kit",
           "type": "static"
         },
         {
           "source": "demo-app",
           "target": "ng-customer",
-          "type": "static"
-        },
-        {
-          "source": "demo-app",
-          "target": "utils",
           "type": "static"
         }
       ],
@@ -1846,7 +2905,42 @@
         },
         {
           "source": "acontplus-libs",
+          "target": "ng-auth",
+          "type": "static"
+        },
+        {
+          "source": "acontplus-libs",
+          "target": "ng-common",
+          "type": "static"
+        },
+        {
+          "source": "acontplus-libs",
+          "target": "ng-components",
+          "type": "static"
+        },
+        {
+          "source": "acontplus-libs",
+          "target": "ng-config",
+          "type": "static"
+        },
+        {
+          "source": "acontplus-libs",
+          "target": "ng-customer",
+          "type": "static"
+        },
+        {
+          "source": "acontplus-libs",
+          "target": "ng-infrastructure",
+          "type": "static"
+        },
+        {
+          "source": "acontplus-libs",
           "target": "ng-notifications",
+          "type": "static"
+        },
+        {
+          "source": "acontplus-libs",
+          "target": "ui-kit",
           "type": "static"
         },
         {

@@ -1,4 +1,4 @@
-import { Component, input,   ViewEncapsulation } from '@angular/core';
+import { Component, input, ViewEncapsulation } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { AcpButton } from '../button/v2';
@@ -22,5 +22,4 @@ export class UserMenuItemComponent {
    * The menu item data.
    */
   readonly item = input.required<UserMenuItem>();
- 
 }

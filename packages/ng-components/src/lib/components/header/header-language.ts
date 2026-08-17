@@ -30,11 +30,7 @@ export interface AcpLanguageItem {
 @Component({
   selector: 'acp-header-language',
   template: `
-    <button
-      mat-icon-button
-      [matMenuTriggerFor]="menu"
-      class="acp-header__language-button"
-    >
+    <button mat-icon-button [matMenuTriggerFor]="menu" class="acp-header__language-button">
       @if (currentLanguage()?.flag) {
         <span class="acp-header__language-flag">{{ currentLanguage()!.flag }}</span>
       } @else {

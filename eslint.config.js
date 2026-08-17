@@ -1,22 +1,25 @@
-const { FlatCompat } = require('@eslint/eslintrc');
 const js = require('@eslint/js');
+const { defineConfig } = require('eslint/config');
 const tseslint = require('typescript-eslint');
 const angular = require('angular-eslint');
 const nx = require('@nx/eslint-plugin');
+const prettier = require('eslint-config-prettier');
 
-const compat = new FlatCompat();
-
-module.exports = tseslint.config(
+module.exports = defineConfig(
+  {
+    name: 'workspace/ignores',
+    ignores: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/coverage/**',
+      '**/.angular/**',
+      '**/.nx/**',
+      '**/tmp/**',
+    ],
+  },
   // Global configuration for all TypeScript files
   {
     files: ['**/*.ts'],
-    ignores: [
-      '**/node_modules/*',
-      'projects/**/node_modules/*',
-      'dist/**/*',
-      '**/*.spec.ts',
-      '**/*.test.ts',
-    ],
     extends: [
       js.configs.recommended,
       ...tseslint.configs.recommended,
@@ -47,7 +50,8 @@ module.exports = tseslint.config(
       ],
       '@angular-eslint/no-empty-lifecycle-method': 'error',
       '@angular-eslint/use-lifecycle-interface': 'error',
-      '@angular-eslint/no-conflicting-lifecycle': 'error',
+      // Enabled by angular-eslint 22; adopt it incrementally without changing existing components.
+      '@angular-eslint/prefer-on-push-component-change-detection': 'off',
 
       // TypeScript rules
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
@@ -64,28 +68,12 @@ module.exports = tseslint.config(
       'no-unused-expressions': 'error',
       'prefer-const': 'error',
       'no-var': 'error',
-
-      // Formatting rules - disabled in favor of Prettier
-      indent: 'off',
-      quotes: 'off',
-      semi: 'off',
-      'comma-dangle': 'off',
-      'object-curly-spacing': 'off',
-      'array-bracket-spacing': 'off',
-      'space-before-function-paren': 'off',
-      'space-before-blocks': 'off',
-      'keyword-spacing': 'off',
-      'space-infix-ops': 'off',
-      'eol-last': 'off',
-      'no-trailing-spaces': 'off',
-      'no-multiple-empty-lines': 'off',
     },
   },
 
   // Configuration for HTML template files
   {
     files: ['**/*.html'],
-    ignores: ['**/node_modules/*', 'projects/**/node_modules/*', 'dist/**/*'],
     extends: [...angular.configs.templateRecommended, ...angular.configs.templateAccessibility],
     rules: {
       '@angular-eslint/template/no-positive-tabindex': 'error',
@@ -99,7 +87,7 @@ module.exports = tseslint.config(
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
       'no-console': 'off',
-      '@typescript-eslint/no-unused-vars': 'off',
     },
   },
+  prettier,
 );

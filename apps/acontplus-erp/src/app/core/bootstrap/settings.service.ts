@@ -19,9 +19,7 @@ export class SettingsService {
 
   private storedOptions: AppSettings = this.store.get(this.key);
 
-  private readonly _options = signal<AppSettings>(
-    Object.assign(defaults, this.storedOptions)
-  );
+  private readonly _options = signal<AppSettings>(Object.assign(defaults, this.storedOptions));
 
   readonly options = this._options.asReadonly();
 

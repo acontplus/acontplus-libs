@@ -1,4 +1,4 @@
-import { Component, input,  ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -34,7 +34,4 @@ export class UserMenu {
    * Menu items to display.
    */
   readonly items = input.required<UserMenuItem[]>();
-  
-
- 
 }

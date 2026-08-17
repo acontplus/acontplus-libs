@@ -1,6 +1,6 @@
 # @acontplus/ng-auth
 
-Angular authentication library with comprehensive auth features following Angular 21 best practices and clean architecture principles.
+Angular authentication library with comprehensive auth features following Angular 22 best practices and clean architecture principles.
 
 > **🚀 New Feature**: Multi-Tenant OAuth / Enterprise SSO  
 > Support for Google Workspace, Microsoft 365, and Azure AD with automatic domain discovery.  
@@ -16,7 +16,7 @@ pnpm add @acontplus/ng-auth
 
 ## Features
 
-- ✅ **Modern Angular 21 Patterns**: Signals, inject(), standalone components
+- ✅ **Modern Angular 22 Patterns**: Signals, inject(), standalone components
 - ✅ **Clean Architecture**: Domain → Data → Services (no use cases overhead)
 - ✅ **AuthState Service**: Centralized auth state with reactive signals
 - ✅ **Multi-Tenant OAuth**: Enterprise SSO with domain discovery (Google Workspace, Azure AD)
@@ -50,6 +50,16 @@ import { ApplicationConfig } from '@angular/core';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authProviders, authRedirectInterceptor, csrfInterceptor } from '@acontplus/ng-auth';
 import { ENVIRONMENT } from '@acontplus/ng-config';
+import { Environment } from '@acontplus/core';
+
+const environment: Environment = {
+  isProduction: false,
+  apiBaseUrl: 'https://api.example.com',
+  clientId: 'my-app',
+  tokenKey: 'auth_token',
+  refreshTokenKey: 'refresh_token',
+  loginRoute: 'auth/login',
+};
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -66,11 +76,7 @@ export const appConfig: ApplicationConfig = {
     // Environment config
     {
       provide: ENVIRONMENT,
-      useValue: {
-        tokenKey: 'auth_token',
-        refreshTokenKey: 'refresh_token',
-        loginRoute: 'auth/login',
-      },
+      useValue: environment,
     },
   ],
 };
@@ -85,7 +91,7 @@ import { authGuard } from '@acontplus/ng-auth';
 
 export const routes: Routes = [
   {
-    path: 'auth',
+    path: 'auth/login',
     loadComponent: () => import('./pages/auth').then((m) => m.AuthPage),
   },
   {
@@ -303,7 +309,7 @@ export class AuthPage {
 
 ## Architecture
 
-Following **Angular 21 style guide** and **clean architecture**:
+Following **Angular 22 style guide** and **clean architecture**:
 
 ```
 ng-auth/
@@ -334,7 +340,7 @@ ng-auth/
 - ✅ AuthState consolidates all auth operations
 - ✅ Signals for reactive state
 - ✅ Repository pattern for data abstraction
-- ✅ No `.service.ts` suffix (Angular 21 style guide)
+- ✅ No `.service.ts` suffix (Angular 22 style guide)
 
 ## Real-World Example
 
@@ -473,7 +479,7 @@ export class MyComponent {
 A: For a library, use cases add unnecessary indirection. The `AuthState` service provides a clean facade with all operations.
 
 **Q: Can I use constructor injection instead of inject()?**  
-A: Yes, but `inject()` is the Angular 21 recommended approach.
+A: Yes, but `inject()` is the Angular 22 recommended approach.
 
 **Q: How do I customize the login component?**  
 A: Use the component inputs (`additionalSigninControls`, templates) or create your own using `AuthState` directly.

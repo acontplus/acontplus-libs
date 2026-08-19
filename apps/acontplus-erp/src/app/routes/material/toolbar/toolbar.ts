@@ -11,9 +11,6 @@ import {
   AcpHeaderCenter,
   AcpHeaderEnd,
   AcpHeaderBrandingContent,
-  AcpHeaderSearch,
-  AcpHeaderBreadcrumb,
-  type AcpBreadcrumbItem,
 } from '@acontplus/ng-components';
 
 @Component({
@@ -26,8 +23,6 @@ import {
     AcpHeaderCenter,
     AcpHeaderEnd,
     AcpHeaderBrandingContent,
-    AcpHeaderSearch,
-    AcpHeaderBreadcrumb,
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,
@@ -73,17 +68,6 @@ export class Toolbar {
   onMenuClick(action: string) {
     console.log('Menu item clicked:', action);
   }
-
-  onSearch(query: string) {
-    console.log('Search:', query);
-  }
-
-  // Breadcrumb items
-  breadcrumbItems: AcpBreadcrumbItem[] = [
-    { label: 'Home', link: '/' },
-    { label: 'Dashboard', link: '/dashboard' },
-    { label: 'Analytics', link: '/dashboard/analytics' },
-  ];
 
   userMenuItems: any[] = [
     { icon: 'account_circle', label: 'Profile', routerLink: '/profile' },

@@ -5,8 +5,6 @@ export { AcpHeaderCenter } from './header-center';
 export { AcpHeaderEnd } from './header-end';
 export { AcpHeaderBrandingContent } from './header-branding-content';
 export { AcpHeaderActions } from './header-actions';
-export { AcpHeaderSearch } from './header-search';
-export { AcpHeaderBreadcrumb, type AcpBreadcrumbItem } from './header-breadcrumb';
 export { AcpHeaderNotifications, type AcpNotificationItem } from './header-notifications';
 export { AcpHeaderWorkspace, type AcpWorkspaceItem } from './header-workspace';
 export { AcpHeaderLanguage, type AcpLanguageItem } from './header-language';

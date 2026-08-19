@@ -316,11 +316,10 @@
         </acp-header-branding>
 
         <acp-header-center>
-          <acp-header-breadcrumb [items]="breadcrumbItems" />
+          <span class="acp-header__spacer"></span>
         </acp-header-center>
 
         <acp-header-end>
-          <acp-header-search [placeholder]="'Buscar...'" (searchSubmit)="onSearch($event)" />
           <button mat-icon-button>
             <mat-icon>notifications</mat-icon>
           </button>

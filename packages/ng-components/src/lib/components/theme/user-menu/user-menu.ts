@@ -1,4 +1,10 @@
-import { Component, input, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  input,
+  ChangeDetectionStrategy,
+  ViewEncapsulation,
+  computed,
+} from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -16,7 +22,7 @@ import type { UserProfile, UserMenuItem } from './user-menu.types';
       aria-label="User menu"
     >
       @if (user().avatar) {
-        <img [src]="user().avatar" [alt]="" class="acp-user-menu__avatar" />
+        <img [src]="imageUrl()" width="32" [alt]="" class="acp-user-menu__avatar" />
       } @else {
         <mat-icon>account_circle</mat-icon>
       }
@@ -26,7 +32,7 @@ import type { UserProfile, UserMenuItem } from './user-menu.types';
       <div class="acp-user-menu__content">
         <div class="acp-user-menu-header__content">
           <div class="acp-user-menu-header__avatar">
-            <img [src]="user().avatar" [alt]="" class="acp-user-menu-header__avatar-img" />
+            <img [src]="imageUrl()" [alt]="" class="acp-user-menu-header__avatar-img" />
           </div>
           <div class="acp-user-menu-header__info">
             <div class="acp-user-menu-header__name-row">
@@ -94,4 +100,10 @@ export class UserMenu {
    * Menu items to display.
    */
   readonly items = input.required<UserMenuItem[]>();
+
+  imageUrl = computed(() => {
+    const avatar = this.user().avatar;
+    if (!avatar) return '/images/profile/user-1.jpg';
+    return avatar;
+  });
 }

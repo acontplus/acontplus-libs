@@ -1,7 +1,6 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, computed } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
 
 /**
  * Theme variant
@@ -24,49 +23,19 @@ export type AcpThemeVariant = 'light' | 'dark' | 'auto';
 @Component({
   selector: 'acp-header-theme',
   template: `
-    <button mat-icon-button [matMenuTriggerFor]="menu" class="acp-header__theme-button">
+    <button
+      matIconButton
+      type="button"
+      class="acp-header__theme-button"
+      [attr.aria-label]="'Change theme, current: ' + currentTheme()"
+      (click)="toggleTheme()"
+    >
       <mat-icon>{{ getThemeIcon() }}</mat-icon>
     </button>
-
-    <mat-menu #menu="matMenu" class="acp-header__theme-menu">
-      <button
-        mat-menu-item
-        [class.acp-header__theme-item--active]="currentTheme() === 'light'"
-        (click)="handleThemeChange('light')"
-      >
-        <mat-icon>light_mode</mat-icon>
-        <span>Light</span>
-        @if (currentTheme() === 'light') {
-          <mat-icon class="acp-header__theme-check">check</mat-icon>
-        }
-      </button>
-      <button
-        mat-menu-item
-        [class.acp-header__theme-item--active]="currentTheme() === 'dark'"
-        (click)="handleThemeChange('dark')"
-      >
-        <mat-icon>dark_mode</mat-icon>
-        <span>Dark</span>
-        @if (currentTheme() === 'dark') {
-          <mat-icon class="acp-header__theme-check">check</mat-icon>
-        }
-      </button>
-      <button
-        mat-menu-item
-        [class.acp-header__theme-item--active]="currentTheme() === 'auto'"
-        (click)="handleThemeChange('auto')"
-      >
-        <mat-icon>contrast</mat-icon>
-        <span>Auto</span>
-        @if (currentTheme() === 'auto') {
-          <mat-icon class="acp-header__theme-check">check</mat-icon>
-        }
-      </button>
-    </mat-menu>
   `,
   host: { class: 'acp-header-theme' },
   standalone: true,
-  imports: [MatButtonModule, MatIconModule, MatMenuModule],
+  imports: [MatButtonModule, MatIconModule],
 })
 export class AcpHeaderTheme {
   /**
@@ -79,7 +48,9 @@ export class AcpHeaderTheme {
    */
   readonly themeChange = output<AcpThemeVariant>();
 
-  getThemeIcon(): string {
+  private readonly themeCycle: AcpThemeVariant[] = ['light', 'dark'];
+
+  getThemeIcon = computed(() => {
     switch (this.currentTheme()) {
       case 'light':
         return 'light_mode';
@@ -88,9 +59,12 @@ export class AcpHeaderTheme {
       default:
         return 'contrast';
     }
-  }
+  });
 
-  handleThemeChange(theme: AcpThemeVariant) {
-    this.themeChange.emit(theme);
+  toggleTheme() {
+    const current = this.currentTheme();
+    const index = this.themeCycle.indexOf(current);
+    const next = this.themeCycle[(index + 1) % this.themeCycle.length];
+    this.themeChange.emit(next);
   }
 }

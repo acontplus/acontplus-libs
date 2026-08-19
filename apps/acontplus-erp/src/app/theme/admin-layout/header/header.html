@@ -20,5 +20,9 @@
   <acp-header-end>
     <acp-header-actions [actions]="rightActions" />
     <acp-user-menu [user]="userProfile" [items]="userMenuItems" />
+    <acp-header-theme
+      (themeChange)="themeChange($event)"
+      [currentTheme]="settings.getThemeColor()"
+    />
   </acp-header-end>
 </acp-header>

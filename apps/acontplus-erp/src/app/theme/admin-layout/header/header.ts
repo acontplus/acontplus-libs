@@ -13,6 +13,7 @@ import {
   type AcpHeaderAction,
   type UserMenuItem,
   type UserProfile,
+  AcpHeaderTheme,
 } from '@acontplus/ng-components';
 import { SettingsService, AuthService } from '@core';
 
@@ -30,11 +31,12 @@ import { SettingsService, AuthService } from '@core';
     AcpHeaderEnd,
     AcpHeaderActions,
     UserMenu,
+    AcpHeaderTheme,
   ],
 })
 export class Header {
   private readonly router = inject(Router);
-  private readonly settings = inject(SettingsService);
+  readonly settings = inject(SettingsService);
   private readonly auth = inject(AuthService);
   readonly showToggle = input(true);
   /**
@@ -62,7 +64,7 @@ export class Header {
   readonly userProfile: UserProfile = {
     name: 'Markarn Doe',
     email: 'markrarn@wrappixel.com',
-    avatar: 'images/user-avatar.png',
+    avatar: '/images/profile/user-1.jpg',
     plan: 'Pro',
   };
 
@@ -121,5 +123,9 @@ export class Header {
 
   onBranding() {
     this.router.navigate(['/']);
+  }
+
+  themeChange(theme: 'light' | 'dark' | 'auto') {
+    this.settings.setTheme(theme);
   }
 }

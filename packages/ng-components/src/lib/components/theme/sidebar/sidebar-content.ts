@@ -23,7 +23,7 @@ import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/
   `,
   styles: [
     `
-      @use '../../../core/style/breakpoints';
+      @use '../../../../core/style/breakpoints';
 
       .acontplus-sidebar-main {
         height: calc(100% - var(--mat-toolbar-standard-height));

@@ -1,7 +1,7 @@
 import { Component, input, ViewEncapsulation } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
-import { AcpButton } from '../button/v2';
+import { AcpButton } from '../../button/v2';
 import type { UserMenuItem } from './user-menu.types';
 
 @Component({

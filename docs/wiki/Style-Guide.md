@@ -122,9 +122,7 @@ dialogService.openInWrapper({
   component: YourDialogContentComponent,
   title: 'Dialog Title',
   icon: 'info',
-  data: {
-    /* ... */
-  },
+  data: {/* ... */},
 });
 ```
 

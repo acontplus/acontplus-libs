@@ -12,7 +12,9 @@ import { v4 as uuidv4 } from 'uuid';
 import { AUTH_TOKEN, ENVIRONMENT } from '@acontplus/ng-config';
 import { TenantInfo } from '../services/tenant-info';
 import { CorrelationInfo } from '../services/correlation-info';
+import { LanguageInfo } from '../services/language-info';
 import { LoggingService } from '../services/logging-service';
+import { isAbsoluteUrl, joinApiUrl } from '../utils/url';
 
 // ---------------------------------------------------------------------------
 // HTTP Context Tokens & helpers
@@ -59,6 +61,10 @@ export interface HttpContextConfig {
   skipAuthUrls?: string[];
   includeAuthToken?: boolean;
   baseUrlInjection?: boolean;
+  /** Send Accept-Language header with the detected or configured language. */
+  enableLanguageHeader?: boolean;
+  /** Custom header name for language (default: 'Accept-Language'). */
+  languageHeader?: string;
   /** Called when a 401 is received and a refresh token is available. */
   refreshTokenCallback?: () => Observable<{ token: string; refreshToken?: string }>;
   /** Called after a failed token refresh — should clear auth state. */
@@ -79,6 +85,8 @@ const DEFAULT_CONFIG: Required<HttpContextConfig> = {
   skipAuthUrls: ['/login', '/register', '/refresh'],
   includeAuthToken: true,
   baseUrlInjection: true,
+  enableLanguageHeader: true,
+  languageHeader: 'Accept-Language',
   refreshTokenCallback: undefined as any,
   logoutCallback: undefined as any,
 };
@@ -96,6 +104,7 @@ export const httpContextInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
   const tenantService = inject(TenantInfo);
   const correlationService = inject(CorrelationInfo);
+  const languageInfo = inject(LanguageInfo);
   const loggingService = inject(LoggingService);
   const environment = inject(ENVIRONMENT);
 
@@ -132,6 +141,7 @@ export const httpContextInterceptor: HttpInterceptorFn = (req, next) => {
     tokenProvider,
     correlationService,
     tenantService,
+    languageInfo,
     environment,
     skipAuth,
     contextHeaders,
@@ -233,7 +243,11 @@ function resolveFinalUrl(
   baseUrlInjection: boolean,
   apiBaseUrl: string,
 ): string {
-  return isCustomUrl || !baseUrlInjection ? url : `${apiBaseUrl}${url}`;
+  if (isCustomUrl || !baseUrlInjection || isAbsoluteUrl(url)) {
+    return url;
+  }
+
+  return joinApiUrl(apiBaseUrl, url);
 }
 
 function buildHeaders(
@@ -241,6 +255,7 @@ function buildHeaders(
   tokenProvider: any,
   correlationService: CorrelationInfo,
   tenantService: TenantInfo,
+  languageInfo: LanguageInfo,
   environment: any,
   skipAuth: boolean,
   contextHeaders: Record<string, string>,
@@ -263,6 +278,10 @@ function buildHeaders(
 
   if (tenantId) {
     headers[config.tenantIdHeader] = tenantId;
+  }
+
+  if (config.enableLanguageHeader) {
+    headers[config.languageHeader] = languageInfo.getBcp47Tag();
   }
 
   if (config.clientVersion) {

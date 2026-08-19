@@ -2,7 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/spec",
-    "types": ["jest", "node"],
+    "types": ["vitest/globals", "node"],
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": false,
@@ -15,13 +15,14 @@
     "noImplicitOverride": false,
     "noPropertyAccessFromIndexSignature": false,
     "noUncheckedIndexedAccess": false,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "rootDir": "."
   },
   "include": [
     "projects/**/src/**/*.spec.ts",
     "projects/**/src/**/*.test.ts",
     "projects/**/src/**/*.d.ts",
-    "setup-jest.ts"
+    "vitest-base.config.ts"
   ],
   "exclude": ["node_modules", "dist"]
 }

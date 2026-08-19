@@ -12,12 +12,7 @@ export type NotificationType = 'success' | 'error' | 'warning' | 'info';
  * Position options for notification placement on screen
  */
 export type NotificationPosition =
-  | 'top-right'
-  | 'top-left'
-  | 'bottom-right'
-  | 'bottom-left'
-  | 'top-center'
-  | 'bottom-center';
+  'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' | 'top-center' | 'bottom-center';
 
 /**
  * Available notification provider implementations

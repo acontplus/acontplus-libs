@@ -10,13 +10,14 @@ module.exports = [
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {
-        project: './tsconfig.json',
+        project: ['./tsconfig.app.json', './tsconfig.spec.json'],
       },
     },
     plugins: {
       '@typescript-eslint': tseslint.plugin,
     },
     rules: {
+      '@angular-eslint/prefer-on-push-component-change-detection': 'off',
       '@angular-eslint/directive-selector': [
         'error',
         {

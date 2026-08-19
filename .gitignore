@@ -1,43 +1,54 @@
 # See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
-# Compiled output
-/dist
-/tmp
-/out-tsc
-/bazel-out
+# Dependencies, builds, caches, and test results
+node_modules/
+dist/
+coverage/
+out-tsc/
+bazel-out/
+tmp/
+temp/
+.angular/
+.nx/*
+!.nx/version-plans/
+!.nx/version-plans/*.md
+*.tsbuildinfo
+*.timestamp*
 
-# Node
-/node_modules
-npm-debug.log
-yarn-error.log
+# Logs and runtime files
+*.log
+*.pid
+*.pid.lock
+*.seed
+*.lcov
+testem.log
+libpeerconnection.log
+connect.lock
 
-# IDEs and editors
-.idea/
-.project
-.classpath
-.c9/
-*.launch
-.settings/
-*.sublime-workspace
+# Environment files (examples are intentionally committed)
+.env*
+!**/.env.example
 
-# Visual Studio Code
+# Editors and IDEs
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-.history/*
+.idea/
+.vs/
+.history/
+.settings/
+.project
+.classpath
+.c9/
+*.launch
+*.sublime-workspace
+*.swp
+*.swo
+*~
 
-# Miscellaneous
-/.angular/cache
-.sass-cache/
-/connect.lock
-/coverage
-/libpeerconnection.log
-testem.log
-/typings
-
-# System files
+# Operating-system files
 .DS_Store
 Thumbs.db
 projects/**/node_modules/

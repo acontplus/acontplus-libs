@@ -1,621 +1,103 @@
 # Acontplus Libraries
 
-A comprehensive Nx monorepo containing Angular libraries providing Domain-Driven
-Design (DDD) architecture, core utilities, and Angular Material UI components
-for enterprise applications.
+A pnpm and Nx monorepo of publishable TypeScript and Angular libraries for
+enterprise applications. The workspace uses strict TypeScript 6, Angular 22.1,
+Nx 23.1, Vitest, Playwright, and Nx Release.
 
-## 📚 Libraries
+## Workspace
 
-- **[core](packages/core/README.md)**: Core library with pricing calculations,
-  constants, environment configuration, domain models, and clean architecture
-  patterns
-- **[ng-auth](packages/ng-auth/README.md)**: Angular authentication module with
-  JWT token management, route guards, URL redirection, and session handling
-- **[ng-common](packages/ng-common/README.md)**: Common Angular services for
-  WhatsApp Cloud API, report generation, and printing with clean architecture
-  facades
-- **[ng-components](packages/ng-components/README.md)**: Angular Material UI
-  components including cards, data grid, tables, dialogs, theme toggle, checkbox
-  group, icons, buttons, and styling utilities
-- **[ng-config](packages/ng-config/README.md)**: Angular configuration library
-  with environment tokens and app configuration services
-- **[ng-customer](packages/ng-customer/README.md)**: Customer management
-  components and services following clean architecture
-- **[ng-infrastructure](packages/ng-infrastructure/README.md)**: Angular
-  infrastructure with HTTP interceptors, repositories, adapters, and core
-  services
-- **[ng-notifications](packages/ng-notifications/README.md)**: Notification
-  system with toast notifications, alerts, and snackbars using ngx-toastr and
-  SweetAlert2
-- **[ui-kit](packages/ui-kit/README.md)**: UI kit library for reusable
-  components (under development)
-- **[utils](packages/utils/README.md)**: Shared utility functions for
-  converters, formatters, helpers, and validators
+| Area                 | Projects                                                                                                     |
+| -------------------- | ------------------------------------------------------------------------------------------------------------ |
+| Foundation libraries | `core`, `utils`, `ui-kit`                                                                                    |
+| Angular libraries    | `ng-auth`, `ng-common`, `ng-components`, `ng-config`, `ng-customer`, `ng-infrastructure`, `ng-notifications` |
+| Applications         | `demo-app`, `acontplus-erp`                                                                                  |
+| End-to-end tests     | `demo-app-e2e`, `acontplus-erp-e2e`                                                                          |
 
-## 📱 Applications
+Each library's public API is defined by `packages/<name>/src/index.ts`. See its
+package README for installation and usage information.
 
-- **[demo-app](apps/demo-app/)**: Demo application showcasing DDD architecture
-  patterns and library usage
-- **[demo-app-e2e](apps/demo-app-e2e/)**: End-to-end tests for the demo
-  application
+## Prerequisites
 
-## 📖 Documentation
-
-- **[API Response Handling](docs/api-response-handling.md)** - DDD patterns for
-  standardized API response handling
-- **[Frontend Architecture Guide](docs/frontend-architecture-guide.md)** -
-  Architecture patterns and guidelines
-- **[Style Guide](docs/style-guide.md)** - Design principles and component
-  guidelines
-- **[Development Setup](docs/linting-and-formatting-setup.md)** - Code quality
-  tools and configuration
-- **[Workspace Setup](docs/workspace-setup.md)** - pnpm workspace configuration
-  and node_modules structure
-
-## 🚀 Quick Start
-
-### Prerequisites
-
-- Node.js 18+
-- pnpm
-
-### Installation
+- Node.js 24 for CI compatibility (published packages support Node 18+ where
+  declared)
+- pnpm 11.9.0
 
 ```bash
-# Clone the repository
-git clone https://github.com/acontplus/acontplus-libs.git
-cd acontplus-libs
-
-# Install dependencies
 pnpm install
-
-# Start demo app
-pnpm start
+pnpm start          # demo-app at https://localhost:4200
+pnpm start:erp      # acontplus-erp at https://localhost:4300
 ```
 
-## 🏗️ **Enterprise Features**
+The application development servers use Angular's native `--ssl` option. No
+certificate or private key is stored in this repository.
 
-- **Clean Architecture**: Proper separation of concerns with distinct layers
-- **CQRS Pattern**: Command Query Responsibility Segregation implementation
-- **BaseRepository Pattern**: Generic, extensible data access layer with factory
-  pattern
-- **Use Case Pattern**: Business logic components with validation and
-  authorization
-- **Response Standardization**: Unified API response handling with interceptors
-- **Nx Monorepo**: Efficient build system with caching and dependency management
-- **Multi-Application Support**: Designed for sharing across multiple Angular
-  apps
-- **Modern Angular Practices**: Latest Angular patterns and best practices
+## Development
 
-## 🎯 **Key Benefits**
-
-- **Consistent Architecture**: Same patterns across all applications
-- **Easy Configuration**: Environment-specific settings and runtime updates
-- **Scalable BaseRepository Management**: Centralized registration and dynamic
-  creation
-- **Better Testing**: Dependency injection for mocking and isolated components
-- **Developer Experience**: Clear patterns, consistent API design, better error
-  messages
-- **Fast Builds**: Nx caching and parallelization for efficient development
-- **Code Sharing**: Seamless sharing of libraries across applications
-
-## 🛠️ Development
-
-### Available Scripts
-
-- `pnpm start` - Start the demo application with SSL
-- `pnpm run build` - Build the demo application
-- `pnpm run watch` - Build demo app in watch mode
-- `pnpm run test` - Run tests for all projects
-- `pnpm run test:watch` - Run tests in watch mode
-- `pnpm run test:coverage` - Run tests with coverage
-- `pnpm run build:all` - Build all projects
-- `pnpm run build:libs` - Build all library packages
-- `pnpm run lint` - Lint all projects
-- `pnpm run lint:fix` - Lint and auto-fix issues
-- `pnpm run format` - Format all code with Prettier
-- `pnpm run format:check` - Check code formatting
-- `pnpm run clean` - Reset Nx cache
-- `pnpm run local-registry` - Start local npm registry for development
-- `pnpm run e2e` - Run end-to-end tests
-
-## � Publishing to npm
-
-This project uses **manual publishing** due to npm's enhanced security requirements (2FA, security keys).
-
-### Publishing Workflow
-
-1. **Bump version** using the patch-version script:
-
-   ```bash
-   # For patch version (bug fixes)
-   .\scripts\patch-version.ps1 <package-name>
-
-   # For minor version (new features)
-   pnpm --filter @acontplus/<package-name> exec npm version minor
-
-   # For major version (breaking changes)
-   pnpm --filter @acontplus/<package-name> exec npm version major
-   ```
-
-2. **Build the package**:
-
-   ```bash
-   pnpm nx build <package-name> --configuration=production
-   ```
-
-3. **Publish with web authentication**:
-
-   ```bash
-   cd dist/packages/<package-name>
-   npm publish --access=public
-   ```
-
-   This opens your browser for authentication with security keys (Windows Hello, hardware keys, or TOTP).
-
-### Example: Publishing ng-auth
+Use Nx through pnpm from the workspace root:
 
 ```bash
-# 1. Bump version (minor for new features)
-pnpm --filter @acontplus/ng-auth exec npm version minor
-
-# 2. Build for production
-pnpm nx build ng-auth --configuration=production
-
-# 3. Publish to npm
-cd dist/packages/ng-auth
-npm publish --access=public
-cd ../../..
-```
-
-### Version Management
-
-Use the patch version script to bump package versions and update dependencies:
-
-```bash
-# Interactive mode - prompts for package selection
-.\scripts\patch-version.ps1
-
-# Direct mode - specify package name
-.\scripts\patch-version.ps1 -PackageName "@acontplus/utils"
-.\scripts\patch-version.ps1 -PackageName "core"
-```
-
-The script will:
-
-1. Show all available packages with current versions
-2. Prompt for package selection and confirmation
-3. Patch the version using `npm version patch` (e.g., 1.0.11 → 1.0.12)
-4. Automatically update all dependencies across the workspace
-5. Run `pnpm install` to update the lock file
-6. Display a summary of changes
-
-### Nx Commands
-
-```bash
-# Build specific project
-pnpm exec nx build core
-pnpm exec nx build ng-components
-
-# Test specific project
-pnpm exec nx test core
-pnpm exec nx test ng-components
-
-# Lint specific project
-pnpm exec nx lint core
-
-# Show project graph
+# Inspect the workspace
 pnpm exec nx show projects
+pnpm exec nx show project ng-auth
 
-# Show dependency graph
-pnpm exec nx graph
-```
+# Focused validation
+pnpm exec nx lint ng-auth
+pnpm exec nx test ng-auth
+pnpm exec nx build ng-auth
+pnpm exec nx e2e demo-app-e2e
 
-## 🔧 Nx Development Guide
+# Validate changed projects
+pnpm exec nx affected -t lint,test,build --base=origin/main --head=HEAD
 
-### Monorepo Structure
-
-This workspace is an Nx monorepo containing Angular libraries and applications:
-
-- **Libraries**: `core`, `ng-auth`, `ng-components`, `ng-config`, `ng-customer`,
-  `ng-infrastructure`, `ng-notifications`, `ui-kit`, `utils`
-- **Applications**: `demo-app`, `demo-app-e2e`
-
-### Project Dependencies
-
-Always build dependencies before dependents:
-
-1. `core` - Base utilities, no dependencies
-2. `utils` - Shared utilities, may depend on core
-3. `ng-config` - Configuration services, depends on core
-4. `ng-infrastructure` - Infrastructure services, depends on ng-config and core
-5. `ng-auth` - Authentication module, depends on ng-infrastructure, ng-config,
-   and core
-6. `ng-components` - UI components, depends on core
-7. `ng-customer` - Customer management, depends on ng-components, ng-auth,
-   ng-notifications, and core
-8. `ng-notifications` - Notification components, no dependencies
-9. `ui-kit` - Additional UI components (under development)
-10. `demo-app` - Demo application, depends on all libraries
-
-### Development Best Practices
-
-#### 1. Use Nx Commands
-
-Always use `pnpm exec nx` commands instead of direct tool execution for
-consistency and caching.
-
-#### 2. Leverage Affected Commands
-
-Use `pnpm exec nx affected:*` commands to only run operations on projects
-affected by your changes:
-
-```bash
-pnpm exec nx affected:build
-pnpm exec nx affected:test
-pnpm exec nx affected:lint
-```
-
-#### 3. Cache Management
-
-Nx automatically caches build and test results. Clear cache when needed:
-
-```bash
-ppnpm run clean  # Resets Nx cache
-```
-
-#### 4. Local Registry for Development
-
-For testing library changes in applications:
-
-```bash
-# Start local npm registry
-ppnpm run local-registry
-
-# Build and publish libraries locally
-pnpm exec nx release --local
-
-# Use local versions in applications
-```
-
-#### 5. Code Generation
-
-Use Nx generators for consistent project structure:
-
-```bash
-# Generate new library
-pnpm exec nx g @nx/angular:library my-lib
-
-# Generate component in specific library
-pnpm exec nx g @nx/angular:component my-component --project=ng-components
-```
-
-### Nx Configuration
-
-#### nx.json
-
-- **targetDefaults**: Shared configuration for build, test, lint targets
-- **namedInputs**: Defines what files trigger rebuilds
-- **generators**: Custom generator configurations
-- **release**: Publishing configuration
-
-#### Key Benefits
-
-1. **Fast Builds**: Nx caching reduces build times significantly
-2. **Affected Commands**: Only run operations on changed projects
-3. **Dependency Graph**: Visual understanding of project relationships
-4. **Code Generation**: Consistent project structure with generators
-5. **Scalability**: Efficient handling of large monorepos
-6. **Developer Experience**: Rich tooling and automation
-
-### Troubleshooting
-
-#### Build Issues
-
-- Ensure dependencies are built first
-- Check `pnpm exec nx graph` for dependency relationships
-- Use `pnpm exec nx reset` to clear cache
-
-#### Test Issues
-
-- Run tests individually: `pnpm exec nx test <project>`
-- Check test configuration in `project.json`
-- Ensure proper imports in test setup
-
-#### Import Issues
-
-- Use path mappings defined in `tsconfig.base.json`
-- Libraries are available as `@acontplus/<lib-name>`
-- Check package.json exports in each library
-
-### Migration from npm Workspaces
-
-This workspace was migrated from npm workspaces to Nx monorepo:
-
-- **Before**: Manual dependency management with npm workspaces
-- **After**: Automated dependency management with Nx
-- **Benefits**: Better caching, affected commands, visual tools
-- **Commands**: Updated to use `pnpm exec nx` instead of npm scripts
-
-### Code Quality Tools
-
-#### ESLint Configuration
-
-- **Global Rules**: Applied to all TypeScript and HTML files
-- **Angular Specific**: Enforces Angular best practices and naming conventions
-- **TypeScript Rules**: Type safety and code quality rules
-- **Formatting Rules**: Consistent code style across the project
-- **Accessibility Rules**: HTML template accessibility checks
-
-#### Prettier Configuration
-
-- **Consistent Formatting**: 2-space indentation, single quotes, trailing commas
-- **File-specific Rules**: Different settings for JSON, Markdown, and YAML files
-- **Project-level Configs**: Each project can have its own Prettier settings
-
-#### EditorConfig
-
-- **Cross-editor Consistency**: Ensures consistent coding style regardless of
-  editor
-- **File-type Specific**: Different rules for TypeScript, HTML, CSS, JSON, etc.
-- **Line Ending Management**: Consistent line endings across platforms
-
-### Code Style Guidelines
-
-#### Component Selectors
-
-- **core, ng-components, ng-customer, ng-notifications**: `acp` prefix
-- **demo-app**: `app` prefix
-
-#### Naming Conventions
-
-- **Components**: kebab-case (e.g., `dynamic-card`)
-- **Directives**: camelCase (e.g., `toUpperCase`)
-- **Services**: camelCase (e.g., `correlationService`)
-- **Models**: camelCase (e.g., `apiResponseModel`)
-
-#### Import Organization
-
-- Angular imports first
-- Third-party libraries
-- Internal library imports
-- Relative imports last
-
-## 📁 Project Structure
-
-```
-acontplus-libs/
-├── apps/
-│   ├── demo-app/               # Demo application
-│   │   ├── src/
-│   │   │   ├── app/            # Application code
-│   │   │   ├── assets/         # Static assets
-│   │   │   ├── environments/   # Environment configurations
-│   │   │   └── index.html
-│   │   ├── project.json        # Nx project configuration
-│   │   └── tsconfig.json
-│   └── demo-app-e2e/           # E2E tests
-│       ├── src/
-│       └── project.json
-├── packages/
-│   ├── core/                   # Core utilities library
-│   │   ├── src/lib/
-│   │   │   ├── environments/   # Environment configuration
-│   │   │   ├── interceptors/   # HTTP interceptors
-│   │   │   ├── models/         # Data models and interfaces
-│   │   │   ├── repositories/   # BaseRepository pattern implementation
-│   │   │   ├── services/       # Core services
-│   │   │   ├── use-cases/      # Use case pattern implementation
-│   │   │   └── utils/          # Utility functions
-│   │   ├── project.json        # Nx project configuration
-│   │   └── README.md           # Core library documentation
-│   ├── ng-components/          # UI components library
-│   │   ├── src/lib/
-│   │   │   ├── components/     # UI components
-│   │   │   ├── services/       # UI-related services
-│   │   │   ├── models/         # UI component models
-│   │   │   └── styles/         # Component styles and themes
-│   │   ├── project.json
-│   │   └── README.md           # UI components documentation
-│   ├── ng-config/                # Core Angular services
-│   ├── ng-auth/                 # Authentication services
-│   ├── ng-infrastructure/       # Infrastructure services
-│   ├── ng-customer/            # Customer management
-│   ├── ng-notifications/       # Notifications system
-│   ├── ui-kit/                 # Additional UI components
-│   └── utils/                  # Shared utilities
-├── docs/                       # Comprehensive documentation
-│   ├── api-response-handling.md
-│   ├── frontend-architecture-guide.md
-│   ├── linting-and-formatting-setup.md
-│   └── style-guide.md
-├── nx.json                     # Nx workspace configuration
-├── package.json                # Root dependencies and scripts
-├── tsconfig.base.json          # Base TypeScript configuration
-└── jest.config.js              # Jest testing configuration
-```
-
-## 🔧 Configuration Files
-
-### Nx (nx.json)
-
-- **Target Defaults**: Shared configuration for build, test, and lint targets
-- **Named Inputs**: Defines what files affect different operations
-- **Cache Settings**: Optimizes build performance
-- **Release Configuration**: Automated publishing setup
-
-### Jest (jest.config.js)
-
-- Angular testing with jest-preset-angular
-- JSDOM environment for component testing
-- Module name mapping for library imports
-- Coverage reporting configuration
-- TypeScript support via ts-jest
-
-### ESLint (eslint.config.js)
-
-- Enforces Angular best practices
-- TypeScript-specific rules
-- Template accessibility checks
-- Consistent code formatting
-
-### Prettier (.prettierrc)
-
-- 2-space indentation
-- Single quotes preferred
-- 100 character line length
-- Trailing commas on multiline
-
-### EditorConfig (.editorconfig)
-
-- UTF-8 encoding
-- LF line endings
-- 2-space indentation
-- File-type specific rules
-
-## 🧪 Testing
-
-This project uses **Jest** as the test runner for fast, reliable testing with
-excellent Angular support.
-
-### Running Tests
-
-```bash
-# Run all tests
-pnpm run test
-
-# Run tests in watch mode (automatically re-runs on file changes)
-pnpm run test:watch
-
-# Run tests with coverage report
-pnpm run test:coverage
-
-# Run tests for specific project
-pnpm exec nx test core
-pnpm exec nx test ng-components
-```
-
-### Jest Configuration
-
-- **Configuration**: `jest.config.js` - Main Jest configuration
-- **Setup**: `setup-jest.ts` - Jest setup and mocks
-- **TypeScript**: `tsconfig.spec.json` - TypeScript configuration for tests
-- **Environment**: Uses `jsdom` environment for Angular component testing
-- **Module Resolution**: Configured to resolve library imports
-
-### Test File Patterns
-
-Jest automatically discovers test files matching these patterns:
-
-- `**/__tests__/**/*.ts`
-- `**/?(*.)+(spec|test).ts`
-
-### Coverage Reports
-
-Coverage reports are generated in the `coverage/` directory with:
-
-- **Text summary** in terminal
-- **HTML report** for detailed coverage analysis
-- **LCOV format** for CI/CD integration
-
-## 📦 Building and Publishing
-
-```bash
-# Build all libraries
-pnpm run build:libs
-
-# Build specific library
-pnpm exec nx build core
-pnpm exec nx build ng-components
-
-# Build demo app
-pnpm run build
-
-# Start local registry for development
-pnpm run local-registry
-
-# Publish libraries (handled by Nx release)
-pnpm exec nx release
-```
-
-## 📚 **Documentation**
-
-Comprehensive documentation is available across the project:
-
-- **[API Response Handling](docs/api-response-handling.md)** - DDD patterns for
-  API handling
-- **[Frontend Architecture Guide](docs/frontend-architecture-guide.md)** -
-  Architecture patterns and guidelines
-- **[Style Guide](docs/style-guide.md)** - Design system guidelines
-- **[Development Setup](docs/linting-and-formatting-setup.md)** - Code quality
-  tools
-- **[Core Library Guide](packages/core/README.md)** - Complete core library
-  documentation
-- **[UI Components Guide](packages/ng-components/README.md)** - Complete UI
-  components documentation
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Run linting and formatting: `pnpm run lint:all`
-5. Fix any issues: `pnpm run lint:fix` and `pnpm run format`
-6. Run tests: `pnpm run test`
-7. Submit a pull request
-
-### Development Workflow
-
-```bash
-# 1. Make code changes
-# 2. Check formatting
+# Formatting
 pnpm run format:check
-
-# 3. Format code if needed
 pnpm run format
-
-# 4. Check linting
-pnpm run lint
-
-# 5. Fix auto-fixable issues
-pnpm run lint:fix
-
-# 6. Run tests
-pnpm run test
-
-# 7. Build affected projects
-pnpm exec nx affected:build
-
-# 8. Run affected tests
-pnpm exec nx affected:test
 ```
 
-## 📄 License
+CI runs affected lint, unit tests, and builds on pull requests. Playwright E2E
+tests are available locally and should be run for relevant application changes.
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
-for details.
+## Quality conventions
 
-## 🆘 Support
+- Prettier formats all supported files with `pnpm run format`.
+- ESLint uses flat configuration with project-specific Angular selectors.
+- Write unit tests alongside changed behavior using `*.spec.ts` or `*.test.ts`.
 
-- **Issues**:
-  [GitHub Issues](https://github.com/acontplus/acontplus-libs/issues)
-- **Documentation**: See links in the Documentation section above
-- **Contact**: [Ivan Paz](https://github.com/iferpaz7)
+See [the testing strategy](docs/wiki/Testing.md) for runner choices, local commands,
+and the coverage policy.
 
-## 🔄 Changelog
+- Keep imports at package boundaries: consumers import from
+  `@acontplus/<package>`, never another package's `src/` directory.
+- Follow Conventional Commits. The Husky hook accepts `build`, `chore`, `ci`,
+  `docs`, `feat`, `fix`, `perf`, `refactor`, `revert`, `style`, and `test`.
+- Treat a supported Angular-major change as breaking for every affected Angular
+  package. Put `major` for each affected `ng-*` package in one version plan.
 
-See [CHANGELOG.md](CHANGELOG.md) for a detailed history of changes and
-improvements.
+## Releases
 
-## 🏆 **Architecture Assessment**
+Packages release independently through Nx Release version plans. The current
+version comes from tags in the `{projectName}@{version}` form. A reviewed plan
+under `.nx/version-plans/` selects the exact packages and SemVer bump; merging
+it triggers the release workflow. A release updates both the source package
+manifest and the manifest under `dist/`; only `dist/packages/*` is published.
 
-**Current Status**: Enterprise-grade Nx monorepo solution
+Preview release decisions without writing anything:
 
-The library now represents a **state-of-the-art, enterprise-ready foundation**
-that follows modern Angular development patterns with Nx monorepo management.
-It's perfectly suited for multiple Angular applications and provides an
-excellent base for building scalable, maintainable applications with efficient
-build caching and code sharing.
+```bash
+pnpm exec nx release --dry-run
+```
 
-**This is exactly the kind of foundation you want for a multi-application
-Angular ecosystem.** 🚀
+The `main` workflow performs versioning, project changelogs, tags, and npm
+publishing only when a version plan is merged. Do not manually edit versions,
+generated changelogs, tags, or `dist/` manifests. Packages released together
+may use `workspace:^` internally; the workflow converts those values to
+npm-compatible ranges in `dist/` just before publishing. Read the
+[release strategy](docs/wiki/Release-Strategy.md) before working on release
+behavior.
+
+## Documentation
+
+- [Architecture](docs/wiki/Architecture.md)
+- [Contributing](docs/wiki/Contributing.md)
+- [Release strategy](docs/wiki/Release-Strategy.md)
+- [Style guide](docs/wiki/Style-Guide.md)

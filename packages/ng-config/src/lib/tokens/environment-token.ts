@@ -8,7 +8,7 @@ import { Environment } from '@acontplus/core';
 export const ENVIRONMENT = new InjectionToken<Environment>('ENVIRONMENT', {
   factory: () => ({
     isProduction: false,
-    apiBaseUrl: 'http://localhost:4200/api/',
+    apiBaseUrl: 'http://localhost:4200/api',
     tokenKey: 'access_token',
     refreshTokenKey: 'refresh_token',
     clientId: 'angular-app',

@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { RepositoryConfig } from '@acontplus/core';
+import { joinApiUrl } from '../utils/url';
 
 @Injectable()
 export abstract class BaseHttpRepository {
@@ -9,13 +10,12 @@ export abstract class BaseHttpRepository {
   protected abstract config: RepositoryConfig; // Abstract property
 
   protected buildUrl(path = ''): string {
-    const baseUrl = (this.config.baseUrl || '/api').replaceAll(/\/+/g, '');
-    const version = this.config.version ? `/v${this.config.version}` : '';
-    const endpoint = path
-      ? `${this.config.endpoint}/${path}`.replaceAll(/\/+/g, '/')
-      : this.config.endpoint;
+    const baseUrl = this.config.baseUrl || '/api';
+    const version = this.config.version ? `v${this.config.version}` : '';
+    const versionedBaseUrl = version ? joinApiUrl(baseUrl, version) : baseUrl;
+    const endpoint = path ? joinApiUrl(this.config.endpoint, path) : this.config.endpoint;
 
-    return `${baseUrl}${version}/${endpoint.replace(/^\/+/, '')}`;
+    return joinApiUrl(versionedBaseUrl, endpoint);
   }
 
   protected get<T>(params?: Record<string, string | number | boolean>, path = ''): Observable<T> {

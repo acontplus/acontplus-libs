@@ -4,19 +4,9 @@ on:
   push:
     branches:
       - main
-    paths-ignore:
-      # Wiki and standalone docs — never trigger a release
-      - 'docs/**'
-      - '.github/workflows/publish-wiki.yml'
-      # Root-level and app markdown — no package impact
-      - 'README.md'
-      - 'CONTRIBUTING.md'
-      - 'CHANGELOG.md'
-      - 'LICENSE'
-      - 'apps/**/*.md'
-      # NOTE: packages/*/README.md is intentionally NOT ignored —
-      # a fix(scope): commit updating a package README should trigger
-      # a release to republish that package with the updated npm README.
+    paths:
+      # A release is deliberate: only a reviewed version plan can trigger it.
+      - '.nx/version-plans/**'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -30,8 +20,10 @@ permissions:
 
 jobs:
   release:
-    # Only run on merged PRs (not direct pushes)
-    if: github.event.head_commit.message != ''
+    # The release commit deletes the applied plan; do not run a second release.
+    if: >-
+      github.event_name == 'push' &&
+      !startsWith(github.event.head_commit.message, 'chore(release):')
     runs-on: ubuntu-latest
     # Must match the Environment name configured in the npm Trusted Publisher settings
     environment: npm-publish
@@ -100,6 +92,7 @@ jobs:
           echo "$(npm config get prefix)/bin" >> $GITHUB_PATH
 
       - name: Publish to npm (OIDC trusted publishing)
+        if: steps.version.outputs.changes == 'true'
         # pnpm publish has no OIDC support — call npm publish directly.
         #
         # KNOWN UPSTREAM BUG: npm/cli#8730 (open since Nov 2025) — OIDC trusted
@@ -125,6 +118,10 @@ jobs:
               pkg_name=$(node -p "require('./$dir/package.json').name")
               pkg_version=$(node -p "require('./$dir/package.json').version")
               echo "::group::Publishing $pkg_name@$pkg_version"
+
+              # npm cannot publish workspace: references. Materialize them in the
+              # dist manifest using the versions selected by Nx Release.
+              node tools/prepare-dist-package-manifest.mjs "$dir"
 
               if npm publish "$dir" --access public --provenance; then
                 echo "✓ Published $pkg_name@$pkg_version"

@@ -23,7 +23,8 @@
       "@theme/*": ["src/app/theme/*"],
       "@env": ["src/environments"],
       "@env/*": ["src/environments/*"]
-    }
+    },
+    "ignoreDeprecations": "6.0"
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

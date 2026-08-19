@@ -17,7 +17,7 @@
   &__panel {
     .mat-mdc-menu-panel {
       border-radius: 20px !important;
-      background: var(--mat-sys-color-surface-container) !important;
+      background: var(--mat-sys-surface-container) !important;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12) !important;
       min-width: 280px;
       max-width: 320px;
@@ -33,6 +33,7 @@
   &__content {
     display: flex;
     flex-direction: column;
+    color: var(--mat-sys-on-surface);
   }
 
   &__items {
@@ -46,7 +47,7 @@
 // Dark theme support
 @media (prefers-color-scheme: dark) {
   .acp-user-menu__panel .mat-mdc-menu-panel {
-    background: var(--mat-sys-color-surface-container-high) !important;
+    background: var(--mat-sys-surface-container-high) !important;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
   }
 }
@@ -66,7 +67,7 @@
     height: 56px;
     border-radius: 50%;
     overflow: hidden;
-    background: var(--mat-sys-color-surface-container-highest);
+    background: var(--mat-sys-surface-container-highest);
   }
 
   &__avatar-img {
@@ -90,7 +91,7 @@
   &__name {
     margin: 0;
     font: var(--mat-sys-typescale-body-large);
-    color: var(--mat-sys-color-on-surface);
+    color: var(--mat-sys-on-surface);
     font-weight: 500;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -104,8 +105,8 @@
     border-radius: 12px;
     font: var(--mat-sys-typescale-label-small);
     font-weight: 600;
-    background: var(--mat-sys-color-primary-container);
-    color: var(--mat-sys-color-on-primary-container);
+    background: var(--mat-sys-primary-container);
+    color: var(--mat-sys-on-primary-container);
     text-transform: uppercase;
     letter-spacing: 0.5px;
     font-size: 10px;
@@ -114,7 +115,7 @@
   &__email {
     margin: 0;
     font: var(--mat-sys-typescale-body-small);
-    color: var(--mat-sys-color-on-surface-variant);
+    color: var(--mat-sys-on-surface-variant);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -123,7 +124,7 @@
   &__divider {
     height: 1px;
     margin-top: var(--mat-sys-spacing-medium, 16px);
-    background: var(--acp-color-border, var(--mat-sys-color-outline-variant));
+    background: var(--acp-color-border, var(--mat-sys-outline-variant));
   }
 }
 
@@ -141,25 +142,25 @@
     cursor: pointer;
     text-decoration: none;
     font: var(--mat-sys-typescale-body-large);
-    color: var(--mat-sys-color-on-surface);
+    color: var(--mat-sys-on-surface);
     border-radius: 12px;
     transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
 
     &:hover {
-      background: var(--mat-sys-color-surface-container-highest);
+      background: var(--mat-sys-surface-container-highest);
     }
 
     &:focus-visible {
-      outline: 2px solid var(--mat-sys-color-primary);
+      outline: 2px solid var(--mat-sys-primary);
       outline-offset: 2px;
     }
 
     &--danger {
-      color: var(--mat-sys-color-error);
+      color: var(--mat-sys-error);
 
       &:hover {
-        background: var(--mat-sys-color-error-container);
-        color: var(--mat-sys-color-on-error-container);
+        background: var(--mat-sys-error-container);
+        color: var(--mat-sys-on-error-container);
       }
     }
   }
@@ -168,7 +169,7 @@
     font-size: 20px;
     width: 20px;
     height: 20px;
-    color: var(--mat-sys-color-on-surface-variant);
+    color: var(--mat-sys-on-surface-variant);
   }
 
   &__label {
@@ -186,7 +187,7 @@
     border-radius: 10px;
     font: var(--mat-sys-typescale-label-small);
     font-weight: 600;
-    background: var(--mat-sys-color-error);
-    color: var(--mat-sys-color-on-error);
+    background: var(--mat-sys-error);
+    color: var(--mat-sys-on-error);
   }
 }

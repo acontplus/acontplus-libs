@@ -27,7 +27,7 @@ import { RouterLink } from '@angular/router';
       margin-bottom: 0.75rem;
       cursor: pointer;
       outline: none;
-      background-color: var(--acp-user-panel-background-color);
+      //   background-color: var(--acp-user-panel-background-color);
       border-radius: 0.75rem;
 
       &:hover,

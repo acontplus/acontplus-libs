@@ -13,16 +13,13 @@ import { MatToolbarModule } from '@angular/material/toolbar';
  *   <acp-header-start>
  *     <button mat-icon-button>menu</button>
  *   </acp-header-start>
- *   <acp-header-branding>
- *     <acp-header-branding-content [logo]="logo" [name]="name" />
- *   </acp-header-branding>
+ *   <acp-header-branding [logo]="logo" [name]="name" />
  *   <acp-header-center>
- *     <acp-header-breadcrumb [items]="breadcrumbs" />
+ *     <span>Center content</span>
  *   </acp-header-center>
  *   <acp-header-end>
- *     <acp-header-search (search)="onSearch($event)" />
  *     <acp-header-actions [actions]="actions" />
- *     <acp-header-user-menu [user]="user" />
+ *     <acp-user-menu [user]="user" />
  *   </acp-header-end>
  * </acp-header>
  * ```

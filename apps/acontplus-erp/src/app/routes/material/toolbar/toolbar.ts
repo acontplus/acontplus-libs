@@ -10,7 +10,6 @@ import {
   AcpHeaderBranding,
   AcpHeaderCenter,
   AcpHeaderEnd,
-  AcpHeaderBrandingContent,
 } from '@acontplus/ng-components';
 
 @Component({
@@ -22,7 +21,6 @@ import {
     AcpHeaderBranding,
     AcpHeaderCenter,
     AcpHeaderEnd,
-    AcpHeaderBrandingContent,
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,

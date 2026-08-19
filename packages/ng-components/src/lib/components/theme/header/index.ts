@@ -3,7 +3,6 @@ export { AcpHeaderStart } from './header-start';
 export { AcpHeaderBranding } from './header-branding';
 export { AcpHeaderCenter } from './header-center';
 export { AcpHeaderEnd } from './header-end';
-export { AcpHeaderBrandingContent } from './header-branding-content';
 export { AcpHeaderActions } from './header-actions';
 export { AcpHeaderNotifications, type AcpNotificationItem } from './header-notifications';
 export { AcpHeaderWorkspace, type AcpWorkspaceItem } from './header-workspace';

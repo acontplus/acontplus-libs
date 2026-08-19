@@ -4,15 +4,13 @@
   </acp-header-start>
 
   @if (showBranding()) {
-    <acp-header-branding>
-      <acp-header-branding-content
-        [logo]="brandingLogo"
-        [name]="brandingName"
-        [showName]="true"
-        [link]="homeLink"
-        (selected)="onBranding()"
-      />
-    </acp-header-branding>
+    <acp-header-branding
+      [logo]="brandingLogo"
+      [name]="brandingName"
+      [showName]="true"
+      [link]="homeLink"
+      (selected)="onBranding()"
+    />
   }
 
   <acp-header-center>

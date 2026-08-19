@@ -162,6 +162,7 @@ export class AcpShellLayout {
 
   /** Close the primary sidenav. */
   closeSidenav(): void {
+    console.log('closeSidenav() called');
     this.sidenav().close();
   }
 

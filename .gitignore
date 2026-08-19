@@ -82,3 +82,15 @@ commit.txt
 .env.*.local
 
 .claude/settings.local.json
+
+# Local agent/AI tool state
+.agents/
+.codex/
+.opencode/
+.github/agents/
+.github/prompts/
+.github/skills/
+opencode.json
+
+# SSL backups
+ssl/*.bak

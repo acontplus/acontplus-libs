@@ -25,8 +25,8 @@ import {
   AcpShellSlotSidebar,
   AcpShellSlotTopmenu,
   AcpTopmenu,
-  type AcpTopmenuItem,
   AcpDrawer,
+  type AcpTopmenuItem,
   type MenuItem,
 } from '@acontplus/ng-components';
 
@@ -152,10 +152,8 @@ export class AdminLayout implements OnDestroy {
 
   toggleNotice() {
     this.drawer.open(SidebarNotice, {
-      id: 'shell-notices',
+      width: '400px',
       position: 'right',
-      width: '320px',
-      hasBackdrop: true,
     });
   }
 

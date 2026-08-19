@@ -143,11 +143,11 @@ export class AcpShellLayout {
 
   /** CSS modifier classes bound to the root container element. */
   readonly containerClasses = computed(() => ({
-    'matero-sidenav-collapsed': this.sidenavCollapsed() && this.navPos() !== 'top',
-    'matero-navbar-side': this.navPos() === 'side',
-    'matero-navbar-top': this.navPos() === 'top',
-    'matero-header-above': this.headerPos() === 'above',
-    'matero-header-fixed': this.headerPos() === 'fixed',
+    'acontplus-sidenav-collapsed': this.sidenavCollapsed() && this.navPos() !== 'top',
+    'acontplus-navbar-side': this.navPos() === 'side',
+    'acontplus-navbar-top': this.navPos() === 'top',
+    'acontplus-header-above': this.headerPos() === 'above',
+    'acontplus-header-fixed': this.headerPos() === 'fixed',
   }));
 
   // ── Public API (for template-variable access) ──────────────────────────────

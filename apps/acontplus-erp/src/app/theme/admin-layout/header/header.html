@@ -1,6 +1,6 @@
-<acp-header [elevated]="false" [sticky]="false" [isMobile]="false">
+<acp-header>
   <acp-header-start>
-    <acp-header-actions [actions]="leftActions()"   />
+    <acp-header-actions [actions]="leftActions()" />
   </acp-header-start>
 
   @if (showBranding()) {
@@ -21,9 +21,6 @@
 
   <acp-header-end>
     <acp-header-actions [actions]="rightActions" />
-    <acp-user-menu
-      [user]="userProfile"
-      [items]="userMenuItems" 
-    />
+    <acp-user-menu [user]="userProfile" [items]="userMenuItems" />
   </acp-header-end>
 </acp-header>

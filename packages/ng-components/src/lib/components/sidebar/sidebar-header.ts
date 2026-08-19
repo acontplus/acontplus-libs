@@ -28,11 +28,11 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     </mat-toolbar>
   `,
   host: {
-    class: 'matero-sidebar-header',
+    class: 'acontplus-sidebar-header',
   },
   styles: [
     `
-      .matero-sidebar-header {
+      .acontplus-sidebar-header {
         overflow: hidden;
 
         mat-toolbar {

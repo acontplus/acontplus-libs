@@ -22,13 +22,13 @@ import { Component } from '@angular/core';
   standalone: true,
   styles: [
     `
-    :host {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex: 0 0 auto;
-      margin-left: auto;
-    }
+      :host {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex: 0 0 auto;
+        margin-left: auto;
+      }
     `,
   ],
 })

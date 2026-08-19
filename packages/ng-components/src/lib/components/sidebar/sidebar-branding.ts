@@ -4,9 +4,9 @@ import { Component, input } from '@angular/core';
   selector: 'acp-sidebar-branding',
   template: `
     <a class="branding" href="/">
-      <img src="images/matero.png" class="branding-logo" alt="logo" />
+      <img src="images/acontplus.png" class="branding-logo" alt="logo" />
       @if (showName()) {
-        <span class="branding-name">MATERO</span>
+        <span class="branding-name">acontplus</span>
       }
     </a>
   `,

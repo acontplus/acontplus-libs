@@ -13,8 +13,6 @@ import {
   AcpHeaderBrandingContent,
   AcpHeaderSearch,
   AcpHeaderBreadcrumb,
-  UserMenu,
-  type UserMenuItem,
   type AcpBreadcrumbItem,
 } from '@acontplus/ng-components';
 
@@ -30,7 +28,6 @@ import {
     AcpHeaderBrandingContent,
     AcpHeaderSearch,
     AcpHeaderBreadcrumb,
-    UserMenu,
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,
@@ -61,9 +58,7 @@ export class Toolbar {
   ];
 
   // Toolbar with spacer
-  leftActions = [
-    { icon: 'menu', tooltip: 'Menu' },
-  ];
+  leftActions = [{ icon: 'menu', tooltip: 'Menu' }];
 
   rightActions = [
     { icon: 'search', tooltip: 'Search' },

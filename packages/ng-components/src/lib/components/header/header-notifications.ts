@@ -33,11 +33,7 @@ export interface AcpNotificationItem {
 @Component({
   selector: 'acp-header-notifications',
   template: `
-    <button
-      mat-icon-button
-      [matMenuTriggerFor]="menu"
-      class="acp-header__notifications-button"
-    >
+    <button mat-icon-button [matMenuTriggerFor]="menu" class="acp-header__notifications-button">
       <mat-icon>notifications</mat-icon>
       @if (unreadCount() > 0) {
         <span class="acp-header__notifications-badge">

@@ -1,10 +1,10 @@
 <div
-  class="matero-container-wrap"
-  [class.matero-sidenav-collapsed]="sidenavCollapsed() && navPos() !== 'top'"
-  [class.matero-navbar-side]="navPos() === 'side'"
-  [class.matero-navbar-top]="navPos() === 'top'"
-  [class.matero-header-above]="headerPos() === 'above'"
-  [class.matero-header-fixed]="headerPos() === 'fixed'"
+  class="acontplus-container-wrap"
+  [class.acontplus-sidenav-collapsed]="sidenavCollapsed() && navPos() !== 'top'"
+  [class.acontplus-navbar-side]="navPos() === 'side'"
+  [class.acontplus-navbar-top]="navPos() === 'top'"
+  [class.acontplus-header-above]="headerPos() === 'above'"
+  [class.acontplus-header-fixed]="headerPos() === 'fixed'"
   [dir]="dir()"
 >
   <!-- ── SLOT: Header ABOVE ─────────────────────────────────────────────────
@@ -17,11 +17,11 @@
   }
 
   <!-- ── Sidenav container ──────────────────────────────────────────────── -->
-  <mat-sidenav-container class="matero-container" autosize autoFocus>
+  <mat-sidenav-container class="acontplus-container" autosize autoFocus>
     <!-- Primary sidenav -->
     <mat-sidenav
       #sidenav
-      class="matero-sidenav"
+      class="acontplus-sidenav"
       [mode]="sidenavMode()"
       [opened]="navPos() === 'side' && sidenavOpened() && !isMobile()"
       (openedChange)="sidenavOpenedChange.emit($event)"
@@ -46,7 +46,7 @@
     </mat-sidenav>
 
     <!-- ── Main content area ────────────────────────────────────────────── -->
-    <mat-sidenav-content #content class="matero-content">
+    <mat-sidenav-content #content class="acontplus-content">
       <!-- ── SLOT: Header inside content (fixed / below) ──────────────────
            Rendered inside the scrollable content area.
            Only active when headerPos !== 'above'.
@@ -67,7 +67,7 @@
       <!-- ── DEFAULT SLOT: Page content ────────────────────────────────────
            Plain children (e.g. <router-outlet />) land here.
       ────────────────────────────────────────────────────────────────────── -->
-      <main class="matero-page-content">
+      <main class="acontplus-page-content">
         <router-outlet />
       </main>
     </mat-sidenav-content>

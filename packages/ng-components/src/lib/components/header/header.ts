@@ -39,7 +39,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     </mat-toolbar>
   `,
   styleUrl: './header.scss',
-  host: { class: 'matero-header' },
+  host: { class: 'acontplus-header' },
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatToolbarModule],

@@ -16,28 +16,28 @@ The AcpHeader component has been refactored to follow enterprise-grade architect
 
 ### Inputs
 
-| Input | Type | Default | Description |
-|-------|------|---------|-------------|
-| `config` | `AcpHeaderConfig` | `{}` | Main configuration object for the header |
+| Input    | Type              | Default | Description                              |
+| -------- | ----------------- | ------- | ---------------------------------------- |
+| `config` | `AcpHeaderConfig` | `{}`    | Main configuration object for the header |
 
 ### Outputs
 
-| Output | Type | Description |
-|--------|------|-------------|
-| `action` | `AcpHeaderActionEvent` | Emitted when a header action is triggered |
+| Output     | Type                         | Description                               |
+| ---------- | ---------------------------- | ----------------------------------------- |
+| `action`   | `AcpHeaderActionEvent`       | Emitted when a header action is triggered |
 | `userMenu` | `AcpHeaderUserMenuItemEvent` | Emitted when a user menu item is selected |
-| `branding` | `void` | Emitted when branding is selected |
+| `branding` | `void`                       | Emitted when branding is selected         |
 
 ### Slots
 
-| Slot | Description |
-|------|-------------|
-| `#branding` | Custom branding content |
-| `#userMenu` | Custom user menu content |
-| `#actions` | Custom actions content |
-| `[slot-left]` | Left region content |
-| `[slot-center]` | Center region content |
-| `[slot-right]` | Right region content |
+| Slot            | Description              |
+| --------------- | ------------------------ |
+| `#branding`     | Custom branding content  |
+| `#userMenu`     | Custom user menu content |
+| `#actions`      | Custom actions content   |
+| `[slot-left]`   | Left region content      |
+| `[slot-center]` | Center region content    |
+| `[slot-right]`  | Right region content     |
 
 ## Types
 
@@ -102,9 +102,7 @@ import { Header, type AcpHeaderConfig } from '@acontplus/ng-components';
 @Component({
   standalone: true,
   imports: [Header],
-  template: `
-    <acp-header [config]="headerConfig" (action)="onAction($event)" />
-  `,
+  template: ` <acp-header [config]="headerConfig" (action)="onAction($event)" /> `,
 })
 export class AppComponent {
   headerConfig: AcpHeaderConfig = {
@@ -161,19 +159,19 @@ headerConfig: HeaderConfig = {
 ```typescript
 headerConfig: HeaderConfig = {
   actions: [
-    { 
-      id: 'notifications', 
-      icon: 'notifications', 
+    {
+      id: 'notifications',
+      icon: 'notifications',
       event: 'notifications',
       position: 'right',
-      badge: 5 
+      badge: 5,
     },
-    { 
-      id: 'messages', 
-      icon: 'mail', 
+    {
+      id: 'messages',
+      icon: 'mail',
       event: 'messages',
       position: 'right',
-      badge: '99+' 
+      badge: '99+',
     },
   ],
 };

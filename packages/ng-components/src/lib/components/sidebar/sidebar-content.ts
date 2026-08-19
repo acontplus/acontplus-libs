@@ -16,7 +16,7 @@ import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/
 @Component({
   selector: 'acp-sidebar-content',
   template: `
-    <div class="matero-sidebar-main">
+    <div class="acontplus-sidebar-main">
       <ng-content select="[user-panel]" />
       <ng-content select="[sidemenu]" />
     </div>
@@ -25,7 +25,7 @@ import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/
     `
       @use '../../../core/style/breakpoints';
 
-      .matero-sidebar-main {
+      .acontplus-sidebar-main {
         height: calc(100% - var(--mat-toolbar-standard-height));
         padding: 0 0.5rem 0.5rem;
         overflow: auto;

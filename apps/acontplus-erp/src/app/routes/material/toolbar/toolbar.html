@@ -166,11 +166,11 @@
     <div class="example-container">
       <acp-header>
         <acp-header-start>
-          <button mat-icon-button (click)="onActionClick({icon: 'menu'})">
+          <button mat-icon-button (click)="onActionClick({ icon: 'menu' })">
             <mat-icon>menu</mat-icon>
           </button>
         </acp-header-start>
-        
+
         <acp-header-branding>
           <acp-header-branding-content
             [logo]="'images/acontplus.png'"
@@ -178,11 +178,11 @@
             [showName]="true"
           />
         </acp-header-branding>
-        
+
         <acp-header-center>
           <span>Dashboard</span>
         </acp-header-center>
-        
+
         <acp-header-end>
           <button mat-icon-button>
             <mat-icon>search</mat-icon>
@@ -206,7 +206,7 @@
             <mat-icon>menu</mat-icon>
           </button>
         </acp-header-start>
-        
+
         <acp-header-branding>
           <acp-header-branding-content
             [logo]="'images/acontplus.png'"
@@ -214,14 +214,13 @@
             [showName]="true"
           />
         </acp-header-branding>
-        
+
         <acp-header-center></acp-header-center>
-        
+
         <acp-header-end>
           <button mat-icon-button>
             <mat-icon>search</mat-icon>
           </button>
-         
         </acp-header-end>
       </acp-header>
     </div>
@@ -238,7 +237,7 @@
             <mat-icon>menu</mat-icon>
           </button>
         </acp-header-start>
-        
+
         <acp-header-branding>
           <acp-header-branding-content
             [logo]="'images/acontplus.png'"
@@ -246,9 +245,9 @@
             [showName]="true"
           />
         </acp-header-branding>
-        
+
         <acp-header-center></acp-header-center>
-        
+
         <acp-header-end>
           <button mat-icon-button>
             <mat-icon>search</mat-icon>
@@ -267,13 +266,13 @@
     <p class="description">Header con sombra y posición sticky.</p>
 
     <div class="example-container">
-      <acp-header [elevated]="true" [sticky]="true">
+      <acp-header>
         <acp-header-start>
           <button mat-icon-button>
             <mat-icon>menu</mat-icon>
           </button>
         </acp-header-start>
-        
+
         <acp-header-branding>
           <acp-header-branding-content
             [logo]="'images/acontplus.png'"
@@ -281,9 +280,9 @@
             [showName]="true"
           />
         </acp-header-branding>
-        
+
         <acp-header-center></acp-header-center>
-        
+
         <acp-header-end>
           <button mat-icon-button>
             <mat-icon>search</mat-icon>
@@ -307,7 +306,7 @@
             <mat-icon>menu</mat-icon>
           </button>
         </acp-header-start>
-        
+
         <acp-header-branding>
           <acp-header-branding-content
             [logo]="'images/acontplus.png'"
@@ -315,17 +314,16 @@
             [showName]="true"
           />
         </acp-header-branding>
-        
+
         <acp-header-center>
           <acp-header-breadcrumb [items]="breadcrumbItems" />
         </acp-header-center>
-        
+
         <acp-header-end>
           <acp-header-search [placeholder]="'Buscar...'" (searchSubmit)="onSearch($event)" />
           <button mat-icon-button>
             <mat-icon>notifications</mat-icon>
           </button>
-         
         </acp-header-end>
       </acp-header>
     </div>

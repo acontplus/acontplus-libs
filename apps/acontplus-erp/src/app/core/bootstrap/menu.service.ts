@@ -60,7 +60,7 @@ export class MenuService {
 
   /** Add one item to the menu data. */
   add(menu: Menu) {
-    this.menu.update(current => [...current, menu]);
+    this.menu.update((current) => [...current, menu]);
   }
 
   /** Reset the menu data. */

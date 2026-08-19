@@ -2,12 +2,12 @@
   <div class="acp-user-menu-header__avatar">
     <img [src]="user().avatar" [alt]="" class="acp-user-menu-header__avatar-img" />
   </div>
-  
+
   <div class="acp-user-menu-header__info">
     <div class="acp-user-menu-header__name-row">
       <h3 class="acp-user-menu-header__name">{{ user().name }}</h3>
       @if (user().plan) {
-        <span class="acp-user-menu-header__badge">{{ user().plan }}</span>
+      <span class="acp-user-menu-header__badge">{{ user().plan }}</span>
       }
     </div>
     <p class="acp-user-menu-header__email">{{ user().email }}</p>

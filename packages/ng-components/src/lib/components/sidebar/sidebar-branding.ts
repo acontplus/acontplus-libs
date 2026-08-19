@@ -6,7 +6,7 @@ import { Component, input } from '@angular/core';
     <a class="branding" href="/">
       <img src="images/acontplus.png" class="branding-logo" alt="logo" />
       @if (showName()) {
-        <span class="branding-name">acontplus</span>
+        <span class="branding-name">ACONTPLUS</span>
       }
     </a>
   `,

@@ -59,7 +59,6 @@ export class Toolbar {
 
   // Toolbar with spacer
   leftActions = [{ icon: 'menu', tooltip: 'Menu' }];
-  leftActions = [{ icon: 'menu', tooltip: 'Menu' }];
 
   rightActions = [
     { icon: 'search', tooltip: 'Search' },

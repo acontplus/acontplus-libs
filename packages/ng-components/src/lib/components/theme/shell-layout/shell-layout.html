@@ -64,6 +64,14 @@
       <ng-container *ngTemplateOutlet="toolbarSlot()!.templateRef" />
       }
 
+      <!-- ── SLOT: Top menu ───────────────────────────────────────────────
+           Optional horizontal top navigation projected above page content.
+           Project via <ng-template acpShellTopmenu>.
+      ────────────────────────────────────────────────────────────────────── -->
+      @if (topmenuSlot() && navPos() === 'top') {
+      <ng-container *ngTemplateOutlet="topmenuSlot()!.templateRef" />
+      }
+
       <!-- ── DEFAULT SLOT: Page content ────────────────────────────────────
            Plain children (e.g. <router-outlet />) land here.
       ────────────────────────────────────────────────────────────────────── -->

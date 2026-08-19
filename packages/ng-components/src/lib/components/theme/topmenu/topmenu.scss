@@ -1,14 +1,13 @@
 @use '@angular/material' as mat;
 
-.acontplus-topmenu {
+.acp-topmenu {
   --mat-tab-divider-height: 0;
-  --mat-button-text-label-text-color: var(--topmenu-text-color);
+  --mat-button-text-label-text-color: var(--acp-topmenu-text-color);
 
   position: sticky;
   z-index: 200;
   display: block;
   padding: 0.5rem;
-  background-color: var(--topmenu-background-color);
   backdrop-filter: blur(8px);
 
   .mat-mdc-button {
@@ -16,7 +15,7 @@
     white-space: nowrap;
 
     &.active {
-      background-color: var(--topmenu-item-active-background-color);
+      background-color: var(--acp-topmenu-item-active-background-color);
     }
   }
 
@@ -78,7 +77,7 @@
 .acontplus-topmenu-panel {
   .mat-mdc-menu-item {
     &.active {
-      color: var(--topmenu-dropdown-item-active-text-color);
+      color: var(--acp-topmenu-dropdown-item-active-text-color);
     }
   }
 }

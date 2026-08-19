@@ -19,11 +19,13 @@ import { Customizer } from '../customizer/customizer';
 import { Header } from './header/header';
 import { Sidebar } from './sidebar/sidebar';
 import { SidebarNotice } from '../sidebar-notice/sidebar-notice';
-import { Topmenu } from '../topmenu/topmenu';
 import {
   AcpShellLayout,
   AcpShellSlotHeader,
   AcpShellSlotSidebar,
+  AcpShellSlotTopmenu,
+  AcpTopmenu,
+  type AcpTopmenuItem,
   AcpDrawer,
   type MenuItem,
 } from '@acontplus/ng-components';
@@ -45,10 +47,11 @@ const MONITOR_MEDIAQUERY = 'screen and (min-width: 600px)';
     AcpShellLayout,
     AcpShellSlotHeader,
     AcpShellSlotSidebar,
+    AcpShellSlotTopmenu,
+    AcpTopmenu,
     // App-specific sub-components projected into slots
     Header,
     Sidebar,
-    Topmenu,
     Customizer,
   ],
 })
@@ -67,6 +70,12 @@ export class AdminLayout implements OnDestroy {
   // ── State ──────────────────────────────────────────────────────────────────
 
   readonly options = this.settings.options;
+
+  readonly topMenuItems = toSignal(
+    this.menuService.getAll().pipe(map((menus) => menus as AcpTopmenuItem[])),
+  );
+
+  readonly buildRoute = (routeArr: string[]) => this.menuService.buildRoute(routeArr);
 
   readonly isMobile = toSignal(
     this.breakpointObserver.observe(MOBILE_MEDIAQUERY).pipe(map((r) => r.matches)),

@@ -39,11 +39,13 @@
     />
   </ng-template>
 
-  <!-- ── Page content ────────────────────────────────────────────────────────
-       Default ng-content del shell: top menu + router outlet.
+  <!-- ── Slot: Top menu ─────────────────────────────────────────────────────
+       Projected into the shell as a named slot, similar to the sidebar.
   ──────────────────────────────────────────────────────────────────────────── -->
   @if (options().navPos === 'top') {
-    <app-topmenu />
+    <ng-template acpShellTopmenu>
+      <acp-topmenu [items]="topMenuItems() || []" [buildRoute]="buildRoute" />
+    </ng-template>
   }
 
   <router-outlet />

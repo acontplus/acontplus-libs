@@ -6,6 +6,7 @@ export {
   AcpShellSlotSidebar,
   AcpShellSlotSidebarFooter,
   AcpShellSlotToolbar,
+  AcpShellSlotTopmenu,
 } from './shell-layout-slots';
 
 export type { AcpNavPos, AcpHeaderPos, AcpDir } from './shell-layout.types';

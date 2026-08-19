@@ -17,6 +17,7 @@ import {
   AcpShellSlotSidebar,
   AcpShellSlotSidebarFooter,
   AcpShellSlotToolbar,
+  AcpShellSlotTopmenu,
 } from './shell-layout-slots';
 import type { AcpNavPos, AcpHeaderPos, AcpDir } from './shell-layout.types';
 import { RouterOutlet } from '@angular/router';
@@ -97,6 +98,8 @@ export class AcpShellLayout {
   readonly sidebarFooterSlot = contentChild(AcpShellSlotSidebarFooter);
   /** Optional toolbar content injected into the header center. */
   readonly toolbarSlot = contentChild(AcpShellSlotToolbar);
+  /** Optional top navigation projected above the main page content. */
+  readonly topmenuSlot = contentChild(AcpShellSlotTopmenu);
   /** Optional secondary sidenav (e.g. notifications panel, position end). */
 
   // ── Layout inputs ──────────────────────────────────────────────────────────

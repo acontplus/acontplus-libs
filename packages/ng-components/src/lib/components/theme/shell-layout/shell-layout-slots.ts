@@ -14,6 +14,9 @@ export const ACP_SHELL_SLOT_SIDEBAR_FOOTER = new InjectionToken<AcpShellSlotSide
 export const ACP_SHELL_SLOT_TOOLBAR = new InjectionToken<AcpShellSlotToolbar>(
   'AcpShellSlotToolbar',
 );
+export const ACP_SHELL_SLOT_TOPMENU = new InjectionToken<AcpShellSlotTopmenu>(
+  'AcpShellSlotTopmenu',
+);
 
 /**
  * `acpShellHeader` — replaces the entire header region.
@@ -98,5 +101,26 @@ export class AcpShellSlotSidebarFooter {
   providers: [{ provide: ACP_SHELL_SLOT_TOOLBAR, useExisting: AcpShellSlotToolbar }],
 })
 export class AcpShellSlotToolbar {
+  readonly templateRef = inject(TemplateRef);
+}
+
+/**
+ * `acpShellTopmenu` — projects horizontal top navigation into the page content.
+ *
+ * @example
+ * ```html
+ * <acp-shell-layout>
+ *   <ng-template acpShellTopmenu>
+ *     <app-topmenu />
+ *   </ng-template>
+ * </acp-shell-layout>
+ * ```
+ */
+@Directive({
+  selector: 'ng-template[acpShellTopmenu]',
+  standalone: true,
+  providers: [{ provide: ACP_SHELL_SLOT_TOPMENU, useExisting: AcpShellSlotTopmenu }],
+})
+export class AcpShellSlotTopmenu {
   readonly templateRef = inject(TemplateRef);
 }

@@ -25,3 +25,4 @@ export * from './theme/user-panel';
 export * from './theme/sidemenu';
 export * from './theme/sidebar';
 export * from './theme/shell-layout';
+export * from './theme/topmenu';

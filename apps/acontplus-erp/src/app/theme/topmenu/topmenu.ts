@@ -1,83 +1,18 @@
-import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
-import {
-  Component,
-  OnDestroy,
-  ViewEncapsulation,
-  inject,
-  signal,
-  ChangeDetectionStrategy,
-} from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatTabsModule } from '@angular/material/tabs';
-import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { NgxPermissionsModule } from 'ngx-permissions';
-import { debounceTime, filter, tap } from 'rxjs';
-
-import { Menu, MenuService } from '@core';
-import { TopmenuPanel } from './topmenu-panel';
+import { Component, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { AcpTopmenu } from '@acontplus/ng-components';
+import { MenuService } from '@core';
 
 @Component({
   selector: 'app-topmenu',
-  templateUrl: './topmenu.html',
-  styleUrl: './topmenu.scss',
-  host: {
-    class: 'acontplus-topmenu',
-  },
-  encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [
-    AsyncPipe,
-    NgTemplateOutlet,
-    RouterLink,
-    RouterLinkActive,
-    MatButtonModule,
-    MatIconModule,
-    MatMenuModule,
-    MatTabsModule,
-    NgxPermissionsModule,
-    TopmenuPanel,
-  ],
+  standalone: true,
+  imports: [AcpTopmenu],
+  template: ` <acp-topmenu [items]="menuItems() || []" [buildRoute]="buildRoute" /> `,
 })
-export class Topmenu implements OnDestroy {
-  private readonly router = inject(Router);
-  readonly menu = inject(MenuService);
+export class Topmenu {
+  private readonly menu = inject(MenuService);
 
-  menuList: Menu[] = [];
+  readonly menuItems = toSignal(this.menu.getAll());
 
-  private menuSubscription = this.menu.getAll().subscribe((items) => {
-    this.menuList = items.map((item) => {
-      const isCurrentRoute = this.router.url.split('/').includes(item.route);
-      item.active = signal(isCurrentRoute);
-      return item;
-    });
-  });
-
-  private routerSubscription = this.router.events
-    .pipe(filter((event) => event instanceof NavigationEnd))
-    .subscribe(() => {
-      this.menuList.map((item) => item.active?.set(false));
-    });
-
-  ngOnDestroy() {
-    this.menuSubscription.unsubscribe();
-    this.routerSubscription.unsubscribe();
-  }
-
-  onRouteChange(rla: RouterLinkActive, menuItem: Menu) {
-    this.routerSubscription.unsubscribe();
-    this.routerSubscription = this.router.events
-      .pipe(
-        filter((event) => event instanceof NavigationEnd),
-        tap(() => {
-          this.menuList.filter((m) => m != menuItem).map((item) => item.active?.set(false));
-        }),
-        debounceTime(10),
-        tap(() => {
-          menuItem.active?.set(rla.isActive);
-        }),
-      )
-      .subscribe();
-  }
+  readonly buildRoute = (routeArr: string[]) => this.menu.buildRoute(routeArr);
 }

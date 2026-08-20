@@ -27,7 +27,7 @@ import { RouterLink } from '@angular/router';
       margin-bottom: 0.75rem;
       cursor: pointer;
       outline: none;
-      //   background-color: var(--acp-user-panel-background-color);
+      /*   background-color: var(--acp-user-panel-background-color); */
       border-radius: 0.75rem;
 
       &:hover,
@@ -36,7 +36,7 @@ import { RouterLink } from '@angular/router';
       }
     }
 
-    // Set default width and height can avoid flashing before avatar image loaded.
+    /* Set default width and height can avoid flashing before avatar image loaded. */
     .acp-sidebar-user-panel-avatar {
       width: 3rem;
       height: 3rem;

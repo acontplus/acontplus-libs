@@ -68,5 +68,4 @@ export class AcpHeaderTheme {
     const next = this.themeCycle[nextIndex];
     this.themeChange.emit(next);
   }
-  }
 }

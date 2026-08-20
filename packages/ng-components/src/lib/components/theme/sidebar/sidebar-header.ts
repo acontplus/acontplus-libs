@@ -40,7 +40,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
           padding: 0 0.5rem;
         }
 
-        // Remove redundant padding in the slide toggle
+        /* Remove redundant padding in the slide toggle */
         mat-slide-toggle .mdc-label {
           display: none;
         }

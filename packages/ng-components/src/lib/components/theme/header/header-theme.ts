@@ -64,7 +64,9 @@ export class AcpHeaderTheme {
   toggleTheme() {
     const current = this.currentTheme();
     const index = this.themeCycle.indexOf(current);
-    const next = this.themeCycle[(index + 1) % this.themeCycle.length];
+    const nextIndex = index === -1 ? 0 : (index + 1) % this.themeCycle.length;
+    const next = this.themeCycle[nextIndex];
     this.themeChange.emit(next);
+  }
   }
 }

@@ -1,0 +1,56 @@
+.toolbar-examples {
+  padding: 20px;
+}
+
+.example-section {
+  margin-bottom: 40px;
+
+  h3 {
+    margin-bottom: 8px;
+    font-size: 1.25rem;
+    font-weight: 500;
+  }
+
+  .description {
+    margin-bottom: 16px;
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 0.875rem;
+  }
+}
+
+.example-container {
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 16px;
+  background-color: #fafafa;
+  margin-bottom: 16px;
+}
+
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+.color-variants {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  mat-toolbar {
+    border-radius: 4px;
+  }
+}
+
+.dense-variants {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  mat-toolbar {
+    border-radius: 4px;
+  }
+}
+
+.example-dense-toolbar {
+  height: 48px;
+  min-height: 48px;
+}

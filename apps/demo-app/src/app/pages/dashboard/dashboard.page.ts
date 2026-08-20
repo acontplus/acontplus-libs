@@ -1,7 +1,7 @@
 // apps/demo-app/src/app/pages/dashboard/dashboard.page.ts
 import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthState } from '@acontplus/ng-auth';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -9,7 +9,7 @@ import { MatCardModule } from '@angular/material/card';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [RouterLink, MatButtonModule, MatCardModule],
+  imports: [MatButtonModule, MatCardModule],
   template: `
     <div class="dashboard-page">
       <mat-card>

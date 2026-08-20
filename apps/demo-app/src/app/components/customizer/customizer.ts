@@ -10,44 +10,35 @@ import { SettingsService } from '../../core/settings.service';
   standalone: true,
   imports: [FormsModule, ReactiveFormsModule, MatRadioModule, MatTooltipModule],
   template: `
-    <div class="customizer-panel">
-      <h3>Theme Settings</h3>
+    <h3>Theme Settings</h3>
 
-      <div class="setting-group">
-        <span>Theme Color</span>
-        <div class="color-options">
-          @for (color of themeColors; track color.value) {
-            <button
-              class="color-btn"
-              [class.active]="form.value.themeColor === color.value"
-              [matTooltip]="color.tooltip"
-              (click)="setThemeColor(color.value)"
-              [style.background-color]="color.color"
-              [attr.aria-label]="color.label"
-            ></button>
-          }
-        </div>
+    <div class="setting-group">
+      <span>Theme Color</span>
+      <div class="color-options">
+        @for (color of themeColors; track color.value) {
+          <button
+            class="color-btn"
+            [class.active]="form.value.themeColor === color.value"
+            [matTooltip]="color.tooltip"
+            (click)="setThemeColor(color.value)"
+            [style.background-color]="color.color"
+            [attr.aria-label]="color.label"
+          ></button>
+        }
       </div>
+    </div>
 
-      <div class="setting-group">
-        <span>Theme Mode</span>
-        <mat-radio-group [formControl]="form.controls.theme">
-          <mat-radio-button value="light">Light</mat-radio-button>
-          <mat-radio-button value="dark">Dark</mat-radio-button>
-          <mat-radio-button value="auto">Auto</mat-radio-button>
-        </mat-radio-group>
-      </div>
+    <div class="setting-group">
+      <span>Theme Mode</span>
+      <mat-radio-group [formControl]="form.controls.theme">
+        <mat-radio-button value="light">Light</mat-radio-button>
+        <mat-radio-button value="dark">Dark</mat-radio-button>
+        <mat-radio-button value="auto">Auto</mat-radio-button>
+      </mat-radio-group>
     </div>
   `,
   styles: [
     `
-      .customizer-panel {
-        padding: 20px;
-        background: var(--mat-sys-surface-container);
-        border-radius: 8px;
-        min-width: 280px;
-      }
-
       h3 {
         margin: 0 0 20px;
         font-size: 18px;

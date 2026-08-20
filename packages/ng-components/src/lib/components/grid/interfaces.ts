@@ -79,7 +79,7 @@ export interface DataGridColumnButton<T = any> {
   color?: ThemePalette;
   class?: string;
   disabled?: boolean | ((rowData: T) => boolean);
-  click?: (rowData: T) => void;
+  click?: (rowData: T, event: Event) => void;
   iif?: (rowData: T) => boolean;
   pop?: string | Observable<string> | DataGridColumnButtonPop;
   tooltip?: string | Observable<string> | DataGridColumnButtonTooltip;
@@ -200,7 +200,7 @@ export interface DataGridMenuItem<T = any> {
   svgIcon?: string;
   class?: string;
   disabled?: boolean | ((rowData: T) => boolean);
-  click?: (rowData: T) => void;
+  click?: (rowData: T, event: Event) => void;
   iif?: (rowData: T) => boolean;
   children?: DataGridMenuItem[];
 }

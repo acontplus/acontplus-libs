@@ -1,0 +1,225 @@
+@use '@angular/material' as mat;
+
+// Card component styling with Material Design tokens
+// Using mat.card-overrides to customize card-specific design tokens
+.acp-card {
+  @include mat.card-overrides(
+    (
+      elevated-container-color: light-dark(#ffffff, #1a1b1f),
+      outlined-container-color: light-dark(#ffffff, #1a1b1f),
+      title-text-line-height: 1.6rem,
+      title-text-weight: 500,
+      subtitle-text-weight: 400,
+      elevated-container-shape: var(--mat-sys-corner-small),
+      outlined-container-shape: var(--mat-sys-corner-small),
+      // elevated-container-color: var(--mat-sys-surface-container),
+      // elevated-container-shape: var(--mat-sys-corner-large),
+      // outlined-container-shape: var(--mat-sys-corner-large),
+      outlined-outline-color: var(--mat-sys-outline-variant),
+      filled-container-color: var(--mat-sys-surface-container-highest),
+      title-text-size: var(--mat-sys-title-large),
+      subtitle-text-size: var(--mat-sys-body-medium),
+      subtitle-text-color: var(--mat-sys-on-surface-variant),
+      elevated-container-elevation: 0 4px 12px rgba(0, 0, 0, 0.08),
+    )
+  );
+}
+
+// Custom styles for card sections
+.acp-card-media {
+  width: 100%;
+  object-fit: cover;
+  border-radius: var(--mat-sys-corner-large) var(--mat-sys-corner-large) 0 0;
+}
+
+// Footer padding
+.mat-mdc-card-footer {
+  padding: 16px;
+}
+
+// Actions gap
+.mat-mdc-card-actions {
+  gap: 8px;
+}
+
+// Host wrapper styles
+.acp-card-wrapper {
+  display: block;
+  transition: box-shadow 0.2s ease-in-out;
+
+  // Hover effect
+  &.acp-card--hover:hover {
+    box-shadow: var(--mat-sys-level3);
+  }
+
+  // Clickable state
+  &.acp-card--clickable {
+    cursor: pointer;
+    user-select: none;
+
+    &:hover {
+      box-shadow: var(--mat-sys-level2);
+    }
+
+    &:active {
+      box-shadow: var(--mat-sys-level1);
+    }
+  }
+
+  // Disabled state
+  &.acp-card--disabled {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  // Border radius variants
+  &.acp-card--rounded-4 {
+    .acp-card,
+    .acp-card-media {
+      border-radius: 4px;
+    }
+  }
+
+  &.acp-card--rounded-8 {
+    .acp-card,
+    .acp-card-media {
+      border-radius: 8px;
+    }
+  }
+
+  &.acp-card--rounded-12 {
+    .acp-card,
+    .acp-card-media {
+      border-radius: 12px;
+    }
+  }
+
+  &.acp-card--rounded-16 {
+    .acp-card,
+    .acp-card-media {
+      border-radius: 16px;
+    }
+  }
+
+  &.acp-card--rounded-20 {
+    .acp-card,
+    .acp-card-media {
+      border-radius: 20px;
+    }
+  }
+
+  &.acp-card--rounded-24 {
+    .acp-card,
+    .acp-card-media {
+      border-radius: 24px;
+    }
+  }
+
+  // Padding variants
+  &.acp-card--padding-small {
+    .mat-mdc-card-content {
+      padding: 12px;
+    }
+  }
+
+  &.acp-card--padding-medium {
+    .mat-mdc-card-content {
+      padding: 16px;
+    }
+  }
+
+  &.acp-card--padding-large {
+    .mat-mdc-card-content {
+      padding: 24px;
+    }
+  }
+
+  // Full height
+  &.acp-card--full-height {
+    height: 100%;
+  }
+
+  // Full width
+  &.acp-card--full-width {
+    width: 100%;
+  }
+}
+
+// Material Design background color utility classes
+// Primary
+.acp-card--primary {
+  color: var(--mat-sys-on-primary);
+  background-color: var(--mat-sys-primary);
+}
+
+.acp-card--primary-container {
+  color: var(--mat-sys-on-primary-container);
+  background-color: var(--mat-sys-primary-container);
+}
+
+// Secondary
+.acp-card--secondary {
+  color: var(--mat-sys-on-secondary);
+  background-color: var(--mat-sys-secondary);
+}
+
+.acp-card--secondary-container {
+  color: var(--mat-sys-on-secondary-container);
+  background-color: var(--mat-sys-secondary-container);
+}
+
+// Error
+.acp-card--error {
+  color: var(--mat-sys-on-error);
+  background-color: var(--mat-sys-error);
+}
+
+.acp-card--error-container {
+  color: var(--mat-sys-on-error-container);
+  background-color: var(--mat-sys-error-container);
+}
+
+// Surfaces
+.acp-card--surface {
+  color: var(--mat-sys-on-surface);
+  background-color: var(--mat-sys-surface);
+}
+
+.acp-card--surface-variant {
+  color: var(--mat-sys-on-surface-variant);
+  background-color: var(--mat-sys-surface-variant);
+}
+
+.acp-card--surface-container-highest {
+  color: var(--mat-sys-on-surface);
+  background-color: var(--mat-sys-surface-container-highest);
+}
+
+.acp-card--surface-container-high {
+  color: var(--mat-sys-on-surface);
+  background-color: var(--mat-sys-surface-container-high);
+}
+
+.acp-card--surface-container {
+  color: var(--mat-sys-on-surface);
+  background-color: var(--mat-sys-surface-container);
+}
+
+.acp-card--surface-container-low {
+  color: var(--mat-sys-on-surface);
+  background-color: var(--mat-sys-surface-container-low);
+}
+
+.acp-card--surface-container-lowest {
+  background-color: var(--mat-sys-surface-container-lowest);
+}
+
+.acp-card--inverse-surface {
+  color: var(--mat-sys-inverse-on-surface);
+  background-color: var(--mat-sys-inverse-surface);
+}
+
+// Disabled
+.acp-card--disabled-bg {
+  background-color: color-mix(in srgb, var(--mat-sys-on-surface) 12%, transparent);
+}

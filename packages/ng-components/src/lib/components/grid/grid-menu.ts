@@ -24,7 +24,7 @@ import { DataGridMenuItem } from './interfaces';
               [matMenuTriggerFor]="gridMenu.menu"
               [disabled]="item | cellActionDisable: data"
               [class]="item.class"
-              (click)="item.click?.(data)"
+              (click)="item.click?.(data, $event)"
             >
               <mat-icon *ngTemplateOutlet="iconTpl; context: { $implicit: item }" />
               <span>{{ item.text }}</span>
@@ -36,7 +36,7 @@ import { DataGridMenuItem } from './interfaces';
               mat-menu-item
               [disabled]="item | cellActionDisable: data"
               [class]="item.class"
-              (click)="item.click?.(data)"
+              (click)="item.click?.(data, $event)"
             >
               <mat-icon *ngTemplateOutlet="iconTpl; context: { $implicit: item }" />
               <span>{{ item.text }}</span>

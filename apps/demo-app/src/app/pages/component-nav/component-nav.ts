@@ -83,6 +83,20 @@ export const COMPONENTS_MENU: ComponentCategory[] = [
     summary: 'Loading spinner components for async operations.',
     category: 'Buttons & Indicators',
   },
+  {
+    id: 'context-menu',
+    name: 'Context Menu',
+    summary:
+      'Flexible context menu component with nested menus, icons, badges, and keyboard shortcuts.',
+    category: 'Buttons & Indicators',
+  },
+  {
+    id: 'card',
+    name: 'Card',
+    summary:
+      'Flexible, reusable card component based on Material Design 3 with multiple appearances and content projection.',
+    category: 'Layout',
+  },
 
   // Layout
   {

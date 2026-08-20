@@ -1,5 +1,6 @@
-import { Injectable, WritableSignal } from '@angular/core';
-import { BehaviorSubject, share } from 'rxjs';
+import { Injectable, WritableSignal, signal } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { share } from 'rxjs';
 
 export interface MenuTag {
   color: string; // background color
@@ -36,11 +37,14 @@ export interface Menu {
   providedIn: 'root',
 })
 export class MenuService {
-  private readonly menu$ = new BehaviorSubject<Menu[]>([]);
+  private readonly menu = signal<Menu[]>([]);
+
+  /** Get all the menu data as a signal. */
+  readonly menu$ = toObservable(this.menu);
 
   /** Get all the menu data. */
   getAll() {
-    return this.menu$.asObservable();
+    return this.menu$;
   }
 
   /** Observe the change of menu data. */
@@ -50,20 +54,18 @@ export class MenuService {
 
   /** Initialize the menu data. */
   set(menu: Menu[]) {
-    this.menu$.next(menu);
-    return this.menu$.asObservable();
+    this.menu.set(menu);
+    return this.menu$;
   }
 
   /** Add one item to the menu data. */
   add(menu: Menu) {
-    const tmpMenu = this.menu$.value;
-    tmpMenu.push(menu);
-    this.menu$.next(tmpMenu);
+    this.menu.update((current) => [...current, menu]);
   }
 
   /** Reset the menu data. */
   reset() {
-    this.menu$.next([]);
+    this.menu.set([]);
   }
 
   /** Delete empty values and rebuild route. */
@@ -110,9 +112,9 @@ export class MenuService {
   /** Get the menu level. */
   getLevel(routeArr: string[]): string[] {
     let tmpArr: any[] = [];
-    this.menu$.value.forEach((item) => {
+    this.menu().forEach((item) => {
       // Breadth-first traverse
-      let unhandledLayer = [{ item, parentNamePathList: [], realRouteArr: [] }];
+      let unhandledLayer: any[] = [{ item, parentNamePathList: [], realRouteArr: [] }];
       while (unhandledLayer.length > 0) {
         let nextUnhandledLayer: any[] = [];
         for (const ele of unhandledLayer) {
@@ -125,7 +127,7 @@ export class MenuService {
             break;
           }
           if (!this.isLeafItem(eachItem)) {
-            const wrappedChildren = eachItem.children?.map((child) => ({
+            const wrappedChildren = eachItem.children?.map((child: MenuChildrenItem) => ({
               item: child,
               parentNamePathList: [],
               realRouteArr: currentRealRouteArr,

@@ -1,0 +1,94 @@
+<div
+  #menuContainer
+  class="acp-context-menu-container"
+  role="menu"
+  tabindex="0"
+  cdkTrapFocus
+  cdkTrapFocusAutoCapture
+>
+  <div class="acp-context-menu-list">
+    @for (item of visibleItems(); track $index; let i = $index) { @if (item.separator) {
+    <div class="acp-context-menu-separator" role="separator" aria-orientation="horizontal"></div>
+    } @if (!item.separator) {
+    <button
+      [ngClass]="getItemClasses(item, i)"
+      (click)="onItemClick(item, $event)"
+      (mouseenter)="onItemHover(i)"
+      [disabled]="item.disabled || false"
+      [attr.aria-label]="item.label"
+      [attr.aria-disabled]="item.disabled || false"
+      [attr.aria-haspopup]="hasChildren(item) ? 'menu' : 'false'"
+      [attr.aria-expanded]="expandedIndex() === i && hasChildren(item)"
+      [title]="item.tooltip || null"
+      role="menuitem"
+      type="button"
+    >
+      @if (item.icon) {
+      <span class="acp-context-menu-item-icon">
+        @if (!item.icon.includes('/')) {
+        <mat-icon [attr.aria-hidden]="true"> {{ item.icon }} </mat-icon>
+        } @if (item.icon.includes('/')) {
+        <img [src]="item.icon" alt="" aria-hidden="true" />
+        }
+      </span>
+      }
+
+      <span class="acp-context-menu-item-label"> {{ item.label }} </span>
+
+      @if (item.badge) {
+      <span class="acp-context-menu-item-badge"> {{ item.badge }} </span>
+      } @if (item.shortcut) {
+      <span class="acp-context-menu-item-shortcut"> {{ item.shortcut }} </span>
+      } @if (item.loading) {
+      <mat-spinner class="acp-context-menu-item-loader" [diameter]="16" [strokeWidth]="2">
+      </mat-spinner>
+      } @if (hasChildren(item)) {
+      <mat-icon class="acp-context-menu-item-arrow" [attr.aria-hidden]="true">
+        chevron_right
+      </mat-icon>
+      }
+    </button>
+    } @if (hasChildren(item) && expandedIndex() === i) {
+    <div class="acp-context-menu-submenu" role="menu">
+      @for (subitem of item.children; track $index; let j = $index) { @if (subitem.separator) {
+      <div class="acp-context-menu-separator" role="separator" aria-orientation="horizontal"></div>
+      } @if (!subitem.separator) {
+      <button
+        class="acp-context-menu-item"
+        [class.acp-context-menu-item--disabled]="subitem.disabled || false"
+        [class.acp-context-menu-item--danger]="subitem.danger || false"
+        [class.acp-context-menu-item--selected]="false"
+        (click)="onItemClick(subitem, $event)"
+        [disabled]="subitem.disabled || false"
+        [attr.aria-label]="subitem.label"
+        [attr.aria-disabled]="subitem.disabled || false"
+        [title]="subitem.tooltip || null"
+        role="menuitem"
+        type="button"
+      >
+        @if (subitem.icon) {
+        <span class="acp-context-menu-item-icon">
+          @if (!subitem.icon.includes('/')) {
+          <mat-icon [attr.aria-hidden]="true"> {{ subitem.icon }} </mat-icon>
+          } @if (subitem.icon.includes('/')) {
+          <img [src]="subitem.icon" alt="" aria-hidden="true" />
+          }
+        </span>
+        }
+
+        <span class="acp-context-menu-item-label"> {{ subitem.label }} </span>
+
+        @if (subitem.badge) {
+        <span class="acp-context-menu-item-badge"> {{ subitem.badge }} </span>
+        } @if (subitem.shortcut) {
+        <span class="acp-context-menu-item-shortcut"> {{ subitem.shortcut }} </span>
+        } @if (subitem.loading) {
+        <mat-spinner class="acp-context-menu-item-loader" [diameter]="16" [strokeWidth]="2">
+        </mat-spinner>
+        }
+      </button>
+      } }
+    </div>
+    } }
+  </div>
+</div>

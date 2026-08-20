@@ -4,7 +4,7 @@
 @use '../../../core/theming/all-theme' as all-theme;
 
 .theme-purple {
-  --theme-primary-color: #763ebd;
+  --acp-theme-primary-color: #763ebd;
 
   @include system.theme(
     (

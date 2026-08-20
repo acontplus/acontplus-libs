@@ -51,8 +51,46 @@ connect.lock
 # Operating-system files
 .DS_Store
 Thumbs.db
+projects/**/node_modules/
+libs/**/node_modules/
+packages/**/node_modules/
+apps/**/node_modules/
+projects/test-app/node_modules/.package-lock.json
 
-# Local tool state
-.eslintcache
-.sass-cache/
-.claude/worktrees/
+
+
+.nx/cache
+.nx/workspace-data
+.cursor/rules/nx-rules.mdc
+.github/instructions/nx.instructions.md
+vite.config.*.timestamp*
+vitest.config.*.timestamp*
+.angular
+/packages/ng-auth/node_modules
+/packages/core/node_modules
+/packages/ng-components/node_modules
+commit.txt
+
+.claude/worktrees
+.nx/polygraph
+.nx/self-healing
+.nx/migrate-runs
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+.claude/settings.local.json
+
+# Local agent/AI tool state
+.agents/
+.codex/
+.opencode/
+.github/agents/
+.github/prompts/
+.github/skills/
+opencode.json
+
+# SSL backups
+ssl/*.bak

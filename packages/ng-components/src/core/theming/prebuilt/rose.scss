@@ -4,7 +4,7 @@
 @use '../../../core/theming/all-theme' as all-theme;
 
 .theme-rose {
-  --theme-primary-color: #e80074;
+  --acp-theme-primary-color: #e80074;
 
   @include system.theme(
     (

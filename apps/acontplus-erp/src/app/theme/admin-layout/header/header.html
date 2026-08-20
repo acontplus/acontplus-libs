@@ -1,0 +1,28 @@
+<acp-header>
+  <acp-header-start>
+    <acp-header-actions [actions]="leftActions()" />
+  </acp-header-start>
+
+  @if (showBranding()) {
+    <acp-header-branding
+      [logo]="brandingLogo"
+      [name]="brandingName"
+      [showName]="true"
+      [link]="homeLink"
+      (selected)="onBranding()"
+    />
+  }
+
+  <acp-header-center>
+    <!-- Breadcrumb could go here -->
+  </acp-header-center>
+
+  <acp-header-end>
+    <acp-header-actions [actions]="rightActions" />
+    <acp-user-menu [user]="userProfile" [items]="userMenuItems" />
+    <acp-header-theme
+      (themeChange)="themeChange($event)"
+      [currentTheme]="settings.getThemeColor()"
+    />
+  </acp-header-end>
+</acp-header>

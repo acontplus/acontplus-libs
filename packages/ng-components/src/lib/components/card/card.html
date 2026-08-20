@@ -1,0 +1,66 @@
+<mat-card
+  class="acp-card"
+  [ngClass]="passThrough()?.root?.class"
+  [ngStyle]="passThrough()?.root?.style"
+  [class]="backgroundColor() ? 'acp-card--' + backgroundColor() : ''"
+>
+  @if (headerTemplate) {
+  <mat-card-header
+    [ngClass]="passThrough()?.header?.class"
+    [ngStyle]="passThrough()?.header?.style"
+  >
+    <ng-template [ngTemplateOutlet]="headerTemplate" />
+  </mat-card-header>
+  } @if (mediaTemplate) {
+  <ng-template [ngTemplateOutlet]="mediaTemplate" />
+  } @if (titleTemplate || subtitleTemplate || avatarTemplate) {
+  <mat-card-header
+    [ngClass]="passThrough()?.header?.class"
+    [ngStyle]="passThrough()?.header?.style"
+  >
+    @if (avatarTemplate) {
+    <div
+      mat-card-avatar
+      [ngClass]="passThrough()?.avatar?.class"
+      [ngStyle]="passThrough()?.avatar?.style"
+    >
+      <ng-template [ngTemplateOutlet]="avatarTemplate" />
+    </div>
+    } @if (titleTemplate) {
+    <mat-card-title [ngClass]="passThrough()?.title?.class" [ngStyle]="passThrough()?.title?.style">
+      <ng-template [ngTemplateOutlet]="titleTemplate" />
+    </mat-card-title>
+    } @if (subtitleTemplate) {
+    <mat-card-subtitle
+      [ngClass]="passThrough()?.subtitle?.class"
+      [ngStyle]="passThrough()?.subtitle?.style"
+    >
+      <ng-template [ngTemplateOutlet]="subtitleTemplate" />
+    </mat-card-subtitle>
+    }
+  </mat-card-header>
+  }
+
+  <mat-card-content
+    [ngClass]="passThrough()?.content?.class"
+    [ngStyle]="passThrough()?.content?.style"
+  >
+    <ng-content />
+  </mat-card-content>
+
+  @if (actionsTemplate) {
+  <mat-card-actions
+    [ngClass]="passThrough()?.actions?.class"
+    [ngStyle]="passThrough()?.actions?.style"
+  >
+    <ng-template [ngTemplateOutlet]="actionsTemplate" />
+  </mat-card-actions>
+  } @if (footerTemplate) {
+  <mat-card-footer
+    [ngClass]="passThrough()?.footer?.class"
+    [ngStyle]="passThrough()?.footer?.style"
+  >
+    <ng-template [ngTemplateOutlet]="footerTemplate" />
+  </mat-card-footer>
+  }
+</mat-card>

@@ -1,0 +1,26 @@
+<acp-sidebar>
+  @if (showHeader()) {
+    <acp-sidebar-header>
+      <acp-sidebar-branding [showName]="!toggleChecked()" start />
+      <acp-sidebar-toggle
+        [showToggle]="!isOver()"
+        [toggleChecked]="toggleChecked()"
+        (toggleCollapsed)="toggleCollapsed.emit()"
+        (closeSidenav)="closeSidenav.emit()"
+        end
+      />
+    </acp-sidebar-header>
+  }
+
+  <acp-sidebar-content>
+    @if (showUser()) {
+      <acp-sidebar-user-panel
+        user-panel
+        [avatar]="userAvatar"
+        [name]="userName"
+        [email]="userEmail"
+      />
+    }
+    <acp-sidemenu sidemenu [menuItems]="menuItems()" />
+  </acp-sidebar-content>
+</acp-sidebar>

@@ -1,4 +1,3 @@
-import { BidiModule } from '@angular/cdk/bidi';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import {
   Component,
@@ -7,19 +6,29 @@ import {
   inject,
   viewChild,
   ChangeDetectionStrategy,
+  computed,
 } from '@angular/core';
-import { MatSidenav, MatSidenavContent, MatSidenavModule } from '@angular/material/sidenav';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { NgProgressbar } from 'ngx-progressbar';
 import { NgProgressRouter } from 'ngx-progressbar/router';
-import { Subscription, filter } from 'rxjs';
+import { Subscription, filter, map } from 'rxjs';
 
-import { AppSettings, SettingsService } from '@core';
+import { AppSettings, SettingsService, MenuService, Menu } from '@core';
 import { Customizer } from '../customizer/customizer';
-import { Header } from '../header/header';
+import { Header } from './header/header';
+import { Sidebar } from './sidebar/sidebar';
 import { SidebarNotice } from '../sidebar-notice/sidebar-notice';
-import { Sidebar } from '../sidebar/sidebar';
-import { Topmenu } from '../topmenu/topmenu';
+import {
+  AcpShellLayout,
+  AcpShellSlotHeader,
+  AcpShellSlotSidebar,
+  AcpShellSlotTopmenu,
+  AcpTopmenu,
+  AcpDrawer,
+  type AcpTopmenuItem,
+  type MenuItem,
+} from '@acontplus/ng-components';
 
 const MOBILE_MEDIAQUERY = 'screen and (max-width: 599px)';
 const MONITOR_MEDIAQUERY = 'screen and (min-width: 600px)';
@@ -29,39 +38,80 @@ const MONITOR_MEDIAQUERY = 'screen and (min-width: 600px)';
   templateUrl: './admin-layout.html',
   styleUrl: './admin-layout.scss',
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     RouterOutlet,
-    BidiModule,
-    MatSidenavModule,
     NgProgressbar,
     NgProgressRouter,
+    // Shell layout + slot directives
+    AcpShellLayout,
+    AcpShellSlotHeader,
+    AcpShellSlotSidebar,
+    AcpShellSlotTopmenu,
+    AcpTopmenu,
+    // App-specific sub-components projected into slots
     Header,
-    Topmenu,
     Sidebar,
-    SidebarNotice,
     Customizer,
   ],
 })
 export class AdminLayout implements OnDestroy {
-  readonly sidenav = viewChild.required<MatSidenav>('sidenav');
-  readonly content = viewChild.required<MatSidenavContent>('content');
+  // ── Template refs ──────────────────────────────────────────────────────────
+
+  /** Reference to the AcpShellLayout so we can call toggleSidenav() etc. */
+  readonly shell = viewChild.required<AcpShellLayout>('shell');
 
   private readonly breakpointObserver = inject(BreakpointObserver);
   private readonly router = inject(Router);
   private readonly settings = inject(SettingsService);
+  private readonly menuService = inject(MenuService);
+  private readonly drawer = inject(AcpDrawer);
 
-  options = this.settings.options;
+  // ── State ──────────────────────────────────────────────────────────────────
 
-  get themeColor() {
-    return this.settings.getThemeColor();
-  }
+  readonly options = this.settings.options;
 
-  get isOver() {
-    return this.isMobileScreen;
-  }
+  readonly topMenuItems = toSignal(
+    this.menuService.getAll().pipe(map((menus) => menus as AcpTopmenuItem[])),
+  );
+
+  readonly buildRoute = (routeArr: string[]) => this.menuService.buildRoute(routeArr);
+
+  readonly isMobile = toSignal(
+    this.breakpointObserver.observe(MOBILE_MEDIAQUERY).pipe(map((r) => r.matches)),
+    { initialValue: false },
+  );
+
+  readonly menuItemsSafe = computed<MenuItem[]>(() => {
+    const menus = this.menuService.getAll() as unknown as Menu[] | undefined;
+    if (!menus) return [];
+    return menus.map((menu): MenuItem => ({
+      route: menu.route,
+      name: menu.name,
+      type: menu.type,
+      icon: menu.icon,
+      label: menu.label,
+      badge: menu.badge,
+      permissions: menu.permissions,
+      children: menu.children?.map((child): MenuItem => ({
+        route: child.route,
+        name: child.name,
+        type: child.type,
+        children: child.children?.map((grandchild): MenuItem => ({
+          route: grandchild.route,
+          name: grandchild.name,
+          type: grandchild.type,
+          children: grandchild.children?.map((ggchild) => ({
+            route: ggchild.route,
+            name: ggchild.name,
+            type: ggchild.type,
+          })),
+        })),
+      })),
+    }));
+  });
+
   private isMobileScreen = false;
-
   private layoutChangesSub = Subscription.EMPTY;
 
   constructor() {
@@ -70,17 +120,17 @@ export class AdminLayout implements OnDestroy {
       .subscribe((state) => {
         if (state.breakpoints[MOBILE_MEDIAQUERY]) {
           this.isMobileScreen = true;
-          this.options.sidenavCollapsed = false;
+          this.settings.setOptions({ sidenavCollapsed: false });
         } else {
           this.isMobileScreen = false;
         }
       });
 
     this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
-      if (this.isOver) {
-        this.sidenav().close();
+      if (this.isMobileScreen) {
+        this.shell().closeSidenav();
       }
-      this.content().scrollTo({ top: 0 });
+      this.shell().scrollToTop();
     });
   }
 
@@ -88,23 +138,26 @@ export class AdminLayout implements OnDestroy {
     this.layoutChangesSub.unsubscribe();
   }
 
-  toggleCollapsed() {
-    this.options.sidenavCollapsed = !this.options.sidenavCollapsed;
-    this.resetCollapsedState();
-  }
-
-  // TODO: Trigger when transition end
-  resetCollapsedState(delay = 400) {
-    setTimeout(() => this.settings.setOptions(this.options), delay);
-  }
+  // ── Layout event handlers ──────────────────────────────────────────────────
 
   onSidenavOpenedChange(isOpened: boolean) {
-    this.options.sidenavOpened = isOpened;
-    this.settings.setOptions(this.options);
+    this.settings.setOptions({ sidenavOpened: isOpened });
+  }
+
+  toggleCollapsed() {
+    const current = this.options().sidenavCollapsed;
+    this.settings.setOptions({ sidenavCollapsed: !current });
+    setTimeout(() => this.settings.setOptions(this.options()), 400);
+  }
+
+  toggleNotice() {
+    this.drawer.open(SidebarNotice, {
+      width: '400px',
+      position: 'right',
+    });
   }
 
   updateOptions(options: AppSettings) {
-    this.options = options;
     this.settings.setOptions(options);
     this.settings.setDirection();
     this.settings.setTheme();

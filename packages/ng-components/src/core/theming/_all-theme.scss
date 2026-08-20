@@ -29,14 +29,29 @@
 @mixin custom-component-overrides {
   @include mat.checkbox-overrides(
     (
+      selected-icon-color: var(--acp-theme-primary-color),
       selected-checkmark-color: white,
+      selected-focus-icon-color: var(--acp-theme-primary-color),
+      selected-hover-icon-color: var(--acp-theme-primary-color),
+      selected-focus-state-layer-color: var(--acp-theme-primary-color),
+      selected-hover-state-layer-color: var(--acp-theme-primary-color),
     )
   );
 
   @include mat.fab-overrides(
     (
-      container-color: var(--theme-primary-color),
+      container-color: var(--acp-theme-primary-color),
       foreground-color: white,
+    )
+  );
+
+  @include mat.radio-overrides(
+    (
+      selected-icon-color: var(--acp-theme-primary-color),
+      selected-focus-icon-color: var(--acp-theme-primary-color),
+      selected-hover-icon-color: var(--acp-theme-primary-color),
+      selected-pressed-icon-color: var(--acp-theme-primary-color),
+      checked-ripple-color: var(--acp-theme-primary-color),
     )
   );
 }

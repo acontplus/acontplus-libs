@@ -4,7 +4,7 @@
 @use '../../../core/theming/all-theme' as all-theme;
 
 .theme-aqua {
-  --theme-primary-color: #0074ba;
+  --acp-theme-primary-color: #0074ba;
 
   @include system.theme(
     (

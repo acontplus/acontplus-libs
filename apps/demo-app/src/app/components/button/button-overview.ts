@@ -5,19 +5,11 @@ import { REPORT_FORMAT } from '@acontplus/ui-kit';
 import { MatCardModule } from '@angular/material/card';
 import { MatTabsModule } from '@angular/material/tabs';
 import { DocHeading } from '../../shared/doc-heading/doc-heading';
-import { CodeExample } from '../../shared/code-example/code-example';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 @Component({
   selector: 'app-button-overview',
-  imports: [
-    AcpButton,
-    MatCardModule,
-    MatTabsModule,
-    DocHeading,
-    CodeExample,
-    MatButtonToggleModule,
-  ],
+  imports: [AcpButton, MatCardModule, MatTabsModule, DocHeading, MatButtonToggleModule],
   template: `
     <div class="docs-component-viewer-content">
       <app-doc-heading>Button</app-doc-heading>

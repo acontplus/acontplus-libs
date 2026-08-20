@@ -480,6 +480,15 @@ export class DataGrid implements AfterViewInit, OnChanges {
 
     this.dataSource = new MatTableDataSource(this.data);
 
+    // Reapply sort and paginator after recreating dataSource
+    if (this.pageOnFront && this.paginator) {
+      this.dataSource.paginator = this.paginator;
+    }
+
+    if (this.sortOnFront && this.sort) {
+      this.dataSource.sort = this.sort;
+    }
+
     // Only scroll top with data change
     if (changes['data']) {
       this.scrollTop(0);

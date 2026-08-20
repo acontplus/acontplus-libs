@@ -23,6 +23,7 @@ export abstract class BaseButton {
   appearance = input<AcpButtonAppearance>('filled');
   type = input<AcpButtonType>('button');
   extended = input(false, { transform: booleanAttribute });
+  block = input(false, { transform: booleanAttribute });
   size = input<'small' | 'medium' | 'large'>('large');
   text = input<string>();
 
@@ -35,6 +36,7 @@ export abstract class BaseButton {
   colorClass = computed(() => `acp-${this.color()}`);
   sizeClass = computed(() => `acp-${this.size()}`);
   squareClass = computed(() => (this.square() ? 'acp-square' : ''));
+  blockClass = computed(() => (this.block() ? 'acp-block' : ''));
 
   isDisabled = computed(() => this.disabled() || this.loading());
   pointerEvents = computed(() => (this.isDisabled() ? 'none' : 'auto'));

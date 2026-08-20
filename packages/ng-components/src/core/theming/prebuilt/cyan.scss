@@ -4,7 +4,7 @@
 @use '../../../core/theming/all-theme' as all-theme;
 
 .theme-cyan {
-  --theme-primary-color: #01c0c8;
+  --acp-theme-primary-color: #01c0c8;
 
   @include system.theme(
     (

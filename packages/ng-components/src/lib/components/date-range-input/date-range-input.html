@@ -170,8 +170,8 @@
           </form>
           } @else {
           <span id="range-label-text" class="ndp-range-label-text">
-            {{ calendar.selectedDates?.start | date: dateFormat }} @if
-            (calendar.selectedDates?.end) {
+            {{ calendar.selectedDates?.start | date: dateFormat }} @if (calendar.selectedDates?.end)
+            {
             <span> - {{ calendar.selectedDates?.end | date: dateFormat }} </span>
             }
           </span>

@@ -5,19 +5,13 @@
   [class]="backgroundColor() ? 'acp-card--' + backgroundColor() : ''"
 >
   @if (headerTemplate) {
-  <mat-card-header
-    [ngClass]="passThrough().header?.class"
-    [ngStyle]="passThrough().header?.style"
-  >
+  <mat-card-header [ngClass]="passThrough().header?.class" [ngStyle]="passThrough().header?.style">
     <ng-template [ngTemplateOutlet]="headerTemplate" />
   </mat-card-header>
   } @if (mediaTemplate) {
   <ng-template [ngTemplateOutlet]="mediaTemplate" />
   } @if (titleTemplate || subtitleTemplate || avatarTemplate) {
-  <mat-card-header
-    [ngClass]="passThrough().header?.class"
-    [ngStyle]="passThrough().header?.style"
-  >
+  <mat-card-header [ngClass]="passThrough().header?.class" [ngStyle]="passThrough().header?.style">
     @if (avatarTemplate) {
     <div
       mat-card-avatar
@@ -56,10 +50,7 @@
     <ng-template [ngTemplateOutlet]="actionsTemplate" />
   </mat-card-actions>
   } @if (footerTemplate) {
-  <mat-card-footer
-    [ngClass]="passThrough().footer?.class"
-    [ngStyle]="passThrough().footer?.style"
-  >
+  <mat-card-footer [ngClass]="passThrough().footer?.class" [ngStyle]="passThrough().footer?.style">
     <ng-template [ngTemplateOutlet]="footerTemplate" />
   </mat-card-footer>
   }

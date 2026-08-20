@@ -62,8 +62,8 @@ export class Header {
   readonly homeLink = '/';
 
   readonly userProfile: UserProfile = {
-    name: 'Markarn Doe',
-    email: 'markrarn@wrappixel.com',
+    name: '<user-name>',
+    email: '<user-email>',
     avatar: '/images/profile/user-1.jpg',
     plan: 'Pro',
   };

@@ -9,7 +9,7 @@ import {
   contentChild,
 } from '@angular/core';
 import { BidiModule } from '@angular/cdk/bidi';
-import { NgClass, NgTemplateOutlet } from '@angular/common';
+import { NgTemplateOutlet } from '@angular/common';
 import { MatSidenav, MatSidenavContent, MatSidenavModule } from '@angular/material/sidenav';
 
 import {
@@ -78,7 +78,7 @@ import { RouterOutlet } from '@angular/router';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [BidiModule, NgClass, NgTemplateOutlet, MatSidenavModule, RouterOutlet],
+  imports: [BidiModule, NgTemplateOutlet, MatSidenavModule, RouterOutlet],
 })
 export class AcpShellLayout {
   // ── Internal view refs ─────────────────────────────────────────────────────

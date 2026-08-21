@@ -88,7 +88,7 @@ jobs:
         # Node 24 bundles npm that may be below 11.5.1 (required for OIDC).
         # Upgrade explicitly and add the new binary to PATH.
         run: |
-          npm install -g npm@latest
+          npm install -g npm@11
           echo "$(npm config get prefix)/bin" >> $GITHUB_PATH
 
       - name: Publish to npm (OIDC trusted publishing)

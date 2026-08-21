@@ -23,8 +23,8 @@
     ".": {
       "sass": "./src/_index.scss"
     },
-    "./layout-variables": {
-      "sass": "./src/core/tokens/_layout-variables.scss"
+    "./global-variables": {
+      "sass": "./src/core/tokens/_global-variables.scss"
     },
     "./prebuilt-themes/blue": {
       "sass": "./src/core/theming/prebuilt/blue.scss"
@@ -104,7 +104,7 @@
   "homepage": "https://github.com/acontplus/acontplus-libs#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/acontplus/acontplus-libs.git"
+    "url": "https://github.com/acontplus/acontplus-libs.git"
   },
   "release": {
     "branches": [

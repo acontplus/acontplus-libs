@@ -17,6 +17,9 @@ export abstract class BaseButton {
   icon = input<string>();
   suffixIcon = input<string>();
   loading = input(false, { transform: booleanAttribute });
+  showProgress = input(false, { transform: booleanAttribute });
+  progressType = input<'spinner' | 'text'>('spinner');
+  progressText = input<string>('Loading...');
   disabled = input(false, { transform: booleanAttribute });
   disableRipple = input(false, { transform: booleanAttribute });
   variant = input<AcpButtonVariant>('basic');

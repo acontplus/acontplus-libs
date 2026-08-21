@@ -377,6 +377,33 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
         </mat-card-content>
       </mat-card>
 
+      <h2>Buttons with Progress</h2>
+      <mat-card class="docs-example-card">
+        <mat-card-content>
+          <div class="button-row">
+            <acp-button
+              appearance="outlined"
+              color="primary"
+              [showProgress]="showProgress"
+              (click)="toggleProgress()"
+            >
+              {{ showProgress ? 'Loading' : 'Click to load' }}
+            </acp-button>
+
+            <acp-button
+              appearance="outlined"
+              color="secondary"
+              [showProgress]="showProgressCustom"
+              progressType="text"
+              progressText="Saving..."
+              (click)="toggleProgressCustom()"
+            >
+              {{ showProgressCustom ? 'Saving' : 'Click to save' }}
+            </acp-button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
       <!-- <h2>Basic Buttons</h2>
       <mat-card class="docs-example-card">
         <mat-card-content>
@@ -628,6 +655,22 @@ export class ButtonOverview {
   }
 
   eventLog = '';
+  showProgress = false;
+  showProgressCustom = false;
+
+  toggleProgress() {
+    this.showProgress = !this.showProgress;
+    if (this.showProgress) {
+      setTimeout(() => (this.showProgress = false), 2000);
+    }
+  }
+
+  toggleProgressCustom() {
+    this.showProgressCustom = !this.showProgressCustom;
+    if (this.showProgressCustom) {
+      setTimeout(() => (this.showProgressCustom = false), 2000);
+    }
+  }
 
   onButtonClick() {
     this.eventLog = 'Button clicked!';

@@ -48,6 +48,7 @@
   [disabled]="isDisabled()"
   [disableRipple]="disableRipple()"
   [acpLoading]="loading()"
+  [showProgress]="showProgress()"
   [type]="type()"
   [ngClass]="[colorClass(), squareClass(), blockClass(), sizeClass()]"
   (click)="clicked.emit()"
@@ -55,7 +56,18 @@
   (blur)="blurred.emit()"
 >
   @if (icon()) { <mat-icon>{{icon()}}</mat-icon> } @if (hasText()) { {{text()}} } @else {
-  <ng-content></ng-content> } @if (suffixIcon()) {
+  <ng-content></ng-content> } @if (showProgress() && progressType() === 'spinner') {
+  <mat-progress-spinner
+    progressIndicator
+    mode="indeterminate"
+    [diameter]="20"
+    aria-label="Loading"
+  />
+  } @if (showProgress() && progressType() === 'text') {
+  <div progressIndicator role="progressbar" aria-valuemin="0" aria-valuemax="100">
+    {{ progressText() }}
+  </div>
+  } @if (suffixIcon()) {
   <mat-icon iconPositionEnd>{{suffixIcon()}}</mat-icon> }
 </button>
 }

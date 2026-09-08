@@ -528,16 +528,20 @@ export class AcpDateRangeInput implements OnInit, AfterViewInit {
    * @param option The selected date option.
    * @param input The HTML input element to update.
    */
-  private updateDateOnOptionSelect(option: IAcpSelectDateOption, input: HTMLInputElement): void {
+  private updateDateOnOptionSelect(
+    option: IAcpSelectDateOption,
+    input: HTMLInputElement,
+    emitEvent = true,
+  ): void {
     // If there is a callback function, use it to get the date range
     if (option?.callBackFunction) {
       const dateRange: DateRange<Date> = option.callBackFunction();
       if (dateRange?.start && dateRange?.end) {
-        this.updateSelectedDates(input, dateRange.start, dateRange.end, option);
+        this.updateSelectedDates(input, dateRange.start, dateRange.end, option, emitEvent);
         return;
       }
     }
-    this.updateDateWithSelectedOption(option, input);
+    this.updateDateWithSelectedOption(option, input, emitEvent);
   }
 
   /**
@@ -549,6 +553,7 @@ export class AcpDateRangeInput implements OnInit, AfterViewInit {
   private updateDateWithSelectedOption(
     option: IAcpSelectDateOption,
     input: HTMLInputElement,
+    emitEvent = true,
   ): void {
     const currDate = new Date();
     let startDate: Date = new Date();
@@ -588,7 +593,7 @@ export class AcpDateRangeInput implements OnInit, AfterViewInit {
     }
 
     // Update the selected dates
-    this.updateSelectedDates(input, startDate, lastDate, option);
+    this.updateSelectedDates(input, startDate, lastDate, option, emitEvent);
   }
 
   /**
@@ -604,6 +609,7 @@ export class AcpDateRangeInput implements OnInit, AfterViewInit {
     start: Date,
     end: Date,
     opt: IAcpSelectDateOption | null,
+    emitEvent = true,
   ): void {
     const range = new DateRange(start, end);
     this.selectedDates = range;
@@ -622,12 +628,14 @@ export class AcpDateRangeInput implements OnInit, AfterViewInit {
       input.value = rangeLabel;
     }
 
-    this.dateSelectionChanged.emit({
-      range,
-      selectedOption: this.dateDropDownOptions.find(o => o.isSelected) ?? null,
-      startExpr: expr.start,
-      endExpr: expr.end,
-    });
+    if (emitEvent) {
+      this.dateSelectionChanged.emit({
+        range,
+        selectedOption: this.dateDropDownOptions.find(o => o.isSelected) ?? null,
+        startExpr: expr.start,
+        endExpr: expr.end,
+      });
+    }
     this.cdref.markForCheck();
   }
 
@@ -661,7 +669,7 @@ export class AcpDateRangeInput implements OnInit, AfterViewInit {
     const selectedOptions = this._dateOptions().find(option => option.isSelected);
 
     if (selectedOptions && selectedOptions.optionType !== ACP_DATE_OPTION_TYPE.CUSTOM) {
-      this.updatedFromListValueSelection(selectedOptions, input);
+      this.updatedFromListValueSelection(selectedOptions, input, false);
       this.cdref.detectChanges();
     }
   }
@@ -754,10 +762,11 @@ export class AcpDateRangeInput implements OnInit, AfterViewInit {
   private updatedFromListValueSelection(
     selectedOption: IAcpSelectDateOption,
     input: HTMLInputElement,
+    emitEvent = true,
   ): void {
     // This will update value if option is selected from default list.
     if (!selectedOption.callBackFunction) {
-      this.updateDateOnOptionSelect(selectedOption, input);
+      this.updateDateOnOptionSelect(selectedOption, input, emitEvent);
       return;
     }
     // This will update value if option is selected from provided custom list.
@@ -767,6 +776,7 @@ export class AcpDateRangeInput implements OnInit, AfterViewInit {
       dateRange.start ?? new Date(),
       dateRange.end ?? new Date(),
       selectedOption,
+      emitEvent,
     );
   }
 

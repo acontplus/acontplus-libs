@@ -1,3 +1,26 @@
+## 3.1.0 (2026-08-23)
+
+### 🚀 Features
+
+- Add FAB/mini-FAB color overrides, dark text contrast fixes, layout variables export rename to `global-variables`, and progress indicator support (`showProgress`, `progressType`, `progressText`) to AcpButton v2. ([#147](https://github.com/acontplus/acontplus-libs/pull/147))
+
+### 🩹 Fixes
+
+- Normalize package repository URLs by removing the `git+` prefix across all libraries. ([#147](https://github.com/acontplus/acontplus-libs/pull/147))
+- Apply ACONTPLUS branding and acontplus-* CSS class prefix across header, sidebar, and shell-layout components. ([#144](https://github.com/acontplus/acontplus-libs/pull/144))
+- Switch AcpHeaderTheme to a single icon button cycling light/dark; update avatar asset and theme handling in acontplus-erp. ([#144](https://github.com/acontplus/acontplus-libs/pull/144))
+
+### 🧱 Updated Dependencies
+
+- Updated ui-kit to 1.1.2
+
+### ❤️ Thank You
+
+- Devin @devin-ai-integration[bot]
+- Emilio Senguana @senguanasoft
+- emilios-dev
+- Ivan Fernando Paz @iferpaz7
+
 ## 3.0.1 (2026-08-04)
 
 ### 🩹 Fixes

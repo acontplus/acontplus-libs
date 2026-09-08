@@ -9,11 +9,6 @@
 
 @use '@angular/material' as mat;
 
-// Disable Backdrop css
-::ng-deep.cdk-overlay-dark-backdrop {
-  background: none;
-}
-
 mat-list-item.mat-mdc-list-item {
   height: 40px;
 }

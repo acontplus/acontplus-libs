@@ -4,7 +4,6 @@ import {
   Component,
   ElementRef,
   inject,
-  OnDestroy,
   Signal,
   viewChild,
   ViewContainerRef,
@@ -33,7 +32,7 @@ import { DialogZIndexService } from '../../services/dialog/dialog-z-index.servic
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
-export class DialogWrapper implements AfterViewInit, OnDestroy {
+export class DialogWrapper implements AfterViewInit {
   dialogRef = inject<MatDialogRef<DialogWrapper>>(MatDialogRef);
   config = inject<DialogWrapperConfig>(MAT_DIALOG_DATA);
   private zIndexService = inject(DialogZIndexService);
@@ -53,21 +52,6 @@ export class DialogWrapper implements AfterViewInit, OnDestroy {
   readonly header: Signal<ElementRef | undefined> = viewChild<ElementRef>('dialogHeader');
 
   /**
-   * Timeout ID for debouncing z-index updates to prevent excessive DOM manipulations.
-   */
-  private bringToFrontTimeoutId: number | null = null;
-
-  /**
-   * Creates an instance of DialogWrapper.
-   *
-   * @param dialogRef Reference to the dialog opened via the Material Dialog service
-   * @param config Configuration for the dialog wrapper, injected from MAT_DIALOG_DATA
-   */
-  constructor() {
-    // Constructor intentionally empty - required by Angular DI
-  }
-
-  /**
    * Lifecycle hook that initializes the dynamic content after the view is ready.
    * Creates the component specified in the config and passes data to it.
    */
@@ -76,20 +60,15 @@ export class DialogWrapper implements AfterViewInit, OnDestroy {
     this.contentHost().clear();
     const componentRef = this.contentHost().createComponent(this.config.component);
 
-    // Pass the provided data directly to the new component's instance.
-    // This requires the content component to have an @Input() property named 'data'.
-    if (this.config.data && componentRef.instance) {
-      (componentRef.instance as any).data = this.config.data;
-    }
-  }
-
-  /**
-   * Cleanup lifecycle hook to cancel any pending animation frame requests.
-   */
-  ngOnDestroy(): void {
-    if (this.bringToFrontTimeoutId !== null) {
-      cancelAnimationFrame(this.bringToFrontTimeoutId);
-      this.bringToFrontTimeoutId = null;
+    // Pass the provided data to the new component. `setInput` supports both signal
+    // inputs and decorator-based @Input() properties and marks the component dirty;
+    // fall back to a plain property assignment when `data` is not declared as an input.
+    if (this.config.data !== undefined && componentRef.instance) {
+      try {
+        componentRef.setInput('data', this.config.data);
+      } catch {
+        (componentRef.instance as { data?: unknown }).data = this.config.data;
+      }
     }
   }
 

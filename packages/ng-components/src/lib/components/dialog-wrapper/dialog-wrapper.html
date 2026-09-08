@@ -18,7 +18,7 @@
       matStyle="icon"
       icon="close"
       (handleClick)="onClose()"
-      ariaLabel="Close Dialog"
+      [ariaLabel]="config.closeAriaLabel ?? 'Close dialog'"
     />
     }
   </h6>

@@ -1,0 +1,35 @@
+<h2>Dialog configuration</h2>
+
+<section class="size-controls">
+  <mat-form-field>
+    <mat-label>Size</mat-label>
+    <mat-select [(ngModel)]="size">
+      @for (option of sizes; track option) {
+      <mat-option [value]="option">{{ option }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Header icon</mat-label>
+    <input matInput [(ngModel)]="icon" type="text" />
+  </mat-form-field>
+</section>
+
+<section class="checkbox-controls">
+  <mat-checkbox [(ngModel)]="hideHeader">Hide Header</mat-checkbox>
+  <mat-checkbox [(ngModel)]="showCloseButton">Show Close Button</mat-checkbox>
+  <mat-checkbox [(ngModel)]="backdropClickClosable">Backdrop Click Closable</mat-checkbox>
+  <mat-checkbox [(ngModel)]="isMobileFullScreen">Mobile Full Screen</mat-checkbox>
+</section>
+
+<h2>Result</h2>
+
+<section class="actions">
+  <button matButton="elevated" color="primary" (click)="openWrapped()">Open Wrapped Dialog</button>
+  <button matButton="elevated" (click)="openDirect()">Open Direct Dialog</button>
+</section>
+
+@if (lastResult) {
+<p class="last-result">{{ lastResult }}</p>
+}

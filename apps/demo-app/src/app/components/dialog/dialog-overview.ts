@@ -12,23 +12,31 @@ import { CodeExample } from '../../shared/code-example/code-example';
       <app-doc-heading>Dialog Wrapper</app-doc-heading>
 
       <p class="docs-component-description">
-        Enhanced dialog components with wrapper functionality for consistent dialog management.
-        Provides advanced features for creating and managing Material dialogs with custom
-        configurations.
+        The <code>AdvancedDialogService</code> opens components inside Angular Material dialogs with
+        consistent sizing, mobile full-screen support, accessibility options, and centralized
+        z-index management. Use <code>openInWrapper</code> to render a component inside the branded
+        <code>DialogWrapper</code>, which adds a draggable header with title, icon, and close
+        button.
       </p>
 
-      <h2>Coming Soon</h2>
+      <h2>Opening a wrapped dialog</h2>
+      <app-code-example [code]="wrapperCode" [language]="'typescript'" />
+
+      <h2>Opening a dialog directly</h2>
+      <app-code-example [code]="directCode" [language]="'typescript'" />
+
+      <h2>Content component</h2>
       <mat-card class="docs-example-card">
         <mat-card-content>
           <p>
-            Interactive examples and documentation for Dialog Wrapper component are being prepared.
+            Content components receive their payload either through the
+            <code>data</code> property (when opened via <code>openInWrapper</code>) or through
+            <code>MAT_DIALOG_DATA</code> (when opened directly). They can inject
+            <code>MatDialogRef</code> to close the dialog with a result.
           </p>
-          <p>This component provides enhanced dialog management with the AdvancedDialogService.</p>
         </mat-card-content>
       </mat-card>
-
-      <h2>Basic Usage</h2>
-      <app-code-example [code]="basicCode" [language]="'typescript'" />
+      <app-code-example [code]="contentCode" [language]="'typescript'" />
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -60,7 +68,56 @@ import { CodeExample } from '../../shared/code-example/code-example';
   ],
 })
 export class DialogOverview {
-  basicCode = `import { DialogWrapper, AdvancedDialogService } from '@acontplus/ng-components';
+  wrapperCode = `import { AdvancedDialogService } from '@acontplus/ng-components';
 
-// Usage example coming soon`;
+private dialog = inject(AdvancedDialogService);
+
+async openUserDialog() {
+  const dialogRef = await this.dialog.openInWrapper<{ userId: number }, User>(
+    {
+      component: UserFormComponent,
+      title: 'Edit user',
+      icon: 'person',
+      data: { userId: 42 },
+    },
+    {
+      size: 'lg',
+      isMobileFullScreen: true,
+      backdropClickClosable: false,
+    },
+  );
+
+  dialogRef.afterClosed().subscribe(result => {
+    if (result) {
+      // handle the result
+    }
+  });
+}`;
+
+  directCode = `const result = await this.dialog.openAndGetResult<
+  ConfirmComponent,
+  { message: string },
+  boolean
+>(ConfirmComponent, {
+  size: 'sm',
+  data: { message: 'Delete this record?' },
+  role: 'alertdialog',
+});`;
+
+  contentCode = `@Component({ ... })
+export class UserFormComponent {
+  // Assigned by DialogWrapper when opened via openInWrapper
+  data?: { userId: number };
+
+  // Available when opened directly via open / openAndGetResult
+  private injectedData = inject<{ userId: number } | null>(MAT_DIALOG_DATA, {
+    optional: true,
+  });
+
+  private dialogRef = inject(MatDialogRef);
+
+  save(user: User) {
+    this.dialogRef.close(user);
+  }
+}`;
 }

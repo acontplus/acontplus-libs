@@ -1,28 +1,39 @@
 import { Injectable } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
+import { OverlayRef } from '@angular/cdk/overlay';
 
 export type DialogType = 'normal' | 'alert';
 
 /**
- * Servicio centralizado para manejar z-index de todos los diálogos
- * Asegura que los diálogos siempre aparezcan en el orden correcto
- * Los AlertDialogs siempre tienen prioridad sobre otros diálogos
+ * Minimal structural type for the parts of MatDialogRef used here.
+ * `MatDialogRef` does not expose its `OverlayRef` publicly, so it is read
+ * through the internal `_overlayRef` field. Guarded everywhere it is used.
+ */
+interface DialogRefWithOverlay {
+  _overlayRef?: OverlayRef;
+}
+
+/**
+ * Centralized service that manages z-index stacking for all dialogs.
+ * Ensures dialogs always appear in the correct order.
+ * Alert dialogs always take priority over regular dialogs.
  */
 @Injectable({
   providedIn: 'root',
 })
 export class DialogZIndexService {
-  // Rangos de z-index por tipo de diálogo
+  // Z-index ranges per dialog type
   private static readonly Z_INDEX_RANGES = {
-    normal: { base: 1000, current: 1000 }, // Diálogos normales: 1000-1999
-    alert: { base: 2000, current: 2000 }, // Diálogos de alerta: 2000-2999 (siempre encima)
+    normal: { base: 1000, current: 1000 }, // Regular dialogs: 1000-1999
+    alert: { base: 2000, current: 2000 }, // Alert dialogs: 2000-2999 (always on top)
   };
 
   private static readonly Z_INDEX_INCREMENT = 10;
 
   /**
-   * Obtiene el siguiente z-index disponible para un tipo específico de diálogo
-   * @param type Tipo de diálogo (normal, alert)
-   * @returns El próximo z-index a usar
+   * Gets the next available z-index for a specific dialog type.
+   * @param type Dialog type (normal, alert)
+   * @returns The next z-index to use
    */
   getNextZIndex(type: DialogType = 'normal'): number {
     const range = DialogZIndexService.Z_INDEX_RANGES[type];
@@ -31,17 +42,17 @@ export class DialogZIndexService {
   }
 
   /**
-   * Obtiene el z-index actual más alto para un tipo específico
-   * @param type Tipo de diálogo
-   * @returns El z-index más alto actualmente en uso para ese tipo
+   * Gets the highest z-index currently in use for a specific type.
+   * @param type Dialog type
+   * @returns The highest z-index currently in use for that type
    */
   getCurrentZIndex(type: DialogType = 'normal'): number {
     return DialogZIndexService.Z_INDEX_RANGES[type].current;
   }
 
   /**
-   * Obtiene el z-index más alto de todos los tipos
-   * @returns El z-index más alto de todos los diálogos
+   * Gets the highest z-index across all dialog types.
+   * @returns The highest z-index of all dialogs
    */
   getHighestZIndex(): number {
     return Math.max(
@@ -50,54 +61,56 @@ export class DialogZIndexService {
   }
 
   /**
-   * Resetea el contador de z-index (útil para testing)
-   * @param type Tipo específico a resetear, o undefined para resetear todos
+   * Resets the z-index counter (useful for testing).
+   * @param type Specific type to reset, or undefined to reset all
    */
   reset(type?: DialogType): void {
     if (type) {
       const range = DialogZIndexService.Z_INDEX_RANGES[type];
       range.current = range.base;
     } else {
-      // Resetear todos los tipos
-      Object.entries(DialogZIndexService.Z_INDEX_RANGES).forEach(([_, range]) => {
+      Object.values(DialogZIndexService.Z_INDEX_RANGES).forEach(range => {
         range.current = range.base;
       });
     }
   }
 
   /**
-   * Aplica z-index a un diálogo específico
-   * @param dialogRef Referencia al diálogo
-   * @param type Tipo de diálogo (determina el rango de z-index)
-   * @param zIndex Z-index específico a aplicar (opcional)
+   * Applies a z-index to a specific dialog.
+   * @param dialogRef Dialog reference
+   * @param type Dialog type (determines the z-index range)
+   * @param zIndex Specific z-index to apply (optional)
    */
-  applyZIndex(dialogRef: any, type: DialogType = 'normal', zIndex?: number): void {
-    const targetZIndex = zIndex || this.getNextZIndex(type);
+  applyZIndex(
+    dialogRef: MatDialogRef<unknown>,
+    type: DialogType = 'normal',
+    zIndex?: number,
+  ): void {
+    const targetZIndex = zIndex ?? this.getNextZIndex(type);
+    const overlayRef = this.getOverlayRef(dialogRef);
+    if (!overlayRef) {
+      return;
+    }
 
-    setTimeout(() => {
-      const overlayRef = dialogRef._overlayRef;
-      if (overlayRef) {
-        const pane = overlayRef.overlayElement;
-        const backdrop = overlayRef.backdropElement;
+    const pane = overlayRef.overlayElement;
+    const backdrop = overlayRef.backdropElement;
 
-        if (pane) {
-          pane.style.zIndex = (targetZIndex + 2).toString();
-          // Agregar atributo data para debugging
-          pane.setAttribute('data-dialog-type', type);
-          pane.setAttribute('data-z-index', targetZIndex.toString());
-        }
+    if (pane) {
+      pane.style.zIndex = (targetZIndex + 2).toString();
+      // Data attributes for debugging
+      pane.setAttribute('data-dialog-type', type);
+      pane.setAttribute('data-z-index', targetZIndex.toString());
+    }
 
-        if (backdrop) {
-          backdrop.style.zIndex = (targetZIndex + 1).toString();
-        }
-      }
-    }, 0);
+    if (backdrop) {
+      backdrop.style.zIndex = (targetZIndex + 1).toString();
+    }
   }
 
   /**
-   * Trae un diálogo al frente (usado por drag functionality)
-   * @param element Elemento del diálogo a traer al frente
-   * @param type Tipo de diálogo
+   * Brings a dialog to the front (used by the drag functionality).
+   * @param element Dialog element to bring to the front
+   * @param type Dialog type
    */
   bringToFront(element: HTMLElement, type: DialogType = 'normal'): void {
     const pane = element.closest('.cdk-overlay-pane') as HTMLElement;
@@ -106,7 +119,7 @@ export class DialogZIndexService {
       pane.style.zIndex = (newZIndex + 2).toString();
       pane.setAttribute('data-z-index', newZIndex.toString());
 
-      // También actualizar el backdrop si existe
+      // Also update the backdrop if it exists
       const backdrop = pane.parentElement?.querySelector('.cdk-overlay-backdrop') as HTMLElement;
       if (backdrop) {
         backdrop.style.zIndex = (newZIndex + 1).toString();
@@ -115,29 +128,32 @@ export class DialogZIndexService {
   }
 
   /**
-   * Fuerza un diálogo a estar siempre encima de todos los demás
-   * Útil para alertas críticas que deben tener máxima prioridad
-   * @param dialogRef Referencia al diálogo
+   * Forces a dialog to stay above every other dialog.
+   * Useful for critical alerts that must have maximum priority.
+   * @param dialogRef Dialog reference
    */
-  forceToTop(dialogRef: any): void {
+  forceToTop(dialogRef: MatDialogRef<unknown>): void {
     const highestZIndex = this.getHighestZIndex();
     const topZIndex = highestZIndex + DialogZIndexService.Z_INDEX_INCREMENT;
+    const overlayRef = this.getOverlayRef(dialogRef);
+    if (!overlayRef) {
+      return;
+    }
 
-    setTimeout(() => {
-      const overlayRef = dialogRef._overlayRef;
-      if (overlayRef) {
-        const pane = overlayRef.overlayElement;
-        const backdrop = overlayRef.backdropElement;
+    const pane = overlayRef.overlayElement;
+    const backdrop = overlayRef.backdropElement;
 
-        if (pane) {
-          pane.style.zIndex = (topZIndex + 2).toString();
-          pane.setAttribute('data-z-index', topZIndex.toString());
-          pane.setAttribute('data-forced-top', 'true');
-        }
-        if (backdrop) {
-          backdrop.style.zIndex = (topZIndex + 1).toString();
-        }
-      }
-    }, 0);
+    if (pane) {
+      pane.style.zIndex = (topZIndex + 2).toString();
+      pane.setAttribute('data-z-index', topZIndex.toString());
+      pane.setAttribute('data-forced-top', 'true');
+    }
+    if (backdrop) {
+      backdrop.style.zIndex = (topZIndex + 1).toString();
+    }
+  }
+
+  private getOverlayRef(dialogRef: MatDialogRef<unknown>): OverlayRef | undefined {
+    return (dialogRef as unknown as DialogRefWithOverlay)._overlayRef;
   }
 }

@@ -37,7 +37,9 @@ export class AdvancedDialogService {
     const dialogConfig = await this.buildDialogConfig(config);
     const dialogRef = this.dialog.open<T, D, R>(component, dialogConfig);
 
-    // Aplicar z-index centralizado
+    this.wireCloseBehavior(dialogRef, config);
+
+    // Apply centralized z-index
     this.zIndexService.applyZIndex(dialogRef);
 
     return dialogRef;
@@ -65,7 +67,9 @@ export class AdvancedDialogService {
       dialogConfig,
     );
 
-    // Aplicar z-index centralizado
+    this.wireCloseBehavior(dialogRef, matDialogConfig);
+
+    // Apply centralized z-index
     this.zIndexService.applyZIndex(dialogRef);
 
     return dialogRef;
@@ -95,6 +99,7 @@ export class AdvancedDialogService {
     config: MatCustomDialogConfig<D>,
   ): Promise<MatDialogConfig<D>> {
     const dialogConfig = new MatDialogConfig<D>();
+    const basePanelClasses: string[] = [];
 
     // Asynchronously check for mobile state to prevent memory leaks from dangling subscriptions.
     const isMobile = await firstValueFrom(this.isMobile$);
@@ -102,12 +107,13 @@ export class AdvancedDialogService {
     // Apply fullscreen if 'full' size is set OR if mobile fullscreen is enabled on a mobile device.
     if (config.size === 'full' || (config.isMobileFullScreen && isMobile)) {
       this.applyFullScreenConfig(dialogConfig);
+      basePanelClasses.push('full-screen-dialog');
     } else {
       this.applyStandardConfig(dialogConfig, config);
     }
 
     // Apply all other common configurations.
-    this.applyCommonConfig(dialogConfig, config);
+    this.applyCommonConfig(dialogConfig, config, basePanelClasses);
 
     return dialogConfig;
   }
@@ -116,7 +122,7 @@ export class AdvancedDialogService {
     dialogConfig.width = '100vw';
     dialogConfig.height = '100vh';
     dialogConfig.maxWidth = '100vw';
-    dialogConfig.panelClass = ['full-screen-dialog'];
+    dialogConfig.maxHeight = '100vh';
   }
 
   private applyStandardConfig<D>(
@@ -127,6 +133,7 @@ export class AdvancedDialogService {
     dialogConfig.width = width;
     dialogConfig.height = config.height;
     dialogConfig.minWidth = config.minWidth;
+    dialogConfig.minHeight = config.minHeight;
     const maxWidth = config.maxWidth ?? '95vw';
     dialogConfig.maxWidth = maxWidth;
     const maxHeight = config.maxHeight ?? 'auto';
@@ -137,24 +144,30 @@ export class AdvancedDialogService {
   private applyCommonConfig<D>(
     dialogConfig: MatDialogConfig<D>,
     config: MatCustomDialogConfig<D>,
+    basePanelClasses: string[] = [],
   ): void {
     dialogConfig.data = config.data;
     dialogConfig.hasBackdrop = config.hasBackdrop ?? true;
     dialogConfig.backdropClass = config.backdropClass;
 
-    const panelClasses = Array.isArray(config.panelClass)
-      ? [...config.panelClass]
-      : config.panelClass
-        ? [config.panelClass]
-        : [];
+    const panelClasses = [...basePanelClasses];
+    if (Array.isArray(config.panelClass)) {
+      panelClasses.push(...config.panelClass);
+    } else if (config.panelClass) {
+      panelClasses.push(config.panelClass);
+    }
     if (config.size) {
       panelClasses.push(`dialog-${config.size}`);
     }
     dialogConfig.panelClass = panelClasses;
 
-    dialogConfig.disableClose = !(config.backdropClickClosable ?? true);
-    // Note: escapeKeyClosable is handled by MatDialog separately and doesn't affect disableClose directly.
+    // MatDialog's `disableClose` blocks both the backdrop click and the Escape key.
+    // When only one of them should be disabled, `disableClose` is set and the
+    // allowed gesture is re-enabled in `wireCloseBehavior`.
+    dialogConfig.disableClose =
+      !(config.backdropClickClosable ?? true) || !(config.escapeKeyClosable ?? true);
     dialogConfig.autoFocus = config.autoFocus ?? 'first-tabbable';
+    dialogConfig.restoreFocus = config.restoreFocus ?? true;
     dialogConfig.scrollStrategy = config.scrollStrategy ?? this.overlay.scrollStrategies.block();
     dialogConfig.enterAnimationDuration = config.enterAnimationDuration ?? '300ms';
     dialogConfig.exitAnimationDuration = config.exitAnimationDuration ?? '200ms';
@@ -162,6 +175,32 @@ export class AdvancedDialogService {
     dialogConfig.ariaLabelledBy = config.ariaLabelledBy;
     dialogConfig.ariaDescribedBy = config.ariaDescribedBy;
     dialogConfig.role = config.role;
+  }
+
+  /**
+   * Re-enables a single close gesture (backdrop click or Escape) when the other
+   * one is disabled, since MatDialog's `disableClose` blocks both at once.
+   */
+  private wireCloseBehavior<T, R>(
+    dialogRef: MatDialogRef<T, R>,
+    config: MatCustomDialogConfig,
+  ): void {
+    const backdropClosable = config.backdropClickClosable ?? true;
+    const escapeClosable = config.escapeKeyClosable ?? true;
+
+    if (backdropClosable === escapeClosable) {
+      return;
+    }
+
+    if (escapeClosable) {
+      dialogRef.keydownEvents().subscribe(event => {
+        if (event.key === 'Escape') {
+          dialogRef.close();
+        }
+      });
+    } else {
+      dialogRef.backdropClick().subscribe(() => dialogRef.close());
+    }
   }
 
   private getDialogWidth(size: DialogSize = 'md'): string {

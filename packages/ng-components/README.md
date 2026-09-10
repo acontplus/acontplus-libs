@@ -104,7 +104,32 @@ export class ProductComponent {}
 
 ### Buttons
 
-#### Button
+> **The legacy `Button` component is deprecated.** New code should import and
+> use `AcpButton` (v2) instead. The legacy `Button` will be removed in a future
+> major release.
+
+#### AcpButton (v2)
+
+Current button implementation with `input()` signals, loading state, form
+association and full Material Design variants.
+
+```typescript
+import { AcpButton } from '@acontplus/ng-components';
+
+@Component({
+  template: ` <acp-button text="Save" color="success" (clicked)="save()" /> `,
+  imports: [AcpButton],
+})
+export class SaveComponent {
+  save() {
+    // handle click
+  }
+}
+```
+
+#### Button (legacy)
+
+> Deprecated. Use `AcpButton` instead.
 
 Flexible button component with multiple Material Design variants and built-in report format support.
 
@@ -332,6 +357,10 @@ providers: [
   declarative headers, body and footers.
 
 ### Dialog Wrapper
+
+> **The `DialogWrapper` component is deprecated.** Use `AcpDialogService` and
+> the `AcpDialog` declarative layout components instead. The wrapper will be
+> removed in a future major release.
 
 Enhanced dialog components with wrapper functionality for consistent dialog management.
 

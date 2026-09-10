@@ -222,6 +222,115 @@ The Button component includes optional built-in support for report/export button
 - `filled` (default), `elevated`, `outlined`, `text`, `tonal`
 - `icon`, `fab`, `mini-fab`, `extended-fab`
 
+### AcpDialog
+
+Reusable, strongly-typed dialog service built on Angular Material. Every dialog
+renders inside `AcpDialogContainer`, so content components always read data with
+`inject(ACP_DIALOG_DATA)` and close with `inject(AcpDialogRef<R>)`.
+
+The service is `AcpDialogService`; `acp-dialog` is the declarative layout
+wrapper used inside content components.
+
+#### Imperative usage
+
+```typescript
+import { Component, inject } from '@angular/core';
+import { AcpDialogRef, AcpDialogService } from '@acontplus/ng-components';
+
+@Component({ ... })
+export class UserListComponent {
+  private dialogs = inject(AcpDialogService);
+
+  openEdit(userId: number) {
+    const ref = this.dialogs.open<UserForm, { id: number }, boolean>(UserForm, {
+      title: 'Edit user',
+      size: 'lg',
+      data: { id: userId },
+      actions: [
+        { text: 'Cancel', appearance: 'text', result: false },
+        { text: 'Save', color: 'success', result: true },
+      ],
+    });
+
+    ref.afterClosed().subscribe(result => {
+      if (result) {
+        // user saved
+      }
+    });
+  }
+}
+```
+
+Clicking a configured action emits `ref.clickedResult` and then closes the
+dialog with `action.result` (or `action.key` when `result` is not set). To
+intercept the click without closing, call `event.preventDefault()` inside a
+`clickedResult` subscriber.
+
+#### Reactive action state
+
+`AcpDialogAction.disabled` and `AcpDialogAction.loading` accept a boolean, a
+`Signal<boolean>` or an `Observable<boolean>`:
+
+```typescript
+actions: [
+  { text: 'Cancel', appearance: 'text' },
+  {
+    text: 'Save',
+    color: 'success',
+    disabled: this.canSave, // signal<boolean>
+    loading: this.saving, // signal<boolean>
+  },
+],
+```
+
+#### Declarative layout
+
+For full control inside a dialog content template, use `acp-dialog` with
+`acp-dialog-titlebar`, `acp-dialog-content` and `acp-dialog-actions`:
+
+```html
+<acp-dialog>
+  <acp-dialog-titlebar title="Edit user" icon="person" />
+
+  <acp-dialog-content>
+    <p>Dialog body</p>
+  </acp-dialog-content>
+
+  <acp-dialog-actions align="end">
+    <acp-button text="Cancel" appearance="text" (clicked)="ref.close()" />
+    <acp-button
+      text="Save"
+      color="success"
+      [disabled]="form.invalid"
+      (clicked)="ref.close(form.value)"
+    />
+  </acp-dialog-actions>
+</acp-dialog>
+```
+
+#### Defaults
+
+```typescript
+import { provideAcpDialogDefaults } from '@acontplus/ng-components';
+
+providers: [
+  provideAcpDialogDefaults({
+    fullScreenOnMobile: true,
+    closeOn: { escapeKey: true, backdropClick: false },
+  }),
+],
+```
+
+#### API
+
+- `AcpDialogService.open(component, config)` / `open({ content, ...config })`
+- `AcpDialogRef.afterClosed()`, `close(result)`, `clickedResult`, `actionClicked$`
+- `AcpDialogConfig` supports `size`, `width`, `height`, `title`, `header`,
+  `actions`, `actionsAlign`, `closeOn`, `fullScreenOnMobile`, `bindings`,
+  `ariaLabel`, `role`, etc.
+- `AcpDialog`, `AcpDialogContent`, `AcpDialogTitlebar` and `AcpDialogActions` for
+  declarative headers, body and footers.
+
 ### Dialog Wrapper
 
 Enhanced dialog components with wrapper functionality for consistent dialog management.

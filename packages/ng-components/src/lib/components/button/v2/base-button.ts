@@ -4,7 +4,16 @@ type AcpButtonVariant = 'basic' | 'icon' | 'fab' | 'mini-fab';
 type AcpButtonAppearance = 'text' | 'filled' | 'elevated' | 'outlined' | 'tonal';
 type AcpButtonType = 'button' | 'submit' | 'reset';
 type AcpButtonColor =
-  'primary' | 'secondary' | 'accent' | 'error' | 'success' | 'warning' | 'info' | 'dark';
+  | 'primary'
+  | 'secondary'
+  | 'accent'
+  | 'error'
+  | 'danger'
+  | 'success'
+  | 'warning'
+  | 'info'
+  | 'dark'
+  | 'light';
 
 @Directive({
   host: {
@@ -29,6 +38,8 @@ export abstract class BaseButton {
   block = input(false, { transform: booleanAttribute });
   size = input<'small' | 'medium' | 'large'>('large');
   text = input<string>();
+  ariaLabel = input<string>();
+  form = input<string>();
 
   hasText = computed(() => !!this.text() && this.text()!.trim().length > 0);
 
@@ -36,7 +47,7 @@ export abstract class BaseButton {
   focused = output<void>();
   blurred = output<void>();
 
-  colorClass = computed(() => `acp-${this.color()}`);
+  colorClass = computed(() => (this.color() === 'danger' ? 'acp-error' : `acp-${this.color()}`));
   sizeClass = computed(() => `acp-${this.size()}`);
   squareClass = computed(() => (this.square() ? 'acp-square' : ''));
   blockClass = computed(() => (this.block() ? 'acp-block' : ''));

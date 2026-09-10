@@ -1,0 +1,32 @@
+@if (headerConfig(); as header) { @if (config.showHeader !== false && !hasDeclarativeTitlebar()) {
+<acp-dialog-titlebar
+  [title]="header.title"
+  [subtitle]="header.subtitle"
+  [icon]="header.icon"
+  [closable]="header.closable ?? true"
+  [closeLabel]="header.closeLabel ?? 'Close dialog'"
+  [draggable]="header.draggable ?? true"
+  [color]="header.color"
+  [colorClass]="header.colorClass"
+  [closeColor]="header.closeColor"
+/>
+} }
+
+<ng-template #titlebarOutlet />
+
+<mat-dialog-content class="acp-dialog-content">
+  <ng-template #contentHost />
+  <ng-template #stringContent let-content>
+    <div class="acp-dialog-message">{{ content }}</div>
+  </ng-template>
+</mat-dialog-content>
+
+@if ((config.actions?.length && config.showActions !== false) || hasDeclarativeActions()) {
+<acp-dialog-actions
+  [align]="resolvedActionsAlign()"
+  [actions]="hasDeclarativeActions() ? undefined : config.actions"
+  [dialogTitle]="resolvedDialogTitle()"
+>
+  <ng-template #actionOutlet />
+</acp-dialog-actions>
+}

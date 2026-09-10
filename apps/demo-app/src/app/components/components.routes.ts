@@ -70,6 +70,10 @@ export const routes = [
         path: 'dialog',
         loadChildren: () => import('./dialog/dialog.routes').then(m => m.routes),
       },
+      {
+        path: 'dialog-new',
+        loadChildren: () => import('./dialog-new/dialog-new.routes').then(m => m.routes),
+      },
 
       // Data Tables
       {

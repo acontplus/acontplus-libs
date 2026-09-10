@@ -1,0 +1,16 @@
+<h2>Declarative layout</h2>
+
+<p>
+  This dialog uses <code>acp-dialog-titlebar</code> and <code>acp-dialog-actions</code> inside the
+  content template instead of the configured header and actions.
+</p>
+
+<section class="actions">
+  <button matButton="elevated" color="primary" (click)="openDeclarative()">
+    Open declarative dialog
+  </button>
+</section>
+
+@if (lastResult) {
+<p class="last-result">{{ lastResult }}</p>
+}

@@ -1,0 +1,89 @@
+<h2>Dialog configuration</h2>
+
+<section class="size-controls">
+  <mat-form-field>
+    <mat-label>Size</mat-label>
+    <mat-select [(ngModel)]="size">
+      @for (option of sizes; track option) {
+      <mat-option [value]="option">{{ option }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Title</mat-label>
+    <input matInput [(ngModel)]="title" type="text" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Header color</mat-label>
+    <mat-select [(ngModel)]="color">
+      <mat-option value="">Default</mat-option>
+      @for (option of colors; track option) {
+      <mat-option [value]="option">{{ option }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Custom header class</mat-label>
+    <input matInput [(ngModel)]="colorClass" type="text" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Actions align</mat-label>
+    <mat-select [(ngModel)]="actionsAlign">
+      @for (option of alignments; track option) {
+      <mat-option [value]="option">{{ option }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</section>
+
+<section class="dimension-controls">
+  <mat-form-field>
+    <mat-label>Width (px)</mat-label>
+    <input matInput [(ngModel)]="width" type="number" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Height (px)</mat-label>
+    <input matInput [(ngModel)]="height" type="number" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Min width</mat-label>
+    <input matInput [(ngModel)]="minWidth" type="number" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Min height</mat-label>
+    <input matInput [(ngModel)]="minHeight" type="number" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Max width</mat-label>
+    <input matInput [(ngModel)]="maxWidth" type="number" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Max height</mat-label>
+    <input matInput [(ngModel)]="maxHeight" type="number" />
+  </mat-form-field>
+</section>
+
+<section class="checkbox-controls">
+  <mat-checkbox [(ngModel)]="backdropClick">Close on backdrop click</mat-checkbox>
+  <mat-checkbox [(ngModel)]="escapeKey">Close on Escape</mat-checkbox>
+  <mat-checkbox [(ngModel)]="fullScreenOnMobile">Full screen on mobile</mat-checkbox>
+</section>
+
+<h2>Open</h2>
+
+<section class="actions">
+  <button matButton="elevated" color="primary" (click)="openContent()">Open Content Dialog</button>
+</section>
+
+@if (lastResult) {
+<p class="last-result">{{ lastResult }}</p>
+}

@@ -2,6 +2,7 @@ export * from './alert';
 export * from './badge';
 export * from './cards';
 export * from './context-menu';
+export * from './dialog';
 export * from './dialog-wrapper';
 export * from './dynamic-select';
 export * from './icons';

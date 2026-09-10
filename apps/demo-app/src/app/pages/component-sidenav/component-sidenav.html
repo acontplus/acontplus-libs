@@ -13,7 +13,7 @@
   </mat-sidenav>
   }
 
-  <div class="docs-component-sidenav-content">
+  <mat-sidenav-content class="docs-component-sidenav-content" cdkScrollable>
     <app-component-page-header (toggleSidenav)="toggleSidenav(sidenav)" />
     <div class="docs-component-sidenav-inner-content">
       <main class="docs-component-sidenav-body-content">
@@ -23,5 +23,6 @@
         <router-outlet></router-outlet>
       </main>
     </div>
-  </div>
+  </mat-sidenav-content>
+  <!-- Cierre cambiado a mat-sidenav-content -->
 </mat-sidenav-container>

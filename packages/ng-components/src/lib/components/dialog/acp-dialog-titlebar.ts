@@ -174,7 +174,9 @@ export class AcpDialogTitlebar implements AfterViewInit {
   bringToFront(): void {
     const pane = this.elementRef.nativeElement.closest('.cdk-overlay-pane') as HTMLElement | null;
     if (pane) {
-      pane.style.zIndex = String(Math.max(1000, parseInt(pane.style.zIndex || '0', 10) + 1));
+      const current = parseInt(pane.style.zIndex || '1000', 10);
+      const next = Math.max(1000, isNaN(current) ? 1000 : current + 1);
+      pane.style.zIndex = next.toString();
     }
   }
 

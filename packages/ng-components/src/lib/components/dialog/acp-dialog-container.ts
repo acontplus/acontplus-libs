@@ -4,6 +4,7 @@ import {
   Component,
   computed,
   effect,
+  EmbeddedViewRef,
   inject,
   Injector,
   Signal,
@@ -142,21 +143,25 @@ export class AcpDialogContainer implements AfterViewInit {
   }
 
   constructor() {
-    effect(() => {
+    effect(onCleanup => {
       const outlet = this.actionOutlet();
       const template = this.pendingActionTemplate();
+      let viewRef: EmbeddedViewRef<unknown> | undefined;
       if (outlet && template) {
         outlet.clear();
-        outlet.createEmbeddedView(template);
+        viewRef = outlet.createEmbeddedView(template);
       }
+      onCleanup(() => viewRef?.destroy());
     });
-    effect(() => {
+    effect(onCleanup => {
       const outlet = this.titlebarOutletRef();
       const template = this.pendingTitlebarTemplate();
+      let viewRef: EmbeddedViewRef<unknown> | undefined;
       if (outlet && template) {
         outlet.clear();
-        outlet.createEmbeddedView(template);
+        viewRef = outlet.createEmbeddedView(template);
       }
+      onCleanup(() => viewRef?.destroy());
     });
   }
 

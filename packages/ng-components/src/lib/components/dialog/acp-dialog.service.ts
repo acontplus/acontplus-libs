@@ -224,7 +224,7 @@ export class AcpDialogService {
       ...defaults,
       ...rest,
       header: header ? { ...defaults?.header, ...header } : defaults?.header,
-      closeOn: { ...defaults?.closeOn, ...closeOn },
+      closeOn: closeOn ? { ...defaults?.closeOn, ...closeOn } : defaults?.closeOn,
     };
   }
 

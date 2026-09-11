@@ -1,3 +1,22 @@
+## 3.0.3 (2026-09-11)
+
+### 🩹 Fixes
+
+- Normalize package repository URLs by removing the `git+` prefix across all libraries. ([#148](https://github.com/acontplus/acontplus-libs/pull/148))
+
+### 🧱 Updated Dependencies
+
+- Updated utils to 1.2.2
+- Updated core to 1.3.2
+- Updated ng-notifications to 3.0.3
+- Updated ng-components to 3.2.0
+
+### ❤️ Thank You
+
+- Devin @devin-ai-integration[bot]
+- Emilio Senguana @senguanasoft
+- emilios-dev
+
 ## 3.0.2 (2026-08-23)
 
 ### 🩹 Fixes

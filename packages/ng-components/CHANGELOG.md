@@ -1,3 +1,43 @@
+## 3.2.0 (2026-09-11)
+
+### 🚀 Features
+
+- Fix dialog configuration handling in `AdvancedDialogService` and `DialogWrapper`: preserve the ([#148](https://github.com/acontplus/acontplus-libs/pull/148))
+  `full-screen-dialog` panel class when using `size: 'full'` or mobile full-screen, honor the
+  `minHeight`, `restoreFocus`, and `escapeKeyClosable` options (Escape and backdrop click can now be
+  configured independently), support signal inputs when passing `data` to wrapped content components,
+  and add the `closeAriaLabel` option for accessible close-button labels.
+
+- Introduce `AcpDialogService` (formerly `AcpDialog`), a reusable, strongly-typed ([#148](https://github.com/acontplus/acontplus-libs/pull/148))
+  dialog service built on Angular Material. Add `AcpDialog`, `AcpDialogContent`,
+  `AcpDialogTitlebar` and `AcpDialogActions` as declarative layout components.
+  Includes `AcpDialogContainer`, `AcpDialogRef`, `ACP_DIALOG_DATA` and
+  `provideAcpDialogDefaults`. Supports reactive `disabled`/`loading` action
+  states (boolean, `Signal` or `Observable`), a shared action-click stream between
+  caller and content, configurable and declarative header/footer components,
+  content `bindings`, and sizing, focus and close behavior.
+
+  **BREAKING CHANGE**: The service class `AcpDialog` has been renamed to
+  `AcpDialogService` to free the `acp-dialog` selector for the new declarative
+  wrapper component. Update call sites from `inject(AcpDialog)` to
+  `inject(AcpDialogService)`.
+
+- Add FAB/mini-FAB color overrides, dark text contrast fixes, layout variables export rename to `global-variables`, and progress indicator support (`showProgress`, `progressType`, `progressText`) to AcpButton v2. ([#148](https://github.com/acontplus/acontplus-libs/pull/148))
+
+### 🩹 Fixes
+
+- Normalize package repository URLs by removing the `git+` prefix across all libraries. ([#148](https://github.com/acontplus/acontplus-libs/pull/148))
+
+### 🧱 Updated Dependencies
+
+- Updated ui-kit to 1.1.3
+
+### ❤️ Thank You
+
+- Devin @devin-ai-integration[bot]
+- Emilio Senguana @senguanasoft
+- emilios-dev
+
 ## 3.1.0 (2026-08-23)
 
 ### 🚀 Features

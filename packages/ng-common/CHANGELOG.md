@@ -1,3 +1,15 @@
+## 2.0.2 (2026-09-11)
+
+### 🩹 Fixes
+
+- Normalize package repository URLs by removing the `git+` prefix across all libraries. ([#148](https://github.com/acontplus/acontplus-libs/pull/148))
+
+### ❤️ Thank You
+
+- Devin @devin-ai-integration[bot]
+- Emilio Senguana @senguanasoft
+- emilios-dev
+
 ## 2.0.1 (2026-08-23)
 
 ### 🩹 Fixes

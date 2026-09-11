@@ -20,7 +20,6 @@ import {
 import { authProviders, csrfInterceptor } from '@acontplus/ng-auth';
 import { provideNotifications } from '@acontplus/ng-notifications';
 import { companyCustomerProvider } from './modules/company-customer/company-customer-provider';
-import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { SettingsService } from './core/settings.service';
 
 import {
@@ -78,9 +77,9 @@ export const appConfig: ApplicationConfig = {
     { provide: WHATSAPP_MESSAGING_PORT, useClass: MetaWhatsAppAdapter },
     { provide: REPORT_PORT, useClass: ReportAdapter },
 
-    {
-      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
-      useValue: { appearance: 'outline', subscriptSizing: 'dynamic' },
-    },
+    // {
+    //   provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+    //   useValue: { appearance: 'outline', subscriptSizing: 'dynamic' },
+    // },
   ],
 };

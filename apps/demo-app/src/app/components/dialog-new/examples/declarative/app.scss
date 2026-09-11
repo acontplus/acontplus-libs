@@ -1,0 +1,17 @@
+section {
+  margin: 16px 0;
+}
+
+.actions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.last-result {
+  margin-top: 16px;
+  padding: 12px;
+  border-radius: 4px;
+  background-color: var(--mat-sys-surface-container);
+  color: var(--mat-sys-on-surface);
+}

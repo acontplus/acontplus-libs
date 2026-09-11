@@ -16,6 +16,7 @@ import { map } from 'rxjs/operators';
 import { NavigationFocusService } from '../../shared/services/navigation-focus.service';
 import { ComponentNav } from '../component-nav/component-nav';
 import { ComponentPageHeader } from '../component-page-header/component-page-header';
+import { CdkScrollable } from '@angular/cdk/scrolling';
 
 const EXTRA_SMALL_WIDTH_BREAKPOINT = 720;
 const SMALL_WIDTH_BREAKPOINT = 959;
@@ -26,7 +27,14 @@ const SMALL_WIDTH_BREAKPOINT = 959;
   styleUrl: 'component-sidenav.scss',
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [MatSidenavModule, ComponentNav, ComponentPageHeader, RouterOutlet, AsyncPipe],
+  imports: [
+    MatSidenavModule,
+    ComponentNav,
+    ComponentPageHeader,
+    RouterOutlet,
+    AsyncPipe,
+    CdkScrollable,
+  ],
 })
 export class ComponentSidenav implements OnInit, OnDestroy {
   private readonly _route = inject(ActivatedRoute);

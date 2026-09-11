@@ -1,0 +1,16 @@
+<h2>Reactive action state</h2>
+
+<p>
+  The dialog uses a <code>Signal</code> for <code>disabled</code> and <code>loading</code>, so the
+  Save button follows the form validity and a pending async operation.
+</p>
+
+<section class="actions">
+  <button matButton="elevated" color="primary" (click)="openActionState()">
+    Open action state dialog
+  </button>
+</section>
+
+@if (lastResult) {
+<p class="last-result">{{ lastResult }}</p>
+}

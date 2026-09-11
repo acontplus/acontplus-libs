@@ -164,6 +164,14 @@
   @include mat.icon-overrides(());
 }
 
+[matIconButton].acp-light {
+  @include mat.icon-overrides(
+    (
+      color: #ffffff,
+    )
+  );
+}
+
 [matFab].acp-primary {
   @include mat.fab-overrides(
     (

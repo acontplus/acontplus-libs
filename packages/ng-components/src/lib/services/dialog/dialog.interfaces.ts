@@ -28,7 +28,16 @@ export interface MatCustomDialogConfig<T = unknown> {
 
   // --- Behavior ---
   hasBackdrop?: boolean;
+  /**
+   * Whether clicking the backdrop closes the dialog.
+   * @default true
+   */
   backdropClickClosable?: boolean;
+  /**
+   * Whether pressing Escape closes the dialog. Handled independently from
+   * `backdropClickClosable`.
+   * @default true
+   */
   escapeKeyClosable?: boolean;
   isMobileFullScreen?: boolean;
 
@@ -91,4 +100,11 @@ export interface DialogWrapperConfig<T = unknown> {
    * @default true
    */
   showCloseButton?: boolean;
+
+  /**
+   * Accessible label for the header close button.
+   * Useful to provide a localized label for screen readers.
+   * @default 'Close dialog'
+   */
+  closeAriaLabel?: string;
 }

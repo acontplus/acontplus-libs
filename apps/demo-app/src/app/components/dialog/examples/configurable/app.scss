@@ -1,0 +1,60 @@
+section {
+  margin: 16px 0;
+}
+
+.size-controls {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+
+  mat-form-field {
+    flex: 1;
+    margin: 0;
+  }
+}
+
+.checkbox-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+
+  mat-checkbox {
+    margin: 0;
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.last-result {
+  margin-top: 16px;
+  padding: 12px;
+  border-radius: 4px;
+  background-color: var(--mat-sys-surface-container);
+  color: var(--mat-sys-on-surface);
+}
+
+@media (max-width: 768px) {
+  .size-controls {
+    flex-direction: column;
+    align-items: stretch;
+
+    mat-form-field {
+      flex: none;
+    }
+  }
+
+  .checkbox-controls {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

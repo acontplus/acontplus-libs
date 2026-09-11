@@ -1,0 +1,108 @@
+<h2>Advanced configuration</h2>
+
+<section class="row">
+  <mat-form-field>
+    <mat-label>Size</mat-label>
+    <mat-select [(ngModel)]="size">
+      @for (option of sizes; track option) {
+      <mat-option [value]="option">{{ option }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Scroll strategy</mat-label>
+    <mat-select [(ngModel)]="scrollStrategy">
+      @for (option of scrollStrategies; track option) {
+      <mat-option [value]="option">{{ option }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Direction</mat-label>
+    <mat-select [(ngModel)]="direction">
+      @for (option of directions; track option) {
+      <mat-option [value]="option">{{ option }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Dialog id</mat-label>
+    <input matInput [(ngModel)]="id" type="text" />
+  </mat-form-field>
+</section>
+
+<section class="row">
+  <mat-form-field>
+    <mat-label>Width (px)</mat-label>
+    <input matInput [(ngModel)]="width" type="number" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Height (px)</mat-label>
+    <input matInput [(ngModel)]="height" type="number" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Restore focus</mat-label>
+    <mat-select [(ngModel)]="restoreFocus">
+      @for (option of restoreFocusOptions; track option) {
+      <mat-option [value]="option">{{ option }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  @if (restoreFocus === 'selector') {
+  <mat-form-field>
+    <mat-label>Restore focus selector</mat-label>
+    <input matInput [(ngModel)]="restoreSelector" type="text" />
+  </mat-form-field>
+  }
+</section>
+
+<section class="row">
+  <mat-form-field>
+    <mat-label>Position top (px)</mat-label>
+    <input matInput [(ngModel)]="positionTop" type="number" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Position left (px)</mat-label>
+    <input matInput [(ngModel)]="positionLeft" type="number" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Position right (px)</mat-label>
+    <input matInput [(ngModel)]="positionRight" type="number" />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Position bottom (px)</mat-label>
+    <input matInput [(ngModel)]="positionBottom" type="number" />
+  </mat-form-field>
+</section>
+
+<section class="checkbox-row">
+  <mat-checkbox [(ngModel)]="showHeader">Show header</mat-checkbox>
+  <mat-checkbox [(ngModel)]="showActions">Show actions footer</mat-checkbox>
+  <mat-checkbox [(ngModel)]="disableClose">Disable close (Escape / backdrop)</mat-checkbox>
+  <mat-checkbox [(ngModel)]="closeOnNavigation">Close on navigation</mat-checkbox>
+  <mat-checkbox [(ngModel)]="ariaModal">aria-modal</mat-checkbox>
+</section>
+
+<section class="actions">
+  <button matButton="elevated" color="primary" (click)="openAdvanced()">
+    Open advanced dialog
+  </button>
+  <button matButton="elevated" (click)="updateSize()">Update size</button>
+  <button matButton="elevated" (click)="updatePosition()">Update position</button>
+  <button matButton="elevated" color="error" (click)="closeById()">Close by id</button>
+</section>
+
+<button id="restore-target" class="restore-button">Focus restoration target</button>
+
+@if (lastResult) {
+<p class="last-result">{{ lastResult }}</p>
+}

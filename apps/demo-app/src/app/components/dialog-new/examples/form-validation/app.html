@@ -1,0 +1,13 @@
+<h2>Form validation</h2>
+
+<p>
+  A dialog with a reactive form. The declarative Save action is disabled while the form is invalid.
+</p>
+
+<section class="actions">
+  <button matButton="elevated" color="primary" (click)="openForm()">Open form dialog</button>
+</section>
+
+@if (lastResult) {
+<p class="last-result">{{ lastResult }}</p>
+}

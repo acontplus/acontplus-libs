@@ -104,281 +104,148 @@ export class ProductComponent {}
 
 ### Buttons
 
-#### Button
+> **The legacy `Button` component is deprecated.** New code should import and
+> use `AcpButton` (v2) instead. The legacy `Button` will be removed in a future
+> major release.
 
-Flexible button component with multiple Material Design variants and built-in report format support.
+#### AcpButton (v2)
+
+Current button implementation with `input()` signals, loading state, form
+association and full Material Design variants.
 
 ```typescript
-import { Button, REPORT_FORMAT } from '@acontplus/ng-components';
+import { AcpButton } from '@acontplus/ng-components';
 
 @Component({
-  template: `
-    <!-- Standard button -->
-    <acp-button
-      [variant]="'primary'"
-      [text]="'Save'"
-      [icon]="'save'"
-      [matStyle]="'elevated'"
-      [disabled]="false"
-      (handleClick)="onSave()"
-    />
-
-    <!-- Report button with automatic icon, color, and title -->
-    <acp-button
-      [reportFormat]="REPORT_FORMAT.PDF"
-      [text]="'Export Report'"
-      [title]="'Download'"
-      (handleClick)="exportReport($event)"
-    />
-    <!-- Automatically shows PDF icon, danger color, and title "Download - PDF" -->
-
-    <!-- Report button with format-only (no explicit text) -->
-    <acp-button [reportFormat]="REPORT_FORMAT.EXCEL" (handleClick)="exportExcel()" />
-    <!-- Shows Excel icon, success color, and "Excel" as title -->
-  `,
-  imports: [Button],
+  template: ` <acp-button text="Save" color="success" (clicked)="save()" /> `,
+  imports: [AcpButton],
 })
-export class FormComponent {
-  REPORT_FORMAT = REPORT_FORMAT;
-
-  exportReport() {
-    console.log('Exporting PDF report...');
+export class SaveComponent {
+  save() {
+    // handle click
   }
 }
 ```
 
-#### Report Format Support
+### AcpDialog
 
-The Button component includes optional built-in support for report/export buttons with automatic styling:
+Reusable, strongly-typed dialog service built on Angular Material. Every dialog
+renders inside `AcpDialogContainer`, so content components always read data with
+`inject(ACP_DIALOG_DATA)` and close with `inject(AcpDialogRef<R>)`.
 
-**Available Report Formats:**
+The service is `AcpDialogService`; `acp-dialog` is the declarative layout
+wrapper used inside content components.
 
-- `REPORT_FORMAT.PDF` - Red/danger color, PDF icon
-- `REPORT_FORMAT.EXCEL` - Green/success color, table icon
-- `REPORT_FORMAT.WORD` - Blue/primary color, document icon
-- `REPORT_FORMAT.CSV` - Green/success color, grid icon
-- `REPORT_FORMAT.XML` - Orange/warning color, code icon
-- `REPORT_FORMAT.IMAGE` - Blue/info color, image icon
-- `REPORT_FORMAT.HTML` - Blue/info color, HTML icon
-- `REPORT_FORMAT.MHTML` - Gray/secondary color, web icon
-
-**Features:**
-
-- **Auto Icon**: Automatically sets the appropriate icon based on format
-- **Auto Color**: Automatically applies the correct color variant
-- **Auto Title**: Appends format name to tooltip (e.g., "Export - PDF")
-- **Optional**: All report features are completely optional
-- **Overridable**: Explicit `icon`, `variant`, or `title` inputs take precedence
-
-**Examples:**
+#### Imperative usage
 
 ```typescript
-// Minimal report button
-<acp-button
-  [reportFormat]="REPORT_FORMAT.PDF"
-  [text]="'Export'"
-/>
-// Result: PDF icon, danger color, tooltip "PDF"
+import { Component, inject } from '@angular/core';
+import { AcpDialogRef, AcpDialogService } from '@acontplus/ng-components';
 
-// With custom title
-<acp-button
-  [reportFormat]="REPORT_FORMAT.EXCEL"
-  [text]="'Download'"
-  [title]="'Monthly Report'"
-/>
-// Result: Excel icon, success color, tooltip "Monthly Report - Excel"
+@Component({ ... })
+export class UserListComponent {
+  private dialogs = inject(AcpDialogService);
 
-// Override icon but keep auto-color
-<acp-button
-  [reportFormat]="REPORT_FORMAT.WORD"
-  [icon]="'download'"
-  [text]="'Get Document'"
-/>
-// Result: Custom download icon, primary color (from Word format)
+  openEdit(userId: number) {
+    const ref = this.dialogs.open<UserForm, { id: number }, boolean>(UserForm, {
+      title: 'Edit user',
+      size: 'lg',
+      data: { id: userId },
+      actions: [
+        { text: 'Cancel', appearance: 'text', result: false },
+        { text: 'Save', color: 'success', result: true },
+      ],
+    });
 
-// Override color but keep auto-icon
-<acp-button
-  [reportFormat]="REPORT_FORMAT.CSV"
-  [variant]="'secondary'"
-  [text]="'Export Data'"
-/>
-// Result: Grid icon (from CSV), secondary color (overridden)
-
-// Regular button (no report format)
-<acp-button
-  [text]="'Click me'"
-  [icon]="'add'"
-  [variant]="'primary'"
-/>
-// Result: Works as before, no report format logic applied
+    ref.afterClosed().subscribe(result => {
+      if (result) {
+        // user saved
+      }
+    });
+  }
+}
 ```
 
-**Button Variants:**
+Clicking a configured action emits `ref.clickedResult` and then closes the
+dialog with `action.result` (or `action.key` when `result` is not set). To
+intercept the click without closing, call `event.preventDefault()` inside a
+`clickedResult` subscriber.
 
-- `primary`, `secondary`, `success`, `danger`, `warning`, `info`
+#### Reactive action state
 
-**Material Styles:**
+`AcpDialogAction.disabled` and `AcpDialogAction.loading` accept a boolean, a
+`Signal<boolean>` or an `Observable<boolean>`:
 
-- `filled` (default), `elevated`, `outlined`, `text`, `tonal`
-- `icon`, `fab`, `mini-fab`, `extended-fab`
+```typescript
+actions: [
+  { text: 'Cancel', appearance: 'text' },
+  {
+    text: 'Save',
+    color: 'success',
+    disabled: this.canSave, // signal<boolean>
+    loading: this.saving, // signal<boolean>
+  },
+],
+```
+
+#### Declarative layout
+
+For full control inside a dialog content template, use `acp-dialog` with
+`acp-dialog-titlebar`, `acp-dialog-content` and `acp-dialog-actions`:
+
+```html
+<acp-dialog>
+  <acp-dialog-titlebar title="Edit user" icon="person" />
+
+  <acp-dialog-content>
+    <p>Dialog body</p>
+  </acp-dialog-content>
+
+  <acp-dialog-actions align="end">
+    <acp-button text="Cancel" appearance="text" (clicked)="ref.close()" />
+    <acp-button
+      text="Save"
+      color="success"
+      [disabled]="form.invalid"
+      (clicked)="ref.close(form.value)"
+    />
+  </acp-dialog-actions>
+</acp-dialog>
+```
+
+#### Defaults
+
+```typescript
+import { provideAcpDialogDefaults } from '@acontplus/ng-components';
+
+providers: [
+  provideAcpDialogDefaults({
+    fullScreenOnMobile: true,
+    closeOn: { escapeKey: true, backdropClick: false },
+  }),
+],
+```
+
+#### API
+
+- `AcpDialogService.open(component, config)` / `open({ content, ...config })`
+- `AcpDialogRef.afterClosed()`, `close(result)`, `clickedResult`, `actionClicked$`
+- `AcpDialogConfig` supports `size`, `width`, `height`, `title`, `header`,
+  `actions`, `actionsAlign`, `closeOn`, `fullScreenOnMobile`, `bindings`,
+  `ariaLabel`, `role`, etc.
+- `AcpDialog`, `AcpDialogContent`, `AcpDialogTitlebar` and `AcpDialogActions` for
+  declarative headers, body and footers.
 
 ### Dialog Wrapper
+
+> **The `DialogWrapper` component is deprecated.** Use `AcpDialogService` and
+> the `AcpDialog` declarative layout components instead. The wrapper will be
+> removed in a future major release.
 
 Enhanced dialog components with wrapper functionality for consistent dialog management.
 
 ```typescript
 import { DialogWrapper } from '@acontplus/ng-components';
-```
-
-### Icons
-
-#### SvgIcon
-
-Modern, type-safe SVG icon system with registry service, fallback support, and online icon loading.
-
-**Features:**
-
-- ✅ Type-safe with autocomplete for icon names
-- ✅ Tree-shakable - only bundled icons included
-- ✅ SSR-friendly - no runtime HTTP requests for registered icons
-- ✅ Signal-based reactive primitives
-- ✅ Fallback icon support for missing icons
-- ✅ Dynamic online icon loading from URLs
-- ✅ Customizable size, color, and dimensions
-
-```typescript
-import { SvgIcon, IconRegistryService } from '@acontplus/ng-components';
-
-@Component({
-  template: `
-    <!-- Basic usage -->
-    <acp-svg-icon name="home" />
-
-    <!-- Custom size and color -->
-    <acp-svg-icon name="user" size="32px" color="#FF5733" />
-
-    <!-- Custom width and height -->
-    <acp-svg-icon name="settings" width="20px" height="20px" />
-
-    <!-- Disable fallback for missing icons -->
-    <acp-svg-icon name="custom-icon" [useFallback]="false" />
-
-    <!-- Dynamic icon -->
-    <acp-svg-icon [name]="currentIcon" size="24px" />
-  `,
-  imports: [SvgIcon],
-})
-export class IconExampleComponent {
-  currentIcon = 'menu';
-}
-```
-
-**Available Default Icons:**
-`home`, `user`, `settings`, `search`, `close`, `check`, `arrow-right`, `arrow-left`, `menu`, `info`, `warning`, `error`
-
-**Configuring the Icon Registry:**
-
-```typescript
-import { ApplicationConfig } from '@angular/core';
-import { IconRegistryService } from '@acontplus/ng-components';
-import { provideHttpClient } from '@angular/common/http';
-
-export const appConfig: ApplicationConfig = {
-  providers: [
-    provideHttpClient(), // Required for online icon loading
-    // ... other providers
-  ],
-};
-
-// In your app component or initialization
-export class AppComponent implements OnInit {
-  private iconRegistry = inject(IconRegistryService);
-
-  ngOnInit() {
-    // Configure with fallback icon
-    this.iconRegistry.configure({
-      fallbackIcon: `<svg>...</svg>`, // Fallback when icon not found
-      showWarnings: true, // Log warnings for missing icons
-      iconBaseUrl: 'https://cdn.example.com/icons', // Base URL for auto-loading
-    });
-
-    // Register custom icons
-    this.iconRegistry.registerIcon(
-      'custom-icon',
-      `
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-        <path d="M12 2L2 7v10l10 5 10-5V7z"/>
-      </svg>
-    `,
-    );
-
-    // Register multiple icons
-    this.iconRegistry.registerIcons([
-      { name: 'icon-one', data: '<svg>...</svg>' },
-      { name: 'icon-two', data: '<svg>...</svg>' },
-    ]);
-
-    // Load icons from URLs
-    await this.iconRegistry.loadIconFromUrl('github', 'https://example.com/github.svg');
-
-    // Load multiple icons from URLs
-    await this.iconRegistry.loadIconsFromUrls([
-      { name: 'twitter', url: 'https://example.com/twitter.svg' },
-      { name: 'linkedin', url: 'https://example.com/linkedin.svg' },
-    ]);
-  }
-}
-```
-
-**Icon Registry API:**
-
-| Method                        | Description                               |
-| ----------------------------- | ----------------------------------------- |
-| `configure(config)`           | Set fallback icon, warnings, and base URL |
-| `registerIcon(name, svgData)` | Register a single icon                    |
-| `registerIcons(icons[])`      | Register multiple icons                   |
-| `loadIconFromUrl(name, url)`  | Load icon from URL (requires HttpClient)  |
-| `loadIconsFromUrls(icons[])`  | Load multiple icons from URLs             |
-| `getIcon(name)`               | Get icon (returns fallback if not found)  |
-| `getIconAsync(name)`          | Get icon with auto-loading from base URL  |
-| `hasIcon(name)`               | Check if icon exists                      |
-| `getRegisteredIcons()`        | Get all registered icon names             |
-| `removeIcon(name)`            | Remove specific icon                      |
-| `clearRegistry()`             | Clear all icons                           |
-
-**Handling Missing Icons:**
-
-When an icon is not found:
-
-1. If `fallbackIcon` is configured, it displays the fallback
-2. If `useFallback` input is `false`, nothing is displayed
-3. Console warning is shown (if `showWarnings: true`)
-
-**Online Icon Loading:**
-
-```typescript
-// Manual loading
-await this.iconRegistry.loadIconFromUrl('brand-icon', 'https://cdn.example.com/brand.svg');
-
-// Auto-loading with base URL
-this.iconRegistry.configure({
-  iconBaseUrl: 'https://cdn.example.com/icons'
-});
-
-// Component automatically tries to load from:
-// https://cdn.example.com/icons/brand-icon.svg
-<acp-svg-icon name="brand-icon" />
-
-// Or use async method
-const icon = await this.iconRegistry.getIconAsync('brand-icon');
-```
-
-#### UserIcon & SvgIcon
-
-Icon components for consistent iconography.
-
-```typescript
-import { UserIcon, SvgIcon } from '@acontplus/ng-components';
 ```
 
 ### Input Chip

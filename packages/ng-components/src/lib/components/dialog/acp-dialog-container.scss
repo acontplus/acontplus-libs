@@ -1,0 +1,221 @@
+// Structural styles for the dialog shell. All themeable values are exposed
+// as `--acp-dialog-*` custom properties; override them via a global class.
+
+// The container is a flex column so the content area grows and pushes any
+// footer / actions to the bottom when the dialog has a fixed height (e.g. full-screen).
+acp-dialog-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.acp-dialog-content {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: auto;
+}
+
+.acp-dialog-content > * {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+// Make Material's mat-dialog-content the scrollable, expanding area and
+// mat-dialog-actions a fixed bottom bar, matching the standard MatDialog layout.
+.acp-dialog-content > * > mat-dialog-content,
+.acp-dialog-content > * > .mat-mdc-dialog-content {
+  flex: 1 1 auto;
+  overflow: auto;
+  min-height: 0;
+  max-height: 100%;
+}
+
+.acp-dialog-content > * > mat-dialog-actions,
+.acp-dialog-content > * > .mat-mdc-dialog-actions {
+  flex-shrink: 0;
+}
+
+// Built-in message dialog layout (acp-dialog-message component).
+.acp-dialog-content > * > .acp-dialog-message {
+  flex: 1 1 auto;
+  overflow: auto;
+  min-height: 0;
+}
+
+.acp-dialog-content > * > .acp-dialog-message-actions {
+  flex-shrink: 0;
+}
+
+.acp-dialog-header {
+  cursor: move;
+  border-bottom: 1px solid
+    var(--acp-dialog-header-border-color, var(--mat-sys-outline-variant, #dee2e6));
+  color: var(--acp-dialog-header-text-color, var(--mat-sys-on-surface, #212529));
+  position: relative;
+
+  // Predefined color variants. Override these with CSS custom properties or `colorClass`.
+  &.acp-dialog-header--primary {
+    background-color: var(
+      --acp-dialog-primary-header-background-color,
+      var(--mat-sys-primary, #1976d2)
+    );
+    color: var(--acp-dialog-primary-header-text-color, var(--mat-sys-on-primary, #fff));
+  }
+  &.acp-dialog-header--secondary {
+    background-color: var(
+      --acp-dialog-secondary-header-background-color,
+      var(--mat-sys-secondary, #9c27b0)
+    );
+    color: var(--acp-dialog-secondary-header-text-color, var(--mat-sys-on-secondary, #fff));
+  }
+  &.acp-dialog-header--accent {
+    background-color: var(
+      --acp-dialog-accent-header-background-color,
+      var(--mat-sys-tertiary, #7c4dff)
+    );
+    color: var(--acp-dialog-accent-header-text-color, var(--mat-sys-on-tertiary, #fff));
+  }
+  &.acp-dialog-header--error,
+  &.acp-dialog-header--danger {
+    background-color: var(
+      --acp-dialog-error-header-background-color,
+      var(--mat-sys-error, #b3261e)
+    );
+    color: var(--acp-dialog-error-header-text-color, var(--mat-sys-on-error, #fff));
+  }
+  &.acp-dialog-header--success {
+    background-color: var(--acp-dialog-success-header-background-color, #22c55e);
+    color: var(--acp-dialog-success-header-text-color, #fff);
+  }
+  &.acp-dialog-header--warning {
+    background-color: var(--acp-dialog-warning-header-background-color, #f59e0b);
+    color: var(--acp-dialog-warning-header-text-color, #212529);
+  }
+  &.acp-dialog-header--info {
+    background-color: var(--acp-dialog-info-header-background-color, #0ea5e9);
+    color: var(--acp-dialog-info-header-text-color, #fff);
+  }
+  &.acp-dialog-header--dark {
+    background-color: var(--acp-dialog-dark-header-background-color, #212529);
+    color: var(--acp-dialog-dark-header-text-color, #fff);
+  }
+
+  &[class*='acp-dialog-header--'] {
+    .acp-dialog-subtitle {
+      color: inherit;
+      opacity: 0.85;
+    }
+  }
+}
+
+h6[mat-dialog-title].acp-dialog-title {
+  display: flex;
+  align-items: center;
+  font-size: var(--acp-dialog-title-font-size, 1.2rem);
+  font-weight: var(--acp-dialog-title-font-weight, 500);
+  margin: 0;
+  width: 100%;
+  padding-right: 48px;
+  color: currentColor;
+}
+
+.acp-dialog-title-icon {
+  margin-right: var(--acp-dialog-title-icon-gap, 12px);
+  vertical-align: middle;
+}
+
+h6[mat-dialog-title].acp-dialog-title span {
+  flex-grow: 1;
+}
+
+.acp-dialog-close-btn {
+  position: absolute;
+  top: 8px;
+  right: 16px;
+}
+
+.acp-dialog-subtitle {
+  margin: 0;
+  padding: 0 var(--acp-dialog-subtitle-padding, 24px) var(--acp-dialog-subtitle-padding, 16px);
+  font-size: var(--acp-dialog-subtitle-font-size, 0.875rem);
+  color: var(--acp-dialog-subtitle-color, var(--mat-sys-on-surface-variant, #6c757d));
+}
+
+.acp-dialog-message {
+  padding: var(--acp-dialog-message-padding, 24px);
+  color: var(--acp-dialog-message-text-color, var(--mat-sys-on-surface, #212529));
+}
+
+.acp-dialog-message-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 0 var(--acp-dialog-message-padding, 24px) var(--acp-dialog-message-padding, 24px);
+}
+
+.acp-dialog-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--acp-dialog-actions-gap, 8px);
+  padding: var(--acp-dialog-actions-padding, 16px 24px);
+  border-top: 1px solid
+    var(--acp-dialog-actions-border-color, var(--mat-sys-outline-variant, #dee2e6));
+}
+
+.acp-dialog-actions-start {
+  justify-content: flex-start;
+}
+
+.acp-dialog-actions-center {
+  justify-content: center;
+}
+
+.acp-dialog-actions-end {
+  justify-content: flex-end;
+}
+
+// Declarative titlebar and actions used inside the content area.
+.acp-dialog-content > acp-dialog-titlebar,
+.acp-dialog-content > * > acp-dialog-titlebar,
+.acp-dialog-content > acp-dialog-actions,
+.acp-dialog-content > * > acp-dialog-actions {
+  flex: 0 0 auto;
+}
+
+// Make Material's mat-dialog-content the scrollable, expanding area and
+// mat-dialog-actions a fixed bottom bar, matching the standard MatDialog layout.
+.acp-dialog-content > * > mat-dialog-content,
+.acp-dialog-content > * > .mat-mdc-dialog-content {
+  flex: 1 1 auto;
+  overflow: auto;
+  min-height: 0;
+  max-height: 100%;
+}
+
+.acp-dialog-content > * > mat-dialog-actions,
+.acp-dialog-content > * > .mat-mdc-dialog-actions {
+  flex-shrink: 0;
+}
+
+// Full-screen dialog: pin the action footer to the bottom of the viewport.
+.acp-dialog-full-screen .mat-mdc-dialog-surface {
+  height: 100vh;
+}
+
+.acp-dialog-full-screen acp-dialog-container {
+  min-height: 100vh;
+}
+
+.acp-dialog-full-screen .acp-dialog-content.mat-mdc-dialog-content {
+  max-height: 100%;
+  height: 100%;
+}
+
+.acp-dialog-full-screen .acp-dialog-actions,
+.acp-dialog-full-screen .mat-mdc-dialog-actions {
+  margin-top: auto;
+}

@@ -111,6 +111,13 @@ export const COMPONENTS_MENU: ComponentCategory[] = [
     summary: 'Enhanced dialog wrapper with advanced features.',
     category: 'Layout',
   },
+  {
+    id: 'dialog-new',
+    name: 'Dialog (New)',
+    summary:
+      'Reusable, strongly-typed dialog service with a single data channel, typed results and confirm/alert presets.',
+    category: 'Layout',
+  },
 
   // Data Tables
   {

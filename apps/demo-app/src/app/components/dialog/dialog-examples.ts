@@ -1,13 +1,15 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { DocHeading } from '../../shared/doc-heading/doc-heading';
+import { ExampleType, ExampleViewer } from '../../shared/example-viewer/example-viewver';
+import { dialogConfigurableExampleConfig } from './examples/configurable';
 
 @Component({
   selector: 'app-dialog-examples',
-  imports: [DocHeading],
+  imports: [DocHeading, ExampleViewer],
   template: `
     <div class="docs-component-viewer-content">
       <app-doc-heading>Dialog Examples</app-doc-heading>
-      <p>More examples coming soon...</p>
+      <app-example-viewer [exampleData]="configurable" />
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -15,8 +17,11 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
     `
       .docs-component-viewer-content {
         padding: 24px;
+        max-width: 1200px;
       }
     `,
   ],
 })
-export class DialogExamples {}
+export class DialogExamples {
+  configurable = dialogConfigurableExampleConfig as unknown as ExampleType;
+}

@@ -3,52 +3,6 @@
 
 // The container is a flex column so the content area grows and pushes any
 // footer / actions to the bottom when the dialog has a fixed height (e.g. full-screen).
-acp-dialog-container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.acp-dialog-content {
-  flex: 1 1 auto;
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-  overflow: auto;
-}
-
-.acp-dialog-content > * {
-  flex: 1 1 auto;
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-}
-
-// Make Material's mat-dialog-content the scrollable, expanding area and
-// mat-dialog-actions a fixed bottom bar, matching the standard MatDialog layout.
-.acp-dialog-content > * > mat-dialog-content,
-.acp-dialog-content > * > .mat-mdc-dialog-content {
-  flex: 1 1 auto;
-  overflow: auto;
-  min-height: 0;
-  max-height: 100%;
-}
-
-.acp-dialog-content > * > mat-dialog-actions,
-.acp-dialog-content > * > .mat-mdc-dialog-actions {
-  flex-shrink: 0;
-}
-
-// Built-in message dialog layout (acp-dialog-message component).
-.acp-dialog-content > * > .acp-dialog-message {
-  flex: 1 1 auto;
-  overflow: auto;
-  min-height: 0;
-}
-
-.acp-dialog-content > * > .acp-dialog-message-actions {
-  flex-shrink: 0;
-}
 
 .acp-dialog-header {
   cursor: move;
@@ -164,41 +118,6 @@ h6[mat-dialog-title].acp-dialog-title span {
   padding: var(--acp-dialog-actions-padding, 16px 24px);
   border-top: 1px solid
     var(--acp-dialog-actions-border-color, var(--mat-sys-outline-variant, #dee2e6));
-}
-
-.acp-dialog-actions-start {
-  justify-content: flex-start;
-}
-
-.acp-dialog-actions-center {
-  justify-content: center;
-}
-
-.acp-dialog-actions-end {
-  justify-content: flex-end;
-}
-
-// Declarative titlebar and actions used inside the content area.
-.acp-dialog-content > acp-dialog-titlebar,
-.acp-dialog-content > * > acp-dialog-titlebar,
-.acp-dialog-content > acp-dialog-actions,
-.acp-dialog-content > * > acp-dialog-actions {
-  flex: 0 0 auto;
-}
-
-// Make Material's mat-dialog-content the scrollable, expanding area and
-// mat-dialog-actions a fixed bottom bar, matching the standard MatDialog layout.
-.acp-dialog-content > * > mat-dialog-content,
-.acp-dialog-content > * > .mat-mdc-dialog-content {
-  flex: 1 1 auto;
-  overflow: auto;
-  min-height: 0;
-  max-height: 100%;
-}
-
-.acp-dialog-content > * > mat-dialog-actions,
-.acp-dialog-content > * > .mat-mdc-dialog-actions {
-  flex-shrink: 0;
 }
 
 // Full-screen dialog: pin the action footer to the bottom of the viewport.

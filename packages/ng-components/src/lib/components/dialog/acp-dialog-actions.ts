@@ -49,9 +49,6 @@ import {
     @if (renderInline()) {
       <mat-dialog-actions
         class="acp-dialog-actions"
-        [class.acp-dialog-actions-start]="align() === 'start'"
-        [class.acp-dialog-actions-center]="align() === 'center'"
-        [class.acp-dialog-actions-end]="align() === 'end'"
         [align]="align()"
         [attr.aria-label]="ariaLabel()"
       >

@@ -1,3 +1,15 @@
+## 3.2.1 (2026-09-25)
+
+### 🩹 Fixes
+
+- Cleaned dialog styles and updated declarative example. ([#149](https://github.com/acontplus/acontplus-libs/pull/149))
+
+### ❤️ Thank You
+
+- Devin @devin-ai-integration[bot]
+- Emilio Senguana @senguanasoft
+- emiliosw-dev
+
 ## 3.2.0 (2026-09-11)
 
 ### 🚀 Features

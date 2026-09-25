@@ -1,3 +1,9 @@
+## 3.0.4 (2026-09-25)
+
+### 🧱 Updated Dependencies
+
+- Updated ng-infrastructure to 3.1.3
+
 ## 3.0.3 (2026-09-11)
 
 ### 🩹 Fixes

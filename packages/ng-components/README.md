@@ -14,7 +14,7 @@ pnpm add @acontplus/ng-components
 
 ## Features
 
-- **UI Components**: Cards, KPI cards, dialogs, icons, input chips, buttons, spinners, dynamic/tabulator tables, theme toggle, autocomplete wrapper
+- **UI Components**: Cards, KPI cards, dialogs, icons, input chips, buttons, spinners, dynamic/tabulator tables, theme toggle, search select
 - **Directives**: Text transformation (to-upper-case)
 - **Pipes**: Data transformation (get-total, status-display)
 - **Services**: Dialog management, overlay, theme management (dark/light mode), autocomplete
@@ -494,13 +494,37 @@ export class HeaderComponent {}
 | `darkModeLabel`  | `string` | `'Switch to dark mode'`  | Accessible label when in light mode           |
 | `testId`         | `string` | `''`                     | data-testid attribute for testing             |
 
-### Autocomplete Wrapper
+### AcpSearchSelect
 
-Enhanced autocomplete components with custom functionality.
+Searchable select built on `mat-autocomplete`. Accepts flat lists or one-level
+groups (items with a `children` array), ignores accents when searching and works
+with `ngModel`, reactive forms (including the `required` error state) and `[(value)]`.
 
-```typescript
-import { AutocompleteWrapperComponent } from '@acontplus/ng-components';
+```html
+<acp-search-select [items]="cities" [(ngModel)]="cityId" [emptyValue]="0" label="Ciudad" />
+
+<!-- Server-side search: debounce in the consumer and pass the results back -->
+<acp-search-select
+  [items]="customers()"
+  [localFilter]="false"
+  [loading]="loading()"
+  (searchChange)="search($event)"
+  label="Cliente"
+/>
 ```
+
+- Defaults match the backend lookup shape `{ id, value, children? }`:
+  `bindValue="id"`, `bindLabel="value"`, `groupLabel="value"`. Each accessor
+  also accepts a function, e.g. `[bindLabel]="labelOf"`.
+- Inputs: `items`, `bindLabel`, `bindValue`, `children`, `groupLabel`,
+  `compareWith` (matches `1` and `'1'` by default), `filterFn`, `localFilter`,
+  `emptyValue`, `label`, `placeholder`, `hint`, `errorText`, `noResultsText`,
+  `clearLabel`, `appearance`, `required`, `disabled`, `clearable` and `loading`.
+- Outputs: `optionSelected` (`{ value, item, group }`), `cleared` and
+  `searchChange`.
+- Custom option content: `<ng-template #option let-item let-group="group">`.
+- Typed text that is not selected is discarded when the panel closes, so the
+  field always shows the current value.
 
 ## Directives
 

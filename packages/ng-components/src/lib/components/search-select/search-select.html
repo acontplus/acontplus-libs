@@ -1,0 +1,78 @@
+<mat-form-field class="acp-search-select__field" [appearance]="appearance()">
+  @if (label()) {
+  <mat-label>{{ label() }}</mat-label>
+  }
+  <input
+    #field
+    matInput
+    type="text"
+    autocomplete="off"
+    [placeholder]="placeholder()"
+    [value]="text()"
+    [required]="required()"
+    [disabled]="isDisabled()"
+    [errorStateMatcher]="errorStateMatcher"
+    [matAutocomplete]="auto"
+    (input)="onInput($event)"
+    (blur)="onBlur()"
+    (click)="selectAll($event)"
+  />
+
+  @if (loading()) {
+  <mat-spinner matSuffix diameter="18" />
+  } @else if (clearable() && hasValue() && !isDisabled()) {
+  <button
+    mat-icon-button
+    matSuffix
+    type="button"
+    [attr.aria-label]="clearLabel()"
+    (click)="clear()"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+  } @if (hint()) {
+  <mat-hint>{{ hint() }}</mat-hint>
+  } @if (errorText()) {
+  <mat-error>{{ errorText() }}</mat-error>
+  }
+
+  <mat-autocomplete
+    #auto="matAutocomplete"
+    autoActiveFirstOption
+    [displayWith]="displayWith"
+    (optionSelected)="onSelected($event)"
+    (closed)="onClosed()"
+  >
+    @for (group of filteredGroups(); track $index) { @if (group.label === null) { @for (option of
+    group.options; track option.key) {
+    <mat-option [value]="option">
+      <ng-container
+        [ngTemplateOutlet]="optionContent"
+        [ngTemplateOutletContext]="{ $implicit: option }"
+      />
+    </mat-option>
+    } } @else {
+    <mat-optgroup [label]="group.label">
+      @for (option of group.options; track option.key) {
+      <mat-option [value]="option">
+        <ng-container
+          [ngTemplateOutlet]="optionContent"
+          [ngTemplateOutletContext]="{ $implicit: option }"
+        />
+      </mat-option>
+      }
+    </mat-optgroup>
+    } } @empty {
+    <mat-option disabled>{{ loading() ? loadingText() : noResultsText() }}</mat-option>
+    }
+  </mat-autocomplete>
+</mat-form-field>
+
+<ng-template #optionContent let-option>
+  @if (optionTemplate(); as tpl) {
+  <ng-container
+    [ngTemplateOutlet]="tpl"
+    [ngTemplateOutletContext]="{ $implicit: option.source, group: option.group }"
+  />
+  } @else { {{ option.label }} }
+</ng-template>

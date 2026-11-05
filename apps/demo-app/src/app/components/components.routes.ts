@@ -15,6 +15,10 @@ export const routes = [
         loadChildren: () => import('./input-chip/input-chip.routes').then(m => m.routes),
       },
       {
+        path: 'search-select',
+        loadChildren: () => import('./search-select/search-select.routes').then(m => m.routes),
+      },
+      {
         path: 'dynamic-select',
         loadChildren: () => import('./dynamic-select/dynamic-select.routes').then(m => m.routes),
       },

@@ -4,6 +4,7 @@ export * from './context-menu';
 export * from './dialog';
 export * from './dialog-wrapper';
 export * from './dynamic-select';
+export * from './search-select';
 export * from './icons';
 export * from './input-chip';
 export * from './button';

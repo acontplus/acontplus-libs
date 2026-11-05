@@ -25,6 +25,12 @@ export const COMPONENTS_MENU: ComponentCategory[] = [
     category: 'Form Controls',
   },
   {
+    id: 'search-select',
+    name: 'Search Select',
+    summary: 'Searchable select on mat-autocomplete with groups, forms and server-side search.',
+    category: 'Form Controls',
+  },
+  {
     id: 'dynamic-select',
     name: 'Dynamic Select',
     summary: 'Dynamic select dropdown components.',

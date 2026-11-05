@@ -7,7 +7,7 @@ import {
   MatDialogContent,
   MatDialogRef,
 } from '@angular/material/dialog';
-import { DynamicCard, InputChip, Button, ToUpperCase } from '@acontplus/ng-components';
+import { AcpCard, InputChip, Button, ToUpperCase } from '@acontplus/ng-components';
 import { MatButtonModule } from '@angular/material/button';
 import {
   AbstractControl,
@@ -57,7 +57,7 @@ import { CustomerHttpRepository } from '../../../infrastructure/repositories/cus
     MatTooltip,
     MatDatepickerModule,
     Button,
-    DynamicCard,
+    AcpCard,
   ],
   templateUrl: './company-customer-add-edit.html',
   providers: [

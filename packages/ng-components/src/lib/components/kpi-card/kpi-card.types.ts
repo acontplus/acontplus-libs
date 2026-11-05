@@ -10,31 +10,23 @@ export type AcpKpiCardColor =
   | 'info'
   | 'info-light'
   | 'neutral'
-  | 'white'
+  | 'surface'
   | 'custom';
 
 export type AcpKpiCardVariant = 'default' | 'elevated' | 'outlined' | 'filled' | 'tonal';
 
 export type AcpKpiCardSize = 'xs' | 'sm' | 'md' | 'lg';
 
+/** Horizontal alignment of header, value and text. */
+export type AcpKpiCardAlign = 'start' | 'center' | 'end';
+
+/** Direction of the change. `none` hides the trend icon. */
 export type AcpKpiCardTrend = 'up' | 'down' | 'neutral' | 'none';
+
+/** Whether the change is good or bad for the business; drives the delta badge color. */
+export type AcpKpiCardTrendSentiment = 'positive' | 'negative' | 'neutral';
 
 export interface AcpKpiCardTrendConfig {
   icon: string;
-  color: AcpKpiCardColor;
   ariaLabel: string;
-}
-
-export interface AcpKpiCardLayout {
-  title: boolean;
-  subtitle: boolean;
-  value: boolean;
-  description: boolean;
-  trend: boolean;
-  percentage: boolean;
-  icon: boolean;
-  avatar: boolean;
-  actions: boolean;
-  footer: boolean;
-  progress: boolean;
 }

@@ -25,6 +25,12 @@ export const COMPONENTS_MENU: ComponentCategory[] = [
     category: 'Form Controls',
   },
   {
+    id: 'search-select',
+    name: 'Search Select',
+    summary: 'Searchable select on mat-autocomplete with groups, forms and server-side search.',
+    category: 'Form Controls',
+  },
+  {
     id: 'dynamic-select',
     name: 'Dynamic Select',
     summary: 'Dynamic select dropdown components.',
@@ -99,12 +105,6 @@ export const COMPONENTS_MENU: ComponentCategory[] = [
   },
 
   // Layout
-  {
-    id: 'cards',
-    name: 'Cards',
-    summary: 'Versatile card components with Angular Material integration.',
-    category: 'Layout',
-  },
   {
     id: 'dialog',
     name: 'Dialog',

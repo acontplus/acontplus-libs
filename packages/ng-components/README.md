@@ -14,7 +14,7 @@ pnpm add @acontplus/ng-components
 
 ## Features
 
-- **UI Components**: Dynamic cards, dialogs, icons, input chips, buttons, spinners, dynamic/tabulator tables, theme toggle, autocomplete wrapper
+- **UI Components**: Cards, KPI cards, dialogs, icons, input chips, buttons, spinners, dynamic/tabulator tables, theme toggle, search select
 - **Directives**: Text transformation (to-upper-case)
 - **Pipes**: Data transformation (get-total, status-display)
 - **Services**: Dialog management, overlay, theme management (dark/light mode), autocomplete
@@ -75,32 +75,88 @@ bounds, and the `ngx-datex` behavior options. `MATERIAL_LIGHT_THEME`,
 
 ### Cards
 
-#### DynamicCard
+#### AcpCard
 
-Versatile card component wrapping Angular Material's mat-card with additional functionality.
+Material Design 3 card built on `mat-card`. Props can be passed in three ways,
+from lowest to highest priority: injected defaults, plain inputs, and slot
+templates for rich content.
 
 ```typescript
-import { DynamicCard } from '@acontplus/ng-components';
+import { ACP_CARD_SLOTS, AcpCard, provideAcpCardDefaults } from '@acontplus/ng-components';
+
+// app.config.ts (optional, application-wide defaults)
+providers: [provideAcpCardDefaults({ appearance: 'outlined', rounded: 12 })];
 
 @Component({
   template: `
-    <acp-dynamic-card
-      [cardTitle]="'Product Details'"
-      [cardSubtitle]="'Premium Package'"
-      [isHeaderVisible]="true"
-      [areActionsVisible]="true"
-      [primaryButtonText]="'Buy Now'"
-      [secondaryButtonText]="'Learn More'"
-      (primaryButtonClicked)="onPurchase()"
-      (secondaryButtonClicked)="onLearnMore()"
+    <acp-card
+      title="Order #1024"
+      subtitle="Pending"
+      color="surface-container"
+      imageRatio="16:9"
+      actionsAlign="end"
+      clickable
+      (clicked)="open()"
     >
+      <ng-template acpCardMedia><img src="cover.jpg" alt="" /></ng-template>
       <p>Card content goes here</p>
-    </acp-dynamic-card>
+      <ng-template acpCardActions><acp-button text="Pay" /></ng-template>
+    </acp-card>
   `,
-  imports: [DynamicCard],
+  imports: [AcpCard, ACP_CARD_SLOTS],
 })
-export class ProductComponent {}
+export class OrderComponent {}
 ```
+
+- Inputs: `title`, `subtitle`, `appearance` (`elevated` | `outlined` | `filled`),
+  `color`, `elevation` (0-5), `rounded` (`true` | `false` | px), `padding`
+  (`none` | `small` | `medium` | `large`), `hoverable`, `clickable`, `disabled`,
+  `loading`, `imageRatio`, `actionsAlign`, `fullHeight`, `fullWidth`,
+  `ariaLabel` and `passThrough` (per-section `class`/`style`).
+- Output: `clicked`, emitted on click, Enter or Space when `clickable`. Clicks on
+  actions or nested buttons/links are ignored.
+- Slots: `acpCardHeader`, `acpCardMedia`, `acpCardAvatar`, `acpCardTitle`,
+  `acpCardSubtitle`, `acpCardActions` and `acpCardFooter`. Slot templates win
+  over `title`/`subtitle`. Legacy `#title`-style template refs still work.
+- Styling hooks: `--acp-card-shape`, `--acp-card-elevation`, `--acp-card-padding`,
+  `--acp-card-container-color`, `--acp-card-on-color`, `--acp-card-subtitle-color`
+  and `--acp-card-outline-color`.
+- Removed in this major: `backgroundColor` (use `color`), `hover` (use
+  `hoverable`), `outlined` (use `appearance="outlined"`), the appearances
+  `default`, `interactive` and `compact`, and the unused `AcpCardBadge` and
+  `AcpCardBackgroundColor` types. `DynamicCard` (`acp-dynamic-card`) was removed;
+  use `AcpCard`.
+
+#### AcpKpiCard
+
+Metric card for dashboards. Numeric values and changes are formatted with
+`Intl.NumberFormat` using the app `LOCALE_ID` (or `locale`).
+
+```html
+<acp-kpi-card
+  title="Expenses"
+  icon="payments"
+  [value]="45900"
+  [valueFormat]="{ style: 'currency', currency: 'USD', maximumFractionDigits: 0 }"
+  [percentage]="-4.1"
+  lowerIsBetter
+  trendLabel="vs last month"
+  variant="outlined"
+/>
+```
+
+- `trend` is inferred from the sign of `percentage` when unset. The delta badge
+  color comes from the trend sentiment, not from the card `color`; set
+  `lowerIsBetter` for costs, churn or error rates.
+- Other inputs: `subtitle`, `prefix`, `suffix`, `description`, `footer`,
+  `variant`, `color` (including `surface` and `custom`), `size`, `align`
+  (`start` | `center` | `end`), `showTrendIcon`, `icon`,
+  `svgIcon`, `avatar`, `avatarInitials`, `progress`, `progressColor`, `loading`,
+  `disabled`, `clickable`, `selected`, `routerLink`, `ariaLabel`,
+  `menuAriaLabel` and `tooltip`. Output: `clicked` (click, Enter or Space).
+- Templates: `#icon`, `#avatar`, `#footer` and `#actions` (rendered in a menu).
+- Styling hooks: `--acp-kpi-card-custom-bg`, `--acp-kpi-card-custom-fg` and
+  `--acp-kpi-card-custom-accent`, plus the `kpi-card-*` theme tokens.
 
 ### Buttons
 
@@ -438,13 +494,37 @@ export class HeaderComponent {}
 | `darkModeLabel`  | `string` | `'Switch to dark mode'`  | Accessible label when in light mode           |
 | `testId`         | `string` | `''`                     | data-testid attribute for testing             |
 
-### Autocomplete Wrapper
+### AcpSearchSelect
 
-Enhanced autocomplete components with custom functionality.
+Searchable select built on `mat-autocomplete`. Accepts flat lists or one-level
+groups (items with a `children` array), ignores accents when searching and works
+with `ngModel`, reactive forms (including the `required` error state) and `[(value)]`.
 
-```typescript
-import { AutocompleteWrapperComponent } from '@acontplus/ng-components';
+```html
+<acp-search-select [items]="cities" [(ngModel)]="cityId" [emptyValue]="0" label="Ciudad" />
+
+<!-- Server-side search: debounce in the consumer and pass the results back -->
+<acp-search-select
+  [items]="customers()"
+  [localFilter]="false"
+  [loading]="loading()"
+  (searchChange)="search($event)"
+  label="Cliente"
+/>
 ```
+
+- Defaults match the backend lookup shape `{ id, value, children? }`:
+  `bindValue="id"`, `bindLabel="value"`, `groupLabel="value"`. Each accessor
+  also accepts a function, e.g. `[bindLabel]="labelOf"`.
+- Inputs: `items`, `bindLabel`, `bindValue`, `children`, `groupLabel`,
+  `compareWith` (matches `1` and `'1'` by default), `filterFn`, `localFilter`,
+  `emptyValue`, `label`, `placeholder`, `hint`, `errorText`, `noResultsText`,
+  `clearLabel`, `appearance`, `required`, `disabled`, `clearable` and `loading`.
+- Outputs: `optionSelected` (`{ value, item, group }`), `cleared` and
+  `searchChange`.
+- Custom option content: `<ng-template #option let-item let-group="group">`.
+- Typed text that is not selected is discarded when the panel closes, so the
+  field always shows the current value.
 
 ## Directives
 

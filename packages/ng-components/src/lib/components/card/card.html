@@ -1,35 +1,49 @@
 <mat-card
   class="acp-card"
+  [appearance]="matAppearance()"
   [ngClass]="passThrough().root?.class"
   [ngStyle]="passThrough().root?.style"
-  [class]="backgroundColor() ? 'acp-card--' + backgroundColor() : ''"
 >
-  @if (headerTemplate) {
+  @if (loading()) {
+  <mat-progress-bar class="acp-card__progress" mode="indeterminate" />
+  } @if (headerTpl(); as header) {
   <mat-card-header [ngClass]="passThrough().header?.class" [ngStyle]="passThrough().header?.style">
-    <ng-template [ngTemplateOutlet]="headerTemplate" />
+    <ng-container [ngTemplateOutlet]="header" />
   </mat-card-header>
-  } @if (mediaTemplate) {
-  <ng-template [ngTemplateOutlet]="mediaTemplate" />
-  } @if (titleTemplate || subtitleTemplate || avatarTemplate) {
+  } @if (mediaTpl(); as media) {
+  <div
+    class="acp-card__media"
+    [class.acp-card__media--ratio]="!!mediaRatio()"
+    [style.aspect-ratio]="mediaRatio()"
+    [ngClass]="passThrough().media?.class"
+    [ngStyle]="passThrough().media?.style"
+  >
+    <ng-container [ngTemplateOutlet]="media" />
+  </div>
+  } @if (hasTitleGroup()) {
   <mat-card-header [ngClass]="passThrough().header?.class" [ngStyle]="passThrough().header?.style">
-    @if (avatarTemplate) {
+    @if (avatarTpl(); as avatar) {
     <div
       mat-card-avatar
       [ngClass]="passThrough().avatar?.class"
       [ngStyle]="passThrough().avatar?.style"
     >
-      <ng-template [ngTemplateOutlet]="avatarTemplate" />
+      <ng-container [ngTemplateOutlet]="avatar" />
     </div>
-    } @if (titleTemplate) {
+    } @if (titleTpl() || title()) {
     <mat-card-title [ngClass]="passThrough().title?.class" [ngStyle]="passThrough().title?.style">
-      <ng-template [ngTemplateOutlet]="titleTemplate" />
+      @if (titleTpl(); as titleTemplate) {
+      <ng-container [ngTemplateOutlet]="titleTemplate" />
+      } @else { {{ title() }} }
     </mat-card-title>
-    } @if (subtitleTemplate) {
+    } @if (subtitleTpl() || subtitle()) {
     <mat-card-subtitle
       [ngClass]="passThrough().subtitle?.class"
       [ngStyle]="passThrough().subtitle?.style"
     >
-      <ng-template [ngTemplateOutlet]="subtitleTemplate" />
+      @if (subtitleTpl(); as subtitleTemplate) {
+      <ng-container [ngTemplateOutlet]="subtitleTemplate" />
+      } @else { {{ subtitle() }} }
     </mat-card-subtitle>
     }
   </mat-card-header>
@@ -42,16 +56,17 @@
     <ng-content />
   </mat-card-content>
 
-  @if (actionsTemplate) {
+  @if (actionsTpl(); as actions) {
   <mat-card-actions
+    [align]="resolvedActionsAlign()"
     [ngClass]="passThrough().actions?.class"
     [ngStyle]="passThrough().actions?.style"
   >
-    <ng-template [ngTemplateOutlet]="actionsTemplate" />
+    <ng-container [ngTemplateOutlet]="actions" />
   </mat-card-actions>
-  } @if (footerTemplate) {
+  } @if (footerTpl(); as footer) {
   <mat-card-footer [ngClass]="passThrough().footer?.class" [ngStyle]="passThrough().footer?.style">
-    <ng-template [ngTemplateOutlet]="footerTemplate" />
+    <ng-container [ngTemplateOutlet]="footer" />
   </mat-card-footer>
   }
 </mat-card>

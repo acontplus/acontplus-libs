@@ -15,6 +15,10 @@ export const routes = [
         loadChildren: () => import('./input-chip/input-chip.routes').then(m => m.routes),
       },
       {
+        path: 'search-select',
+        loadChildren: () => import('./search-select/search-select.routes').then(m => m.routes),
+      },
+      {
         path: 'dynamic-select',
         loadChildren: () => import('./dynamic-select/dynamic-select.routes').then(m => m.routes),
       },
@@ -62,10 +66,6 @@ export const routes = [
       },
 
       // Layout
-      {
-        path: 'cards',
-        loadChildren: () => import('./cards/cards.routes').then(m => m.routes),
-      },
       {
         path: 'dialog',
         loadChildren: () => import('./dialog/dialog.routes').then(m => m.routes),

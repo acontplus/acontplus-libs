@@ -1,27 +1,29 @@
 /**
- * Card appearance variants
+ * Card appearance variants. Mirrors Angular Material's `MatCardAppearance`
+ * (`elevated` maps to Material's `raised`).
  */
-export type AcpCardAppearance =
-  'default' | 'outlined' | 'elevated' | 'filled' | 'interactive' | 'compact';
+export type AcpCardAppearance = 'elevated' | 'outlined' | 'filled';
 
 /**
- * Card elevation levels (Material Design)
+ * Card elevation levels, mapped to `--mat-sys-level{n}`. Only applies to `elevated` cards.
  */
 export type AcpCardElevation = 0 | 1 | 2 | 3 | 4 | 5;
 
 /**
- * Card padding options
+ * Content padding options.
  */
 export type AcpCardPadding = 'none' | 'small' | 'medium' | 'large';
 
 /**
- * Card background color variants (Material Design)
+ * Card color variants based on Material Design 3 system roles.
  */
-export type AcpCardBackgroundColor =
+export type AcpCardColor =
   | 'primary'
   | 'primary-container'
   | 'secondary'
   | 'secondary-container'
+  | 'tertiary'
+  | 'tertiary-container'
   | 'error'
   | 'error-container'
   | 'surface'
@@ -35,40 +37,33 @@ export type AcpCardBackgroundColor =
   | 'disabled-bg';
 
 /**
- * Card image aspect ratio
+ * Media aspect ratio.
  */
 export type AcpCardImageRatio = '1:1' | '4:3' | '16:9' | '21:9' | '3:2' | '3:4';
 
 /**
- * Card configuration interface
+ * Horizontal alignment of the actions slot (same as `mat-card-actions[align]`).
+ */
+export type AcpCardActionsAlign = 'start' | 'end';
+
+/**
+ * Application-wide or subtree defaults for `acp-card`.
+ * Provide them with `provideAcpCardDefaults()` or the `ACP_CARD_DEFAULT_OPTIONS` token.
+ * Inputs set on an individual card always win.
  */
 export interface AcpCardConfig {
   appearance?: AcpCardAppearance;
   elevation?: AcpCardElevation;
   rounded?: boolean | number;
-  hover?: boolean;
-  clickable?: boolean;
-  outlined?: boolean;
-  loading?: boolean;
-  disabled?: boolean;
   padding?: AcpCardPadding;
+  color?: AcpCardColor;
+  hoverable?: boolean;
+  actionsAlign?: AcpCardActionsAlign;
   imageRatio?: AcpCardImageRatio;
-  fullHeight?: boolean;
-  fullWidth?: boolean;
 }
 
 /**
- * Card badge configuration
- */
-export interface AcpCardBadge {
-  content: string | number;
-  color?: 'primary' | 'secondary' | 'accent' | 'error' | 'success' | 'warning' | 'info';
-  position?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
-}
-
-/**
- * Pass Through options for card sections
- * Allows customization of classes, styles, and attributes for each section
+ * Pass-through classes and styles for a single card section.
  */
 export interface AcpCardPassThroughSection {
   class?: string | string[] | Record<string, boolean>;

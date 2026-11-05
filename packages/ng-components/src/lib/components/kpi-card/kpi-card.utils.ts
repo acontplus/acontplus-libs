@@ -1,48 +1,15 @@
 import { AcpKpiCardTrend, AcpKpiCardTrendConfig } from './kpi-card.types';
 
 export const KPI_CARD_TREND_CONFIGS: Record<AcpKpiCardTrend, AcpKpiCardTrendConfig> = {
-  up: {
-    icon: 'trending_up',
-    color: 'success',
-    ariaLabel: 'Trending up',
-  },
-  down: {
-    icon: 'trending_down',
-    color: 'error',
-    ariaLabel: 'Trending down',
-  },
-  neutral: {
-    icon: 'trending_flat',
-    color: 'info',
-    ariaLabel: 'Neutral trend',
-  },
-  none: {
-    icon: '',
-    color: 'neutral',
-    ariaLabel: '',
-  },
+  up: { icon: 'trending_up', ariaLabel: 'Increase' },
+  down: { icon: 'trending_down', ariaLabel: 'Decrease' },
+  neutral: { icon: 'trending_flat', ariaLabel: 'No change' },
+  none: { icon: '', ariaLabel: '' },
 };
 
-export function formatValue(value: number | string, format?: string): string {
-  if (typeof value === 'string') return value;
-
-  if (!format) return value.toString();
-
-  switch (format) {
-    case 'currency':
-      return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-      }).format(value);
-    case 'percent':
-      return `${value.toFixed(1)}%`;
-    case 'number':
-      return new Intl.NumberFormat('en-US').format(value);
-    case 'decimal':
-      return value.toFixed(2);
-    default:
-      return value.toString();
-  }
+/** Infers the trend direction from a numeric or numeric-string delta (`'+12.5'`, `-3`). */
+export function inferKpiTrend(delta: number | string | null | undefined): AcpKpiCardTrend {
+  const n = typeof delta === 'number' ? delta : Number.parseFloat(String(delta ?? ''));
+  if (Number.isNaN(n)) return 'none';
+  return n > 0 ? 'up' : n < 0 ? 'down' : 'neutral';
 }

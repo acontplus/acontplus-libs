@@ -60,7 +60,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
             percentage="+8.2"
             trend="up"
             icon="group"
-            color="white"
+            color="surface"
           ></acp-kpi-card>
         </mat-card-content>
       </mat-card>
@@ -91,6 +91,8 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
             title="Expenses"
             value="$45,900"
             percentage="-4.1"
+            lowerIsBetter
+            trendLabel="vs last month"
             trend="down"
             icon="money"
             color="error"
@@ -100,6 +102,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
             title="Bounce Rate"
             value="32.5%"
             percentage="-2.3"
+            lowerIsBetter
             trend="down"
             icon="trending_down"
             color="neutral"
@@ -373,7 +376,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
             percentage="+5.2"
             trend="up"
             icon="trending_up"
-            color="white"
+            color="surface"
           ></acp-kpi-card>
         </mat-card-content>
       </mat-card>
@@ -420,6 +423,79 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
             icon="trending_up"
             color="primary"
             size="lg"
+          ></acp-kpi-card>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Formatting -->
+      <h2>Number Formatting</h2>
+      <mat-card class="docs-example-card">
+        <mat-card-content class="kpi-grid">
+          <acp-kpi-card
+            title="Revenue"
+            [value]="1452300.5"
+            [valueFormat]="{ style: 'currency', currency: 'USD', maximumFractionDigits: 0 }"
+            [percentage]="12.4"
+            trendLabel="vs last month"
+            icon="payments"
+            variant="outlined"
+          ></acp-kpi-card>
+
+          <acp-kpi-card
+            title="Ventas"
+            [value]="98765.432"
+            [valueFormat]="{ maximumFractionDigits: 1 }"
+            locale="es-EC"
+            [percentage]="-3.75"
+            suffix="u"
+            icon="shopping_cart"
+            variant="tonal"
+            color="info"
+          ></acp-kpi-card>
+
+          <acp-kpi-card
+            title="Open Tickets"
+            [value]="0"
+            [percentage]="-100"
+            lowerIsBetter
+            icon="support_agent"
+            color="surface"
+          ></acp-kpi-card>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Alignment -->
+      <h2>Alignment</h2>
+      <mat-card class="docs-example-card">
+        <mat-card-content class="kpi-grid">
+          <acp-kpi-card
+            title="Start"
+            value="$125,000"
+            percentage="+5.2"
+            icon="payments"
+            align="start"
+            variant="outlined"
+            description="Default alignment"
+          ></acp-kpi-card>
+
+          <acp-kpi-card
+            title="Center"
+            value="$125,000"
+            percentage="+5.2"
+            icon="payments"
+            align="center"
+            variant="outlined"
+            description="Centered content"
+          ></acp-kpi-card>
+
+          <acp-kpi-card
+            title="End"
+            value="$125,000"
+            percentage="-5.2"
+            align="end"
+            variant="outlined"
+            [showTrendIcon]="false"
+            description="No header icon, no trend icon"
           ></acp-kpi-card>
         </mat-card-content>
       </mat-card>

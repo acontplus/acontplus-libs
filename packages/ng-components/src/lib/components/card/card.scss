@@ -1,225 +1,238 @@
+@use 'sass:list';
 @use '@angular/material' as mat;
 
-// Card component styling with Material Design tokens
-// Using mat.card-overrides to customize card-specific design tokens
+// Public CSS custom properties (set them on `acp-card` or any ancestor):
+//   --acp-card-shape, --acp-card-elevation, --acp-card-padding,
+//   --acp-card-container-color, --acp-card-on-color, --acp-card-subtitle-color,
+//   --acp-card-outline-color
+$shape: var(--acp-card-shape, var(--mat-sys-corner-small));
+
+:host {
+  --acp-card-padding: 16px;
+  display: block;
+  border-radius: $shape;
+
+  &:focus-visible {
+    outline: 2px solid var(--mat-sys-primary);
+    outline-offset: 2px;
+  }
+}
+
 .acp-card {
   @include mat.card-overrides(
     (
-      elevated-container-color: light-dark(#ffffff, #1a1b1f),
-      outlined-container-color: light-dark(#ffffff, #1a1b1f),
-      title-text-line-height: 1.6rem,
+      elevated-container-color: var(
+          --acp-card-container-color,
+          var(--mat-sys-surface-container-low)
+        ),
+      outlined-container-color: var(--acp-card-container-color, var(--mat-sys-surface)),
+      filled-container-color: var(
+          --acp-card-container-color,
+          var(--mat-sys-surface-container-highest)
+        ),
+      elevated-container-shape: $shape,
+      outlined-container-shape: $shape,
+      filled-container-shape: $shape,
+      elevated-container-elevation: var(--acp-card-elevation, var(--mat-sys-level1)),
+      outlined-outline-color: var(--acp-card-outline-color, var(--mat-sys-outline-variant)),
+      title-text-size: var(--mat-sys-title-large-size),
+      title-text-line-height: var(--mat-sys-title-large-line-height),
       title-text-weight: 500,
+      subtitle-text-size: var(--mat-sys-body-medium-size),
       subtitle-text-weight: 400,
-      elevated-container-shape: var(--mat-sys-corner-small),
-      outlined-container-shape: var(--mat-sys-corner-small),
-      // elevated-container-color: var(--mat-sys-surface-container),
-      // elevated-container-shape: var(--mat-sys-corner-large),
-      // outlined-container-shape: var(--mat-sys-corner-large),
-      outlined-outline-color: var(--mat-sys-outline-variant),
-      filled-container-color: var(--mat-sys-surface-container-highest),
-      title-text-size: var(--mat-sys-title-large),
-      subtitle-text-size: var(--mat-sys-body-medium),
-      subtitle-text-color: var(--mat-sys-on-surface-variant),
-      elevated-container-elevation: 0 4px 12px rgba(0, 0, 0, 0.08),
+      subtitle-text-color: var(--acp-card-subtitle-color, var(--mat-sys-on-surface-variant)),
     )
   );
+
+  color: var(--acp-card-on-color, var(--mat-sys-on-surface));
+  transition: box-shadow 200ms ease-in-out;
+
+  .mat-mdc-card-content {
+    padding: var(--acp-card-padding);
+  }
+
+  .mat-mdc-card-actions {
+    gap: 8px;
+  }
+
+  .mat-mdc-card-footer {
+    padding: 16px;
+  }
 }
 
-// Custom styles for card sections
-.acp-card-media {
-  width: 100%;
-  object-fit: cover;
-  border-radius: var(--mat-sys-corner-large) var(--mat-sys-corner-large) 0 0;
+.acp-card__progress {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 1;
+  border-top-left-radius: inherit;
+  border-top-right-radius: inherit;
+  overflow: hidden;
 }
 
-// Footer padding
-.mat-mdc-card-footer {
-  padding: 16px;
+.acp-card__media {
+  overflow: hidden;
+
+  &:first-child {
+    border-top-left-radius: inherit;
+    border-top-right-radius: inherit;
+  }
+
+  &--ratio > :is(img, video, picture, iframe) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 }
 
-// Actions gap
-.mat-mdc-card-actions {
-  gap: 8px;
+// Padding
+:host(.acp-card--padding-none) {
+  --acp-card-padding: 0;
 }
 
-// Host wrapper styles
-.acp-card-wrapper {
-  display: block;
-  transition: box-shadow 0.2s ease-in-out;
+:host(.acp-card--padding-small) {
+  --acp-card-padding: 12px;
+}
 
-  // Hover effect
-  &.acp-card--hover:hover {
-    box-shadow: var(--mat-sys-level3);
+:host(.acp-card--padding-large) {
+  --acp-card-padding: 24px;
+}
+
+// Interaction states
+:host(.acp-card--hover) .acp-card:hover {
+  box-shadow: var(--mat-sys-level3);
+}
+
+:host(.acp-card--clickable) {
+  cursor: pointer;
+  user-select: none;
+
+  .acp-card:hover {
+    box-shadow: var(--mat-sys-level2);
   }
 
-  // Clickable state
-  &.acp-card--clickable {
-    cursor: pointer;
-    user-select: none;
-
-    &:hover {
-      box-shadow: var(--mat-sys-level2);
-    }
-
-    &:active {
-      box-shadow: var(--mat-sys-level1);
-    }
+  .acp-card:active {
+    box-shadow: var(--mat-sys-level1);
   }
+}
 
-  // Disabled state
-  &.acp-card--disabled {
-    opacity: 0.6;
-    pointer-events: none;
-  }
+:host(.acp-card--disabled) {
+  opacity: 0.6;
+  pointer-events: none;
+}
 
-  // Border radius variants
-  &.acp-card--rounded-4 {
-    .acp-card,
-    .acp-card-media {
-      border-radius: 4px;
-    }
-  }
+:host(.acp-card--loading) {
+  cursor: progress;
+}
 
-  &.acp-card--rounded-8 {
-    .acp-card,
-    .acp-card-media {
-      border-radius: 8px;
-    }
-  }
+// Layout
+:host(.acp-card--full-height) {
+  height: 100%;
 
-  &.acp-card--rounded-12 {
-    .acp-card,
-    .acp-card-media {
-      border-radius: 12px;
-    }
-  }
-
-  &.acp-card--rounded-16 {
-    .acp-card,
-    .acp-card-media {
-      border-radius: 16px;
-    }
-  }
-
-  &.acp-card--rounded-20 {
-    .acp-card,
-    .acp-card-media {
-      border-radius: 20px;
-    }
-  }
-
-  &.acp-card--rounded-24 {
-    .acp-card,
-    .acp-card-media {
-      border-radius: 24px;
-    }
-  }
-
-  // Padding variants
-  &.acp-card--padding-small {
-    .mat-mdc-card-content {
-      padding: 12px;
-    }
-  }
-
-  &.acp-card--padding-medium {
-    .mat-mdc-card-content {
-      padding: 16px;
-    }
-  }
-
-  &.acp-card--padding-large {
-    .mat-mdc-card-content {
-      padding: 24px;
-    }
-  }
-
-  // Full height
-  &.acp-card--full-height {
+  .acp-card {
     height: 100%;
   }
+}
 
-  // Full width
-  &.acp-card--full-width {
-    width: 100%;
+:host(.acp-card--full-width) {
+  width: 100%;
+}
+
+// Color variants: container role, content role, subtitle role
+$colors: (
+  primary: (
+    primary,
+    on-primary,
+    on-primary,
+  ),
+  primary-container: (
+    primary-container,
+    on-primary-container,
+    on-primary-container,
+  ),
+  secondary: (
+    secondary,
+    on-secondary,
+    on-secondary,
+  ),
+  secondary-container: (
+    secondary-container,
+    on-secondary-container,
+    on-secondary-container,
+  ),
+  tertiary: (
+    tertiary,
+    on-tertiary,
+    on-tertiary,
+  ),
+  tertiary-container: (
+    tertiary-container,
+    on-tertiary-container,
+    on-tertiary-container,
+  ),
+  error: (
+    error,
+    on-error,
+    on-error,
+  ),
+  error-container: (
+    error-container,
+    on-error-container,
+    on-error-container,
+  ),
+  surface: (
+    surface,
+    on-surface,
+    on-surface-variant,
+  ),
+  surface-variant: (
+    surface-variant,
+    on-surface-variant,
+    on-surface-variant,
+  ),
+  surface-container-highest: (
+    surface-container-highest,
+    on-surface,
+    on-surface-variant,
+  ),
+  surface-container-high: (
+    surface-container-high,
+    on-surface,
+    on-surface-variant,
+  ),
+  surface-container: (
+    surface-container,
+    on-surface,
+    on-surface-variant,
+  ),
+  surface-container-low: (
+    surface-container-low,
+    on-surface,
+    on-surface-variant,
+  ),
+  surface-container-lowest: (
+    surface-container-lowest,
+    on-surface,
+    on-surface-variant,
+  ),
+  inverse-surface: (
+    inverse-surface,
+    inverse-on-surface,
+    inverse-on-surface,
+  ),
+);
+
+@each $name, $roles in $colors {
+  :host(.acp-card--#{$name}) {
+    --acp-card-container-color: var(--mat-sys-#{list.nth($roles, 1)});
+    --acp-card-on-color: var(--mat-sys-#{list.nth($roles, 2)});
+    --acp-card-subtitle-color: var(--mat-sys-#{list.nth($roles, 3)});
+    --acp-card-outline-color: transparent;
   }
 }
 
-// Material Design background color utility classes
-// Primary
-.acp-card--primary {
-  color: var(--mat-sys-on-primary);
-  background-color: var(--mat-sys-primary);
-}
-
-.acp-card--primary-container {
-  color: var(--mat-sys-on-primary-container);
-  background-color: var(--mat-sys-primary-container);
-}
-
-// Secondary
-.acp-card--secondary {
-  color: var(--mat-sys-on-secondary);
-  background-color: var(--mat-sys-secondary);
-}
-
-.acp-card--secondary-container {
-  color: var(--mat-sys-on-secondary-container);
-  background-color: var(--mat-sys-secondary-container);
-}
-
-// Error
-.acp-card--error {
-  color: var(--mat-sys-on-error);
-  background-color: var(--mat-sys-error);
-}
-
-.acp-card--error-container {
-  color: var(--mat-sys-on-error-container);
-  background-color: var(--mat-sys-error-container);
-}
-
-// Surfaces
-.acp-card--surface {
-  color: var(--mat-sys-on-surface);
-  background-color: var(--mat-sys-surface);
-}
-
-.acp-card--surface-variant {
-  color: var(--mat-sys-on-surface-variant);
-  background-color: var(--mat-sys-surface-variant);
-}
-
-.acp-card--surface-container-highest {
-  color: var(--mat-sys-on-surface);
-  background-color: var(--mat-sys-surface-container-highest);
-}
-
-.acp-card--surface-container-high {
-  color: var(--mat-sys-on-surface);
-  background-color: var(--mat-sys-surface-container-high);
-}
-
-.acp-card--surface-container {
-  color: var(--mat-sys-on-surface);
-  background-color: var(--mat-sys-surface-container);
-}
-
-.acp-card--surface-container-low {
-  color: var(--mat-sys-on-surface);
-  background-color: var(--mat-sys-surface-container-low);
-}
-
-.acp-card--surface-container-lowest {
-  background-color: var(--mat-sys-surface-container-lowest);
-}
-
-.acp-card--inverse-surface {
-  color: var(--mat-sys-inverse-on-surface);
-  background-color: var(--mat-sys-inverse-surface);
-}
-
-// Disabled
-.acp-card--disabled-bg {
-  background-color: color-mix(in srgb, var(--mat-sys-on-surface) 12%, transparent);
+:host(.acp-card--disabled-bg) {
+  --acp-card-container-color: color-mix(in srgb, var(--mat-sys-on-surface) 12%, transparent);
+  --acp-card-on-color: color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent);
+  --acp-card-subtitle-color: var(--acp-card-on-color);
 }

@@ -14,7 +14,7 @@ pnpm add @acontplus/ng-components
 
 ## Features
 
-- **UI Components**: Dynamic cards, dialogs, icons, input chips, buttons, spinners, dynamic/tabulator tables, theme toggle, autocomplete wrapper
+- **UI Components**: Cards, KPI cards, dialogs, icons, input chips, buttons, spinners, dynamic/tabulator tables, theme toggle, autocomplete wrapper
 - **Directives**: Text transformation (to-upper-case)
 - **Pipes**: Data transformation (get-total, status-display)
 - **Services**: Dialog management, overlay, theme management (dark/light mode), autocomplete
@@ -124,34 +124,38 @@ export class OrderComponent {}
 - Removed in this major: `backgroundColor` (use `color`), `hover` (use
   `hoverable`), `outlined` (use `appearance="outlined"`), the appearances
   `default`, `interactive` and `compact`, and the unused `AcpCardBadge` and
-  `AcpCardBackgroundColor` types.
+  `AcpCardBackgroundColor` types. `DynamicCard` (`acp-dynamic-card`) was removed;
+  use `AcpCard`.
 
-#### DynamicCard
+#### AcpKpiCard
 
-Versatile card component wrapping Angular Material's mat-card with additional functionality.
+Metric card for dashboards. Numeric values and changes are formatted with
+`Intl.NumberFormat` using the app `LOCALE_ID` (or `locale`).
 
-```typescript
-import { DynamicCard } from '@acontplus/ng-components';
-
-@Component({
-  template: `
-    <acp-dynamic-card
-      [cardTitle]="'Product Details'"
-      [cardSubtitle]="'Premium Package'"
-      [isHeaderVisible]="true"
-      [areActionsVisible]="true"
-      [primaryButtonText]="'Buy Now'"
-      [secondaryButtonText]="'Learn More'"
-      (primaryButtonClicked)="onPurchase()"
-      (secondaryButtonClicked)="onLearnMore()"
-    >
-      <p>Card content goes here</p>
-    </acp-dynamic-card>
-  `,
-  imports: [DynamicCard],
-})
-export class ProductComponent {}
+```html
+<acp-kpi-card
+  title="Expenses"
+  icon="payments"
+  [value]="45900"
+  [valueFormat]="{ style: 'currency', currency: 'USD', maximumFractionDigits: 0 }"
+  [percentage]="-4.1"
+  lowerIsBetter
+  trendLabel="vs last month"
+  variant="outlined"
+/>
 ```
+
+- `trend` is inferred from the sign of `percentage` when unset. The delta badge
+  color comes from the trend sentiment, not from the card `color`; set
+  `lowerIsBetter` for costs, churn or error rates.
+- Other inputs: `subtitle`, `prefix`, `suffix`, `description`, `footer`,
+  `variant`, `color` (including `surface` and `custom`), `size`, `icon`,
+  `svgIcon`, `avatar`, `avatarInitials`, `progress`, `progressColor`, `loading`,
+  `disabled`, `clickable`, `selected`, `routerLink`, `ariaLabel`,
+  `menuAriaLabel` and `tooltip`. Output: `clicked` (click, Enter or Space).
+- Templates: `#icon`, `#avatar`, `#footer` and `#actions` (rendered in a menu).
+- Styling hooks: `--acp-kpi-card-custom-bg`, `--acp-kpi-card-custom-fg` and
+  `--acp-kpi-card-custom-accent`, plus the `kpi-card-*` theme tokens.
 
 ### Buttons
 

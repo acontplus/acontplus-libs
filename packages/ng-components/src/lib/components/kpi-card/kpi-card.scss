@@ -1,93 +1,120 @@
-@use '@angular/material' as mat;
+@use 'sass:list';
+@use 'sass:string';
 @use '../../../core/tokens/token-utils';
 @use './m3-kpi-card';
 
 $fallbacks: m3-kpi-card.get-tokens();
 
+@function tok($name) {
+  @return token-utils.slot(kpi-card-#{$name}, $fallbacks);
+}
+
+$colors: (
+  primary,
+  secondary,
+  success,
+  success-light,
+  warning,
+  warning-light,
+  error,
+  error-light,
+  info,
+  info-light,
+  neutral,
+  surface
+);
+
+// Size scale: padding, gap, icon, avatar, title, subtitle, value, meta
+$sizes: (
+  xs: 8px 6px 16px 28px 12px 10px 18px 11px,
+  sm: 12px 8px 20px 32px 13px 11px 22px 12px,
+  md: 16px 12px 24px 40px 14px 12px 28px 13px,
+  lg: 20px 16px 32px 48px 16px 13px 36px 14px,
+);
+
 .acp-kpi-card {
-  --acp-kpi-card-bg: #{token-utils.slot(kpi-card-primary-bg, $fallbacks)};
-  --acp-kpi-card-fg: #{token-utils.slot(kpi-card-primary-color, $fallbacks)};
-
-  display: flex;
-  vertical-align: middle;
+  // Public hooks: --acp-kpi-card-bg, --acp-kpi-card-fg, --acp-kpi-card-accent
+  // (the `custom` color reads --acp-kpi-card-custom-bg / -fg / -accent).
+  display: block;
   width: 100%;
-  max-width: 100%;
+  container: acp-kpi-card / inline-size;
 
-  &__card {
-    width: 100%;
+  & &__card {
+    --acp-kpi-card-emphasis: var(--acp-kpi-card-fg);
+    --acp-kpi-card-muted: color-mix(in srgb, currentColor 72%, transparent);
+
     display: flex;
     flex-direction: column;
-    border-radius: 12px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 100%;
     overflow: hidden;
-    background-color: #ffffff;
+    border-radius: #{tok(container-shape)};
+    border: 1px solid transparent;
+    background: var(--acp-kpi-card-bg);
+    color: var(--acp-kpi-card-fg);
+    transition:
+      box-shadow 200ms cubic-bezier(0.2, 0, 0, 1),
+      transform 200ms cubic-bezier(0.2, 0, 0, 1);
   }
 
-  // Default (md) sizes - baseline
-  &__header {
+  &__header .mat-mdc-card-header-text {
+    display: none;
+  }
+
+  & &__card &__header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 16px;
-    gap: 12px;
+    gap: var(--acp-kpi-card-gap);
+    padding: var(--acp-kpi-card-padding) var(--acp-kpi-card-padding) 0;
   }
 
   &__header-content {
     display: flex;
-    align-items: center;
-    gap: 12px;
     flex: 1;
+    align-items: center;
+    gap: var(--acp-kpi-card-gap);
     min-width: 0;
   }
 
   &__icon-container {
     display: flex;
+    flex-shrink: 0;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
+    color: var(--acp-kpi-card-emphasis);
+
+    &:empty {
+      display: none;
+    }
   }
 
   &__icon {
-    font-size: 24px;
-    width: 24px;
-    height: 24px;
-    color: var(--acp-kpi-card-fg);
+    width: var(--acp-kpi-card-icon-size);
+    height: var(--acp-kpi-card-icon-size);
+    font-size: var(--acp-kpi-card-icon-size);
   }
 
-  &__avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
+  &__avatar,
+  &__avatar-image,
+  &__avatar-initials {
     display: flex;
+    flex-shrink: 0;
     align-items: center;
     justify-content: center;
-    background: color-mix(in srgb, var(--acp-kpi-card-bg) 30%, transparent);
-    color: var(--acp-kpi-card-fg);
+    width: var(--acp-kpi-card-avatar-size);
+    height: var(--acp-kpi-card-avatar-size);
+    border-radius: 50%;
+    font-size: var(--acp-kpi-card-meta-size);
     font-weight: 500;
-    font-size: 14px;
-    flex-shrink: 0;
+  }
+
+  &__avatar,
+  &__avatar-initials {
+    background: color-mix(in srgb, var(--acp-kpi-card-emphasis) 16%, transparent);
   }
 
   &__avatar-image {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
     object-fit: cover;
-    flex-shrink: 0;
-  }
-
-  &__avatar-initials {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: color-mix(in srgb, var(--acp-kpi-card-bg) 30%, transparent);
-    color: var(--acp-kpi-card-fg);
-    font-weight: 500;
-    font-size: 14px;
-    flex-shrink: 0;
   }
 
   &__title-container {
@@ -95,144 +122,122 @@ $fallbacks: m3-kpi-card.get-tokens();
     min-width: 0;
   }
 
-  &__title {
-    margin: 0;
-    font-size: 14px;
-    font-weight: 500;
-    letter-spacing: 0.25px;
-    color: var(--acp-kpi-card-fg);
-    white-space: nowrap;
+  &__title,
+  &__subtitle {
     overflow: hidden;
+    white-space: nowrap;
     text-overflow: ellipsis;
   }
 
+  &__title {
+    margin: 0;
+    font: var(--mat-sys-title-small);
+    font-size: var(--acp-kpi-card-title-size);
+  }
+
   &__subtitle {
-    margin: 2px 0 0 0;
-    font-size: 12px;
-    font-weight: 400;
-    letter-spacing: 0.4px;
-    color: rgba(var(--acp-kpi-card-fg), 0.6);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    margin: 2px 0 0;
+    font: var(--mat-sys-body-small);
+    font-size: var(--acp-kpi-card-subtitle-size);
+    color: var(--acp-kpi-card-muted);
   }
 
   &__menu-button {
     flex-shrink: 0;
-    opacity: 0.7;
-    transition: opacity 0.2s ease-in-out;
-
-    &:hover {
-      opacity: 1;
-    }
-
-    &:focus-visible {
-      outline: 2px solid currentColor;
-      outline-offset: 2px;
-    }
+    color: inherit;
   }
 
-  &__menu {
-    will-change: transform;
-  }
-
-  &__content {
-    flex: 1;
-    padding: 16px;
+  & &__card &__content {
     display: flex;
+    flex: 1;
     flex-direction: column;
-    gap: 12px;
+    gap: var(--acp-kpi-card-gap);
+    padding: var(--acp-kpi-card-padding);
   }
 
   &__value-section {
     display: flex;
+    flex-wrap: wrap;
     align-items: baseline;
-    gap: 8px;
+    gap: 4px 8px;
   }
 
   &__value {
-    font-size: 28px;
+    font-family: var(--mat-sys-headline-small-font);
+    font-size: min(var(--acp-kpi-card-value-size), 14cqi);
     font-weight: 600;
-    letter-spacing: -0.5px;
-    color: var(--acp-kpi-card-fg);
+    font-variant-numeric: tabular-nums;
     line-height: 1.2;
+    letter-spacing: -0.5px;
+    color: var(--acp-kpi-card-emphasis);
   }
 
-  &__metric {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 13px;
+  &__affix {
+    font-size: 0.6em;
     font-weight: 500;
-    letter-spacing: 0.25px;
-    color: rgba(var(--acp-kpi-card-fg), 0.8);
+  }
+
+  &__delta {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font: var(--mat-sys-label-medium);
+    font-size: var(--acp-kpi-card-meta-size);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+
+    &--positive {
+      background: #{tok(delta-positive-bg)};
+      color: #{tok(delta-positive-color)};
+    }
+
+    &--negative {
+      background: #{tok(delta-negative-bg)};
+      color: #{tok(delta-negative-color)};
+    }
+
+    &--neutral {
+      background: #{tok(delta-neutral-bg)};
+      color: #{tok(delta-neutral-color)};
+    }
   }
 
   &__trend-icon {
-    font-size: 16px;
     width: 16px;
     height: 16px;
-    // Trend icon inherits color from parent metric element
+    font-size: 16px;
   }
 
-  &__percentage {
-    white-space: nowrap;
-  }
-
-  // Trend color styling - applied to metric section when trending
-  &.acp-kpi-card--success &__metric {
-    color: #{token-utils.slot(kpi-card-success-color, $fallbacks)};
-  }
-
-  &.acp-kpi-card--success-light &__metric {
-    color: #{token-utils.slot(kpi-card-success-light-color, $fallbacks)};
-  }
-
-  &.acp-kpi-card--warning &__metric {
-    color: #{token-utils.slot(kpi-card-warning-color, $fallbacks)};
-  }
-
-  &.acp-kpi-card--warning-light &__metric {
-    color: #{token-utils.slot(kpi-card-warning-light-color, $fallbacks)};
-  }
-
-  &.acp-kpi-card--error &__metric {
-    color: #{token-utils.slot(kpi-card-error-color, $fallbacks)};
-  }
-
-  &.acp-kpi-card--error-light &__metric {
-    color: #{token-utils.slot(kpi-card-error-light-color, $fallbacks)};
-  }
-
-  &.acp-kpi-card--info &__metric {
-    color: #{token-utils.slot(kpi-card-info-color, $fallbacks)};
-  }
-
-  &.acp-kpi-card--info-light &__metric {
-    color: #{token-utils.slot(kpi-card-info-light-color, $fallbacks)};
+  &__trend-label {
+    font-size: var(--acp-kpi-card-meta-size);
+    color: var(--acp-kpi-card-muted);
   }
 
   &__description {
     margin: 0;
-    font-size: 12px;
-    font-weight: 400;
-    letter-spacing: 0.4px;
-    color: rgba(var(--acp-kpi-card-fg), 0.6);
-    line-height: 1.5;
+    font: var(--mat-sys-body-small);
+    font-size: var(--acp-kpi-card-meta-size);
+    color: var(--acp-kpi-card-muted);
   }
 
   &__progress {
-    height: 4px;
-    border-radius: 2px;
-    background-color: rgba(var(--acp-kpi-card-fg), 0.12);
+    --mat-progress-bar-active-indicator-color: var(--acp-kpi-card-emphasis);
+    --mat-progress-bar-track-color: color-mix(in srgb, currentColor 16%, transparent);
+    --mat-progress-bar-track-shape: 2px;
+
+    &[class*='acp-kpi-card__progress--'] {
+      --mat-progress-bar-active-indicator-color: var(--acp-kpi-card-accent);
+    }
   }
 
   &__footer {
-    padding: 12px 16px;
-    font-size: 12px;
-    font-weight: 400;
-    letter-spacing: 0.4px;
-    color: rgba(var(--acp-kpi-card-fg), 0.6);
+    padding: calc(var(--acp-kpi-card-padding) * 0.75) var(--acp-kpi-card-padding);
+    border-top: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+    font: var(--mat-sys-body-small);
+    font-size: var(--acp-kpi-card-meta-size);
+    color: var(--acp-kpi-card-muted);
   }
 
   &__footer-text {
@@ -240,226 +245,133 @@ $fallbacks: m3-kpi-card.get-tokens();
   }
 
   &__skeleton {
-    padding: 16px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
-  }
+    gap: var(--acp-kpi-card-gap);
+    padding: var(--acp-kpi-card-padding);
 
-  &__skeleton-header {
-    width: 60%;
-    height: 16px;
-    background: linear-gradient(
-      90deg,
-      rgba(0, 0, 0, 0.1) 25%,
-      rgba(0, 0, 0, 0.05) 50%,
-      rgba(0, 0, 0, 0.1) 75%
-    );
-    background-size: 200% 100%;
-    animation: loading 1.5s infinite;
-    border-radius: 4px;
-  }
-
-  &__skeleton-value {
-    width: 40%;
-    height: 28px;
-    background: linear-gradient(
-      90deg,
-      rgba(0, 0, 0, 0.1) 25%,
-      rgba(0, 0, 0, 0.05) 50%,
-      rgba(0, 0, 0, 0.1) 75%
-    );
-    background-size: 200% 100%;
-    animation: loading 1.5s infinite;
-    border-radius: 4px;
-  }
-
-  &__skeleton-text {
-    width: 80%;
-    height: 12px;
-    background: linear-gradient(
-      90deg,
-      rgba(0, 0, 0, 0.1) 25%,
-      rgba(0, 0, 0, 0.05) 50%,
-      rgba(0, 0, 0, 0.1) 75%
-    );
-    background-size: 200% 100%;
-    animation: loading 1.5s infinite;
-    border-radius: 4px;
-  }
-
-  @keyframes loading {
-    0% {
-      background-position: 200% 0;
+    > span {
+      display: block;
+      height: 12px;
+      border-radius: 4px;
+      background: linear-gradient(
+        90deg,
+        color-mix(in srgb, currentColor 14%, transparent) 25%,
+        color-mix(in srgb, currentColor 6%, transparent) 50%,
+        color-mix(in srgb, currentColor 14%, transparent) 75%
+      );
+      background-size: 200% 100%;
+      animation: acp-kpi-card-shimmer 1.5s infinite;
     }
-    100% {
-      background-position: -200% 0;
+
+    > span:nth-child(1) {
+      width: 60%;
+      height: 16px;
+    }
+
+    > span:nth-child(2) {
+      width: 40%;
+      height: var(--acp-kpi-card-value-size);
+    }
+
+    > span:nth-child(3) {
+      width: 80%;
+    }
+  }
+
+  // Sizes
+  @each $size, $v in $sizes {
+    &--#{$size} {
+      --acp-kpi-card-padding: #{list.nth($v, 1)};
+      --acp-kpi-card-gap: #{list.nth($v, 2)};
+      --acp-kpi-card-icon-size: #{list.nth($v, 3)};
+      --acp-kpi-card-avatar-size: #{list.nth($v, 4)};
+      --acp-kpi-card-title-size: #{list.nth($v, 5)};
+      --acp-kpi-card-subtitle-size: #{list.nth($v, 6)};
+      --acp-kpi-card-value-size: #{list.nth($v, 7)};
+      --acp-kpi-card-meta-size: #{list.nth($v, 8)};
     }
   }
 
   // Colors
-  &.acp-kpi-card--primary {
-    --acp-kpi-card-bg: #{token-utils.slot(kpi-card-primary-bg, $fallbacks)};
-    --acp-kpi-card-fg: #{token-utils.slot(kpi-card-primary-color, $fallbacks)};
+  @each $color in $colors {
+    $base: $color;
+    @if string.index($color, '-light') {
+      $base: string.slice($color, 1, -7);
+    }
+
+    &--#{$color},
+    &__progress--#{$color} {
+      --acp-kpi-card-bg: #{tok(#{$color}-bg)};
+      --acp-kpi-card-fg: #{tok(#{$color}-color)};
+      --acp-kpi-card-accent: #{tok(#{$base}-accent)};
+    }
   }
 
-  &.acp-kpi-card--secondary {
-    --acp-kpi-card-bg: #{token-utils.slot(kpi-card-secondary-bg, $fallbacks)};
-    --acp-kpi-card-fg: #{token-utils.slot(kpi-card-secondary-color, $fallbacks)};
+  &--custom {
+    --acp-kpi-card-bg: var(--acp-kpi-card-custom-bg, #{tok(custom-bg)});
+    --acp-kpi-card-fg: var(--acp-kpi-card-custom-fg, #{tok(custom-color)});
+    --acp-kpi-card-accent: var(--acp-kpi-card-custom-accent, #{tok(custom-accent)});
   }
 
-  &.acp-kpi-card--success {
-    --acp-kpi-card-bg: #{token-utils.slot(kpi-card-success-bg, $fallbacks)};
-    --acp-kpi-card-fg: #{token-utils.slot(kpi-card-success-color, $fallbacks)};
+  // Variants: default/elevated/filled use the solid container; outlined/tonal sit on a surface
+  &--default &__card {
+    box-shadow: var(--mat-sys-level1);
   }
 
-  &.acp-kpi-card--success-light {
-    --acp-kpi-card-bg: #{token-utils.slot(kpi-card-success-light-bg, $fallbacks)};
-    --acp-kpi-card-fg: #{token-utils.slot(kpi-card-success-light-color, $fallbacks)};
+  &--elevated &__card {
+    box-shadow: var(--mat-sys-level2);
   }
 
-  &.acp-kpi-card--warning {
-    --acp-kpi-card-bg: #{token-utils.slot(kpi-card-warning-bg, $fallbacks)};
-    --acp-kpi-card-fg: #{token-utils.slot(kpi-card-warning-color, $fallbacks)};
+  &--filled &__card {
+    box-shadow: none;
   }
 
-  &.acp-kpi-card--warning-light {
-    --acp-kpi-card-bg: #{token-utils.slot(kpi-card-warning-light-bg, $fallbacks)};
-    --acp-kpi-card-fg: #{token-utils.slot(kpi-card-warning-light-color, $fallbacks)};
+  &--outlined &__card,
+  &--tonal &__card {
+    --acp-kpi-card-emphasis: var(--acp-kpi-card-accent);
+
+    box-shadow: none;
+    color: var(--mat-sys-on-surface);
   }
 
-  &.acp-kpi-card--error {
-    --acp-kpi-card-bg: #{token-utils.slot(kpi-card-error-bg, $fallbacks)};
-    --acp-kpi-card-fg: #{token-utils.slot(kpi-card-error-color, $fallbacks)};
+  &--outlined &__card {
+    background: var(--mat-sys-surface);
+    border-color: color-mix(in srgb, var(--acp-kpi-card-accent) 40%, transparent);
   }
 
-  &.acp-kpi-card--error-light {
-    --acp-kpi-card-bg: #{token-utils.slot(kpi-card-error-light-bg, $fallbacks)};
-    --acp-kpi-card-fg: #{token-utils.slot(kpi-card-error-light-color, $fallbacks)};
+  &--tonal &__card {
+    background: color-mix(in srgb, var(--acp-kpi-card-accent) 12%, var(--mat-sys-surface));
   }
 
-  &.acp-kpi-card--info {
-    --acp-kpi-card-bg: #{token-utils.slot(kpi-card-info-bg, $fallbacks)};
-    --acp-kpi-card-fg: #{token-utils.slot(kpi-card-info-color, $fallbacks)};
-  }
-
-  &.acp-kpi-card--info-light {
-    --acp-kpi-card-bg: #{token-utils.slot(kpi-card-info-light-bg, $fallbacks)};
-    --acp-kpi-card-fg: #{token-utils.slot(kpi-card-info-light-color, $fallbacks)};
-  }
-
-  &.acp-kpi-card--neutral {
-    --acp-kpi-card-bg: #{token-utils.slot(kpi-card-neutral-bg, $fallbacks)};
-    --acp-kpi-card-fg: #{token-utils.slot(kpi-card-neutral-color, $fallbacks)};
-  }
-
-  &.acp-kpi-card--white {
-    --acp-kpi-card-bg: #ffffff;
-    --acp-kpi-card-fg: #1f2937;
-  }
-
-  &.acp-kpi-card--custom {
-    --acp-kpi-card-bg: var(
-      --acp-kpi-card-custom-bg,
-      #{token-utils.slot(kpi-card-custom-bg, $fallbacks)}
-    );
-    --acp-kpi-card-fg: var(
-      --acp-kpi-card-custom-fg,
-      #{token-utils.slot(kpi-card-custom-color, $fallbacks)}
-    );
-  }
-
-  // Variants - Professional Material Design 3 styling
-  &.acp-kpi-card--default &__card {
-    background: var(--acp-kpi-card-bg);
-    color: var(--acp-kpi-card-fg);
-    border: 1px solid rgba(var(--acp-kpi-card-fg), 0.12);
-  }
-
-  &.acp-kpi-card--elevated &__card {
-    background: var(--acp-kpi-card-bg);
-    color: var(--acp-kpi-card-fg);
-    box-shadow:
-      0 3px 8px rgba(0, 0, 0, 0.08),
-      0 1px 3px rgba(0, 0, 0, 0.04);
-  }
-
-  &.acp-kpi-card--outlined &__card {
-    background: transparent;
-    color: var(--acp-kpi-card-fg);
-    border: 2px solid rgba(var(--acp-kpi-card-fg), 0.2);
-  }
-
-  &.acp-kpi-card--filled &__card {
-    background: var(--acp-kpi-card-bg);
-    color: var(--acp-kpi-card-fg);
-  }
-
-  &.acp-kpi-card--tonal &__card {
-    // Subtle tonal background using color-mix for better theme support
-    background: color-mix(in srgb, var(--acp-kpi-card-bg) 12%, transparent);
-    color: var(--acp-kpi-card-fg);
-    border: 1px solid rgba(var(--acp-kpi-card-fg), 0.08);
-  }
-
-  // States - Professional interaction patterns
-  &.acp-kpi-card--clickable &__card {
+  // States
+  &--clickable &__card {
     cursor: pointer;
 
     &:hover {
-      // Subtle elevation increase on hover
-      box-shadow:
-        0 6px 12px rgba(0, 0, 0, 0.1),
-        0 2px 4px rgba(0, 0, 0, 0.06);
-      // Minimal vertical translation for feedback
+      box-shadow: var(--mat-sys-level3);
       transform: translateY(-1px);
     }
 
     &:active {
-      // Slight press-down effect
-      transform: translateY(0);
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
-    }
-
-    &:focus-visible {
-      outline: 2px solid currentColor;
-      outline-offset: 2px;
+      box-shadow: var(--mat-sys-level1);
+      transform: none;
     }
   }
 
-  &.acp-kpi-card--disabled &__card {
+  &__card:focus-visible {
+    outline: 2px solid var(--mat-sys-primary);
+    outline-offset: 2px;
+  }
+
+  &--selected &__card {
+    border-color: var(--acp-kpi-card-emphasis);
+    box-shadow: inset 0 0 0 1px var(--acp-kpi-card-emphasis);
+  }
+
+  &--disabled &__card {
     opacity: 0.6;
-    cursor: not-allowed;
     pointer-events: none;
-  }
-
-  &.acp-kpi-card--selected &__card {
-    // Subtle selection indicator using border instead of inset shadow
-    border: 2px solid var(--acp-kpi-card-fg);
-  }
-
-  &.acp-kpi-card--loading &__card {
-    pointer-events: none;
-    opacity: 0.8;
-  }
-
-  // Responsive
-  @media (max-width: 768px) {
-    &__header {
-      padding: 12px;
-    }
-
-    &__content {
-      padding: 12px;
-    }
-
-    &__value {
-      font-size: 24px;
-    }
-
-    &__title {
-      font-size: 13px;
-    }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -467,275 +379,22 @@ $fallbacks: m3-kpi-card.get-tokens();
       transition: none;
     }
 
-    &__skeleton-header,
-    &__skeleton-value,
-    &__skeleton-text {
+    &--clickable &__card:hover {
+      transform: none;
+    }
+
+    &__skeleton > span {
       animation: none;
     }
   }
-
-  @media (prefers-contrast: more) {
-    &__card {
-      border-width: 2px;
-    }
-  }
 }
 
-// Responsive scaling - Mobile first
-@media (max-width: 768px) {
-  .acp-kpi-card {
-    &__header {
-      padding: 12px;
-      gap: 8px;
-    }
-
-    &__content {
-      padding: 12px;
-      gap: 8px;
-    }
-
-    &__footer {
-      padding: 12px;
-    }
-
-    &__icon {
-      font-size: 20px;
-      width: 20px;
-      height: 20px;
-    }
-
-    &__avatar,
-    &__avatar-image,
-    &__avatar-initials {
-      width: 32px;
-      height: 32px;
-      font-size: 12px;
-    }
-
-    &__title {
-      font-size: 13px;
-    }
-
-    &__subtitle {
-      font-size: 11px;
-    }
-
-    &__value {
-      font-size: 24px;
-    }
-  }
-}
-
-// Size variants with harmonic scaling
-// xs: Very compact (tables, lists)
-.acp-kpi-card__card.acp-kpi-card--xs {
-  min-height: 96px;
-
-  .acp-kpi-card__header {
-    padding: 8px;
-    gap: 6px;
+@keyframes acp-kpi-card-shimmer {
+  from {
+    background-position: 200% 0;
   }
 
-  .acp-kpi-card__content {
-    padding: 8px;
-    gap: 6px;
-  }
-
-  .acp-kpi-card__footer {
-    padding: 8px;
-  }
-
-  .acp-kpi-card__icon {
-    font-size: 16px;
-    width: 16px;
-    height: 16px;
-  }
-
-  .acp-kpi-card__avatar,
-  .acp-kpi-card__avatar-image,
-  .acp-kpi-card__avatar-initials {
-    width: 28px;
-    height: 28px;
-    font-size: 11px;
-  }
-
-  .acp-kpi-card__title {
-    font-size: 12px;
-  }
-
-  .acp-kpi-card__subtitle {
-    font-size: 10px;
-    margin-top: 1px;
-  }
-
-  .acp-kpi-card__value {
-    font-size: 18px;
-  }
-
-  .acp-kpi-card__percentage {
-    font-size: 10px;
-  }
-
-  .acp-kpi-card__description {
-    font-size: 11px;
-  }
-}
-
-// sm: Compact (forms, filters)
-.acp-kpi-card__card.acp-kpi-card--sm {
-  min-height: 128px;
-
-  .acp-kpi-card__header {
-    padding: 12px;
-    gap: 8px;
-  }
-
-  .acp-kpi-card__content {
-    padding: 12px;
-    gap: 8px;
-  }
-
-  .acp-kpi-card__footer {
-    padding: 12px;
-  }
-
-  .acp-kpi-card__icon {
-    font-size: 20px;
-    width: 20px;
-    height: 20px;
-  }
-
-  .acp-kpi-card__avatar,
-  .acp-kpi-card__avatar-image,
-  .acp-kpi-card__avatar-initials {
-    width: 32px;
-    height: 32px;
-    font-size: 12px;
-  }
-
-  .acp-kpi-card__title {
-    font-size: 13px;
-  }
-
-  .acp-kpi-card__subtitle {
-    font-size: 11px;
-  }
-
-  .acp-kpi-card__value {
-    font-size: 22px;
-  }
-
-  .acp-kpi-card__percentage {
-    font-size: 11px;
-  }
-
-  .acp-kpi-card__description {
-    font-size: 12px;
-  }
-}
-
-// md: Standard (general use) - DEFAULT
-.acp-kpi-card__card.acp-kpi-card--md {
-  min-height: 160px;
-
-  .acp-kpi-card__header {
-    padding: 16px;
-    gap: 12px;
-  }
-
-  .acp-kpi-card__content {
-    padding: 16px;
-    gap: 12px;
-  }
-
-  .acp-kpi-card__footer {
-    padding: 16px;
-  }
-
-  .acp-kpi-card__icon {
-    font-size: 24px;
-    width: 24px;
-    height: 24px;
-  }
-
-  .acp-kpi-card__avatar,
-  .acp-kpi-card__avatar-image,
-  .acp-kpi-card__avatar-initials {
-    width: 40px;
-    height: 40px;
-    font-size: 14px;
-  }
-
-  .acp-kpi-card__title {
-    font-size: 14px;
-  }
-
-  .acp-kpi-card__subtitle {
-    font-size: 12px;
-  }
-
-  .acp-kpi-card__value {
-    font-size: 28px;
-  }
-
-  .acp-kpi-card__percentage {
-    font-size: 12px;
-  }
-
-  .acp-kpi-card__description {
-    font-size: 13px;
-  }
-}
-
-// lg: Large (dashboards, featured)
-.acp-kpi-card__card.acp-kpi-card--lg {
-  min-height: 224px;
-
-  .acp-kpi-card__header {
-    padding: 20px;
-    gap: 16px;
-  }
-
-  .acp-kpi-card__content {
-    padding: 20px;
-    gap: 16px;
-  }
-
-  .acp-kpi-card__footer {
-    padding: 20px;
-  }
-
-  .acp-kpi-card__icon {
-    font-size: 32px;
-    width: 32px;
-    height: 32px;
-  }
-
-  .acp-kpi-card__avatar,
-  .acp-kpi-card__avatar-image,
-  .acp-kpi-card__avatar-initials {
-    width: 48px;
-    height: 48px;
-    font-size: 16px;
-  }
-
-  .acp-kpi-card__title {
-    font-size: 16px;
-  }
-
-  .acp-kpi-card__subtitle {
-    font-size: 13px;
-  }
-
-  .acp-kpi-card__value {
-    font-size: 36px;
-  }
-
-  .acp-kpi-card__percentage {
-    font-size: 14px;
-  }
-
-  .acp-kpi-card__description {
-    font-size: 14px;
+  to {
+    background-position: -200% 0;
   }
 }

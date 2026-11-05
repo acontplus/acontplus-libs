@@ -63,10 +63,6 @@ export const routes = [
 
       // Layout
       {
-        path: 'cards',
-        loadChildren: () => import('./cards/cards.routes').then(m => m.routes),
-      },
-      {
         path: 'dialog',
         loadChildren: () => import('./dialog/dialog.routes').then(m => m.routes),
       },

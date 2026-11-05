@@ -100,12 +100,6 @@ export const COMPONENTS_MENU: ComponentCategory[] = [
 
   // Layout
   {
-    id: 'cards',
-    name: 'Cards',
-    summary: 'Versatile card components with Angular Material integration.',
-    category: 'Layout',
-  },
-  {
     id: 'dialog',
     name: 'Dialog',
     summary: 'Enhanced dialog wrapper with advanced features.',

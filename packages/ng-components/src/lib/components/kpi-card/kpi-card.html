@@ -1,45 +1,44 @@
 <mat-card
   class="acp-kpi-card__card"
   [routerLink]="routerLink()"
-  [attr.aria-label]="ariaLabel()"
-  [matTooltip]="tooltip()"
+  [attr.role]="clickable() ? 'button' : null"
+  [attr.tabindex]="interactive() ? 0 : null"
+  [attr.aria-label]="ariaLabel() ?? null"
+  [attr.aria-pressed]="clickable() && selected() ? 'true' : null"
+  [attr.aria-disabled]="disabled() ? 'true' : null"
+  [matTooltip]="tooltip() ?? ''"
   [matTooltipDisabled]="!tooltip()"
   (click)="onCardClick()"
-  (mouseenter)="onMouseEnter()"
-  (mouseleave)="onMouseLeave()"
+  (keydown.enter)="onCardKey($event)"
+  (keydown.space)="onCardKey($event)"
 >
-  <!-- Loading Skeleton -->
   @if (loading()) {
-  <div class="acp-kpi-card__skeleton">
-    <div class="acp-kpi-card__skeleton-header"></div>
-    <div class="acp-kpi-card__skeleton-value"></div>
-    <div class="acp-kpi-card__skeleton-text"></div>
+  <div class="acp-kpi-card__skeleton" aria-hidden="true">
+    <span></span>
+    <span></span>
+    <span></span>
   </div>
-  } @else {
-  <!-- Header -->
-  @if (hasHeader()) {
+  } @else { @if (hasHeader()) {
   <mat-card-header class="acp-kpi-card__header">
     <div class="acp-kpi-card__header-content">
-      <!-- Icon or Avatar -->
       <div class="acp-kpi-card__icon-container">
-        @if (iconTemplate()) {
-        <ng-container [ngTemplateOutlet]="iconTemplate()!"></ng-container>
+        @if (iconTemplate(); as tpl) {
+        <ng-container [ngTemplateOutlet]="tpl" />
         } @else if (svgIcon()) {
-        <mat-icon class="acp-kpi-card__icon" [svgIcon]="svgIcon()!" aria-hidden="true"></mat-icon>
-        } @else if (effectiveIcon()) {
-        <mat-icon class="acp-kpi-card__icon" aria-hidden="true">{{ effectiveIcon() }}</mat-icon>
-        } @else if (avatarTemplate()) {
+        <mat-icon class="acp-kpi-card__icon" [svgIcon]="svgIcon()!" aria-hidden="true" />
+        } @else if (icon()) {
+        <mat-icon class="acp-kpi-card__icon" aria-hidden="true">{{ icon() }}</mat-icon>
+        } @else if (avatarTemplate(); as tpl) {
         <div class="acp-kpi-card__avatar">
-          <ng-container [ngTemplateOutlet]="avatarTemplate()!"></ng-container>
+          <ng-container [ngTemplateOutlet]="tpl" />
         </div>
         } @else if (avatar()) {
-        <img class="acp-kpi-card__avatar-image" [src]="avatar()" [alt]="title() || 'Avatar'" />
+        <img class="acp-kpi-card__avatar-image" [src]="avatar()" alt="" />
         } @else if (avatarInitials()) {
-        <div class="acp-kpi-card__avatar-initials">{{ avatarInitials() }}</div>
+        <div class="acp-kpi-card__avatar-initials" aria-hidden="true">{{ avatarInitials() }}</div>
         }
       </div>
 
-      <!-- Title & Subtitle -->
       <div class="acp-kpi-card__title-container">
         @if (title()) {
         <h3 class="acp-kpi-card__title">{{ title() }}</h3>
@@ -49,69 +48,65 @@
       </div>
     </div>
 
-    <!-- Menu Button (optional) - Only show if actions template exists -->
-    @if (hasActions()) {
+    @if (actionsTemplate(); as actions) {
     <button
       mat-icon-button
-      [matMenuTriggerFor]="menu"
       class="acp-kpi-card__menu-button"
-      aria-label="More options"
+      [matMenuTriggerFor]="menu"
+      [attr.aria-label]="menuAriaLabel()"
+      (click)="$event.stopPropagation()"
     >
       <mat-icon>more_vert</mat-icon>
     </button>
     <mat-menu #menu="matMenu" class="acp-kpi-card__menu">
-      <ng-container [ngTemplateOutlet]="actionsTemplate()!"></ng-container>
+      <ng-container [ngTemplateOutlet]="actions" />
     </mat-menu>
     }
   </mat-card-header>
   }
 
-  <!-- Content -->
   <mat-card-content class="acp-kpi-card__content">
-    <!-- Main Value -->
-    @if (value()) {
+    @if (formattedValue() !== null || formattedDelta() !== null) {
     <div class="acp-kpi-card__value-section">
-      <div class="acp-kpi-card__value">{{ value() }}</div>
-
-      <!-- Percentage & Trend -->
-      @if (percentage() !== undefined) {
-      <div class="acp-kpi-card__metric">
-        @if (isTrending()) {
-        <mat-icon class="acp-kpi-card__trend-icon" [attr.aria-label]="trendConfig().ariaLabel">
+      @if (formattedValue() !== null) {
+      <span class="acp-kpi-card__value">
+        @if (prefix()) {
+        <span class="acp-kpi-card__affix">{{ prefix() }}</span>
+        } {{ formattedValue() }} @if (suffix()) {
+        <span class="acp-kpi-card__affix">{{ suffix() }}</span>
+        }
+      </span>
+      } @if (formattedDelta() !== null) {
+      <span class="acp-kpi-card__delta" [class]="'acp-kpi-card__delta--' + sentiment()">
+        @if (trendConfig().icon) {
+        <mat-icon class="acp-kpi-card__trend-icon" aria-hidden="true">
           {{ trendConfig().icon }}
         </mat-icon>
-        }
-        <span class="acp-kpi-card__percentage">
-          {{ percentageFormat() === 'percent' ? (percentage() + '%') : percentage() }}
-        </span>
-      </div>
-      }
+        <span class="cdk-visually-hidden">{{ trendConfig().ariaLabel }}</span>
+        } {{ formattedDelta() }}
+      </span>
+      @if (trendLabel()) {
+      <span class="acp-kpi-card__trend-label">{{ trendLabel() }}</span>
+      } }
     </div>
-    }
-
-    <!-- Description -->
-    @if (description()) {
+    } @if (description()) {
     <p class="acp-kpi-card__description">{{ description() }}</p>
-    }
-
-    <!-- Progress Bar -->
-    @if (progress() !== undefined) {
+    } @if (progress() !== undefined) {
     <mat-progress-bar
       class="acp-kpi-card__progress"
+      [class]="progressColor() ? 'acp-kpi-card__progress--' + progressColor() : ''"
       mode="determinate"
       [value]="progress()"
-      [color]="progressColor()"
-    ></mat-progress-bar>
+      [attr.aria-label]="title() ?? null"
+    />
     }
   </mat-card-content>
 
-  <!-- Footer -->
   @if (hasFooter()) {
-  <mat-divider></mat-divider>
   <div class="acp-kpi-card__footer">
-    @if (footerTemplate()) {
-    <ng-container [ngTemplateOutlet]="footerTemplate()!"></ng-container>
-    } @else if (footer()) {
+    @if (footerTemplate(); as tpl) {
+    <ng-container [ngTemplateOutlet]="tpl" />
+    } @else {
     <p class="acp-kpi-card__footer-text">{{ footer() }}</p>
     }
   </div>

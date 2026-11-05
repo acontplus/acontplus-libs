@@ -73,19 +73,15 @@ Minimum touch target: **48px**
 
 ## Component Guidelines
 
-### Cards — `<acp-dynamic-card>`
+### Cards — `<acp-card>`
 
 ```html
-<acp-dynamic-card
-  [cardTitle]="'Product Details'"
-  [cardSubtitle]="'Premium Package'"
-  [isHeaderVisible]="true"
-  [areActionsVisible]="true"
-  [primaryButtonText]="'Buy Now'"
-  (primaryButtonClicked)="onPurchase()"
->
+<acp-card title="Product Details" subtitle="Premium Package" actionsAlign="end">
   Card content here
-</acp-dynamic-card>
+  <ng-template acpCardActions>
+    <acp-button text="Buy Now" (clicked)="onPurchase()" />
+  </ng-template>
+</acp-card>
 ```
 
 - Use cards for **discrete pieces of content** — one topic per card
@@ -174,7 +170,7 @@ columns: DataGridColumn[] = [
 All library components use the `acp-` prefix:
 
 ```typescript
-@Component({ selector: 'acp-dynamic-card', ... })
+@Component({ selector: 'acp-card', ... })
 @Component({ selector: 'acp-data-grid', ... })
 @Component({ selector: 'acp-theme-toggle', ... })
 ```

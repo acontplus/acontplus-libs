@@ -116,7 +116,7 @@ import { MatCardModule } from '@angular/material/card';
 
       <h2>News Card</h2>
       <div class="docs-example-card">
-        <acp-card appearance="default" [elevation]="1" [rounded]="true">
+        <acp-card [elevation]="1" [rounded]="true">
           <ng-template #media>
             <img
               mat-card-image
@@ -223,7 +223,7 @@ import { MatCardModule } from '@angular/material/card';
 
       <h2>Simple Information Card</h2>
       <div class="docs-example-card">
-        <acp-card appearance="default" [elevation]="1" [rounded]="true" padding="small">
+        <acp-card [elevation]="1" [rounded]="true" padding="small">
           <div style="display: flex; align-items: center; gap: 12px;">
             <mat-icon color="primary">info</mat-icon>
             <p style="margin: 0;">This is a simple information card with minimal padding.</p>

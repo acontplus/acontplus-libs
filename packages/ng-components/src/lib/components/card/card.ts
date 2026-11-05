@@ -89,13 +89,6 @@ export class AcpCard {
   readonly ariaLabel = input<string>();
   readonly passThrough = input<AcpCardPassThroughOptions>({});
 
-  /** @deprecated Use `color`. */
-  readonly backgroundColor = input<AcpCardColor>();
-  /** @deprecated Use `hoverable`. */
-  readonly hover = input(undefined, { transform: optionalBoolean });
-  /** @deprecated Use `appearance="outlined"`. */
-  readonly outlined = input(undefined, { transform: optionalBoolean });
-
   /** Emitted on click, Enter or Space when `clickable` and not disabled/loading. */
   readonly clicked = output<MouseEvent | KeyboardEvent>();
 
@@ -137,13 +130,9 @@ export class AcpCard {
       ),
   );
 
-  private readonly rawAppearance = computed(() => this.appearance() ?? this.defaults.appearance);
-
-  readonly resolvedAppearance = computed<'elevated' | 'outlined' | 'filled'>(() => {
-    const appearance = this.rawAppearance();
-    if (appearance === 'outlined' || appearance === 'filled') return appearance;
-    return (this.outlined() ?? this.defaults.outlined) ? 'outlined' : 'elevated';
-  });
+  readonly resolvedAppearance = computed<AcpCardAppearance>(
+    () => this.appearance() ?? this.defaults.appearance ?? 'elevated',
+  );
 
   readonly matAppearance = computed(() => {
     const appearance = this.resolvedAppearance();
@@ -151,24 +140,12 @@ export class AcpCard {
   });
 
   readonly resolvedPadding = computed<AcpCardPadding>(
-    () =>
-      this.padding() ??
-      this.defaults.padding ??
-      (this.rawAppearance() === 'compact' ? 'small' : 'medium'),
+    () => this.padding() ?? this.defaults.padding ?? 'medium',
   );
 
-  readonly resolvedColor = computed(
-    () => this.color() ?? this.backgroundColor() ?? this.defaults.color,
-  );
+  readonly resolvedColor = computed(() => this.color() ?? this.defaults.color);
 
-  readonly resolvedHoverable = computed(
-    () =>
-      this.hoverable() ??
-      this.hover() ??
-      this.defaults.hoverable ??
-      this.defaults.hover ??
-      this.rawAppearance() === 'interactive',
-  );
+  readonly resolvedHoverable = computed(() => this.hoverable() ?? this.defaults.hoverable ?? false);
 
   readonly resolvedActionsAlign = computed(
     () => this.actionsAlign() ?? this.defaults.actionsAlign ?? 'start',

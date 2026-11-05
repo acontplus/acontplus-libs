@@ -121,9 +121,10 @@ export class OrderComponent {}
 - Styling hooks: `--acp-card-shape`, `--acp-card-elevation`, `--acp-card-padding`,
   `--acp-card-container-color`, `--acp-card-on-color`, `--acp-card-subtitle-color`
   and `--acp-card-outline-color`.
-- Deprecated: `backgroundColor` (use `color`), `hover` (use `hoverable`),
-  `outlined` (use `appearance="outlined"`), and the appearances `default`,
-  `interactive` and `compact`.
+- Removed in this major: `backgroundColor` (use `color`), `hover` (use
+  `hoverable`), `outlined` (use `appearance="outlined"`), the appearances
+  `default`, `interactive` and `compact`, and the unused `AcpCardBadge` and
+  `AcpCardBackgroundColor` types.
 
 #### DynamicCard
 

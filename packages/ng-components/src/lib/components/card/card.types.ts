@@ -1,22 +1,8 @@
 /**
  * Card appearance variants. Mirrors Angular Material's `MatCardAppearance`
  * (`elevated` maps to Material's `raised`).
- *
- * `default`, `interactive` and `compact` are deprecated aliases:
- * - `default` → `elevated`
- * - `interactive` → `elevated` + `hoverable`
- * - `compact` → `elevated` + `padding="small"`
  */
-export type AcpCardAppearance =
-  | 'elevated'
-  | 'outlined'
-  | 'filled'
-  /** @deprecated Use `elevated`. */
-  | 'default'
-  /** @deprecated Use `appearance="elevated"` with `hoverable` or `clickable`. */
-  | 'interactive'
-  /** @deprecated Use `appearance="elevated"` with `padding="small"`. */
-  | 'compact';
+export type AcpCardAppearance = 'elevated' | 'outlined' | 'filled';
 
 /**
  * Card elevation levels, mapped to `--mat-sys-level{n}`. Only applies to `elevated` cards.
@@ -51,11 +37,6 @@ export type AcpCardColor =
   | 'disabled-bg';
 
 /**
- * @deprecated Use `AcpCardColor`.
- */
-export type AcpCardBackgroundColor = AcpCardColor;
-
-/**
  * Media aspect ratio.
  */
 export type AcpCardImageRatio = '1:1' | '4:3' | '16:9' | '21:9' | '3:2' | '3:4';
@@ -79,29 +60,6 @@ export interface AcpCardConfig {
   hoverable?: boolean;
   actionsAlign?: AcpCardActionsAlign;
   imageRatio?: AcpCardImageRatio;
-  /** @deprecated Use `hoverable`. */
-  hover?: boolean;
-  /** @deprecated Use `appearance: 'outlined'`. */
-  outlined?: boolean;
-  /** @deprecated Per-instance state; set it on the card. */
-  clickable?: boolean;
-  /** @deprecated Per-instance state; set it on the card. */
-  loading?: boolean;
-  /** @deprecated Per-instance state; set it on the card. */
-  disabled?: boolean;
-  /** @deprecated Per-instance layout; set it on the card. */
-  fullHeight?: boolean;
-  /** @deprecated Per-instance layout; set it on the card. */
-  fullWidth?: boolean;
-}
-
-/**
- * Card badge configuration.
- */
-export interface AcpCardBadge {
-  content: string | number;
-  color?: 'primary' | 'secondary' | 'accent' | 'error' | 'success' | 'warning' | 'info';
-  position?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
 }
 
 /**

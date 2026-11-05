@@ -21,6 +21,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import {
+  AcpKpiCardAlign,
   AcpKpiCardColor,
   AcpKpiCardSize,
   AcpKpiCardTrend,
@@ -77,6 +78,7 @@ export class AcpKpiCard {
   readonly variant = input<AcpKpiCardVariant>('default');
   readonly color = input<AcpKpiCardColor>('primary');
   readonly size = input<AcpKpiCardSize>('md');
+  readonly align = input<AcpKpiCardAlign>('start');
 
   // Icons & avatar
   readonly icon = input<string>();
@@ -93,6 +95,8 @@ export class AcpKpiCard {
   readonly lowerIsBetter = input(false, { transform: booleanAttribute });
   /** Comparison context shown next to the change, e.g. "vs last month". */
   readonly trendLabel = input<string>();
+  /** Show the trend arrow inside the change badge. */
+  readonly showTrendIcon = input(true, { transform: booleanAttribute });
 
   // Progress
   readonly progress = input<number>();
@@ -179,6 +183,7 @@ export class AcpKpiCard {
       `acp-kpi-card--${this.variant()}`,
       `acp-kpi-card--${this.color()}`,
       `acp-kpi-card--${this.size()}`,
+      `acp-kpi-card--align-${this.align()}`,
     ];
     if (this.clickable()) classes.push('acp-kpi-card--clickable');
     if (this.disabled()) classes.push('acp-kpi-card--disabled');

@@ -5,7 +5,7 @@ ng-customer: patch
 
 Reworked `AcpCard` props: `title`/`subtitle` inputs, `color`, `hoverable`, `loading`, `actionsAlign`, `clicked` output with keyboard support, typed slot directives (`acpCardTitle`, `acpCardActions`, ...) and `provideAcpCardDefaults()`. `appearance`, `elevation`, `imageRatio` and `padding="none"` now take effect.
 
-Reworked `AcpKpiCard`: locale-aware `Intl.NumberFormat` formatting (`valueFormat`, `locale`, `prefix`, `suffix`), trend inferred from `percentage`, sentiment-colored delta badge with `lowerIsBetter` and `trendLabel`, working `size` variants, readable `outlined`/`tonal` variants, keyboard support for `clickable`, and a value of `0` is now displayed.
+Reworked `AcpKpiCard`: locale-aware `Intl.NumberFormat` formatting (`valueFormat`, `locale`, `prefix`, `suffix`), trend inferred from `percentage`, sentiment-colored delta badge with `lowerIsBetter`, `trendLabel` and optional trend icon (`showTrendIcon`), `align` (`start` | `center` | `end`), working `size` variants, readable `outlined`/`tonal` variants, keyboard support for `clickable`, and a value of `0` is now displayed.
 
 `ng-customer` now uses `AcpCard` in the customer form, so section titles render.
 

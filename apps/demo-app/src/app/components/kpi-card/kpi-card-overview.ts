@@ -464,6 +464,42 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
         </mat-card-content>
       </mat-card>
 
+      <!-- Alignment -->
+      <h2>Alignment</h2>
+      <mat-card class="docs-example-card">
+        <mat-card-content class="kpi-grid">
+          <acp-kpi-card
+            title="Start"
+            value="$125,000"
+            percentage="+5.2"
+            icon="payments"
+            align="start"
+            variant="outlined"
+            description="Default alignment"
+          ></acp-kpi-card>
+
+          <acp-kpi-card
+            title="Center"
+            value="$125,000"
+            percentage="+5.2"
+            icon="payments"
+            align="center"
+            variant="outlined"
+            description="Centered content"
+          ></acp-kpi-card>
+
+          <acp-kpi-card
+            title="End"
+            value="$125,000"
+            percentage="-5.2"
+            align="end"
+            variant="outlined"
+            [showTrendIcon]="false"
+            description="No header icon, no trend icon"
+          ></acp-kpi-card>
+        </mat-card-content>
+      </mat-card>
+
       <!-- States -->
       <h2>States</h2>
       <mat-card class="docs-example-card">

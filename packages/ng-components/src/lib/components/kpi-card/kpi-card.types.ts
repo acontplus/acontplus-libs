@@ -17,6 +17,9 @@ export type AcpKpiCardVariant = 'default' | 'elevated' | 'outlined' | 'filled' |
 
 export type AcpKpiCardSize = 'xs' | 'sm' | 'md' | 'lg';
 
+/** Horizontal alignment of header, value and text. */
+export type AcpKpiCardAlign = 'start' | 'center' | 'end';
+
 /** Direction of the change. `none` hides the trend icon. */
 export type AcpKpiCardTrend = 'up' | 'down' | 'neutral' | 'none';
 

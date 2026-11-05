@@ -72,6 +72,7 @@ $sizes: (
     display: flex;
     flex: 1;
     align-items: center;
+    justify-content: var(--acp-kpi-card-justify);
     gap: var(--acp-kpi-card-gap);
     min-width: 0;
   }
@@ -118,7 +119,6 @@ $sizes: (
   }
 
   &__title-container {
-    flex: 1;
     min-width: 0;
   }
 
@@ -159,6 +159,7 @@ $sizes: (
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
+    justify-content: var(--acp-kpi-card-justify);
     gap: 4px 8px;
   }
 
@@ -291,6 +292,23 @@ $sizes: (
       --acp-kpi-card-value-size: #{list.nth($v, 7)};
       --acp-kpi-card-meta-size: #{list.nth($v, 8)};
     }
+  }
+
+  // Alignment
+  &--align-start {
+    --acp-kpi-card-justify: flex-start;
+  }
+
+  &--align-center {
+    --acp-kpi-card-justify: center;
+
+    text-align: center;
+  }
+
+  &--align-end {
+    --acp-kpi-card-justify: flex-end;
+
+    text-align: end;
   }
 
   // Colors

@@ -149,7 +149,8 @@ Metric card for dashboards. Numeric values and changes are formatted with
   color comes from the trend sentiment, not from the card `color`; set
   `lowerIsBetter` for costs, churn or error rates.
 - Other inputs: `subtitle`, `prefix`, `suffix`, `description`, `footer`,
-  `variant`, `color` (including `surface` and `custom`), `size`, `icon`,
+  `variant`, `color` (including `surface` and `custom`), `size`, `align`
+  (`start` | `center` | `end`), `showTrendIcon`, `icon`,
   `svgIcon`, `avatar`, `avatarInitials`, `progress`, `progressColor`, `loading`,
   `disabled`, `clickable`, `selected`, `routerLink`, `ariaLabel`,
   `menuAriaLabel` and `tooltip`. Output: `clicked` (click, Enter or Space).

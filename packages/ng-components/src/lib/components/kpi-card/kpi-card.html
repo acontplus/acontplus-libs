@@ -78,10 +78,11 @@
       </span>
       } @if (formattedDelta() !== null) {
       <span class="acp-kpi-card__delta" [class]="'acp-kpi-card__delta--' + sentiment()">
-        @if (trendConfig().icon) {
+        @if (showTrendIcon() && trendConfig().icon) {
         <mat-icon class="acp-kpi-card__trend-icon" aria-hidden="true">
           {{ trendConfig().icon }}
         </mat-icon>
+        } @if (trendConfig().ariaLabel) {
         <span class="cdk-visually-hidden">{{ trendConfig().ariaLabel }}</span>
         } {{ formattedDelta() }}
       </span>

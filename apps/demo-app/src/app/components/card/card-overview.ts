@@ -1,12 +1,18 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { AcpCard, AcpButton, DataGrid, DataGridColumn } from '@acontplus/ng-components';
+import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
+import {
+  ACP_CARD_SLOTS,
+  AcpCard,
+  AcpButton,
+  DataGrid,
+  DataGridColumn,
+} from '@acontplus/ng-components';
 import { MatIconModule } from '@angular/material/icon';
 import { DocHeading } from '../../shared/doc-heading/doc-heading';
 import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-card-overview',
-  imports: [AcpCard, AcpButton, DataGrid, MatIconModule, DocHeading, MatCardModule],
+  imports: [AcpCard, ACP_CARD_SLOTS, AcpButton, DataGrid, MatIconModule, DocHeading, MatCardModule],
   template: `
     <div class="docs-component-viewer-content">
       <app-doc-heading>Card</app-doc-heading>
@@ -20,58 +26,53 @@ import { MatCardModule } from '@angular/material/card';
 
       <h2>Basic Card</h2>
       <div class="docs-example-card">
-        <acp-card appearance="default" [elevation]="1">
-          <ng-template #title>Basic Card</ng-template>
-          <p>This is a basic card with default appearance and elevation 1.</p>
+        <acp-card title="Basic Card" subtitle="Plain string inputs">
+          <p>Title and subtitle as inputs; use slot directives only for rich content.</p>
         </acp-card>
       </div>
 
       <h2>Outlined Card</h2>
       <div class="docs-example-card">
-        <acp-card appearance="outlined" [elevation]="0">
-          <ng-template #title>Outlined Card</ng-template>
+        <acp-card appearance="outlined" title="Outlined Card">
           <p>This card has an outlined appearance with no elevation.</p>
         </acp-card>
       </div>
 
       <h2>Elevated Card</h2>
       <div class="docs-example-card">
-        <acp-card appearance="elevated" [elevation]="3">
-          <ng-template #title>Elevated Card</ng-template>
+        <acp-card appearance="elevated" [elevation]="3" title="Elevated Card">
           <p>This card has elevated appearance with higher elevation.</p>
         </acp-card>
       </div>
 
       <h2>Filled Card</h2>
       <div class="docs-example-card">
-        <acp-card appearance="filled" [elevation]="0">
-          <ng-template #title>Filled Card</ng-template>
+        <acp-card appearance="filled" title="Filled Card">
           <p>This card has a filled background with no elevation.</p>
         </acp-card>
       </div>
 
       <h2>Interactive Card</h2>
       <div class="docs-example-card">
-        <acp-card appearance="interactive" clickable="true" hover="true">
-          <ng-template #title>Interactive Card</ng-template>
-          <p>This card is clickable and has hover effects. Try clicking it!</p>
+        <acp-card clickable hoverable title="Interactive Card" (clicked)="clicks.set(clicks() + 1)">
+          <p>Clickable with mouse, Enter or Space. Clicks: {{ clicks() }}</p>
         </acp-card>
       </div>
 
       <h2>Product Card</h2>
       <div class="docs-example-card">
-        <acp-card appearance="elevated" [elevation]="2" [rounded]="true">
-          <ng-template #media>
-            <img
-              mat-card-image
-              src="https://via.placeholder.com/400x200/1b84ff/ffffff?text=Product+Image"
-              alt="Product"
-            />
+        <acp-card
+          [elevation]="2"
+          imageRatio="16:9"
+          actionsAlign="end"
+          title="Premium Widget"
+          subtitle="$99.99"
+        >
+          <ng-template acpCardMedia>
+            <img src="https://material.angular.dev/assets/img/examples/shiba2.jpg" alt="Product" />
           </ng-template>
-          <ng-template #title>Premium Widget</ng-template>
-          <ng-template #subtitle>$99.99</ng-template>
           <p>A high-quality widget with premium features and excellent performance.</p>
-          <ng-template #actions>
+          <ng-template acpCardActions>
             <acp-button appearance="filled" color="primary">Add to Cart</acp-button>
             <acp-button appearance="filled" color="info">Details</acp-button>
           </ng-template>
@@ -230,6 +231,13 @@ import { MatCardModule } from '@angular/material/card';
         </acp-card>
       </div>
 
+      <h2>Loading State</h2>
+      <div class="docs-example-card">
+        <acp-card loading title="Loading Card" subtitle="aria-busy + progress bar">
+          <p>Interaction is blocked while loading.</p>
+        </acp-card>
+      </div>
+
       <h2>Disabled State</h2>
       <div class="docs-example-card">
         <acp-card appearance="outlined" [elevation]="1" [rounded]="true" [disabled]="true">
@@ -243,7 +251,7 @@ import { MatCardModule } from '@angular/material/card';
 
       <h2>Compact Card</h2>
       <div class="docs-example-card">
-        <acp-card appearance="compact" [elevation]="0" [rounded]="true" padding="small">
+        <acp-card padding="small">
           <p style="margin: 0;">A compact card for tight spaces.</p>
         </acp-card>
       </div>
@@ -292,65 +300,65 @@ import { MatCardModule } from '@angular/material/card';
       <div class="docs-example-card">
         <h3>Primary</h3>
         <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px;">
-          <acp-card backgroundColor="primary" [rounded]="true" padding="small">
+          <acp-card color="primary" [rounded]="true" padding="small">
             <p style="margin: 0;">Primary</p>
           </acp-card>
-          <acp-card backgroundColor="primary-container" [rounded]="true" padding="small">
+          <acp-card color="primary-container" [rounded]="true" padding="small">
             <p style="margin: 0;">Primary Container</p>
           </acp-card>
         </div>
 
         <h3>Secondary</h3>
         <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px;">
-          <acp-card backgroundColor="secondary" [rounded]="true" padding="small">
+          <acp-card color="secondary" [rounded]="true" padding="small">
             <p style="margin: 0;">Secondary</p>
           </acp-card>
-          <acp-card backgroundColor="secondary-container" [rounded]="true" padding="small">
+          <acp-card color="secondary-container" [rounded]="true" padding="small">
             <p style="margin: 0;">Secondary Container</p>
           </acp-card>
         </div>
 
         <h3>Error</h3>
         <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px;">
-          <acp-card backgroundColor="error" [rounded]="true" padding="small">
+          <acp-card color="error" [rounded]="true" padding="small">
             <p style="margin: 0;">Error</p>
           </acp-card>
-          <acp-card backgroundColor="error-container" [rounded]="true" padding="small">
+          <acp-card color="error-container" [rounded]="true" padding="small">
             <p style="margin: 0;">Error Container</p>
           </acp-card>
         </div>
 
         <h3>Surfaces</h3>
         <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px;">
-          <acp-card backgroundColor="surface" [rounded]="true" padding="small">
+          <acp-card color="surface" [rounded]="true" padding="small">
             <p style="margin: 0;">Surface</p>
           </acp-card>
-          <acp-card backgroundColor="surface-variant" [rounded]="true" padding="small">
+          <acp-card color="surface-variant" [rounded]="true" padding="small">
             <p style="margin: 0;">Surface Variant</p>
           </acp-card>
-          <acp-card backgroundColor="surface-container-highest" [rounded]="true" padding="small">
+          <acp-card color="surface-container-highest" [rounded]="true" padding="small">
             <p style="margin: 0;">Surface Container Highest</p>
           </acp-card>
-          <acp-card backgroundColor="surface-container-high" [rounded]="true" padding="small">
+          <acp-card color="surface-container-high" [rounded]="true" padding="small">
             <p style="margin: 0;">Surface Container High</p>
           </acp-card>
-          <acp-card backgroundColor="surface-container" [rounded]="true" padding="small">
+          <acp-card color="surface-container" [rounded]="true" padding="small">
             <p style="margin: 0;">Surface Container</p>
           </acp-card>
-          <acp-card backgroundColor="surface-container-low" [rounded]="true" padding="small">
+          <acp-card color="surface-container-low" [rounded]="true" padding="small">
             <p style="margin: 0;">Surface Container Low</p>
           </acp-card>
-          <acp-card backgroundColor="surface-container-lowest" [rounded]="true" padding="small">
+          <acp-card color="surface-container-lowest" [rounded]="true" padding="small">
             <p style="margin: 0;">Surface Container Lowest</p>
           </acp-card>
-          <acp-card backgroundColor="inverse-surface" [rounded]="true" padding="small">
+          <acp-card color="inverse-surface" [rounded]="true" padding="small">
             <p style="margin: 0;">Inverse Surface</p>
           </acp-card>
         </div>
 
         <h3>Disabled</h3>
         <div style="display: flex; gap: 16px; flex-wrap: wrap;">
-          <acp-card backgroundColor="disabled-bg" [rounded]="true" padding="small">
+          <acp-card color="disabled-bg" [rounded]="true" padding="small">
             <p style="margin: 0;">Disabled</p>
           </acp-card>
         </div>
@@ -422,6 +430,8 @@ import { MatCardModule } from '@angular/material/card';
   ],
 })
 export class CardOverview {
+  readonly clicks = signal(0);
+
   users = [
     { name: 'John Doe', email: 'john@example.com', role: 'Admin', status: 'Active' },
     { name: 'Jane Smith', email: 'jane@example.com', role: 'User', status: 'Active' },

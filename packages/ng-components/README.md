@@ -75,6 +75,56 @@ bounds, and the `ngx-datex` behavior options. `MATERIAL_LIGHT_THEME`,
 
 ### Cards
 
+#### AcpCard
+
+Material Design 3 card built on `mat-card`. Props can be passed in three ways,
+from lowest to highest priority: injected defaults, plain inputs, and slot
+templates for rich content.
+
+```typescript
+import { ACP_CARD_SLOTS, AcpCard, provideAcpCardDefaults } from '@acontplus/ng-components';
+
+// app.config.ts (optional, application-wide defaults)
+providers: [provideAcpCardDefaults({ appearance: 'outlined', rounded: 12 })];
+
+@Component({
+  template: `
+    <acp-card
+      title="Order #1024"
+      subtitle="Pending"
+      color="surface-container"
+      imageRatio="16:9"
+      actionsAlign="end"
+      clickable
+      (clicked)="open()"
+    >
+      <ng-template acpCardMedia><img src="cover.jpg" alt="" /></ng-template>
+      <p>Card content goes here</p>
+      <ng-template acpCardActions><acp-button text="Pay" /></ng-template>
+    </acp-card>
+  `,
+  imports: [AcpCard, ACP_CARD_SLOTS],
+})
+export class OrderComponent {}
+```
+
+- Inputs: `title`, `subtitle`, `appearance` (`elevated` | `outlined` | `filled`),
+  `color`, `elevation` (0-5), `rounded` (`true` | `false` | px), `padding`
+  (`none` | `small` | `medium` | `large`), `hoverable`, `clickable`, `disabled`,
+  `loading`, `imageRatio`, `actionsAlign`, `fullHeight`, `fullWidth`,
+  `ariaLabel` and `passThrough` (per-section `class`/`style`).
+- Output: `clicked`, emitted on click, Enter or Space when `clickable`. Clicks on
+  actions or nested buttons/links are ignored.
+- Slots: `acpCardHeader`, `acpCardMedia`, `acpCardAvatar`, `acpCardTitle`,
+  `acpCardSubtitle`, `acpCardActions` and `acpCardFooter`. Slot templates win
+  over `title`/`subtitle`. Legacy `#title`-style template refs still work.
+- Styling hooks: `--acp-card-shape`, `--acp-card-elevation`, `--acp-card-padding`,
+  `--acp-card-container-color`, `--acp-card-on-color`, `--acp-card-subtitle-color`
+  and `--acp-card-outline-color`.
+- Deprecated: `backgroundColor` (use `color`), `hover` (use `hoverable`),
+  `outlined` (use `appearance="outlined"`), and the appearances `default`,
+  `interactive` and `compact`.
+
 #### DynamicCard
 
 Versatile card component wrapping Angular Material's mat-card with additional functionality.

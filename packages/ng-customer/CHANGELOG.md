@@ -1,3 +1,9 @@
+## 3.0.6 (2026-11-06)
+
+### 🧱 Updated Dependencies
+
+- Updated ng-components to 5.0.0
+
 ## 3.0.5 (2026-11-05)
 
 ### 🩹 Fixes

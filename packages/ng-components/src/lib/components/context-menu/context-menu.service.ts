@@ -31,6 +31,7 @@ export class AcpContextMenuService {
   private readonly menuItems = signal<AcpContextMenuItem[]>([]);
   private readonly contextData = signal<unknown>(null);
   private readonly escapeCloses = signal(true);
+  private outsideClickCloses = true;
   private openOwner: unknown = null;
 
   /** @internal Items rendered by the open panel. */
@@ -45,6 +46,10 @@ export class AcpContextMenuService {
     owner: unknown;
   }>();
   private readonly closed$ = new Subject<unknown>();
+
+  constructor() {
+    this.listenForOutsideClicks();
+  }
 
   /**
    * Open a context menu at the specified position
@@ -66,13 +71,12 @@ export class AcpContextMenuService {
     // Create overlay reference
     const overlayRef = this.createOverlay(config);
 
-    overlayRef.backdropClick().subscribe(() => this.closeOverlay(overlayRef));
-
     // Store before attaching so the panel reads the new items and data
     this.openMenuRef.set(overlayRef);
     this.menuItems.set(items);
     this.contextData.set(config.data);
     this.escapeCloses.set(config.closeOnEscape !== false);
+    this.outsideClickCloses = config.closeOnOutsideClick !== false;
     this.openOwner = owner ?? null;
 
     // Create and attach component
@@ -83,22 +87,6 @@ export class AcpContextMenuService {
         this.createInjector(items, config),
       ),
     );
-
-    // Right-clicking outside the open menu closes it and forwards the event to the element below
-    overlayRef.backdropElement?.addEventListener('contextmenu', event => {
-      event.preventDefault();
-      this.ngZone.run(() => {
-        this.closeOverlay(overlayRef);
-        this.document.elementFromPoint(event.clientX, event.clientY)?.dispatchEvent(
-          new MouseEvent('contextmenu', {
-            bubbles: true,
-            cancelable: true,
-            clientX: event.clientX,
-            clientY: event.clientY,
-          }),
-        );
-      });
-    });
 
     // Return menu reference
     return this.createMenuRef(overlayRef);
@@ -197,8 +185,6 @@ export class AcpContextMenuService {
 
     return this.overlay.create({
       positionStrategy,
-      hasBackdrop: config.closeOnOutsideClick !== false,
-      backdropClass: 'cdk-overlay-transparent-backdrop',
       panelClass: panelClasses,
       scrollStrategy: this.overlay.scrollStrategies.block(),
       maxHeight: '80vh',
@@ -285,5 +271,27 @@ export class AcpContextMenuService {
       getData: () => this.contextData(),
       isOpen: () => overlayRef.hasAttached(),
     };
+  }
+
+  /**
+   * Single outside-click mechanism. A backdrop is not used: CDK renders overlays as popovers, so
+   * the backdrop does not cover the page, and without it a right-click on another element reaches
+   * that element directly (opening its own menu).
+   */
+  private listenForOutsideClicks(): void {
+    const onOutside = (event: Event) => {
+      const menuRef = this.openMenuRef();
+      if (
+        menuRef &&
+        this.outsideClickCloses &&
+        !menuRef.overlayElement.contains(event.target as Node)
+      ) {
+        this.ngZone.run(() => this.closeAll());
+      }
+    };
+    this.ngZone.runOutsideAngular(() => {
+      this.document.addEventListener('click', onOutside);
+      this.document.addEventListener('contextmenu', onOutside);
+    });
   }
 }

@@ -1,4 +1,4 @@
-import { Component, input, output, inject, OnDestroy } from '@angular/core';
+import { Component, effect, input, output, inject, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import {
@@ -50,13 +50,32 @@ export class AcpContextMenu implements OnDestroy {
   readonly itemSelected = output<AcpContextMenuItemContext>();
 
   constructor() {
-    // Subscribe to item selection
+    // Only react to menus opened by this instance
     this.contextMenuService
-      .getItemSelected$()
+      .itemSelectedFor$(this)
       .pipe(takeUntil(this.destroy$))
-      .subscribe(context => {
-        this.itemSelected.emit(context);
+      .subscribe(context => this.itemSelected.emit(context));
+    this.contextMenuService
+      .closedFor$(this)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.menuRef = null;
+        this.hide.emit();
       });
+
+    // Open the menu when the target element is right-clicked
+    effect(onCleanup => {
+      const target = this.target();
+      if (!target) {
+        return;
+      }
+      const listener = (event: MouseEvent) => {
+        event.preventDefault();
+        this.show(event);
+      };
+      target.addEventListener('contextmenu', listener);
+      onCleanup(() => target.removeEventListener('contextmenu', listener));
+    });
   }
 
   ngOnDestroy(): void {
@@ -76,12 +95,16 @@ export class AcpContextMenu implements OnDestroy {
     const y = event.clientY;
 
     this.contextMenuService
-      .open(this.model(), {
-        x,
-        y,
-        data: data || null,
-        element: this.target(),
-      })
+      .open(
+        this.model(),
+        {
+          x,
+          y,
+          data: data ?? null,
+          element: this.target(),
+        },
+        this,
+      )
       .then(menuRef => {
         this.menuRef = menuRef;
       });
@@ -96,12 +119,16 @@ export class AcpContextMenu implements OnDestroy {
   showForElement(element: HTMLElement, data?: unknown): void {
     const rect = element.getBoundingClientRect();
     this.contextMenuService
-      .open(this.model(), {
-        x: rect.right,
-        y: rect.top,
-        data: data || null,
-        element,
-      })
+      .open(
+        this.model(),
+        {
+          x: rect.right,
+          y: rect.top,
+          data: data ?? null,
+          element,
+        },
+        this,
+      )
       .then(menuRef => {
         this.menuRef = menuRef;
       });
@@ -111,11 +138,7 @@ export class AcpContextMenu implements OnDestroy {
    * Close the context menu
    */
   close(): void {
-    if (this.menuRef) {
-      this.menuRef.close();
-      this.menuRef = null;
-      this.hide.emit();
-    }
+    this.menuRef?.close();
   }
 
   /**

@@ -2,7 +2,8 @@ import { Service, inject, signal, NgZone, Type, Injector, InjectionToken } from 
 import { Overlay, OverlayRef, PositionStrategy } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
 import { DOCUMENT } from '@angular/common';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import {
   AcpContextMenuItem,
   AcpContextMenuOpenConfig,
@@ -29,9 +30,21 @@ export class AcpContextMenuService {
   private readonly openMenuRef = signal<OverlayRef | null>(null);
   private readonly menuItems = signal<AcpContextMenuItem[]>([]);
   private readonly contextData = signal<unknown>(null);
+  private readonly escapeCloses = signal(true);
+  private openOwner: unknown = null;
 
-  // Subject for menu item selection
-  private readonly itemSelected$ = new Subject<AcpContextMenuItemContext>();
+  /** @internal Items rendered by the open panel. */
+  readonly activeItems = this.menuItems.asReadonly();
+  /** @internal Data passed to the open panel. */
+  readonly activeData = this.contextData.asReadonly();
+  /** @internal Whether Escape closes the open panel. */
+  readonly closeOnEscape = this.escapeCloses.asReadonly();
+
+  private readonly itemSelected$ = new Subject<{
+    context: AcpContextMenuItemContext;
+    owner: unknown;
+  }>();
+  private readonly closed$ = new Subject<unknown>();
 
   constructor() {
     // Auto-close menu when clicking outside
@@ -44,6 +57,7 @@ export class AcpContextMenuService {
   async open(
     items: AcpContextMenuItem[],
     config: AcpContextMenuOpenConfig,
+    owner?: unknown,
   ): Promise<AcpContextMenuRef> {
     // Close any existing menu
     this.closeAll();
@@ -51,8 +65,20 @@ export class AcpContextMenuService {
     // Dynamically import the component to avoid circular dependency
     const { AcpContextMenuPanel } = await import('./context-menu-panel');
 
+    // A newer menu may have been opened while the panel was loading
+    this.closeAll();
+
     // Create overlay reference
     const overlayRef = this.createOverlay(config);
+
+    overlayRef.backdropClick().subscribe(() => this.closeOverlay(overlayRef));
+
+    // Store before attaching so the panel reads the new items and data
+    this.openMenuRef.set(overlayRef);
+    this.menuItems.set(items);
+    this.contextData.set(config.data);
+    this.escapeCloses.set(config.closeOnEscape !== false);
+    this.openOwner = owner ?? null;
 
     // Create and attach component
     overlayRef.attach(
@@ -63,10 +89,19 @@ export class AcpContextMenuService {
       ),
     );
 
-    // Store reference
-    this.openMenuRef.set(overlayRef);
-    this.menuItems.set(items);
-    this.contextData.set(config.data);
+    // Right-clicking outside the open menu closes it and forwards the event to the element below
+    overlayRef.backdropElement?.addEventListener('contextmenu', event => {
+      event.preventDefault();
+      this.ngZone.run(() => this.closeOverlay(overlayRef));
+      this.document.elementFromPoint(event.clientX, event.clientY)?.dispatchEvent(
+        new MouseEvent('contextmenu', {
+          bubbles: true,
+          cancelable: true,
+          clientX: event.clientX,
+          clientY: event.clientY,
+        }),
+      );
+    });
 
     // Return menu reference
     return this.createMenuRef(overlayRef);
@@ -78,8 +113,19 @@ export class AcpContextMenuService {
   closeAll(): void {
     const menuRef = this.openMenuRef();
     if (menuRef) {
+      const owner = this.openOwner;
       menuRef.dispose();
       this.openMenuRef.set(null);
+      this.openOwner = null;
+      this.closed$.next(owner);
+    }
+  }
+
+  private closeOverlay(overlayRef: OverlayRef): void {
+    if (this.openMenuRef() === overlayRef) {
+      this.closeAll();
+    } else {
+      overlayRef.dispose();
     }
   }
 
@@ -93,15 +139,35 @@ export class AcpContextMenuService {
   /**
    * Get the item selection subject
    */
-  getItemSelected$() {
-    return this.itemSelected$.asObservable();
+  getItemSelected$(): Observable<AcpContextMenuItemContext> {
+    return this.itemSelected$.pipe(map(({ context }) => context));
+  }
+
+  /**
+   * Item selections of menus opened by the given owner
+   */
+  itemSelectedFor$(owner: unknown): Observable<AcpContextMenuItemContext> {
+    return this.itemSelected$.pipe(
+      filter(event => event.owner === owner),
+      map(({ context }) => context),
+    );
+  }
+
+  /**
+   * Emits when a menu opened by the given owner closes, for any reason
+   */
+  closedFor$(owner: unknown): Observable<void> {
+    return this.closed$.pipe(
+      filter(closedOwner => closedOwner === owner),
+      map(() => undefined),
+    );
   }
 
   /**
    * Emit item selection
    */
   selectItem(context: AcpContextMenuItemContext): void {
-    this.itemSelected$.next(context);
+    this.itemSelected$.next({ context, owner: this.openOwner });
 
     // Execute command if provided
     if (context.item.command) {
@@ -207,16 +273,17 @@ export class AcpContextMenuService {
    */
   private createMenuRef(overlayRef: OverlayRef): AcpContextMenuRef {
     return {
-      close: () => {
-        overlayRef.dispose();
-        this.openMenuRef.set(null);
-      },
+      close: () => this.closeOverlay(overlayRef),
       updateItems: (newItems: AcpContextMenuItem[]) => {
-        this.menuItems.set(newItems);
+        if (this.openMenuRef() === overlayRef) {
+          this.menuItems.set(newItems);
+        }
       },
       getItems: () => this.menuItems(),
       updateData: (data: unknown) => {
-        this.contextData.set(data);
+        if (this.openMenuRef() === overlayRef) {
+          this.contextData.set(data);
+        }
       },
       getData: () => this.contextData(),
       isOpen: () => overlayRef.hasAttached(),

@@ -50,8 +50,16 @@ export class AcpContextMenuPanel implements OnInit, OnDestroy {
   @ViewChild('menuContainer', { read: ElementRef }) menuContainer?: ElementRef;
 
   // Input signals - initialized from injected tokens
-  items = signal<AcpContextMenuItem[]>(inject(CONTEXT_MENU_ITEMS, { optional: true }) || []);
-  contextData = signal<unknown>(inject(CONTEXT_MENU_DATA, { optional: true }) || null);
+  private readonly initialItems = inject(CONTEXT_MENU_ITEMS, { optional: true }) ?? [];
+  private readonly initialData = inject(CONTEXT_MENU_DATA, { optional: true }) ?? null;
+
+  // Read from the service so AcpContextMenuRef.updateItems/updateData reach the open panel
+  items = computed(() =>
+    this.contextMenuService.isOpen() ? this.contextMenuService.activeItems() : this.initialItems,
+  );
+  contextData = computed(() =>
+    this.contextMenuService.isOpen() ? this.contextMenuService.activeData() : this.initialData,
+  );
 
   // State signals
   selectedIndex = signal<number>(-1);
@@ -104,8 +112,10 @@ export class AcpContextMenuPanel implements OnInit, OnDestroy {
         this.activateSelected();
         break;
       case 'Escape':
-        event.preventDefault();
-        this.contextMenuService.closeAll();
+        if (this.contextMenuService.closeOnEscape()) {
+          event.preventDefault();
+          this.contextMenuService.closeAll();
+        }
         break;
       case 'Home':
         event.preventDefault();
@@ -130,9 +140,8 @@ export class AcpContextMenuPanel implements OnInit, OnDestroy {
     }
 
     if (item.children && item.children.length > 0) {
-      this.expandedIndex.set(
-        this.expandedIndex() === this.items().indexOf(item) ? -1 : this.items().indexOf(item),
-      );
+      const index = this.visibleItems().indexOf(item);
+      this.expandedIndex.set(this.expandedIndex() === index ? -1 : index);
       return;
     }
 
@@ -175,39 +184,39 @@ export class AcpContextMenuPanel implements OnInit, OnDestroy {
     };
   }
 
+  private isSelectable(item: AcpContextMenuItem | undefined): boolean {
+    return !!item && !item.separator && !item.disabled;
+  }
+
   /**
-   * Select next item
+   * Move the selection to the next selectable item in the given direction, wrapping around
    */
+  private moveSelection(from: number, direction: 1 | -1): void {
+    const items = this.visibleItems();
+    for (let step = 1; step <= items.length; step++) {
+      const index = (((from + direction * step) % items.length) + items.length) % items.length;
+      if (this.isSelectable(items[index])) {
+        this.selectedIndex.set(index);
+        return;
+      }
+    }
+  }
+
   private selectNext(): void {
-    const items = this.visibleItems();
-    const currentIndex = this.selectedIndex();
-    const nextIndex = currentIndex < items.length - 1 ? currentIndex + 1 : 0;
-    this.selectedIndex.set(nextIndex);
+    this.moveSelection(this.selectedIndex(), 1);
   }
 
-  /**
-   * Select previous item
-   */
   private selectPrevious(): void {
-    const items = this.visibleItems();
-    const currentIndex = this.selectedIndex();
-    const prevIndex = currentIndex > 0 ? currentIndex - 1 : items.length - 1;
-    this.selectedIndex.set(prevIndex);
+    const current = this.selectedIndex();
+    this.moveSelection(current < 0 ? 0 : current, -1);
   }
 
-  /**
-   * Select first item
-   */
   private selectFirst(): void {
-    this.selectedIndex.set(0);
+    this.moveSelection(-1, 1);
   }
 
-  /**
-   * Select last item
-   */
   private selectLast(): void {
-    const items = this.visibleItems();
-    this.selectedIndex.set(Math.max(0, items.length - 1));
+    this.moveSelection(this.visibleItems().length, -1);
   }
 
   /**

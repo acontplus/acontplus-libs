@@ -8,6 +8,9 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
 import {
+  AcpContextMenu,
+  AcpContextMenuItem,
+  AcpContextMenuItemContext,
   DataGrid,
   DataGridColumn,
   DataGridRowClassFormatter,
@@ -39,6 +42,7 @@ interface DemoData {
     MatIconModule,
     MatButtonToggleModule,
     DataGrid,
+    AcpContextMenu,
     DocHeading,
     CodeExample,
   ],
@@ -253,6 +257,28 @@ interface DemoData {
       </mat-card>
       <app-code-example [code]="sizeCode" [language]="'html'" />
 
+      <!-- Row Context Menu -->
+      <h2>Row Context Menu</h2>
+      <mat-card class="example-card">
+        <mat-card-content>
+          <p class="instruction">Right-click a row to open its actions</p>
+          <acp-data-grid
+            [data]="demoData.slice(0, 5)"
+            [columns]="basicColumns"
+            (rowContextMenu)="onRowContextMenu($event, rowMenu)"
+          />
+          <acp-contextmenu
+            #rowMenu
+            [model]="rowMenuItems"
+            (itemSelected)="onRowMenuSelected($event)"
+          />
+          @if (lastRowAction()) {
+            <p class="cell-info">{{ lastRowAction() }}</p>
+          }
+        </mat-card-content>
+      </mat-card>
+      <app-code-example [code]="rowContextMenuCode" [language]="'typescript'" />
+
       <!-- Cell Selection -->
       <h2>Cell Selection</h2>
       <mat-card class="example-card">
@@ -377,6 +403,13 @@ export class DataGridExamples {
   highlightedIndex = signal(-1);
   focusedIndex = signal(-1);
   gridSize = signal<DataGridSize>('medium');
+  lastRowAction = signal('');
+  rowMenuItems: AcpContextMenuItem[] = [
+    { id: 'view', label: 'View', icon: 'visibility' },
+    { id: 'edit', label: 'Edit', icon: 'edit' },
+    { separator: true },
+    { id: 'delete', label: 'Delete', icon: 'delete', danger: true },
+  ];
   sizeOptions: DataGridSize[] = ['small', 'medium', 'large'];
 
   // Pagination signals
@@ -551,6 +584,18 @@ export class DataGridExamples {
     );
   }
 
+  onRowContextMenu(
+    { event, rowData }: { event: MouseEvent; rowData: DemoData },
+    menu: AcpContextMenu,
+  ): void {
+    event.preventDefault();
+    menu.show(event, rowData);
+  }
+
+  onRowMenuSelected({ item, data }: AcpContextMenuItemContext): void {
+    this.lastRowAction.set(`${item.label}: ${(data as DemoData).name}`);
+  }
+
   onFocusedRowChange(event: { row: DemoData; index: number }): void {
     this.focusedIndex.set(event.index);
     this.highlightedIndex.set(event.index);
@@ -716,6 +761,30 @@ rowClassFormatter = {
   [expansionTemplate]="expansionTpl"
   [showPaginator]="true"
 />`;
+
+  rowContextMenuCode = `// Row Context Menu
+<acp-data-grid
+  [data]="data"
+  [columns]="columns"
+  (rowContextMenu)="onRowContextMenu($event, rowMenu)"
+/>
+<acp-contextmenu #rowMenu [model]="rowMenuItems" (itemSelected)="onRowMenuSelected($event)" />
+
+rowMenuItems: AcpContextMenuItem[] = [
+  { id: 'view', label: 'View', icon: 'visibility' },
+  { id: 'edit', label: 'Edit', icon: 'edit' },
+  { separator: true },
+  { id: 'delete', label: 'Delete', icon: 'delete', danger: true },
+];
+
+onRowContextMenu({ event, rowData }: { event: MouseEvent; rowData: T }, menu: AcpContextMenu) {
+  event.preventDefault();
+  menu.show(event, rowData);
+}
+
+onRowMenuSelected({ item, data }: AcpContextMenuItemContext) {
+  console.log(item.id, data);
+}`;
 
   cellSelectionCode = `// Cell Selection
 <acp-data-grid

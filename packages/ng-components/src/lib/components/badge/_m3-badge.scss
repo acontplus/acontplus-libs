@@ -19,7 +19,12 @@
       $color-tokens,
       (
         badge-#{$name}-fg: light-dark(map.get($palette, 95), map.get($palette, 20)),
-        badge-#{$name}-bg: light-dark(map.get($palette, 40), map.get($palette, 80))
+        // Material's semantic palettes are very saturated at tone 80; soften them in dark mode
+        // (same treatment as `acp-alert`)
+        badge-#{$name}-bg: light-dark(
+            map.get($palette, 40),
+            color-mix(in oklab, #{map.get($palette, 80)} 70%, white)
+          )
       )
     );
   }

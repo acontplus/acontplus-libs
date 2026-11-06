@@ -705,8 +705,11 @@ export class DataGrid implements AfterViewInit, OnChanges {
     const rows = this.renderedRows;
     if (this._focusFirstRowOnRender || this._activateFirstRowOnDataChange) {
       this._activateFirstRowAfterRender();
-    } else if (!rows.includes(this._activeRow())) {
-      this._activeRow.set(null);
+    } else {
+      const activeRow = this._activeRow();
+      if (activeRow !== null && !rows.includes(activeRow)) {
+        this._activeRow.set(null);
+      }
     }
   }
 

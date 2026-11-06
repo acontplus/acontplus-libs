@@ -46,11 +46,6 @@ export class AcpContextMenuService {
   }>();
   private readonly closed$ = new Subject<unknown>();
 
-  constructor() {
-    // Auto-close menu when clicking outside
-    this.setupOutsideClickHandler();
-  }
-
   /**
    * Open a context menu at the specified position
    */
@@ -92,15 +87,17 @@ export class AcpContextMenuService {
     // Right-clicking outside the open menu closes it and forwards the event to the element below
     overlayRef.backdropElement?.addEventListener('contextmenu', event => {
       event.preventDefault();
-      this.ngZone.run(() => this.closeOverlay(overlayRef));
-      this.document.elementFromPoint(event.clientX, event.clientY)?.dispatchEvent(
-        new MouseEvent('contextmenu', {
-          bubbles: true,
-          cancelable: true,
-          clientX: event.clientX,
-          clientY: event.clientY,
-        }),
-      );
+      this.ngZone.run(() => {
+        this.closeOverlay(overlayRef);
+        this.document.elementFromPoint(event.clientX, event.clientY)?.dispatchEvent(
+          new MouseEvent('contextmenu', {
+            bubbles: true,
+            cancelable: true,
+            clientX: event.clientX,
+            clientY: event.clientY,
+          }),
+        );
+      });
     });
 
     // Return menu reference
@@ -288,32 +285,5 @@ export class AcpContextMenuService {
       getData: () => this.contextData(),
       isOpen: () => overlayRef.hasAttached(),
     };
-  }
-
-  /**
-   * Setup handler for closing menu on outside click
-   */
-  private setupOutsideClickHandler(): void {
-    this.ngZone.runOutsideAngular(() => {
-      this.document.addEventListener('click', (event: MouseEvent) => {
-        const menuRef = this.openMenuRef();
-        if (menuRef && !this.isClickInsideMenu(event)) {
-          this.ngZone.run(() => {
-            this.closeAll();
-          });
-        }
-      });
-    });
-  }
-
-  /**
-   * Check if click is inside the menu
-   */
-  private isClickInsideMenu(event: MouseEvent): boolean {
-    const menuRef = this.openMenuRef();
-    if (!menuRef) return false;
-
-    const menuElement = menuRef.overlayElement;
-    return menuElement.contains(event.target as Node);
   }
 }

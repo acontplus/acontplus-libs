@@ -412,9 +412,9 @@ export class DataGridApi {
     // Size
     {
       name: 'size',
-      type: "'small' | 'medium' | 'normal'",
-      description: 'Table density',
-      default: "'normal'",
+      type: "'small' | 'medium' | 'large'",
+      description: "Table density ('normal' is deprecated, alias of 'medium')",
+      default: "'medium'",
     },
 
     // Summary

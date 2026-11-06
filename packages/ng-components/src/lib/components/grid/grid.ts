@@ -19,6 +19,7 @@ import {
   OnChanges,
   ChangeDetectorRef,
   Input,
+  computed,
 } from '@angular/core';
 import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
 
@@ -61,6 +62,7 @@ import {
   DataGridDefaultOptions,
   DataGridRowClassFormatter,
   DataGridRowSelectionFormatter,
+  DataGridSize,
 } from './interfaces';
 import { AcpGridColClassPipe, AcpGridRowClassPipe } from './data-grid.pipes';
 import { _animationsDisabled, ThemePalette } from '@angular/material/core';
@@ -115,16 +117,20 @@ export const DATA_GRID_DEFAULT_OPTIONS = new InjectionToken<DataGridDefaultOptio
   host: {
     class: 'acp-grid',
     '[class.acp-grid-animations-enabled]': '!_animationsDisabled',
-    '[class.acp-grid-size-small]': 'size() === "small"',
-    '[class.acp-grid-size-medium]': 'size() === "medium"',
-    '[class.acp-grid-size-normal]': 'size() === "normal"',
+    '[class.acp-grid-size-small]': '_size() === "small"',
+    '[class.acp-grid-size-medium]': '_size() === "medium"',
+    '[class.acp-grid-size-large]': '_size() === "large"',
     '[attr.tabindex]': '0',
   },
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DataGrid implements AfterViewInit, OnChanges {
-  size = input<'small' | 'medium' | 'normal'>('normal');
+  /** Densidad de la tabla. `'normal'` está obsoleto y equivale a `'medium'`. */
+  size = input<DataGridSize | 'normal'>('medium');
+  protected readonly _size = computed<DataGridSize>(() =>
+    this.size() === 'normal' ? 'medium' : (this.size() as DataGridSize),
+  );
   protected _animationsDisabled = _animationsDisabled();
   private readonly _utils = inject(DataGridUtils);
   private readonly _changeDetectorRef = inject(ChangeDetectorRef);

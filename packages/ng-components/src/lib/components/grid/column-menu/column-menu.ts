@@ -60,7 +60,7 @@ export class AcpGridColumnMenu {
 
   @Input()
   get buttonText() {
-    const defaultText = `Columns ${this.selectableChecked === 'show' ? 'Shown' : 'Hidden'}`;
+    const defaultText = this.selectableChecked === 'show' ? 'Columnas' : 'Columnas ocultas';
     return this._buttonText ? this._buttonText : defaultText;
   }
   set buttonText(value: string) {

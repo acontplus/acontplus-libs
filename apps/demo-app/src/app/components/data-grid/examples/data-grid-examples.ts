@@ -4,6 +4,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
 import {
@@ -11,6 +12,7 @@ import {
   DataGridColumn,
   DataGridRowClassFormatter,
   DataGridRowSelectionFormatter,
+  DataGridSize,
 } from '@acontplus/ng-components';
 import { DocHeading } from '../../../shared/doc-heading/doc-heading';
 import { CodeExample } from '../../../shared/code-example/code-example';
@@ -35,6 +37,7 @@ interface DemoData {
     MatButtonModule,
     MatChipsModule,
     MatIconModule,
+    MatButtonToggleModule,
     DataGrid,
     DocHeading,
     CodeExample,
@@ -219,6 +222,37 @@ interface DemoData {
       </mat-card>
       <app-code-example [code]="toolbarCode" [language]="'html'" />
 
+      <!-- Size Variants -->
+      <h2>Size Variants</h2>
+      <mat-card class="example-card">
+        <mat-card-content>
+          <mat-button-toggle-group
+            class="size-toggle"
+            aria-label="Grid size"
+            [value]="gridSize()"
+            (change)="gridSize.set($event.value)"
+          >
+            @for (option of sizeOptions; track option) {
+              <mat-button-toggle [value]="option">{{ option }}</mat-button-toggle>
+            }
+          </mat-button-toggle-group>
+          <acp-data-grid
+            [data]="demoData"
+            [columns]="basicColumns"
+            [size]="gridSize()"
+            [showToolbar]="true"
+            [showColumnMenuButton]="true"
+            [rowSelectable]="true"
+            [multiSelectable]="true"
+            [showPaginator]="true"
+            [pageSize]="5"
+            [pageSizeOptions]="[5, 10]"
+            toolbarTitle="Products"
+          />
+        </mat-card-content>
+      </mat-card>
+      <app-code-example [code]="sizeCode" [language]="'html'" />
+
       <!-- Cell Selection -->
       <h2>Cell Selection</h2>
       <mat-card class="example-card">
@@ -280,6 +314,10 @@ interface DemoData {
         border-radius: 4px;
       }
 
+      .size-toggle {
+        margin-bottom: 1rem;
+      }
+
       .reload-section {
         display: flex;
         justify-content: flex-end;
@@ -338,6 +376,8 @@ export class DataGridExamples {
   lastCellClick = signal<string>('');
   highlightedIndex = signal(-1);
   focusedIndex = signal(-1);
+  gridSize = signal<DataGridSize>('medium');
+  sizeOptions: DataGridSize[] = ['small', 'medium', 'large'];
 
   // Pagination signals
   currentPageIndex = signal(0);
@@ -627,8 +667,6 @@ rowClassFormatter = {
 <acp-data-grid
   [data]="data"
   [columns]="columns"
-  [expandable]="true"
-  [expansionTemplate]="expansionTpl"
   [closeOthersOnExpand]="true"
 />
 
@@ -664,6 +702,19 @@ rowClassFormatter = {
   [showToolbar]="true"
   [showColumnMenuButton]="true"
   toolbarTitle="Products"
+/>`;
+
+  sizeCode = `<!-- size: 'small' | 'medium' (default) | 'large' -->
+<acp-data-grid
+  [data]="data"
+  [columns]="columns"
+  size="small"
+  [showToolbar]="true"
+  [showColumnMenuButton]="true"
+  [rowSelectable]="true"
+  [expandable]="true"
+  [expansionTemplate]="expansionTpl"
+  [showPaginator]="true"
 />`;
 
   cellSelectionCode = `// Cell Selection

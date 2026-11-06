@@ -225,14 +225,14 @@ btn.iif(rowData)) { @if (btn.children && btn.children.length > 0) { @if (btn.typ
               _value
                 | currency
                   : $safeNavigationMigration(colDef.typeParameter?.currencyCode)
-                  : $safeNavigationMigration(colDef.typeParameter?.display)
+                  : (colDef.typeParameter?.display ?? 'symbol')
                   : $safeNavigationMigration(colDef.typeParameter?.digitsInfo)
                   : $safeNavigationMigration(colDef.typeParameter?.locale)
             )
           "
 >
   {{ _getText( _value | currency : $safeNavigationMigration(colDef.typeParameter?.currencyCode) :
-  $safeNavigationMigration(colDef.typeParameter?.display) :
+  (colDef.typeParameter?.display ?? 'symbol') :
   $safeNavigationMigration(colDef.typeParameter?.digitsInfo) :
   $safeNavigationMigration(colDef.typeParameter?.locale) ) }}
 </span>

@@ -2,7 +2,8 @@ import { Service, inject, signal, NgZone, Type, Injector, InjectionToken } from 
 import { Overlay, OverlayRef, PositionStrategy } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
 import { DOCUMENT } from '@angular/common';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import {
   AcpContextMenuItem,
   AcpContextMenuOpenConfig,
@@ -29,13 +30,25 @@ export class AcpContextMenuService {
   private readonly openMenuRef = signal<OverlayRef | null>(null);
   private readonly menuItems = signal<AcpContextMenuItem[]>([]);
   private readonly contextData = signal<unknown>(null);
+  private readonly escapeCloses = signal(true);
+  private outsideClickCloses = true;
+  private openOwner: unknown = null;
 
-  // Subject for menu item selection
-  private readonly itemSelected$ = new Subject<AcpContextMenuItemContext>();
+  /** @internal Items rendered by the open panel. */
+  readonly activeItems = this.menuItems.asReadonly();
+  /** @internal Data passed to the open panel. */
+  readonly activeData = this.contextData.asReadonly();
+  /** @internal Whether Escape closes the open panel. */
+  readonly closeOnEscape = this.escapeCloses.asReadonly();
+
+  private readonly itemSelected$ = new Subject<{
+    context: AcpContextMenuItemContext;
+    owner: unknown;
+  }>();
+  private readonly closed$ = new Subject<unknown>();
 
   constructor() {
-    // Auto-close menu when clicking outside
-    this.setupOutsideClickHandler();
+    this.listenForOutsideClicks();
   }
 
   /**
@@ -44,6 +57,7 @@ export class AcpContextMenuService {
   async open(
     items: AcpContextMenuItem[],
     config: AcpContextMenuOpenConfig,
+    owner?: unknown,
   ): Promise<AcpContextMenuRef> {
     // Close any existing menu
     this.closeAll();
@@ -51,8 +65,19 @@ export class AcpContextMenuService {
     // Dynamically import the component to avoid circular dependency
     const { AcpContextMenuPanel } = await import('./context-menu-panel');
 
+    // A newer menu may have been opened while the panel was loading
+    this.closeAll();
+
     // Create overlay reference
     const overlayRef = this.createOverlay(config);
+
+    // Store before attaching so the panel reads the new items and data
+    this.openMenuRef.set(overlayRef);
+    this.menuItems.set(items);
+    this.contextData.set(config.data);
+    this.escapeCloses.set(config.closeOnEscape !== false);
+    this.outsideClickCloses = config.closeOnOutsideClick !== false;
+    this.openOwner = owner ?? null;
 
     // Create and attach component
     overlayRef.attach(
@@ -62,11 +87,6 @@ export class AcpContextMenuService {
         this.createInjector(items, config),
       ),
     );
-
-    // Store reference
-    this.openMenuRef.set(overlayRef);
-    this.menuItems.set(items);
-    this.contextData.set(config.data);
 
     // Return menu reference
     return this.createMenuRef(overlayRef);
@@ -78,8 +98,19 @@ export class AcpContextMenuService {
   closeAll(): void {
     const menuRef = this.openMenuRef();
     if (menuRef) {
+      const owner = this.openOwner;
       menuRef.dispose();
       this.openMenuRef.set(null);
+      this.openOwner = null;
+      this.closed$.next(owner);
+    }
+  }
+
+  private closeOverlay(overlayRef: OverlayRef): void {
+    if (this.openMenuRef() === overlayRef) {
+      this.closeAll();
+    } else {
+      overlayRef.dispose();
     }
   }
 
@@ -93,15 +124,35 @@ export class AcpContextMenuService {
   /**
    * Get the item selection subject
    */
-  getItemSelected$() {
-    return this.itemSelected$.asObservable();
+  getItemSelected$(): Observable<AcpContextMenuItemContext> {
+    return this.itemSelected$.pipe(map(({ context }) => context));
+  }
+
+  /**
+   * Item selections of menus opened by the given owner
+   */
+  itemSelectedFor$(owner: unknown): Observable<AcpContextMenuItemContext> {
+    return this.itemSelected$.pipe(
+      filter(event => event.owner === owner),
+      map(({ context }) => context),
+    );
+  }
+
+  /**
+   * Emits when a menu opened by the given owner closes, for any reason
+   */
+  closedFor$(owner: unknown): Observable<void> {
+    return this.closed$.pipe(
+      filter(closedOwner => closedOwner === owner),
+      map(() => undefined),
+    );
   }
 
   /**
    * Emit item selection
    */
   selectItem(context: AcpContextMenuItemContext): void {
-    this.itemSelected$.next(context);
+    this.itemSelected$.next({ context, owner: this.openOwner });
 
     // Execute command if provided
     if (context.item.command) {
@@ -134,8 +185,6 @@ export class AcpContextMenuService {
 
     return this.overlay.create({
       positionStrategy,
-      hasBackdrop: config.closeOnOutsideClick !== false,
-      backdropClass: 'cdk-overlay-transparent-backdrop',
       panelClass: panelClasses,
       scrollStrategy: this.overlay.scrollStrategies.block(),
       maxHeight: '80vh',
@@ -207,16 +256,17 @@ export class AcpContextMenuService {
    */
   private createMenuRef(overlayRef: OverlayRef): AcpContextMenuRef {
     return {
-      close: () => {
-        overlayRef.dispose();
-        this.openMenuRef.set(null);
-      },
+      close: () => this.closeOverlay(overlayRef),
       updateItems: (newItems: AcpContextMenuItem[]) => {
-        this.menuItems.set(newItems);
+        if (this.openMenuRef() === overlayRef) {
+          this.menuItems.set(newItems);
+        }
       },
       getItems: () => this.menuItems(),
       updateData: (data: unknown) => {
-        this.contextData.set(data);
+        if (this.openMenuRef() === overlayRef) {
+          this.contextData.set(data);
+        }
       },
       getData: () => this.contextData(),
       isOpen: () => overlayRef.hasAttached(),
@@ -224,29 +274,24 @@ export class AcpContextMenuService {
   }
 
   /**
-   * Setup handler for closing menu on outside click
+   * Single outside-click mechanism. A backdrop is not used: CDK renders overlays as popovers, so
+   * the backdrop does not cover the page, and without it a right-click on another element reaches
+   * that element directly (opening its own menu).
    */
-  private setupOutsideClickHandler(): void {
+  private listenForOutsideClicks(): void {
+    const onOutside = (event: Event) => {
+      const menuRef = this.openMenuRef();
+      if (
+        menuRef &&
+        this.outsideClickCloses &&
+        !menuRef.overlayElement.contains(event.target as Node)
+      ) {
+        this.ngZone.run(() => this.closeAll());
+      }
+    };
     this.ngZone.runOutsideAngular(() => {
-      this.document.addEventListener('click', (event: MouseEvent) => {
-        const menuRef = this.openMenuRef();
-        if (menuRef && !this.isClickInsideMenu(event)) {
-          this.ngZone.run(() => {
-            this.closeAll();
-          });
-        }
-      });
+      this.document.addEventListener('click', onOutside);
+      this.document.addEventListener('contextmenu', onOutside);
     });
-  }
-
-  /**
-   * Check if click is inside the menu
-   */
-  private isClickInsideMenu(event: MouseEvent): boolean {
-    const menuRef = this.openMenuRef();
-    if (!menuRef) return false;
-
-    const menuElement = menuRef.overlayElement;
-    return menuElement.contains(event.target as Node);
   }
 }

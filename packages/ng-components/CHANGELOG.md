@@ -4,7 +4,7 @@
 
 - Cleaned dialog styles and updated declarative example. ([#150](https://github.com/acontplus/acontplus-libs/pull/150))
 
-### ⚠️  Breaking Changes
+### ⚠️ Breaking Changes
 
 - Reworked `AcpCard` props: `title`/`subtitle` inputs, `color`, `hoverable`, `loading`, `actionsAlign`, `clicked` output with keyboard support, typed slot directives (`acpCardTitle`, `acpCardActions`, ...) and `provideAcpCardDefaults()`. `appearance`, `elevation`, `imageRatio` and `padding="none"` now take effect. ([#150](https://github.com/acontplus/acontplus-libs/pull/150))
 

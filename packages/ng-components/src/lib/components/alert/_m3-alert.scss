@@ -1,69 +1,72 @@
 @use 'sass:map';
+@use 'sass:meta';
+@use 'sass:string';
 @use '@angular/material' as mat;
 @use '../../../core/tokens/m3-utils';
 @use '../../../core/tokens/m3';
 
+/// Same semantic palettes as `acp-badge`, so both components share the same colors per type.
+$_semantic-palettes: (
+  info: mat.$azure-palette,
+  success: mat.$green-palette,
+  warning: mat.$orange-palette,
+  danger: mat.$red-palette,
+);
+
 @function get-tokens($theme: m3.$sys-theme) {
   $system: m3-utils.get-system($theme);
-  $is-dark: map.get($system, md-sys-type) == dark;
+
+  $color-tokens: (
+    // `default` type, derived from the theme surface colors
+    alert-outline-color: map.get($system, outline-variant),
+    alert-background-color: map.get($system, surface-container),
+    alert-text-color: map.get($system, on-surface),
+    alert-icon-color: map.get($system, on-surface-variant),
+    alert-solid-background-color: map.get($system, inverse-surface),
+    alert-solid-text-color: map.get($system, inverse-on-surface),
+    // `outlined` variant container, shared by every type
+    alert-outlined-background-color: map.get($system, surface),
+    alert-outlined-text-color: map.get($system, on-surface)
+  );
+
+  // System values are custom property names; wrap them to use inside `color-mix()`
+  $surface: map.get($system, surface);
+  @if meta.type-of($surface) == string and string.index($surface, '--') == 1 {
+    $surface: var($surface);
+  }
+  $on-surface: map.get($system, on-surface);
+
+  @each $name, $palette in $_semantic-palettes {
+    // Material's semantic palettes are very saturated at tone 80, so soften them in dark mode
+    $accent: light-dark(
+      map.get($palette, 40),
+      color-mix(in oklab, #{map.get($palette, 80)} 70%, white)
+    );
+
+    $color-tokens: map.merge(
+      $color-tokens,
+      (
+        // `soft` variant: subtle tint of the theme surface
+        alert-#{$name}-background-color: color-mix(in srgb, #{$accent} 12%, #{$surface}),
+        alert-#{$name}-text-color: $on-surface,
+        alert-#{$name}-outline-color: color-mix(in srgb, #{$accent} 35%, #{$surface}),
+        // Icon, heading, `outlined` border
+        alert-#{$name}-icon-color: $accent,
+        // `filled` variant
+        alert-#{$name}-solid-background-color: light-dark(
+            map.get($palette, 40),
+            map.get($palette, 30)
+          ),
+        alert-#{$name}-solid-text-color: map.get($palette, 100)
+      )
+    );
+  }
 
   $tokens: (
     base: (
       alert-container-shape: map.get($system, corner-small),
     ),
-    color: (
-      alert-outline-color: map.get($system, outline-variant),
-      alert-background-color: map.get($system, surface-container),
-      alert-text-color: map.get($system, on-surface),
-      alert-info-outline-color: light-dark(
-          map.get(mat.$azure-palette, 80),
-          map.get(mat.$azure-palette, 40)
-        ),
-      alert-info-background-color: light-dark(
-          map.get(mat.$azure-palette, 90),
-          map.get(mat.$azure-palette, 20)
-        ),
-      alert-info-text-color: light-dark(
-          map.get(mat.$azure-palette, 20),
-          map.get(mat.$azure-palette, 90)
-        ),
-      alert-success-outline-color: light-dark(
-          map.get(mat.$green-palette, 80),
-          map.get(mat.$green-palette, 40)
-        ),
-      alert-success-background-color: light-dark(
-          map.get(mat.$green-palette, 95),
-          map.get(mat.$green-palette, 20)
-        ),
-      alert-success-text-color: light-dark(
-          map.get(mat.$green-palette, 20),
-          map.get(mat.$green-palette, 95)
-        ),
-      alert-warning-outline-color: light-dark(
-          map.get(mat.$yellow-palette, 80),
-          map.get(mat.$yellow-palette, 40)
-        ),
-      alert-warning-background-color: light-dark(
-          map.get(mat.$yellow-palette, 98),
-          map.get(mat.$yellow-palette, 20)
-        ),
-      alert-warning-text-color: light-dark(
-          map.get(mat.$yellow-palette, 20),
-          map.get(mat.$yellow-palette, 98)
-        ),
-      alert-danger-outline-color: light-dark(
-          map.get(mat.$red-palette, 80),
-          map.get(mat.$red-palette, 40)
-        ),
-      alert-danger-background-color: light-dark(
-          map.get(mat.$red-palette, 90),
-          map.get(mat.$red-palette, 20)
-        ),
-      alert-danger-text-color: light-dark(
-          map.get(mat.$red-palette, 20),
-          map.get(mat.$red-palette, 90)
-        ),
-    ),
+    color: $color-tokens,
     typography: (),
     density: (),
   );

@@ -54,9 +54,9 @@ import { CodeExample } from '../../shared/code-example/code-example';
         <mat-card-content>
           <p>Control table density with the <code>size</code> input:</p>
           <ul class="features-list">
-            <li><code>small</code> - Compact rows (32px height)</li>
-            <li><code>medium</code> - Medium rows (40px height)</li>
-            <li><code>normal</code> - Default rows (48px height)</li>
+            <li><code>small</code> - Compact rows (36px rows, 40px header)</li>
+            <li><code>medium</code> - Default rows (52px rows, 56px header)</li>
+            <li><code>large</code> - Spacious rows (60px rows, 64px header)</li>
           </ul>
         </mat-card-content>
       </mat-card>
@@ -177,11 +177,11 @@ columns: DataGridColumn[] = [
   sizeCode = `<!-- Compact size -->
 <acp-data-grid [data]="data" [columns]="columns" size="small" />
 
-<!-- Medium size -->
+<!-- Medium size (default) -->
 <acp-data-grid [data]="data" [columns]="columns" size="medium" />
 
-<!-- Normal size (default) -->
-<acp-data-grid [data]="data" [columns]="columns" size="normal" />`;
+<!-- Large size -->
+<acp-data-grid [data]="data" [columns]="columns" size="large" />`;
 
   stripedCode = `<!-- Enable striped rows -->
 <acp-data-grid
@@ -194,7 +194,6 @@ columns: DataGridColumn[] = [
 <acp-data-grid
   [data]="data"
   [columns]="columns"
-  [keyboardNavigation]="true"
   [highlightedRowIndex]="currentIndex"
 />`;
 

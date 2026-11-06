@@ -322,7 +322,7 @@ export class DataGridApi {
     {
       name: 'highlightedRowIndex',
       type: 'number',
-      description: 'Index of highlighted row',
+      description: 'Index (within the rendered page) of the row to mark as active',
       default: '-1',
     },
 
@@ -373,8 +373,9 @@ export class DataGridApi {
     {
       name: 'keyboardNavigation',
       type: 'boolean',
-      description: 'Enables arrow key navigation',
-      default: 'false',
+      description:
+        'Row keyboard navigation: arrows, Home/End, PageUp/PageDown, Enter (row click), Space (toggle selection), Ctrl+A (select all)',
+      default: 'true',
     },
 
     // Templates
@@ -412,9 +413,9 @@ export class DataGridApi {
     // Size
     {
       name: 'size',
-      type: "'small' | 'medium' | 'normal'",
-      description: 'Table density',
-      default: "'normal'",
+      type: "'small' | 'medium' | 'large'",
+      description: "Table density ('normal' is deprecated, alias of 'medium')",
+      default: "'medium'",
     },
 
     // Summary
@@ -471,7 +472,7 @@ export class DataGridApi {
     {
       name: 'focusedRowChange',
       type: 'EventEmitter<{row: T, index: number}>',
-      description: 'Emits when focused row changes (keyboard nav)',
+      description: 'Emits when the active row changes (keyboard, click or acpGridNavigationFor)',
     },
   ];
 

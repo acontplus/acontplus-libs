@@ -111,6 +111,12 @@ $fallbacks: m3-badge.get-tokens();
     --acp-badge-fg: #{token-utils.slot(badge-neutral-color, $fallbacks)};
   }
 
+  // `surface-variant` is a container color: as text (soft, tonal, outlined, text) it is almost
+  // invisible, so those variants use `on-surface-variant` instead
+  &.acp-badge--neutral:not(.acp-badge--filled) {
+    --acp-badge-bg: #{token-utils.slot(badge-neutral-color, $fallbacks)};
+  }
+
   &.acp-badge--custom {
     --acp-badge-bg: var(--acp-badge-custom-bg, #{token-utils.slot(badge-custom-bg, $fallbacks)});
     --acp-badge-fg: var(--acp-badge-custom-fg, #{token-utils.slot(badge-custom-color, $fallbacks)});
@@ -167,16 +173,22 @@ $fallbacks: m3-badge.get-tokens();
   }
 
   &.acp-badge--tonal &__chip.mat-mdc-chip {
+    // The 22% tint is darker than `soft`; darken the text in light mode to keep WCAG AA contrast
+    --acp-badge-tonal-fg: light-dark(
+      color-mix(in oklab, var(--acp-badge-bg) 80%, black),
+      var(--acp-badge-bg)
+    );
+
     @include mat.chips-overrides(
       (
         elevated-container-color: color-mix(in srgb, var(--acp-badge-bg) 22%, transparent),
         elevated-selected-container-color: color-mix(in srgb, var(--acp-badge-bg) 22%, transparent),
-        label-text-color: var(--acp-badge-bg),
-        selected-label-text-color: var(--acp-badge-bg),
-        with-icon-icon-color: var(--acp-badge-bg),
-        with-icon-selected-icon-color: var(--acp-badge-bg),
-        with-trailing-icon-trailing-icon-color: var(--acp-badge-bg),
-        selected-trailing-icon-color: var(--acp-badge-bg),
+        label-text-color: var(--acp-badge-tonal-fg),
+        selected-label-text-color: var(--acp-badge-tonal-fg),
+        with-icon-icon-color: var(--acp-badge-tonal-fg),
+        with-icon-selected-icon-color: var(--acp-badge-tonal-fg),
+        with-trailing-icon-trailing-icon-color: var(--acp-badge-tonal-fg),
+        selected-trailing-icon-color: var(--acp-badge-tonal-fg),
         outline-color: transparent,
       )
     );

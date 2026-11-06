@@ -33,8 +33,22 @@ $fallbacks: m3-grid.get-tokens();
       }
     }
 
+    .mat-mdc-row.acp-grid-row-active {
+      background-color: token-utils.slot(grid-table-row-hover-background-color, $fallbacks);
+    }
+
     .mat-mdc-row.selected {
       background-color: token-utils.slot(grid-table-row-selected-background-color, $fallbacks);
+    }
+
+    .mat-mdc-row:focus {
+      outline: none;
+    }
+
+    .mat-mdc-row:focus-visible,
+    .mat-mdc-row.acp-grid-row-active:not(:focus) {
+      outline: 2px solid token-utils.slot(grid-table-cell-selected-outline-color, $fallbacks);
+      outline-offset: -2px;
     }
 
     .mat-mdc-cell.selected {
@@ -241,5 +255,52 @@ $fallbacks: m3-grid.get-tokens();
   &.mat-mdc-icon-button,
   + acp-grid-cell {
     vertical-align: middle;
+  }
+}
+
+.acp-grid-size-small {
+  --mat-table-header-container-height: 40px;
+  --mat-table-row-item-container-height: 36px;
+  --mat-table-footer-container-height: 36px;
+  --mat-table-header-headline-size: 0.8125rem;
+  --mat-table-row-item-label-text-size: 0.8125rem;
+  --mat-table-footer-supporting-text-size: 0.8125rem;
+  --mat-icon-button-state-layer-size: 32px;
+  --mat-checkbox-state-layer-size: 32px;
+  --mat-paginator-container-size: 48px;
+  --mat-button-outlined-container-height: 32px;
+  --mat-button-filled-container-height: 32px;
+  --mat-button-protected-container-height: 32px;
+  --mat-button-text-container-height: 32px;
+  --mat-button-tonal-container-height: 32px;
+
+  :is(.mat-mdc-header-cell, .mat-mdc-footer-cell, .mat-mdc-cell):not(.acp-grid-checkbox-cell) {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .acp-grid-toolbar,
+  .acp-grid-statusbar {
+    padding: 4px;
+  }
+}
+
+.acp-grid-size-large {
+  --mat-table-header-container-height: 64px;
+  --mat-table-row-item-container-height: 60px;
+  --mat-table-footer-container-height: 60px;
+  --mat-table-header-headline-size: 1rem;
+  --mat-table-row-item-label-text-size: 1rem;
+  --mat-table-footer-supporting-text-size: 1rem;
+  --mat-paginator-container-size: 64px;
+
+  :is(.mat-mdc-header-cell, .mat-mdc-footer-cell, .mat-mdc-cell):not(.acp-grid-checkbox-cell) {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .acp-grid-toolbar,
+  .acp-grid-statusbar {
+    padding: 12px;
   }
 }

@@ -75,12 +75,17 @@ export class AcpContextMenuDirective implements OnDestroy {
   @Output() contextMenuClosed = new EventEmitter<void>();
 
   constructor() {
-    // Subscribe to item selection
+    // Only react to menus opened by this instance
     this.contextMenuService
-      .getItemSelected$()
+      .itemSelectedFor$(this)
       .pipe(takeUntil(this.destroy$))
-      .subscribe(context => {
-        this.contextMenuItemSelected.emit(context);
+      .subscribe(context => this.contextMenuItemSelected.emit(context));
+    this.contextMenuService
+      .closedFor$(this)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.menuRef = null;
+        this.contextMenuClosed.emit();
       });
   }
 
@@ -155,12 +160,7 @@ export class AcpContextMenuDirective implements OnDestroy {
 
     const delay = this.contextMenuTrigger.hoverLeaveDelay ?? 300;
 
-    setTimeout(() => {
-      if (this.menuRef?.isOpen()) {
-        this.menuRef.close();
-        this.contextMenuClosed.emit();
-      }
-    }, delay);
+    setTimeout(() => this.menuRef?.close(), delay);
   }
 
   /**
@@ -172,7 +172,7 @@ export class AcpContextMenuDirective implements OnDestroy {
     }
 
     // Use provided row data or fall back to contextMenuData
-    const data = rowData || this.contextMenuData;
+    const data = rowData ?? this.contextMenuData;
 
     const config: AcpContextMenuOpenConfig = {
       x,
@@ -183,7 +183,7 @@ export class AcpContextMenuDirective implements OnDestroy {
       closeOnEscape: this.contextMenuTrigger.closeOnEscape !== false,
     };
 
-    this.contextMenuService.open(this.acpContextMenu, config).then(menuRef => {
+    this.contextMenuService.open(this.acpContextMenu, config, this).then(menuRef => {
       this.menuRef = menuRef;
       this.contextMenuOpened.emit(this.menuRef);
     });
@@ -193,10 +193,7 @@ export class AcpContextMenuDirective implements OnDestroy {
    * Close the context menu
    */
   closeMenu(): void {
-    if (this.menuRef) {
-      this.menuRef.close();
-      this.contextMenuClosed.emit();
-    }
+    this.menuRef?.close();
   }
 
   /**

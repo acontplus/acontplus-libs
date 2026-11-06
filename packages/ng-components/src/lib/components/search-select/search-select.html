@@ -43,8 +43,8 @@
     (optionSelected)="onSelected($event)"
     (closed)="onClosed()"
   >
-    @for (group of filteredGroups(); track (group.label ?? $index)) { @if (group.label === null) { @for (option of
-    group.options; track option.key) {
+    @for (group of filteredGroups(); track (group.label ?? $index)) { @if (group.label === null) {
+    @for (option of group.options; track option.key) {
     <mat-option [value]="option">
       <ng-container
         [ngTemplateOutlet]="optionContent"

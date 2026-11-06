@@ -132,6 +132,8 @@ export type DataGridRowClassFormatter<T = any> = Record<
 
 export type DataGridButtonType = MatButtonAppearance | 'icon';
 
+export type DataGridSize = 'small' | 'medium' | 'large';
+
 /**
  * Represents the default options for the grid that can be configured
  * using the `DATA_GRID_DEFAULT_OPTIONS` injection token.
@@ -166,6 +168,8 @@ export interface DataGridDefaultOptions {
   disableRowClickSelection?: boolean;
 
   cellSelectable?: boolean;
+
+  keyboardNavigation?: boolean;
 
   showToolbar?: boolean;
   toolbarTitle?: string;

@@ -2,59 +2,110 @@
 @use './m3-alert';
 
 $fallbacks: m3-alert.get-tokens();
+$_types: (info, success, warning, danger);
 
 .acp-alert {
+  --acp-alert-bg: #{token-utils.slot(alert-background-color, $fallbacks)};
+  --acp-alert-fg: #{token-utils.slot(alert-text-color, $fallbacks)};
+  --acp-alert-border: #{token-utils.slot(alert-outline-color, $fallbacks)};
+  --acp-alert-icon: #{token-utils.slot(alert-icon-color, $fallbacks)};
+  --acp-alert-solid-bg: #{token-utils.slot(alert-solid-background-color, $fallbacks)};
+  --acp-alert-solid-fg: #{token-utils.slot(alert-solid-text-color, $fallbacks)};
+
   position: relative;
-  display: block;
-  padding: 0.75rem 1rem;
-  margin-bottom: 1rem;
-  line-height: 1.5;
-  border: 1px solid token-utils.slot(alert-outline-color, $fallbacks);
-  border-radius: token-utils.slot(alert-container-shape, $fallbacks);
-  background-color: token-utils.slot(alert-background-color, $fallbacks);
-  color: token-utils.slot(alert-text-color, $fallbacks);
-
-  &.acp-alert-info {
-    border-color: token-utils.slot(alert-info-outline-color, $fallbacks);
-    background-color: token-utils.slot(alert-info-background-color, $fallbacks);
-    color: token-utils.slot(alert-info-text-color, $fallbacks);
-  }
-
-  &.acp-alert-success {
-    border-color: token-utils.slot(alert-success-outline-color, $fallbacks);
-    background-color: token-utils.slot(alert-success-background-color, $fallbacks);
-    color: token-utils.slot(alert-success-text-color, $fallbacks);
-  }
-
-  &.acp-alert-warning {
-    border-color: token-utils.slot(alert-warning-outline-color, $fallbacks);
-    background-color: token-utils.slot(alert-warning-background-color, $fallbacks);
-    color: token-utils.slot(alert-warning-text-color, $fallbacks);
-  }
-
-  &.acp-alert-danger {
-    border-color: token-utils.slot(alert-danger-outline-color, $fallbacks);
-    background-color: token-utils.slot(alert-danger-background-color, $fallbacks);
-    color: token-utils.slot(alert-danger-text-color, $fallbacks);
-  }
-}
-
-.acp-alert-close {
-  position: absolute;
-  top: 0;
-  right: 0;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 3rem;
-  height: 3rem;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  box-sizing: border-box;
+  line-height: 1.5;
+  border: 1px solid var(--acp-alert-border);
+  border-radius: token-utils.slot(alert-container-shape, $fallbacks);
+  background-color: var(--acp-alert-bg);
+  color: var(--acp-alert-fg);
 
-  [dir='rtl'] & {
-    right: auto;
-    left: 0;
+  &[hidden] {
+    display: none;
+  }
+
+  @each $type in $_types {
+    &.acp-alert-#{$type} {
+      --acp-alert-bg: #{token-utils.slot(alert-#{$type}-background-color, $fallbacks)};
+      --acp-alert-fg: #{token-utils.slot(alert-#{$type}-text-color, $fallbacks)};
+      --acp-alert-border: #{token-utils.slot(alert-#{$type}-outline-color, $fallbacks)};
+      --acp-alert-icon: #{token-utils.slot(alert-#{$type}-icon-color, $fallbacks)};
+      --acp-alert-solid-bg: #{token-utils.slot(alert-#{$type}-solid-background-color, $fallbacks)};
+      --acp-alert-solid-fg: #{token-utils.slot(alert-#{$type}-solid-text-color, $fallbacks)};
+    }
+  }
+
+  &.acp-alert--outlined {
+    border-color: var(--acp-alert-icon);
+    background-color: token-utils.slot(alert-outlined-background-color, $fallbacks);
+    color: token-utils.slot(alert-outlined-text-color, $fallbacks);
+  }
+
+  &:not(.acp-alert--filled) .acp-alert-title {
+    color: var(--acp-alert-icon);
+  }
+
+  &.acp-alert--filled {
+    --acp-alert-icon: currentColor;
+
+    border-color: transparent;
+    background-color: var(--acp-alert-solid-bg);
+    color: var(--acp-alert-solid-fg);
+  }
+
+  &.acp-alert-dismissible {
+    padding-right: 0.25rem;
+
+    [dir='rtl'] & {
+      padding-right: 1rem;
+      padding-left: 0.25rem;
+    }
   }
 }
 
-.acp-alert-dismissible {
-  padding-right: 3rem;
+.acp-alert-icon {
+  flex-shrink: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: 1.5rem;
+  color: var(--acp-alert-icon);
+}
+
+.acp-alert-body {
+  flex: 1;
+  min-width: 0;
+  // Align the first text line with the 24px icon
+  padding-top: calc((1.5rem - 1lh) / 2);
+}
+
+.acp-alert-title {
+  margin-bottom: 0.125rem;
+  font-weight: 600;
+}
+
+.acp-alert-content:empty,
+.acp-alert-actions:empty {
+  display: none;
+}
+
+.acp-alert-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.acp-alert-close.mat-mdc-icon-button {
+  --mat-icon-button-icon-color: currentColor;
+  --mat-icon-button-state-layer-color: currentColor;
+  --mat-icon-button-state-layer-size: 2.25rem;
+
+  flex-shrink: 0;
+  margin-top: calc((1.5rem - 2.25rem) / 2);
+  padding: 0.5rem;
+  color: inherit;
 }

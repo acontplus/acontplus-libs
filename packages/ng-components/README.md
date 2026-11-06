@@ -304,6 +304,25 @@ Enhanced dialog components with wrapper functionality for consistent dialog mana
 import { DialogWrapper } from '@acontplus/ng-components';
 ```
 
+### AcpAlert
+
+Inline message with a `type` (`default`, `info`, `success`, `warning`, `danger`), a `variant`
+(`soft`, `outlined`, `filled`), an optional `heading`, a per-type icon and an actions slot.
+`dismissible` adds a close button that hides the alert and emits `closed`; call `open()` to show
+it again. Warnings and errors use `role="alert"`; the rest use `role="status"`.
+
+```html
+<acp-alert type="warning" heading="Certificado por vencer" dismissible>
+  Renueva tu firma electrónica antes del 20/11/2026.
+  <div acpAlertActions>
+    <button matButton="filled">Renovar ahora</button>
+  </div>
+</acp-alert>
+```
+
+Inputs: `type`, `variant`, `heading`, `icon` (Material icon name), `showIcon`, `dismissible`,
+`closeLabel` (default `Cerrar`), `elevation`.
+
 ### Input Chip
 
 Chip input components integrated with Angular Material for tag/chip selection.

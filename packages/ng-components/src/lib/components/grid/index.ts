@@ -1,2 +1,2 @@
 export * from './grid';
-export * from './keyboard-navigation';
+export * from './grid-navigation-for';

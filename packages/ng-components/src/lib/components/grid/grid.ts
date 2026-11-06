@@ -20,6 +20,11 @@ import {
   ChangeDetectorRef,
   Input,
   computed,
+  signal,
+  effect,
+  afterNextRender,
+  Injector,
+  untracked,
 } from '@angular/core';
 import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
 
@@ -120,7 +125,7 @@ export const DATA_GRID_DEFAULT_OPTIONS = new InjectionToken<DataGridDefaultOptio
     '[class.acp-grid-size-small]': '_size() === "small"',
     '[class.acp-grid-size-medium]': '_size() === "medium"',
     '[class.acp-grid-size-large]': '_size() === "large"',
-    '[attr.tabindex]': '0',
+    '[attr.tabindex]': 'keyboardNavigation() ? null : 0',
   },
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -134,6 +139,15 @@ export class DataGrid implements AfterViewInit, OnChanges {
   protected _animationsDisabled = _animationsDisabled();
   private readonly _utils = inject(DataGridUtils);
   private readonly _changeDetectorRef = inject(ChangeDetectorRef);
+  private readonly _elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly _injector = inject(Injector);
+  private static _nextId = 0;
+  /** Unique id of the grid, used for row ids and `aria-controls`. */
+  readonly gridId = `acp-grid-${DataGrid._nextId++}`;
+  private readonly _activeRow = signal<unknown>(null);
+  private _focusFirstRowOnRender = false;
+  /** @internal Set by `acpGridNavigationFor` to activate the first row when data changes. */
+  _activateFirstRowOnDataChange = false;
   private readonly _defaultOptions = inject<DataGridDefaultOptions>(DATA_GRID_DEFAULT_OPTIONS, {
     optional: true,
   });
@@ -377,11 +391,26 @@ export class DataGrid implements AfterViewInit, OnChanges {
   /** The template for the empty data. */
   @Input() noResultTemplate!: TemplateRef<any>;
 
-  // Keyboard Navigation
-  keyboardNavigation = input<boolean>(false);
+  // ===== Keyboard Navigation =====
 
-  // Row Highlighting
+  /**
+   * Whether rows can be navigated with the keyboard: arrows, Home/End, PageUp/PageDown,
+   * Enter (same as a click), Space (toggle selection) and Ctrl+A (select all).
+   */
+  keyboardNavigation = input(this._defaultOptions?.keyboardNavigation ?? true, {
+    transform: booleanAttribute,
+  });
+  /** Index (within the rendered page) of the row to mark as active. */
   highlightedRowIndex = input<number>(-1);
+  private readonly _highlightedRowEffect = effect(() => {
+    const index = this.highlightedRowIndex();
+    if (index >= 0) {
+      untracked(() =>
+        afterNextRender(() => this.setActiveRow(index), { injector: this._injector }),
+      );
+    }
+  });
+  /** Event emitted when the active row changes. */
   focusedRowChange = output<{ row: any; index: number }>();
   get _hasNoResult() {
     return (!this.dataSource.data || this.dataSource.data.length === 0) && !this.loading;
@@ -498,6 +527,7 @@ export class DataGrid implements AfterViewInit, OnChanges {
     // Only scroll top with data change
     if (changes['data']) {
       this.scrollTop(0);
+      this._syncActiveRowWithData();
     }
   }
 
@@ -543,6 +573,211 @@ export class DataGrid implements AfterViewInit, OnChanges {
           .slice(0, idx)
           .reduce((acc, cur) => acc + Number.parseFloat(cur.width || '80px'), 0) + 'px';
     });
+  }
+
+  // ===== Keyboard Navigation =====
+
+  /** Rows currently rendered (after sorting and front-end paging). */
+  get renderedRows(): any[] {
+    return this.dataSource.connect().value;
+  }
+
+  /** Index of the active row within the rendered rows, or -1. */
+  get activeRowIndex(): number {
+    const row = this._activeRow();
+    return row === null ? -1 : this.renderedRows.indexOf(row);
+  }
+
+  /** The active row, or `null`. */
+  get activeRow(): any {
+    return this.activeRowIndex === -1 ? null : this._activeRow();
+  }
+
+  /**
+   * Marks a rendered row as active.
+   * @param focus Whether to move the browser focus to the row.
+   */
+  setActiveRow(index: number, focus = false): void {
+    const rows = this.renderedRows;
+    if (rows.length === 0) {
+      this._setActiveRow(null);
+      return;
+    }
+    const target = Math.min(Math.max(index, 0), rows.length - 1);
+    this._setActiveRow(rows[target]);
+    const element = this._rowElement(target);
+    if (focus) {
+      element?.focus({ preventScroll: true });
+    }
+    element?.scrollIntoView?.({ block: 'nearest' });
+  }
+
+  /** Moves the active row by `delta` rows; starts at the first row when none is active. */
+  moveActiveRow(delta: number, focus = false): void {
+    const current = this.activeRowIndex;
+    this.setActiveRow(current === -1 ? 0 : current + delta, focus);
+  }
+
+  /** Runs the click behavior (selection and `rowClick`) on the active row. */
+  activateActiveRow(event: MouseEvent | KeyboardEvent): boolean {
+    const index = this.activeRowIndex;
+    if (index === -1) {
+      return false;
+    }
+    this._selectRow(event, this.renderedRows[index], index);
+    return true;
+  }
+
+  /** Goes to the next page, if there is one, and activates its first row. */
+  nextPage(focus = false): void {
+    this._changePage(1, focus);
+  }
+
+  /** Goes to the previous page, if there is one, and activates its first row. */
+  previousPage(focus = false): void {
+    this._changePage(-1, focus);
+  }
+
+  _rowId(index: number): string {
+    return `${this.gridId}-row-${index}`;
+  }
+
+  _activeRowId(): string | null {
+    const index = this.activeRowIndex;
+    return index === -1 ? null : this._rowId(index);
+  }
+
+  _isActiveRow(row: unknown): boolean {
+    return this._activeRow() === row;
+  }
+
+  _rowTabIndex(row: unknown, index: number): number | null {
+    if (!this.keyboardNavigation()) {
+      return null;
+    }
+    const activeIndex = this.activeRowIndex;
+    return (activeIndex === -1 ? index === 0 : this._activeRow() === row) ? 0 : -1;
+  }
+
+  _onRowFocus(row: unknown): void {
+    if (this.keyboardNavigation() && this._activeRow() !== row) {
+      this._setActiveRow(row);
+    }
+  }
+
+  private _setActiveRow(row: unknown): void {
+    if (this._activeRow() === row) {
+      return;
+    }
+    this._activeRow.set(row);
+    if (row !== null) {
+      this.focusedRowChange.emit({ row, index: this.renderedRows.indexOf(row) });
+    }
+  }
+
+  private _rowElement(index: number): HTMLElement | null {
+    return this._elementRef.nativeElement.querySelector<HTMLElement>(`#${this._rowId(index)}`);
+  }
+
+  private _changePage(delta: 1 | -1, focus: boolean): void {
+    const paginator = this.paginator;
+    if (!this.showPaginator || !paginator) {
+      return;
+    }
+    const canMove = delta === 1 ? paginator.hasNextPage() : paginator.hasPreviousPage();
+    if (!canMove) {
+      return;
+    }
+    this._focusFirstRowOnRender = focus;
+    this._setActiveRow(null);
+    if (delta === 1) {
+      paginator.nextPage();
+    } else {
+      paginator.previousPage();
+    }
+    // Front-end paging re-renders synchronously; server paging activates on the next data change
+    if (this.pageOnFront) {
+      this._activateFirstRowAfterRender();
+    }
+  }
+
+  private _syncActiveRowWithData(): void {
+    const rows = this.renderedRows;
+    if (this._focusFirstRowOnRender || this._activateFirstRowOnDataChange) {
+      this._activateFirstRowAfterRender();
+    } else if (!rows.includes(this._activeRow())) {
+      this._activeRow.set(null);
+    }
+  }
+
+  private _activateFirstRowAfterRender(): void {
+    const focus = this._focusFirstRowOnRender;
+    this._focusFirstRowOnRender = false;
+    this._activeRow.set(null);
+    afterNextRender(() => this.setActiveRow(0, focus), { injector: this._injector });
+  }
+
+  private _isEditableTarget(target: EventTarget | null): boolean {
+    if (target instanceof HTMLInputElement) {
+      return !['checkbox', 'radio', 'button', 'submit', 'reset'].includes(target.type);
+    }
+    return (
+      target instanceof HTMLElement &&
+      (target.isContentEditable || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT')
+    );
+  }
+
+  private _handleRowKeyDown(event: KeyboardEvent, row: Record<string, any>, index: number) {
+    if (this._isEditableTarget(event.target)) {
+      return;
+    }
+    const onRow = event.target === event.currentTarget;
+    const rowCount = this.renderedRows.length;
+
+    switch (event.key) {
+      case 'ArrowDown':
+        this.setActiveRow(index + 1, true);
+        break;
+      case 'ArrowUp':
+        this.setActiveRow(index - 1, true);
+        break;
+      case 'Home':
+        this.setActiveRow(0, true);
+        break;
+      case 'End':
+        this.setActiveRow(rowCount - 1, true);
+        break;
+      case 'PageDown':
+        this.nextPage(true);
+        break;
+      case 'PageUp':
+        this.previousPage(true);
+        break;
+      case 'Enter':
+        if (!onRow) {
+          return;
+        }
+        this._selectRow(event, row, index);
+        break;
+      case ' ':
+        if (!onRow || !this.rowSelectable || this.rowSelectionFormatter.disabled?.(row, index)) {
+          return;
+        }
+        this._toggleNormalCheckbox(row);
+        break;
+      case 'a':
+      case 'A':
+        if (!(event.ctrlKey || event.metaKey) || !this.rowSelectable || !this.multiSelectable) {
+          return;
+        }
+        if (!this._isAllSelected()) {
+          this._toggleMasterCheckbox();
+        }
+        break;
+      default:
+        return;
+    }
+    event.preventDefault();
   }
 
   _getIndex(index: number | undefined, dataIndex: number) {
@@ -600,7 +835,7 @@ export class DataGrid implements AfterViewInit, OnChanges {
   }
 
   /** Row select event */
-  _selectRow(event: MouseEvent, rowData: Record<string, any>, index: number) {
+  _selectRow(event: MouseEvent | KeyboardEvent, rowData: Record<string, any>, index: number) {
     if (
       this.rowSelectable &&
       !this.rowSelectionFormatter.disabled?.(rowData, index) &&
@@ -661,6 +896,9 @@ export class DataGrid implements AfterViewInit, OnChanges {
 
   _onRowKeyDown(event: KeyboardEvent, row: Record<string, any>, index: number) {
     this.rowKeyDown.emit({ event, row, index });
+    if (this.keyboardNavigation() && !event.defaultPrevented) {
+      this._handleRowKeyDown(event, row, index);
+    }
   }
 
   _onRowKeyUp(event: KeyboardEvent, row: Record<string, any>, index: number) {

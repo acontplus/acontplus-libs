@@ -169,6 +169,8 @@ export interface DataGridDefaultOptions {
 
   cellSelectable?: boolean;
 
+  keyboardNavigation?: boolean;
+
   showToolbar?: boolean;
   toolbarTitle?: string;
 

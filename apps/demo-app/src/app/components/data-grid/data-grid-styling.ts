@@ -194,7 +194,6 @@ columns: DataGridColumn[] = [
 <acp-data-grid
   [data]="data"
   [columns]="columns"
-  [keyboardNavigation]="true"
   [highlightedRowIndex]="currentIndex"
 />`;
 

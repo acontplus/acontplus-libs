@@ -33,8 +33,22 @@ $fallbacks: m3-grid.get-tokens();
       }
     }
 
+    .mat-mdc-row.acp-grid-row-active {
+      background-color: token-utils.slot(grid-table-row-hover-background-color, $fallbacks);
+    }
+
     .mat-mdc-row.selected {
       background-color: token-utils.slot(grid-table-row-selected-background-color, $fallbacks);
+    }
+
+    .mat-mdc-row:focus {
+      outline: none;
+    }
+
+    .mat-mdc-row:focus-visible,
+    .mat-mdc-row.acp-grid-row-active:not(:focus) {
+      outline: 2px solid token-utils.slot(grid-table-cell-selected-outline-color, $fallbacks);
+      outline-offset: -2px;
     }
 
     .mat-mdc-cell.selected {

@@ -337,7 +337,9 @@ The DataGrid is the primary table component, built with modern Angular 22+ patte
 - **Modern APIs**: Uses `input()` and `output()` functions
 - **Row Selection**: Single/multiple selection with formatter support
 - **Row Highlighting**: Visual highlighting with `highlightedRowIndex`
-- **Keyboard Navigation**: Full accessibility with arrow keys, Home/End
+- **Keyboard Navigation**: On by default. Arrows, Home/End, PageUp/PageDown, Enter (row click),
+  Space (toggle selection) and Ctrl+A (select all). Add `[acpGridNavigationFor]="grid"` to a
+  search input to drive the rows while the focus stays in the input
 - **Column Pinning**: Sticky left/right columns
 - **Infinite Scroll**: Load more data on scroll
 - **Server-side Support**: `pageOnFront`/`sortOnFront` toggles for backend pagination

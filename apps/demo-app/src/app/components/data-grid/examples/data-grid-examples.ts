@@ -1,16 +1,19 @@
-import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
 import {
   AcpContextMenu,
   AcpContextMenuItem,
   AcpContextMenuItemContext,
+  AcpGridNavigationFor,
   DataGrid,
   DataGridColumn,
   DataGridRowClassFormatter,
@@ -41,6 +44,9 @@ interface DemoData {
     MatChipsModule,
     MatIconModule,
     MatButtonToggleModule,
+    MatFormFieldModule,
+    MatInputModule,
+    AcpGridNavigationFor,
     DataGrid,
     AcpContextMenu,
     DocHeading,
@@ -299,18 +305,61 @@ interface DemoData {
       <h2>Keyboard Navigation</h2>
       <mat-card class="example-card">
         <mat-card-content>
-          <p class="instruction">Use arrow keys to navigate, Enter to select</p>
+          <p class="instruction">
+            Enabled by default. Click a row or Tab into the grid, then use ↑/↓, Home/End,
+            PageUp/PageDown, Enter (row click), Space (toggle selection) and Ctrl+A (select all).
+          </p>
           <acp-data-grid
-            [data]="demoData.slice(0, 5)"
+            [data]="demoData"
             [columns]="basicColumns"
-            [keyboardNavigation]="true"
-            [highlightedRowIndex]="highlightedIndex()"
-            (focusedRowChange)="onFocusedRowChange($event)"
+            [rowSelectable]="true"
+            [multiSelectable]="true"
+            [pageSize]="5"
+            [pageSizeOptions]="[5, 10]"
+            (focusedRowChange)="focusedIndex.set($event.index)"
+            (rowClick)="lastKeyboardAction.set('Row click: ' + $event.rowData.name)"
           />
-          <p class="cell-info">Focused row: {{ focusedIndex() }}</p>
+          <p class="cell-info">
+            Active row: {{ focusedIndex() }}
+            @if (lastKeyboardAction()) {
+              · {{ lastKeyboardAction() }}
+            }
+          </p>
         </mat-card-content>
       </mat-card>
       <app-code-example [code]="keyboardNavCode" [language]="'html'" />
+
+      <!-- Search Input + Grid -->
+      <h2>Search Input + Grid</h2>
+      <mat-card class="example-card">
+        <mat-card-content>
+          <p class="instruction">
+            The focus stays in the input: type to filter, ↑/↓ to move, PageUp/PageDown to change
+            page and Enter to pick the active row.
+          </p>
+          <mat-form-field appearance="outline" class="search-field">
+            <mat-label>Search product</mat-label>
+            <input
+              matInput
+              [acpGridNavigationFor]="searchGrid"
+              [value]="searchText()"
+              (input)="searchText.set($any($event.target).value)"
+            />
+          </mat-form-field>
+          <acp-data-grid
+            #searchGrid
+            [data]="searchResults()"
+            [columns]="basicColumns"
+            [pageSize]="5"
+            [pageSizeOptions]="[5, 10]"
+            (rowClick)="pickedProduct.set($event.rowData.name)"
+          />
+          @if (pickedProduct()) {
+            <p class="cell-info">Picked: {{ pickedProduct() }}</p>
+          }
+        </mat-card-content>
+      </mat-card>
+      <app-code-example [code]="searchNavCode" [language]="'html'" />
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -338,6 +387,11 @@ interface DemoData {
         padding: 0.5rem;
         background: var(--mat-sys-surface-container);
         border-radius: 4px;
+      }
+
+      .search-field {
+        width: 100%;
+        max-width: 360px;
       }
 
       .size-toggle {
@@ -400,8 +454,14 @@ export class DataGridExamples {
   paginatedData = signal<DemoData[]>([]);
   isPaginatedLoading = signal(false);
   lastCellClick = signal<string>('');
-  highlightedIndex = signal(-1);
   focusedIndex = signal(-1);
+  lastKeyboardAction = signal('');
+  searchText = signal('');
+  pickedProduct = signal('');
+  searchResults = computed(() => {
+    const text = this.searchText().trim().toLowerCase();
+    return this.searchData.filter(item => item.name.toLowerCase().includes(text));
+  });
   gridSize = signal<DataGridSize>('medium');
   lastRowAction = signal('');
   rowMenuItems: AcpContextMenuItem[] = [
@@ -423,6 +483,7 @@ export class DataGridExamples {
   basicData = this.generateData(5);
   demoData = this.generateData(10);
   styledData = this.generateData(8);
+  searchData = this.generateData(25);
 
   // Columns
   basicColumns: DataGridColumn<DemoData>[] = [
@@ -594,11 +655,6 @@ export class DataGridExamples {
 
   onRowMenuSelected({ item, data }: AcpContextMenuItemContext): void {
     this.lastRowAction.set(`${item.label}: ${(data as DemoData).name}`);
-  }
-
-  onFocusedRowChange(event: { row: DemoData; index: number }): void {
-    this.focusedIndex.set(event.index);
-    this.highlightedIndex.set(event.index);
   }
 
   // Code examples
@@ -798,11 +854,26 @@ onCellClick(event: { row: T; column: DataGridColumn }) {
   console.log('Cell clicked:', event.column.field, event.row);
 }`;
 
-  keyboardNavCode = `<acp-data-grid
+  keyboardNavCode = `<!-- No configuration needed: keyboard navigation is on by default -->
+<acp-data-grid
   [data]="data"
   [columns]="columns"
-  [keyboardNavigation]="true"
-  [highlightedRowIndex]="highlightedIndex()"
-  (focusedRowChange)="onFocusedRowChange($event)"
-/>`;
+  (focusedRowChange)="onActiveRow($event)"
+  (rowClick)="open($event.rowData)"
+/>
+
+<!-- Disable it per grid with [keyboardNavigation]="false",
+     or globally with DATA_GRID_DEFAULT_OPTIONS: { keyboardNavigation: false } -->`;
+
+  searchNavCode = `<input matInput [acpGridNavigationFor]="grid" (input)="search($event)" />
+
+<acp-data-grid
+  #grid
+  [data]="results()"
+  [columns]="columns"
+  (rowClick)="pick($event.rowData)"
+/>
+
+<!-- The first row becomes active when results change.
+     Opt out with [acpGridNavigationActivateFirstRow]="false" -->`;
 }

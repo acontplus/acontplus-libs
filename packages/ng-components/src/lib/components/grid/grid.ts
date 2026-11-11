@@ -433,7 +433,7 @@ export class DataGrid implements AfterViewInit, OnChanges {
    * Whether rows can be navigated with the keyboard: arrows, Home/End, PageUp/PageDown,
    * Enter (same as a click), Space (toggle selection) and Ctrl+A (select all).
    */
-  keyboardNavigation = input(this._defaultOptions?.keyboardNavigation ?? true, {
+  keyboardNavigation = input(this._defaultOptions?.keyboardNavigation ?? false, {
     transform: booleanAttribute,
   });
   /** Index (within the rendered page) of the row to mark as active. */
@@ -551,6 +551,7 @@ export class DataGrid implements AfterViewInit, OnChanges {
       this.rowSelection = new SelectionModel<any>(this.multiSelectable, this.rowSelected);
     }
 
+    this.dataSource.disconnect();
     this.dataSource = new MatTableDataSource(this.data);
     this._renderData$ = this.dataSource.connect();
 

@@ -385,6 +385,7 @@ interface PivotRow {
             [pageSizeOptions]="[5, 10]"
             (focusedRowChange)="focusedIndex.set($event.index)"
             (rowClick)="lastKeyboardAction.set('Row click: ' + $event.rowData.name)"
+            keyboardNavigation="true"
           />
           <p class="cell-info">
             Active row: {{ focusedIndex() }}

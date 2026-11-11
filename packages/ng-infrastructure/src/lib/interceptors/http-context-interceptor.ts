@@ -29,6 +29,16 @@ const SKIP_CONTEXT_HEADERS = new HttpContextToken<boolean>(() => false);
 /** Merge additional headers into the request at call-site. */
 const CUSTOM_HEADERS = new HttpContextToken<Record<string, string>>(() => ({}));
 
+/**
+ * Explicit idempotency key for a mutation request (Stripe-style).
+ * When set, the `Idempotency-Key` header is sent regardless of the global
+ * `enableIdempotency` flag. Pass no argument to auto-generate a UUID.
+ */
+const IDEMPOTENCY_KEY = new HttpContextToken<string | undefined>(() => undefined);
+
+/** HTTP methods eligible for an `Idempotency-Key` header. */
+const IDEMPOTENT_METHODS = new Set(['post', 'put', 'patch', 'delete']);
+
 export function customUrl(): HttpContext {
   return new HttpContext().set(CUSTOM_URL, true);
 }
@@ -39,6 +49,20 @@ export function skipContextHeaders(): HttpContext {
 
 export function withCustomHeaders(headers: Record<string, string>): HttpContext {
   return new HttpContext().set(CUSTOM_HEADERS, headers);
+}
+
+/**
+ * Attach an `Idempotency-Key` header to a mutation request so the backend can
+ * safely deduplicate retries. Pass a stable key (e.g. derived from the
+ * operation) or omit it to generate a random UUID per call.
+ *
+ * @example
+ * this.http.post('/api/payments', payload, {
+ *   context: withIdempotencyKey(),
+ * });
+ */
+export function withIdempotencyKey(key: string = uuidv4()): HttpContext {
+  return new HttpContext().set(IDEMPOTENCY_KEY, key);
 }
 
 // ---------------------------------------------------------------------------
@@ -65,6 +89,24 @@ export interface HttpContextConfig {
   enableLanguageHeader?: boolean;
   /** Custom header name for language (default: 'Accept-Language'). */
   languageHeader?: string;
+  /**
+   * Global toast notification policy consumed by `apiInterceptor`.
+   * - `'all'`: success/warning toasts for mutations + error toasts (default).
+   * - `'errors-only'`: only error notifications, no success/warning toasts.
+   * - `'off'`: no automatic notifications at all.
+   * Per-request `SKIP_NOTIFICATION`/`SHOW_NOTIFICATIONS` context tokens
+   * still take precedence over this setting.
+   */
+  notifications?: 'all' | 'errors-only' | 'off';
+  /**
+   * Automatically attach an `Idempotency-Key` header (random UUID per request)
+   * to mutation requests (POST/PUT/PATCH/DELETE). Disabled by default; enable
+   * per app when the backend supports idempotent mutations, or opt in per
+   * request with `withIdempotencyKey()`.
+   */
+  enableIdempotency?: boolean;
+  /** Header name used for the idempotency key (default: 'Idempotency-Key'). */
+  idempotencyKeyHeader?: string;
   /** Called when a 401 is received and a refresh token is available. */
   refreshTokenCallback?: () => Observable<{ token: string; refreshToken?: string }>;
   /** Called after a failed token refresh — should clear auth state. */
@@ -87,6 +129,9 @@ const DEFAULT_CONFIG: Required<HttpContextConfig> = {
   baseUrlInjection: true,
   enableLanguageHeader: true,
   languageHeader: 'Accept-Language',
+  notifications: 'all',
+  enableIdempotency: false,
+  idempotencyKeyHeader: 'Idempotency-Key',
   refreshTokenCallback: undefined as any,
   logoutCallback: undefined as any,
 };
@@ -306,6 +351,16 @@ function buildHeaders(
   Object.entries(contextHeaders).forEach(([key, value]) => {
     headers[key] = value;
   });
+
+  // Idempotency-Key on mutations: an explicit per-request key always wins;
+  // otherwise a random UUID is generated when the app enabled idempotency.
+  if (IDEMPOTENT_METHODS.has(req.method.toLowerCase())) {
+    const idempotencyKey =
+      req.context.get(IDEMPOTENCY_KEY) ?? (config.enableIdempotency ? uuidv4() : undefined);
+    if (idempotencyKey) {
+      headers[config.idempotencyKeyHeader] = idempotencyKey;
+    }
+  }
 
   // Content-Type for mutation requests (do not override if already set).
   // Only set application/json when the body is JSON-serializable.

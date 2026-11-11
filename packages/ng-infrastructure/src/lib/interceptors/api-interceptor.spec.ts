@@ -8,6 +8,7 @@ import {
 } from '@angular/common/http';
 import { of, throwError } from 'rxjs';
 import { apiInterceptor, SKIP_NOTIFICATION, SHOW_NOTIFICATIONS } from './api-interceptor';
+import { HTTP_CONTEXT_CONFIG, HttpContextConfig } from './http-context-interceptor';
 import { NotificationService } from '@acontplus/ng-notifications';
 import { AUTH_TOKEN } from '@acontplus/ng-config';
 import { LanguageInfo } from '../services/language-info';
@@ -15,7 +16,7 @@ import { Language } from '@acontplus/core';
 import { PLATFORM_ID } from '@angular/core';
 import { describe, it, expect, vi } from 'vitest';
 
-function setup(language?: Language, authToken?: string) {
+function setup(language?: Language, authToken?: string, httpConfig?: Partial<HttpContextConfig>) {
   const notificationSpy = {
     show: vi.fn(),
     success: vi.fn(),
@@ -32,6 +33,7 @@ function setup(language?: Language, authToken?: string) {
         useValue: authToken ? { getToken: () => authToken } : null,
       },
       { provide: PLATFORM_ID, useValue: 'browser' },
+      ...(httpConfig ? [{ provide: HTTP_CONTEXT_CONFIG, useValue: httpConfig }] : []),
     ],
   });
 
@@ -348,11 +350,93 @@ describe('apiInterceptor', () => {
       interceptor(makeRequest('POST', '/api/test'), () => of(response)).subscribe({
         error: vi.fn(),
       });
-      const calls = notificationSpy.show.mock.calls as [Record<string, string>][];
-      const errorMessages = calls
-        .filter((c) => c[0]['type'] === 'error')
-        .map((c) => c[0]['message']);
-      expect(errorMessages).toContain('Custom error from server');
+      expect(notificationSpy.error).toHaveBeenCalledWith(
+        expect.objectContaining({ message: 'Custom error from server' }),
+      );
+    });
+  });
+
+  describe('global notification modes', () => {
+    it("'off' silences success toasts", () => {
+      const { interceptor, notificationSpy } = setup(Language.English, undefined, {
+        notifications: 'off',
+      });
+      interceptor(makeRequest('POST', '/api/create'), () =>
+        of(makeResponse('success')),
+      ).subscribe();
+      expect(notificationSpy.show).not.toHaveBeenCalled();
+      expect(notificationSpy.success).not.toHaveBeenCalled();
+    });
+
+    it("'off' silences error toasts", () => {
+      const { interceptor, notificationSpy } = setup(Language.English, undefined, {
+        notifications: 'off',
+      });
+      interceptor(makeRequest('POST', '/api/test'), () => of(makeResponse('error'))).subscribe({
+        error: vi.fn(),
+      });
+      expect(notificationSpy.error).not.toHaveBeenCalled();
+      expect(notificationSpy.show).not.toHaveBeenCalled();
+    });
+
+    it("'off' silences critical HTTP error toasts", () => {
+      const { interceptor, notificationSpy } = setup(Language.English, undefined, {
+        notifications: 'off',
+      });
+      const error = new HttpErrorResponse({ status: 500, statusText: 'Server Error' });
+      interceptor(makeRequest('GET', '/api/test'), () => throwError(() => error)).subscribe({
+        error: vi.fn(),
+      });
+      expect(notificationSpy.error).not.toHaveBeenCalled();
+    });
+
+    it("'errors-only' hides success toasts but keeps error toasts", () => {
+      const { interceptor, notificationSpy } = setup(Language.English, undefined, {
+        notifications: 'errors-only',
+      });
+      interceptor(makeRequest('POST', '/api/create'), () =>
+        of(makeResponse('success')),
+      ).subscribe();
+      expect(notificationSpy.show).not.toHaveBeenCalled();
+
+      interceptor(makeRequest('POST', '/api/test'), () => of(makeResponse('error'))).subscribe({
+        error: vi.fn(),
+      });
+      expect(notificationSpy.error).toHaveBeenCalled();
+    });
+
+    it("'errors-only' hides warning toasts", () => {
+      const { interceptor, notificationSpy } = setup(Language.English, undefined, {
+        notifications: 'errors-only',
+      });
+      interceptor(makeRequest('POST', '/api/create'), () =>
+        of(makeResponse('warning')),
+      ).subscribe();
+      expect(notificationSpy.show).not.toHaveBeenCalled();
+    });
+
+    it('SHOW_NOTIFICATIONS overrides the global off mode', () => {
+      const { interceptor, notificationSpy } = setup(Language.English, undefined, {
+        notifications: 'off',
+      });
+      const ctx = new HttpContext().set(SHOW_NOTIFICATIONS, true);
+      interceptor(makeRequest('POST', '/api/create', ctx), () =>
+        of(makeResponse('success')),
+      ).subscribe();
+      expect(notificationSpy.show).toHaveBeenCalledWith(
+        expect.objectContaining({ type: 'success' }),
+      );
+    });
+
+    it('SKIP_NOTIFICATION still wins over SHOW_NOTIFICATIONS', () => {
+      const { interceptor, notificationSpy } = setup(Language.English, undefined, {
+        notifications: 'all',
+      });
+      const ctx = new HttpContext().set(SKIP_NOTIFICATION, true).set(SHOW_NOTIFICATIONS, true);
+      interceptor(makeRequest('POST', '/api/create', ctx), () =>
+        of(makeResponse('success')),
+      ).subscribe();
+      expect(notificationSpy.show).not.toHaveBeenCalled();
     });
   });
 

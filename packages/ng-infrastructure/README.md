@@ -76,6 +76,9 @@ provideHttpContext({
   enableCorrelationTracking: true, // add Correlation-Id header (default: true)
   includeAuthToken: true, // add Authorization: Bearer header (default: true)
   baseUrlInjection: true, // prepend apiBaseUrl (default: true)
+  notifications: 'all', // 'all' | 'errors-only' | 'off' — toast policy (default: 'all')
+  enableIdempotency: false, // auto Idempotency-Key on mutations (default: false)
+  idempotencyKeyHeader: 'Idempotency-Key', // header name for the key
   refreshTokenCallback: () => authService.refreshToken(), // 401 refresh handler
   logoutCallback: () => authService.logout(), // failed refresh handler
 });
@@ -100,20 +103,43 @@ import { apiInterceptor } from '@acontplus/ng-infrastructure';
 // - Individual ApiError entries translated by error code
 // - HTTP-level errors (0, 5xx) with localized titles and messages
 // - SKIP_NOTIFICATION / SHOW_NOTIFICATIONS HttpContext tokens
+// - Global notification modes: 'all' | 'errors-only' | 'off'
 ```
+
+#### Global notification mode
+
+`provideHttpContext({ notifications: ... })` controls toast notifications app-wide:
+
+- `'all'` (default): success/warning toasts for mutations + all error toasts
+- `'errors-only'`: only error notifications — no "operation completed" noise
+- `'off'`: no automatic notifications at all
+
+Per-request tokens still take precedence: `SKIP_NOTIFICATION` always silences,
+`SHOW_NOTIFICATIONS: true` forces a toast even when the app mode is `'off'`.
 
 #### HttpContext Tokens
 
 ```typescript
 import { HttpContext } from '@angular/common/http';
-import { SKIP_NOTIFICATION, SHOW_NOTIFICATIONS } from '@acontplus/ng-infrastructure';
+import {
+  SKIP_NOTIFICATION,
+  SHOW_NOTIFICATIONS,
+  withIdempotencyKey,
+} from '@acontplus/ng-infrastructure';
 
 // Suppress all toast notifications for this request
 this.http.get('/api/health', { context: new HttpContext().set(SKIP_NOTIFICATION, true) });
 
 // Force-show notifications even on GET requests or excluded URLs
 this.http.get('/api/export', { context: new HttpContext().set(SHOW_NOTIFICATIONS, true) });
+
+// Attach an Idempotency-Key header to a mutation (Stripe-style deduplication).
+// Pass a stable key or omit it to auto-generate a UUID.
+this.http.post('/api/payments', payload, { context: withIdempotencyKey() });
 ```
+
+To send `Idempotency-Key` on **every** mutation automatically, enable it app-wide
+with `provideHttpContext({ enableIdempotency: true })` (off by default).
 
 ### HTTP Context Interceptor
 
@@ -225,34 +251,6 @@ export class DataService {
 
   getCustomerRepository() {
     return this.repositoryFactory.create<Customer>({ baseUrl: '/api', endpoint: 'customers' });
-  }
-}
-```
-
-## HTTP Adapters
-
-### Angular HTTP Adapter
-
-Adapter for Angular HTTP client integration.
-
-```typescript
-import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
-import { AngularHttpAdapter } from '@acontplus/ng-infrastructure';
-
-@Injectable({ providedIn: 'root' })
-export class ExternalApiService {
-  private readonly httpAdapter = new AngularHttpAdapter(
-    inject(HttpClient),
-    'https://api.example.com',
-  );
-
-  async fetchExternalData(): Promise<unknown> {
-    return this.httpAdapter.get('data');
-  }
-
-  async postData(data: unknown): Promise<unknown> {
-    return this.httpAdapter.post('data', data);
   }
 }
 ```

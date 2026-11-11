@@ -32,7 +32,53 @@ export interface DataGridColumn<T = any> {
   summary?: ((data: T[], colDef?: DataGridColumn) => any) | string;
   class?: string | ((rowData?: T, colDef?: DataGridColumn) => string);
   headerCellTemplate?: TemplateRef<any>;
+  /**
+   * Groups consecutive columns under shared header cells. Columns next to each
+   * other that share the same group path are merged into group header cells that
+   * span them.
+   *
+   * - A single value creates one group header row.
+   * - An array of values creates one group header row per level (nested groups),
+   *   e.g. `['Establecimiento', 'Bodega 1']`.
+   *
+   * Each level can be:
+   * - a `string` or `Observable<string>` used both as key and label;
+   * - a function `(data) => string | Observable<string>` resolved against the
+   *   grid `data` (dynamic labels such as an establishment name taken from rows);
+   * - a `{ key, label? }` descriptor when the grouping value differs from the
+   *   displayed text (e.g. group by `warehouseId` but show `warehouseName`).
+   *   `label` defaults to the resolved `key`.
+   *
+   * Strings are compared by value; `Observable`s and functions are resolved and
+   * compared by their resulting value/instance.
+   */
+  group?: DataGridColumnGroupItem<T> | DataGridColumnGroupItem<T>[];
+  /**
+   * CSS class(es) applied to the group header cells, or a formatter that receives
+   * the group value of each level and its member columns and returns class(es).
+   * The resolved classes are also propagated to the member columns' header and
+   * data cells, so the whole column block can be styled (e.g. entradas/salidas
+   * in a kardex).
+   */
+  groupClass?:
+    | string
+    | ((group: string | Observable<string>, columns: DataGridColumn[]) => string | undefined);
 }
+
+export type DataGridColumnGroupLevel<T = any> =
+  string | Observable<string> | ((data: T[]) => string | Observable<string>);
+
+/**
+ * Group level descriptor for cases where the value used to merge columns
+ * (`key`) differs from the text shown in the group header (`label`).
+ */
+export interface DataGridColumnGroupDescriptor<T = any> {
+  key: DataGridColumnGroupLevel<T>;
+  label?: DataGridColumnGroupLevel<T>;
+}
+
+export type DataGridColumnGroupItem<T = any> =
+  DataGridColumnGroupLevel<T> | DataGridColumnGroupDescriptor<T>;
 
 export declare type DataGridColumnPinValue = 'left' | 'right' | null;
 

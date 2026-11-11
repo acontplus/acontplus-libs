@@ -130,6 +130,38 @@ $fallbacks: m3-grid.get-tokens();
     vertical-align: middle;
   }
 
+  // Hidden per-column sizing row: keeps `table-layout: fixed` (enabled after the
+  // first column resize) aligned with the column-group header row.
+  .acp-grid-column-sizing-row {
+    height: 0;
+
+    th {
+      height: 0;
+      min-height: 0;
+      padding: 0;
+      border: 0;
+      font-size: 0;
+      line-height: 0;
+      visibility: hidden;
+    }
+  }
+
+  .acp-grid-header-group-row {
+    .mat-mdc-header-cell {
+      height: var(--acp-grid-header-group-height, 32px);
+      min-height: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+      text-align: center;
+      vertical-align: middle;
+      border-bottom: 1px solid var(--mat-table-row-item-outline-color);
+    }
+  }
+
+  .acp-grid-header-group-label {
+    font-weight: 600;
+  }
+
   .mat-mdc-paginator {
     border-top: 1px solid token-utils.slot(grid-outline-color, $fallbacks);
     border-bottom-left-radius: token-utils.slot(grid-container-shape, $fallbacks);
@@ -259,6 +291,7 @@ $fallbacks: m3-grid.get-tokens();
 }
 
 .acp-grid-size-small {
+  --acp-grid-header-group-height: 24px;
   --mat-table-header-container-height: 40px;
   --mat-table-row-item-container-height: 36px;
   --mat-table-footer-container-height: 36px;
@@ -286,6 +319,7 @@ $fallbacks: m3-grid.get-tokens();
 }
 
 .acp-grid-size-large {
+  --acp-grid-header-group-height: 40px;
   --mat-table-header-container-height: 64px;
   --mat-table-row-item-container-height: 60px;
   --mat-table-footer-container-height: 60px;

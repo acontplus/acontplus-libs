@@ -431,6 +431,59 @@ const columns: DataGridColumn[] = [
 ];
 ```
 
+#### Column Groups
+
+Consecutive columns that share the same `group` path are merged under group
+headers — one header row per level, so nested groups are supported. Ungrouped
+columns show an empty cell above their header.
+
+Each level of `group` accepts:
+
+- a `string` or `Observable<string>` used as both key and label;
+- a function `(data) => string | Observable<string>` resolved against the grid
+  `data`, for dynamic titles taken from the rows;
+- a `{ key, label? }` descriptor when the grouping value differs from the
+  displayed text (e.g. group by `warehouseId` but show `warehouseName`).
+  `label` defaults to the resolved `key`.
+
+Strings are compared by value; `Observable`s are compared by instance.
+
+`groupClass` accepts a CSS class string or a formatter
+`(group, memberColumns) => class`. The resolved classes are applied to each
+group header cell and propagated to every member column's header and data
+cells, so the whole column block can be styled (e.g. color entradas/salidas in
+a kardex).
+
+```typescript
+const kardexGroupClass = (group: string | Observable<string>) =>
+  typeof group === 'string'
+    ? `kardex-group-${group.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`
+    : undefined;
+
+// Groups by establecimientoId but shows establecimiento in the header.
+const establecimiento = {
+  key: (data: KardexRow[]) => data[0]?.establecimientoId ?? '',
+  label: (data: KardexRow[]) => data[0]?.establecimiento ?? 'Establecimiento',
+};
+
+const columns: DataGridColumn<KardexRow>[] = [
+  { field: 'item', header: 'Item' },
+  {
+    field: 'warehouseA',
+    header: 'Warehouse A',
+    group: [establecimiento, 'Entradas'],
+    groupClass: kardexGroupClass,
+  },
+  {
+    field: 'warehouseB',
+    header: 'Warehouse B',
+    group: [establecimiento, 'Salidas'],
+    groupClass: kardexGroupClass,
+  },
+  { field: 'total', header: 'Total' },
+];
+```
+
 #### Tabulator Table Features
 
 - **Row Styling**: Same rowStyle property support as Dynamic Table

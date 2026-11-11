@@ -110,6 +110,7 @@
             mat-header-cell
             *matHeaderCellDef
             [class]="col | colClass"
+            [ngClass]="_groupClassFor(col)"
             [class.mat-table-sticky-left]="col.pinned === 'left'"
             [class.mat-table-sticky-right]="col.pinned === 'right'"
             [style.width]="col.width"
@@ -171,6 +172,7 @@
                       : rowChangeRecord
                       : $safeNavigationMigration(rowChangeRecord?.currentValue)
                 "
+            [ngClass]="_groupClassFor(col)"
             [class.mat-table-sticky-left]="col.pinned === 'left'"
             [class.mat-table-sticky-right]="col.pinned === 'right'"
             [style.width]="col.width"
@@ -244,6 +246,7 @@
           <td
             mat-footer-cell
             *matFooterCellDef
+            [ngClass]="_groupClassFor(col)"
             [class.mat-table-sticky-left]="col.pinned === 'left'"
             [class.mat-table-sticky-right]="col.pinned === 'right'"
             [style.width]="col.width"
@@ -278,7 +281,37 @@
             } }
           </td>
         </ng-container>
-        } @if (!useContentHeaderRowTemplate) {
+        } @if (!useContentHeaderRowTemplate && _hasColumnGroups) { @if (columnResizable) {
+        <tr class="acp-grid-column-sizing-row" aria-hidden="true">
+          @for (s of _sizingColumns; track s.field) {
+          <th [style.width]="s.width" [style.min-width]="s.width"></th>
+          }
+        </tr>
+        } @for (row of _groupHeaderRows; track $index) { @for (gc of row.cells; track gc.id) {
+        <ng-container
+          [matColumnDef]="gc.id"
+          [sticky]="gc.pinned === 'left'"
+          [stickyEnd]="gc.pinned === 'right'"
+        >
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            class="acp-grid-header-group-cell"
+            [ngClass]="gc.className"
+            [attr.colspan]="gc.colspan"
+          >
+            @if (gc.isGroup) {
+            <span class="acp-grid-header-group-label">{{ gc.header | toObservable | async }}</span>
+            }
+          </th>
+        </ng-container>
+        }
+        <tr
+          mat-header-row
+          *matHeaderRowDef="row.columnIds; sticky: true"
+          class="acp-grid-header-group-row"
+        ></tr>
+        } } @if (!useContentHeaderRowTemplate) {
         <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
         } @if (!useContentRowTemplate) {
         <tr
@@ -402,6 +435,7 @@
             mat-header-cell
             *matHeaderCellDef
             [class]="col | colClass"
+            [ngClass]="_groupClassFor(col)"
             [class.mat-table-sticky-left]="col.pinned === 'left'"
             [class.mat-table-sticky-right]="col.pinned === 'right'"
             [style.width]="col.width"
@@ -465,6 +499,7 @@
                       : rowChangeRecord
                       : $safeNavigationMigration(rowChangeRecord?.currentValue)
                 "
+            [ngClass]="_groupClassFor(col)"
             [class.mat-table-sticky-left]="col.pinned === 'left'"
             [class.mat-table-sticky-right]="col.pinned === 'right'"
             [style.width]="col.width"
@@ -537,6 +572,7 @@
           <td
             mat-footer-cell
             *matFooterCellDef
+            [ngClass]="_groupClassFor(col)"
             [class.mat-table-sticky-left]="col.pinned === 'left'"
             [class.mat-table-sticky-right]="col.pinned === 'right'"
             [style.width]="col.width"
@@ -570,7 +606,37 @@
             } }
           </td>
         </ng-container>
-        } @if (!useContentHeaderRowTemplate) {
+        } @if (!useContentHeaderRowTemplate && _hasColumnGroups) { @if (columnResizable) {
+        <tr class="acp-grid-column-sizing-row" aria-hidden="true">
+          @for (s of _sizingColumns; track s.field) {
+          <th [style.width]="s.width" [style.min-width]="s.width"></th>
+          }
+        </tr>
+        } @for (row of _groupHeaderRows; track $index) { @for (gc of row.cells; track gc.id) {
+        <ng-container
+          [matColumnDef]="gc.id"
+          [sticky]="gc.pinned === 'left'"
+          [stickyEnd]="gc.pinned === 'right'"
+        >
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            class="acp-grid-header-group-cell"
+            [ngClass]="gc.className"
+            [attr.colspan]="gc.colspan"
+          >
+            @if (gc.isGroup) {
+            <span class="acp-grid-header-group-label">{{ gc.header | toObservable | async }}</span>
+            }
+          </th>
+        </ng-container>
+        }
+        <tr
+          mat-header-row
+          *matHeaderRowDef="row.columnIds; sticky: true"
+          class="acp-grid-header-group-row"
+        ></tr>
+        } } @if (!useContentHeaderRowTemplate) {
         <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
         } @if (!useContentRowTemplate) {
         <tr

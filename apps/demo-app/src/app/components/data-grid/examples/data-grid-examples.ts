@@ -9,6 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
+import { Observable } from 'rxjs';
 import {
   AcpContextMenu,
   AcpContextMenuItem,
@@ -33,6 +34,18 @@ interface DemoData {
   status: 'pending' | 'processing' | 'completed' | 'failed';
   createdAt: Date;
   disableSelection?: boolean;
+}
+
+interface KardexRow {
+  establecimientoId: string;
+  establecimiento: string;
+  descripcion: string;
+  codigo: string;
+  entradasCantidad: number;
+  entradasPrecio: number;
+  salidasCantidad: number;
+  salidasPrecio: number;
+  saldoCantidad: number;
 }
 
 @Component({
@@ -64,6 +77,22 @@ interface DemoData {
         </mat-card-content>
       </mat-card>
       <app-code-example [code]="basicCode" [language]="'typescript'" />
+
+      <!-- Column Groups (Kardex) -->
+      <h2>Column Groups (Kardex)</h2>
+      <p class="instruction">
+        Consecutive columns that share the same <code>group</code> path are merged under group
+        headers, one row per level. Each level accepts a string, an
+        <code>Observable&lt;string&gt;</code> or a function <code>(data) =&gt; label</code> for
+        dynamic titles. <code>groupClass</code> styles each group header and propagates to its
+        member columns' headers and cells.
+      </p>
+      <mat-card class="example-card">
+        <mat-card-content>
+          <acp-data-grid [data]="kardexData" [columns]="kardexColumns" />
+        </mat-card-content>
+      </mat-card>
+      <app-code-example [code]="columnGroupsCode" [language]="'typescript'" />
 
       <!-- Row Selection -->
       <h2>Row Selection</h2>
@@ -443,6 +472,35 @@ interface DemoData {
       ::ng-deep .row-failed {
         background-color: var(--mat-sys-error-container);
       }
+
+      ::ng-deep .mat-mdc-table
+        :is(.mat-mdc-header-cell, .mat-mdc-cell, .mat-mdc-footer-cell).kardex-group-matriz {
+        background-color: color-mix(in srgb, var(--mat-sys-primary) 6%, transparent);
+      }
+      ::ng-deep .mat-mdc-table
+        :is(.mat-mdc-header-cell, .mat-mdc-cell, .mat-mdc-footer-cell).kardex-group-entradas {
+        background-color: color-mix(in srgb, var(--mat-sys-tertiary) 10%, transparent);
+      }
+      ::ng-deep .mat-mdc-table
+        :is(.mat-mdc-header-cell, .mat-mdc-cell, .mat-mdc-footer-cell).kardex-group-salidas {
+        background-color: color-mix(in srgb, var(--mat-sys-error) 10%, transparent);
+      }
+      ::ng-deep .mat-mdc-table
+        :is(.mat-mdc-header-cell, .mat-mdc-cell, .mat-mdc-footer-cell).kardex-group-saldo {
+        background-color: color-mix(in srgb, var(--mat-sys-primary) 10%, transparent);
+      }
+      ::ng-deep .mat-mdc-table .acp-grid-header-group-cell.kardex-group-matriz {
+        border-top: 2px solid var(--mat-sys-primary);
+      }
+      ::ng-deep .mat-mdc-table .acp-grid-header-group-cell.kardex-group-entradas {
+        border-top: 2px solid var(--mat-sys-tertiary);
+      }
+      ::ng-deep .mat-mdc-table .acp-grid-header-group-cell.kardex-group-salidas {
+        border-top: 2px solid var(--mat-sys-error);
+      }
+      ::ng-deep .mat-mdc-table .acp-grid-header-group-cell.kardex-group-saldo {
+        border-top: 2px solid var(--mat-sys-primary);
+      }
     `,
   ],
 })
@@ -491,6 +549,108 @@ export class DataGridExamples {
     { field: 'name', header: 'Name' },
     { field: 'price', header: 'Price', type: 'currency' },
     { field: 'quantity', header: 'Qty', type: 'number', width: '80px' },
+  ];
+
+  kardexData: KardexRow[] = [
+    {
+      establecimientoId: 'EST-01',
+      establecimiento: 'Matriz',
+      descripcion: 'Arroz blanco 500g',
+      codigo: 'A-001',
+      entradasCantidad: 100,
+      entradasPrecio: 1250,
+      salidasCantidad: 40,
+      salidasPrecio: 1250,
+      saldoCantidad: 60,
+    },
+    {
+      establecimientoId: 'EST-01',
+      establecimiento: 'Matriz',
+      descripcion: 'Aceite vegetal 1L',
+      codigo: 'A-002',
+      entradasCantidad: 50,
+      entradasPrecio: 3200,
+      salidasCantidad: 15,
+      salidasPrecio: 3200,
+      saldoCantidad: 35,
+    },
+    {
+      establecimientoId: 'EST-01',
+      establecimiento: 'Matriz',
+      descripcion: 'Azúcar rubia 1kg',
+      codigo: 'A-003',
+      entradasCantidad: 0,
+      entradasPrecio: 0,
+      salidasCantidad: 20,
+      salidasPrecio: 2800,
+      saldoCantidad: 80,
+    },
+    {
+      establecimientoId: 'EST-01',
+      establecimiento: 'Matriz',
+      descripcion: 'Café molido 250g',
+      codigo: 'B-014',
+      entradasCantidad: 30,
+      entradasPrecio: 5400,
+      salidasCantidad: 12,
+      salidasPrecio: 5400,
+      saldoCantidad: 18,
+    },
+  ];
+
+  private readonly kardexGroupClass = (
+    group: string | Observable<string>,
+  ): string | undefined =>
+    typeof group === 'string'
+      ? `kardex-group-${group.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`
+      : undefined;
+
+  // Groups by `establecimientoId` but displays `establecimiento` in the header.
+  private readonly kardexEstablecimiento = {
+    key: (data: KardexRow[]) => data[0]?.establecimientoId ?? '',
+    label: (data: KardexRow[]) => data[0]?.establecimiento ?? 'Establecimiento',
+  };
+
+  kardexColumns: DataGridColumn<KardexRow>[] = [
+    { field: 'descripcion', header: 'Descripción' },
+    { field: 'codigo', header: 'Código', width: '100px' },
+    {
+      field: 'entradasCantidad',
+      header: 'Cantidad',
+      type: 'number',
+      group: [this.kardexEstablecimiento, 'Entradas'],
+      groupClass: this.kardexGroupClass,
+    },
+    {
+      field: 'entradasPrecio',
+      header: 'Precio',
+      type: 'currency',
+      group: [this.kardexEstablecimiento, 'Entradas'],
+      groupClass: this.kardexGroupClass,
+      width: '120px',
+    },
+    {
+      field: 'salidasCantidad',
+      header: 'Cantidad',
+      type: 'number',
+      group: [this.kardexEstablecimiento, 'Salidas'],
+      groupClass: this.kardexGroupClass,
+    },
+    {
+      field: 'salidasPrecio',
+      header: 'Precio',
+      type: 'currency',
+      group: [this.kardexEstablecimiento, 'Salidas'],
+      groupClass: this.kardexGroupClass,
+      width: '120px',
+    },
+    {
+      field: 'saldoCantidad',
+      header: 'Cantidad',
+      type: 'number',
+      group: [this.kardexEstablecimiento, 'Saldo'],
+      groupClass: this.kardexGroupClass,
+    },
   ];
 
   selectionColumns: DataGridColumn<DemoData>[] = [
@@ -667,6 +827,40 @@ columns: DataGridColumn[] = [
 ];
 
 <acp-data-grid [data]="data" [columns]="columns" />`;
+
+  columnGroupsCode = `// Column Groups (Kardex, nested): \`group\` accepts a single level or an
+// array of levels — one header row is rendered per level. Each level can be a
+// string, an Observable<string>, or (data) => string | Observable<string> for
+// dynamic titles taken from the rows. \`groupClass\` accepts a class string or a
+// formatter (group, memberColumns) => class and is applied to the group header
+// plus every member column's header and data cells.
+const kardexGroupClass = (group: string | Observable<string>) =>
+  typeof group === 'string'
+    ? \`kardex-group-\${group.toLowerCase().replace(/[^a-z0-9]+/g, '-')}\`
+    : undefined;
+
+// Dynamic first level: group by establecimientoId but show establecimiento.
+const establecimiento = {
+  key: (data: KardexRow[]) => data[0]?.establecimientoId ?? '',
+  label: (data: KardexRow[]) => data[0]?.establecimiento ?? 'Establecimiento',
+};
+
+columns: DataGridColumn<KardexRow>[] = [
+  { field: 'descripcion', header: 'Descripción' },
+  { field: 'codigo', header: 'Código', width: '100px' },
+  { field: 'entradasCantidad', header: 'Cantidad', type: 'number',
+    group: [establecimiento, 'Entradas'], groupClass: kardexGroupClass },
+  { field: 'entradasPrecio', header: 'Precio', type: 'currency',
+    group: [establecimiento, 'Entradas'], groupClass: kardexGroupClass },
+  { field: 'salidasCantidad', header: 'Cantidad', type: 'number',
+    group: [establecimiento, 'Salidas'], groupClass: kardexGroupClass },
+  { field: 'salidasPrecio', header: 'Precio', type: 'currency',
+    group: [establecimiento, 'Salidas'], groupClass: kardexGroupClass },
+  { field: 'saldoCantidad', header: 'Cantidad', type: 'number',
+    group: [establecimiento, 'Saldo'], groupClass: kardexGroupClass },
+];
+
+<acp-data-grid [data]="kardexData" [columns]="columns" />`;
 
   selectionCode = `// Row Selection
 <acp-data-grid

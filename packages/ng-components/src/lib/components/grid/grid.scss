@@ -153,7 +153,7 @@ $fallbacks: m3-grid.get-tokens();
   .acp-grid-header-group-row {
     // Overrides Material's `.mat-mdc-header-row` height so group rows keep their
     // own (smaller) height instead of the full header-container height.
-    height: var(--acp-grid-header-group-height, 32px);
+    // height: var(--acp-grid-header-group-height, 32px);
 
     .mat-mdc-header-cell {
       min-height: 0;

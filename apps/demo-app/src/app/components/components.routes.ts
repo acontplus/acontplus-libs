@@ -23,10 +23,6 @@ export const routes = [
         loadChildren: () => import('./dynamic-select/dynamic-select.routes').then(m => m.routes),
       },
       {
-        path: 'date-range-picker',
-        loadChildren: () => import('./date-range-picker/date-range-picker').then(m => m.routes),
-      },
-      {
         path: 'date-range-input',
         loadChildren: () => import('./date-range-input/date-range-input').then(m => m.routes),
       },

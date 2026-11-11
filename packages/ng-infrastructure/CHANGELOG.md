@@ -1,6 +1,6 @@
 # 4.0.0 (2026-11-11)
 
-### ⚠️  Breaking Changes
+### ⚠️ Breaking Changes
 
 - **Breaking:** `AngularHttpAdapter` was removed — it was unused public API. Consumers needing an `HttpPort` implementation can implement the `@acontplus/core` `HttpPort` interface directly. ([#155](https://github.com/acontplus/acontplus-libs/pull/155))
 

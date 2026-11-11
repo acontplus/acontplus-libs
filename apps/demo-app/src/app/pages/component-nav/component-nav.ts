@@ -37,12 +37,6 @@ export const COMPONENTS_MENU: ComponentCategory[] = [
     category: 'Form Controls',
   },
   {
-    id: 'date-range-picker',
-    name: 'Date Range Picker',
-    summary: 'Modern TypeScript date range picker with @formkit/tempo integration.',
-    category: 'Form Controls',
-  },
-  {
     id: 'date-range-input',
     name: 'Date Range Input',
     summary:

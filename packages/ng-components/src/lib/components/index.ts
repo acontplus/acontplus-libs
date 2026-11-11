@@ -11,7 +11,6 @@ export * from './button';
 export * from './spinner';
 export * from './tables';
 export * from './grid';
-export * from './date-range-picker';
 export * from './drawer';
 export * from './popover';
 export * from './date-range-input';

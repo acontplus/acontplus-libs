@@ -253,6 +253,47 @@ describe('apiInterceptor', () => {
       expect(notificationSpy.error).toHaveBeenCalled();
     });
 
+    it('shows a single toast when the error envelope has one error and no message', () => {
+      const { interceptor, notificationSpy } = setup();
+      const body = {
+        status: 'error',
+        code: '400',
+        errors: [{ code: 'VAL_001', message: 'Field is required' }],
+        timestamp: new Date().toISOString(),
+      };
+      interceptor(makeRequest('POST', '/api/test'), () => of(new HttpResponse({ body }))).subscribe(
+        {
+          error: vi.fn(),
+        },
+      );
+      expect(notificationSpy.error).toHaveBeenCalledTimes(1);
+      expect(notificationSpy.show).not.toHaveBeenCalled();
+    });
+
+    it('shows remaining errors as detail toasts when there is no primary message', () => {
+      const { interceptor, notificationSpy } = setup();
+      const body = {
+        status: 'error',
+        code: '400',
+        errors: [
+          { code: 'VAL_001', message: 'Field is required' },
+          { code: 'VAL_002', message: 'Name too long' },
+        ],
+        timestamp: new Date().toISOString(),
+      };
+      interceptor(makeRequest('POST', '/api/test'), () => of(new HttpResponse({ body }))).subscribe(
+        {
+          error: vi.fn(),
+        },
+      );
+      const calls = notificationSpy.show.mock.calls as [Record<string, string>][];
+      const errorMessages = calls
+        .filter((c) => c[0]['type'] === 'error')
+        .map((c) => c[0]['message']);
+      expect(errorMessages).toContain('Name too long');
+      expect(errorMessages).not.toContain('Field is required');
+    });
+
     it('skips error toast with SKIP_NOTIFICATION', () => {
       const { interceptor, notificationSpy } = setup();
       const response = makeResponse('error');

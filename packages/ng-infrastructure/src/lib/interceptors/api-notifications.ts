@@ -81,8 +81,11 @@ export function handleApiResponseError(
 
   notificationService.error({ message, config: { duration: 5000 } });
 
-  // Secondary: show individual errors so callers keep the detail list
-  response.errors?.forEach((e) =>
+  // Secondary: show individual errors so callers keep the detail list.
+  // When there is no primary message, errors[0] was already consumed as the
+  // primary toast — skip it to avoid showing the same message twice.
+  const detailErrors = response.message ? response.errors : response.errors?.slice(1);
+  detailErrors?.forEach((e) =>
     notificationService.show({
       type: 'error',
       message: getLocalizedErrorMessage(e.code, language, e.message),

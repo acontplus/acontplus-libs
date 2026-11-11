@@ -552,7 +552,6 @@ export class DataGrid implements AfterViewInit, OnChanges {
     }
 
     this.dataSource.disconnect();
-    this.dataSource.disconnect();
     this.dataSource = new MatTableDataSource(this.data);
     this._renderData$ = this.dataSource.connect();
 

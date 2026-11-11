@@ -55,10 +55,12 @@ export interface DataGridColumn<T = any> {
   group?: DataGridColumnGroupItem<T> | DataGridColumnGroupItem<T>[];
   /**
    * CSS class(es) applied to the group header cells, or a formatter that receives
-   * the group value of each level and its member columns and returns class(es).
-   * The resolved classes are also propagated to the member columns' header and
-   * data cells, so the whole column block can be styled (e.g. entradas/salidas
-   * in a kardex).
+   * the group value of each level and the run's member columns and returns
+   * class(es). It is resolved once per member column, so each column can style
+   * itself differently per level; a group cell combines the distinct classes of
+   * its members. The resolved classes are also propagated to each member
+   * column's header and data cells, so the whole column block can be styled
+   * (e.g. entradas/salidas in a kardex).
    */
   groupClass?:
     | string

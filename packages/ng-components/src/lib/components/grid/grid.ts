@@ -655,18 +655,29 @@ export class DataGrid implements AfterViewInit, OnChanges {
         }
 
         const header = path[level].label;
-        const groupClass = col!.groupClass;
-        const className =
-          typeof groupClass === 'function' ? groupClass(header, members) : groupClass;
-        if (className) {
-          members.forEach(member => {
-            const previous = this._groupClassByField.get(member.field);
+        // Each member column resolves its own `groupClass` for this level; the
+        // group cell combines the distinct results so mixed groups still render.
+        const cellClasses: string[] = [];
+        members.forEach(member => {
+          const groupClass = member.groupClass;
+          const className =
+            typeof groupClass === 'function' ? groupClass(header, members) : groupClass;
+          if (!className) {
+            return;
+          }
+          if (!cellClasses.includes(className)) {
+            cellClasses.push(className);
+          }
+          const previous = this._groupClassByField.get(member.field);
+          const existing = previous?.split(' ') ?? [];
+          if (!existing.includes(className)) {
             this._groupClassByField.set(
               member.field,
               previous ? `${previous} ${className}` : className,
             );
-          });
-        }
+          }
+        });
+        const className = cellClasses.length ? cellClasses.join(' ') : undefined;
 
         const id = `__acpGridGroup_${level}_${field}`;
         cells.push({

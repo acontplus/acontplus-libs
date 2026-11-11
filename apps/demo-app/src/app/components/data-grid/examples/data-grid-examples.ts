@@ -108,7 +108,12 @@ interface PivotRow {
               <mat-button-toggle [value]="option">{{ option }}</mat-button-toggle>
             }
           </mat-button-toggle-group>
-          <acp-data-grid [data]="kardexData" [columns]="kardexColumns" [size]="gridSize()" />
+          <acp-data-grid
+            [data]="kardexData"
+            [columns]="kardexColumns"
+            [size]="gridSize()"
+            [showSummary]="true"
+          />
         </mat-card-content>
       </mat-card>
       <app-code-example [code]="columnGroupsCode" [language]="'typescript'" />
@@ -689,8 +694,11 @@ export class DataGridExamples {
     label: (data: KardexRow[]) => data[0]?.establecimiento ?? 'Establecimiento',
   };
 
+  private readonly kardexTotal = (data: any[]): number =>
+    data.reduce((acc, value) => acc + (Number(value) || 0), 0);
+
   kardexColumns: DataGridColumn<KardexRow>[] = [
-    { field: 'descripcion', header: 'Descripción' },
+    { field: 'descripcion', header: 'Descripción', summary: 'Total' },
     { field: 'codigo', header: 'Código', width: '100px' },
     {
       field: 'entradasCantidad',
@@ -698,6 +706,7 @@ export class DataGridExamples {
       type: 'number',
       group: [this.kardexEstablecimiento, 'Entradas'],
       groupClass: group => (group === 'Matriz' ? 'kardex-group-matriz' : 'bg-primary'),
+      summary: this.kardexTotal,
     },
     {
       field: 'entradasPrecio',
@@ -705,6 +714,7 @@ export class DataGridExamples {
       type: 'currency',
       group: [this.kardexEstablecimiento, 'Entradas'],
       groupClass: group => (group === 'Matriz' ? 'kardex-group-matriz' : 'bg-primary'),
+      summary: this.kardexTotal,
       width: '120px',
     },
     {
@@ -713,6 +723,7 @@ export class DataGridExamples {
       type: 'number',
       group: [this.kardexEstablecimiento, 'Salidas'],
       groupClass: this.kardexGroupClass,
+      summary: this.kardexTotal,
     },
     {
       field: 'salidasPrecio',
@@ -720,6 +731,7 @@ export class DataGridExamples {
       type: 'currency',
       group: [this.kardexEstablecimiento, 'Salidas'],
       groupClass: this.kardexGroupClass,
+      summary: this.kardexTotal,
       width: '120px',
     },
     {
@@ -728,6 +740,7 @@ export class DataGridExamples {
       type: 'number',
       group: [this.kardexEstablecimiento, 'Saldo'],
       groupClass: this.kardexGroupClass,
+      summary: this.kardexTotal,
     },
   ];
 
@@ -986,11 +999,15 @@ const establecimiento = {
   label: (data: KardexRow[]) => data[0]?.establecimiento ?? 'Establecimiento',
 };
 
+// Footer totals: summary receives the column values; enable with
+// <acp-data-grid [showSummary]="true" ... />
+const kardexTotal = (data: any[]) => data.reduce((acc, v) => acc + (Number(v) || 0), 0);
+
 columns: DataGridColumn<KardexRow>[] = [
-  { field: 'descripcion', header: 'Descripción' },
+  { field: 'descripcion', header: 'Descripción', summary: 'Total' },
   { field: 'codigo', header: 'Código', width: '100px' },
   { field: 'entradasCantidad', header: 'Cantidad', type: 'number',
-    group: [establecimiento, 'Entradas'], groupClass: kardexGroupClass },
+    group: [establecimiento, 'Entradas'], groupClass: kardexGroupClass, summary: kardexTotal },
   { field: 'entradasPrecio', header: 'Precio', type: 'currency',
     group: [establecimiento, 'Entradas'], groupClass: kardexGroupClass },
   { field: 'salidasCantidad', header: 'Cantidad', type: 'number',

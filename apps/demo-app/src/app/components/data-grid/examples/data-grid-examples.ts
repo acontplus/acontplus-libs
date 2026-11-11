@@ -79,7 +79,7 @@ interface PivotRow {
       <app-doc-heading>Data Grid Examples</app-doc-heading>
 
       <!-- Basic Example -->
-      <h2 class="bg-primary">Basic Usage</h2>
+      <h2>Basic Usage</h2>
       <mat-card class="example-card">
         <mat-card-content>
           <acp-data-grid [data]="basicData" [columns]="basicColumns" />
@@ -605,7 +605,7 @@ export class DataGridExamples {
     const text = this.searchText().trim().toLowerCase();
     return this.searchData.filter(item => item.name.toLowerCase().includes(text));
   });
-  gridSize = signal<DataGridSize>('medium');
+  gridSize = signal<DataGridSize>('small');
   lastRowAction = signal('');
   rowMenuItems: AcpContextMenuItem[] = [
     { id: 'view', label: 'View', icon: 'visibility' },

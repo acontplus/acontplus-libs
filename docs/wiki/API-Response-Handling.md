@@ -12,7 +12,7 @@ The `apiInterceptor` in `@acontplus/ng-infrastructure` intercepts every HTTP req
 2. **Extracts** the `data` field and returns it directly to repositories
 3. **Shows toasts** automatically based on HTTP method and response status
 4. **Handles errors** for 5xx and network failures globally
-5. **Retries** failed requests up to 2 times with 1-second delay
+5. **Attaches `Idempotency-Key`** to mutations when enabled (opt-in)
 
 No manual unwrapping needed in repositories or components.
 
@@ -50,7 +50,7 @@ The interceptor handles all three backend response styles:
 | HTTP Method                      | Condition                          | Toast type                             |
 | -------------------------------- | ---------------------------------- | -------------------------------------- |
 | `POST`, `PUT`, `PATCH`, `DELETE` | `status: "success"` with `message` | Success                                |
-| Any                              | `status: "warning"`                | Warning (shows each `warnings[]` item) |
+| `POST`, `PUT`, `PATCH`, `DELETE` | `status: "warning"`                | Warning (shows each `warnings[]` item) |
 | Any                              | `status: "error"`                  | Error (shows each `errors[]` item)     |
 | Any                              | HTTP 5xx or network error          | Critical error                         |
 
@@ -63,6 +63,29 @@ The interceptor handles all three backend response styles:
 ---
 
 ## Controlling Notifications
+
+### Global notification mode (per app)
+
+`provideHttpContext({ notifications: ... })` sets the app-wide toast policy:
+
+| Mode            | Behavior                                                          |
+| --------------- | ----------------------------------------------------------------- |
+| `'all'`         | Success/warning toasts for mutations + all error toasts (default) |
+| `'errors-only'` | Only error notifications — no "operation completed" noise         |
+| `'off'`         | No automatic notifications at all                                 |
+
+```typescript
+provideHttpContext({ notifications: 'errors-only' });
+```
+
+### Precedence
+
+Per-request tokens always win over the global mode:
+
+1. `SKIP_NOTIFICATION` — always silences the request
+2. `SHOW_NOTIFICATIONS` — `false` silences, `true` forces (even when mode is `'off'`)
+3. Global `notifications` mode
+4. Automatic heuristic (mutations only, excluding read-like URLs)
 
 ### Skip all notifications
 
@@ -84,6 +107,32 @@ this.http.get('/api/important-data', {
   context: new HttpContext().set(SHOW_NOTIFICATIONS, true),
 });
 ```
+
+---
+
+## Idempotency-Key support
+
+Mutation requests (`POST`, `PUT`, `PATCH`, `DELETE`) can carry an
+`Idempotency-Key` header so the backend can deduplicate retries safely
+(Stripe-style). Two ways to enable it:
+
+```typescript
+// Per request — pass a stable key or omit it to auto-generate a UUID
+import { withIdempotencyKey } from '@acontplus/ng-infrastructure';
+
+this.http.post('/api/payments', payload, { context: withIdempotencyKey() });
+this.http.post('/api/payments', payload, { context: withIdempotencyKey('order-42') });
+```
+
+```typescript
+// Per app — attach a random UUID key to every mutation
+provideHttpContext({ enableIdempotency: true });
+// optional: customize the header name (default 'Idempotency-Key')
+provideHttpContext({ enableIdempotency: true, idempotencyKeyHeader: 'X-Idempotency-Key' });
+```
+
+An explicit `withIdempotencyKey()` key always wins over the global flag. The
+header is never sent on `GET`/`HEAD`/`OPTIONS` requests.
 
 ---
 

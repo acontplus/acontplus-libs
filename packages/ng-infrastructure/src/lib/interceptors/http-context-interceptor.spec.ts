@@ -3,7 +3,12 @@ import { HttpInterceptorFn, HttpRequest, HttpResponse } from '@angular/common/ht
 import { provideRouter } from '@angular/router';
 import { PLATFORM_ID } from '@angular/core';
 import { of } from 'rxjs';
-import { httpContextInterceptor } from './http-context-interceptor';
+import {
+  httpContextInterceptor,
+  HTTP_CONTEXT_CONFIG,
+  HttpContextConfig,
+  withIdempotencyKey,
+} from './http-context-interceptor';
 import { AUTH_TOKEN, ENVIRONMENT } from '@acontplus/ng-config';
 import { LanguageInfo } from '../services/language-info';
 import { Language } from '@acontplus/core';
@@ -12,7 +17,7 @@ import { TenantInfo } from '../services/tenant-info';
 import { CorrelationInfo } from '../services/correlation-info';
 import { describe, it, expect, vi } from 'vitest';
 
-function setup(language?: Language) {
+function setup(language?: Language, httpConfig?: Partial<HttpContextConfig>) {
   const loggingService = {
     logHttpRequest: vi.fn(),
     logHttpError: vi.fn(),
@@ -44,6 +49,7 @@ function setup(language?: Language) {
         useValue: { getTenantId: () => 'tenant-1', handleForbidden: vi.fn() },
       },
       { provide: CorrelationInfo, useValue: { getOrCreateCorrelationId: () => 'corr-123' } },
+      ...(httpConfig ? [{ provide: HTTP_CONTEXT_CONFIG, useValue: httpConfig }] : []),
     ],
   });
 
@@ -170,6 +176,77 @@ describe('httpContextInterceptor', () => {
         return of(new HttpResponse({ body: null }));
       }).subscribe();
       expect(resolvedUrl).toBe('https://api.example.com/users/list');
+    });
+  });
+
+  describe('Idempotency-Key header', () => {
+    it('does not send the header by default on mutations', () => {
+      const { interceptor } = setup();
+      let key: string | null = null;
+      interceptor(new HttpRequest('POST', '/api/payments', null), (req) => {
+        key = req.headers.get('Idempotency-Key');
+        return of(new HttpResponse({ body: null }));
+      }).subscribe();
+      expect(key).toBeNull();
+    });
+
+    it('sends a generated key on mutations when enableIdempotency is true', () => {
+      const { interceptor } = setup(undefined, { enableIdempotency: true });
+      let key: string | null = null;
+      interceptor(new HttpRequest('POST', '/api/payments', null), (req) => {
+        key = req.headers.get('Idempotency-Key');
+        return of(new HttpResponse({ body: null }));
+      }).subscribe();
+      expect(key).toBeTruthy();
+    });
+
+    it('does not send the header on GET even when enableIdempotency is true', () => {
+      const { interceptor } = setup(undefined, { enableIdempotency: true });
+      let key: string | null = null;
+      interceptor(new HttpRequest('GET', '/api/payments'), (req) => {
+        key = req.headers.get('Idempotency-Key');
+        return of(new HttpResponse({ body: null }));
+      }).subscribe();
+      expect(key).toBeNull();
+    });
+
+    it('sends the explicit key from withIdempotencyKey even when disabled globally', () => {
+      const { interceptor } = setup();
+      let key: string | null = null;
+      const req = new HttpRequest('POST', '/api/payments', undefined, {
+        context: withIdempotencyKey('op-123'),
+      });
+      interceptor(req, (r) => {
+        key = r.headers.get('Idempotency-Key');
+        return of(new HttpResponse({ body: null }));
+      }).subscribe();
+      expect(key).toBe('op-123');
+    });
+
+    it('generates a key when withIdempotencyKey() is called without arguments', () => {
+      const { interceptor } = setup();
+      let key: string | null = null;
+      const req = new HttpRequest('POST', '/api/payments', undefined, {
+        context: withIdempotencyKey(),
+      });
+      interceptor(req, (r) => {
+        key = r.headers.get('Idempotency-Key');
+        return of(new HttpResponse({ body: null }));
+      }).subscribe();
+      expect(key).toBeTruthy();
+    });
+
+    it('honors a custom idempotencyKeyHeader name', () => {
+      const { interceptor } = setup(undefined, {
+        enableIdempotency: true,
+        idempotencyKeyHeader: 'X-Idempotency-Key',
+      });
+      let key: string | null = null;
+      interceptor(new HttpRequest('POST', '/api/payments', null), (req) => {
+        key = req.headers.get('X-Idempotency-Key');
+        return of(new HttpResponse({ body: null }));
+      }).subscribe();
+      expect(key).toBeTruthy();
     });
   });
 });

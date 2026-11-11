@@ -29,7 +29,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AsyncPipe, NgClass, NgTemplateOutlet } from '@angular/common';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, isObservable, Observable, take } from 'rxjs';
 
 // Material Imports
 import {
@@ -133,7 +133,7 @@ export const DATA_GRID_DEFAULT_OPTIONS = new InjectionToken<DataGridDefaultOptio
     '[class.acp-grid-size-small]': '_size() === "small"',
     '[class.acp-grid-size-medium]': '_size() === "medium"',
     '[class.acp-grid-size-large]': '_size() === "large"',
-    '[attr.tabindex]': 'keyboardNavigation() ? null : 0',
+    '[attr.tabindex]': 'keyboardNavigation() ? 0 : null',
   },
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -157,6 +157,9 @@ export class DataGrid implements AfterViewInit, OnChanges {
   private readonly _columnsByField = new Map<string, DataGridColumn>();
   private readonly _resizedColumnWidths = new Map<string, number>();
   private readonly _groupClassByField = new Map<string, string>();
+  /** @internal First emitted value of each tracked `Observable` group key, by instance. */
+  private readonly _groupKeyValues = new Map<Observable<string>, string>();
+  private readonly _trackedGroupKeyObservables = new Set<Observable<string>>();
   /** @internal Rows of column-group header cells, derived from `columns[].group`. */
   _groupHeaderRows: DataGridGroupHeaderRow[] = [];
   private _focusFirstRowOnRender = false;
@@ -193,6 +196,9 @@ export class DataGrid implements AfterViewInit, OnChanges {
   @ViewChild('tableContainer') tableContainer!: ElementRef<HTMLDivElement>;
 
   dataSource = new MatTableDataSource();
+
+  /** @internal Cached `dataSource.connect()` stream; see `renderedRows`. */
+  private _renderData$?: BehaviorSubject<any[]>;
 
   /** The grid's displayed columns. */
   @Input() displayedColumns: string[] = [];
@@ -546,6 +552,7 @@ export class DataGrid implements AfterViewInit, OnChanges {
     }
 
     this.dataSource = new MatTableDataSource(this.data);
+    this._renderData$ = this.dataSource.connect();
 
     // Reapply sort and paginator after recreating dataSource
     if (this.pageOnFront && this.paginator) {
@@ -725,10 +732,29 @@ export class DataGrid implements AfterViewInit, OnChanges {
       const descriptor = this._asGroupDescriptor(item);
       const keySource = descriptor ? descriptor.key : (item as DataGridColumnGroupLevel);
       const labelSource = descriptor?.label ?? keySource;
+      const key = this._resolveGroupLevel(keySource);
+      this._trackGroupKey(key);
       return {
-        key: this._resolveGroupLevel(keySource),
+        key,
         label: this._resolveGroupLevel(labelSource),
       };
+    });
+  }
+
+  /**
+   * Subscribes once to an `Observable` group key so its first emitted value can
+   * be used when merging group header cells. If the value arrives after the
+   * header rows were built, they are rebuilt.
+   */
+  private _trackGroupKey(key: string | Observable<string>): void {
+    if (typeof key === 'string' || this._trackedGroupKeyObservables.has(key)) {
+      return;
+    }
+    this._trackedGroupKeyObservables.add(key);
+    key.pipe(take(1), takeUntilDestroyed(this._destroyRef)).subscribe(value => {
+      this._groupKeyValues.set(key, value);
+      this._updateGroupHeaderCells();
+      this._changeDetectorRef.markForCheck();
     });
   }
 
@@ -753,11 +779,26 @@ export class DataGrid implements AfterViewInit, OnChanges {
     level: number,
   ): boolean {
     for (let i = 0; i <= level; i++) {
-      if (a[i].key !== b[i].key) {
+      if (!this._sameGroupKey(a[i].key, b[i].key)) {
         return false;
       }
     }
     return true;
+  }
+
+  /**
+   * Compares two group keys. `Observable` keys are compared by their first
+   * emitted value (see `_trackGroupKey`), so distinct instances that resolve to
+   * the same value still merge into one group.
+   */
+  private _sameGroupKey(a: unknown, b: unknown): boolean {
+    if (a === b) {
+      return true;
+    }
+    const resolve = (value: unknown) =>
+      isObservable(value) ? this._groupKeyValues.get(value as Observable<string>) : value;
+    const resolvedA = resolve(a);
+    return resolvedA !== undefined && resolvedA === resolve(b);
   }
 
   _countPinnedPosition() {
@@ -784,7 +825,8 @@ export class DataGrid implements AfterViewInit, OnChanges {
 
   /** Rows currently rendered (after sorting and front-end paging). */
   get renderedRows(): any[] {
-    return this.dataSource.connect().value;
+    this._renderData$ ??= this.dataSource.connect();
+    return this._renderData$.value;
   }
 
   /** Index of the active row within the rendered rows, or -1. */

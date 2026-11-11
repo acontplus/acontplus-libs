@@ -49,8 +49,9 @@ export interface DataGridColumn<T = any> {
    *   displayed text (e.g. group by `warehouseId` but show `warehouseName`).
    *   `label` defaults to the resolved `key`.
    *
-   * Strings are compared by value; `Observable`s and functions are resolved and
-   * compared by their resulting value/instance.
+   * Strings are compared by value; functions are resolved against the grid
+   * `data`; `Observable`s are compared by their first emitted value (the group
+   * header is rebuilt once it arrives).
    */
   group?: DataGridColumnGroupItem<T> | DataGridColumnGroupItem<T>[];
   /**

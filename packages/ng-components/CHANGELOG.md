@@ -1,6 +1,6 @@
 # 5.0.0 (2026-11-06)
 
-### ⚠️  Breaking Changes
+### ⚠️ Breaking Changes
 
 - AcpDataGrid: implement `small`, `medium` and `large` sizes (`medium` is the new default; `normal` is deprecated and maps to `medium`), translate the default column menu button text to Spanish, and fix `currency` columns rendering a `null` prefix when `typeParameter.display` is not set. ([#151](https://github.com/acontplus/acontplus-libs/pull/151))
 

@@ -284,7 +284,7 @@
         } @if (!useContentHeaderRowTemplate && _hasColumnGroups) { @if (columnResizable) {
         <tr class="acp-grid-column-sizing-row" aria-hidden="true">
           @for (s of _sizingColumns; track s.field) {
-          <th [style.width]="s.width" [style.min-width]="s.width"></th>
+          <th [style.width]="s.width" [style.min-width]="s.minWidth"></th>
           }
         </tr>
         } @for (row of _groupHeaderRows; track $index) { @for (gc of row.cells; track gc.id) {
@@ -609,7 +609,7 @@
         } @if (!useContentHeaderRowTemplate && _hasColumnGroups) { @if (columnResizable) {
         <tr class="acp-grid-column-sizing-row" aria-hidden="true">
           @for (s of _sizingColumns; track s.field) {
-          <th [style.width]="s.width" [style.min-width]="s.width"></th>
+          <th [style.width]="s.width" [style.min-width]="s.minWidth"></th>
           }
         </tr>
         } @for (row of _groupHeaderRows; track $index) { @for (gc of row.cells; track gc.id) {

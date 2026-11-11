@@ -5,6 +5,10 @@
 $fallbacks: m3-grid.get-tokens();
 
 .acp-grid {
+  // Group header rows are shorter than the column header row; each `size`
+  // variant overrides this var. Override it on the grid host to resize them.
+  --acp-grid-header-group-height: 32px;
+
   position: relative;
   display: flex;
   flex-direction: column;
@@ -147,8 +151,11 @@ $fallbacks: m3-grid.get-tokens();
   }
 
   .acp-grid-header-group-row {
+    // Overrides Material's `.mat-mdc-header-row` height so group rows keep their
+    // own (smaller) height instead of the full header-container height.
+    height: var(--acp-grid-header-group-height, 32px);
+
     .mat-mdc-header-cell {
-      height: var(--acp-grid-header-group-height, 32px);
       min-height: 0;
       padding-top: 0;
       padding-bottom: 0;

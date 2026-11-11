@@ -166,6 +166,22 @@ export class DataGrid implements AfterViewInit, OnChanges {
     optional: true,
   });
 
+  /**
+   * The CDK sticky styler measures header/footer row heights once; when `size`
+   * changes those heights, the cached `top`/`bottom` offsets become stale and
+   * sticky rows overlap. Re-run the sticky update after each size change.
+   */
+  private readonly _stickyRecalcEffect = effect(() => {
+    this.size();
+    afterNextRender(
+      () => {
+        this.table?.updateStickyHeaderRowStyles();
+        this.table?.updateStickyFooterRowStyles();
+      },
+      { injector: this._injector },
+    );
+  });
+
   @ViewChild(MatTable) table!: MatTable<any>;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -587,7 +603,7 @@ export class DataGrid implements AfterViewInit, OnChanges {
    * Per-column widths for the hidden sizing row that keeps `table-layout: fixed`
    * (enabled after the first column resize) aligned with the group header row.
    */
-  get _sizingColumns(): { field: string; width?: string }[] {
+  get _sizingColumns(): { field: string; width?: string; minWidth: string }[] {
     return this.displayedColumns.map(field => {
       const resizedWidth = this._resizedColumnWidths.get(field);
       const width =
@@ -595,7 +611,7 @@ export class DataGrid implements AfterViewInit, OnChanges {
           ? `${resizedWidth}px`
           : (this._columnsByField.get(field)?.width ??
             (field === 'acpGridCheckboxColumnDef' ? '60px' : undefined));
-      return { field, width };
+      return { field, width, minWidth: width ?? '80px' };
     });
   }
 

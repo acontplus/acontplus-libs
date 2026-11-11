@@ -5,6 +5,10 @@
 $fallbacks: m3-grid.get-tokens();
 
 .acp-grid {
+  // Group header rows are shorter than the column header row; each `size`
+  // variant overrides this var. Override it on the grid host to resize them.
+  --acp-grid-header-group-height: 32px;
+
   position: relative;
   display: flex;
   flex-direction: column;
@@ -128,6 +132,41 @@ $fallbacks: m3-grid.get-tokens();
     display: inline-flex;
     align-items: center;
     vertical-align: middle;
+  }
+
+  // Hidden per-column sizing row: keeps `table-layout: fixed` (enabled after the
+  // first column resize) aligned with the column-group header row.
+  .acp-grid-column-sizing-row {
+    height: 0;
+
+    th {
+      height: 0;
+      min-height: 0;
+      padding: 0;
+      border: 0;
+      font-size: 0;
+      line-height: 0;
+      visibility: hidden;
+    }
+  }
+
+  .acp-grid-header-group-row {
+    // Overrides Material's `.mat-mdc-header-row` height so group rows keep their
+    // own (smaller) height instead of the full header-container height.
+    // height: var(--acp-grid-header-group-height, 32px);
+
+    .mat-mdc-header-cell {
+      min-height: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+      text-align: center;
+      vertical-align: middle;
+      border-bottom: 1px solid var(--mat-table-row-item-outline-color);
+    }
+  }
+
+  .acp-grid-header-group-label {
+    font-weight: 600;
   }
 
   .mat-mdc-paginator {
@@ -259,6 +298,7 @@ $fallbacks: m3-grid.get-tokens();
 }
 
 .acp-grid-size-small {
+  --acp-grid-header-group-height: 24px;
   --mat-table-header-container-height: 40px;
   --mat-table-row-item-container-height: 36px;
   --mat-table-footer-container-height: 36px;
@@ -286,6 +326,7 @@ $fallbacks: m3-grid.get-tokens();
 }
 
 .acp-grid-size-large {
+  --acp-grid-header-group-height: 40px;
   --mat-table-header-container-height: 64px;
   --mat-table-row-item-container-height: 60px;
   --mat-table-footer-container-height: 60px;

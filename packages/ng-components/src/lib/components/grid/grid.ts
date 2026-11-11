@@ -25,8 +25,11 @@ import {
   afterNextRender,
   Injector,
   untracked,
+  DestroyRef,
 } from '@angular/core';
-import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { AsyncPipe, NgClass, NgTemplateOutlet } from '@angular/common';
+import { BehaviorSubject, isObservable, Observable, take } from 'rxjs';
 
 // Material Imports
 import {
@@ -63,7 +66,11 @@ import {
   DataGridButtonType,
   DataGridCellTemplate,
   DataGridColumn,
+  DataGridColumnGroupDescriptor,
+  DataGridColumnGroupItem,
+  DataGridColumnGroupLevel,
   DataGridColumnPinOption,
+  DataGridColumnPinValue,
   DataGridDefaultOptions,
   DataGridRowClassFormatter,
   DataGridRowSelectionFormatter,
@@ -85,6 +92,7 @@ export const DATA_GRID_DEFAULT_OPTIONS = new InjectionToken<DataGridDefaultOptio
   exportAs: 'dataGrid',
   imports: [
     AsyncPipe,
+    NgClass,
     NgTemplateOutlet,
     MatProgressBar,
     MatIconButton,
@@ -125,7 +133,7 @@ export const DATA_GRID_DEFAULT_OPTIONS = new InjectionToken<DataGridDefaultOptio
     '[class.acp-grid-size-small]': '_size() === "small"',
     '[class.acp-grid-size-medium]': '_size() === "medium"',
     '[class.acp-grid-size-large]': '_size() === "large"',
-    '[attr.tabindex]': 'keyboardNavigation() ? null : 0',
+    '[attr.tabindex]': 'keyboardNavigation() ? 0 : null',
   },
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -145,11 +153,36 @@ export class DataGrid implements AfterViewInit, OnChanges {
   /** Unique id of the grid, used for row ids and `aria-controls`. */
   readonly gridId = `acp-grid-${DataGrid._nextId++}`;
   private readonly _activeRow = signal<unknown>(null);
+  private readonly _destroyRef = inject(DestroyRef);
+  private readonly _columnsByField = new Map<string, DataGridColumn>();
+  private readonly _resizedColumnWidths = new Map<string, number>();
+  private readonly _groupClassByField = new Map<string, string>();
+  /** @internal First emitted value of each tracked `Observable` group key, by instance. */
+  private readonly _groupKeyValues = new Map<Observable<string>, string>();
+  private readonly _trackedGroupKeyObservables = new Set<Observable<string>>();
+  /** @internal Rows of column-group header cells, derived from `columns[].group`. */
+  _groupHeaderRows: DataGridGroupHeaderRow[] = [];
   private _focusFirstRowOnRender = false;
   /** @internal Set by `acpGridNavigationFor` to activate the first row when data changes. */
   _activateFirstRowOnDataChange = false;
   private readonly _defaultOptions = inject<DataGridDefaultOptions>(DATA_GRID_DEFAULT_OPTIONS, {
     optional: true,
+  });
+
+  /**
+   * The CDK sticky styler measures header/footer row heights once; when `size`
+   * changes those heights, the cached `top`/`bottom` offsets become stale and
+   * sticky rows overlap. Re-run the sticky update after each size change.
+   */
+  private readonly _stickyRecalcEffect = effect(() => {
+    this.size();
+    afterNextRender(
+      () => {
+        this.table?.updateStickyHeaderRowStyles();
+        this.table?.updateStickyFooterRowStyles();
+      },
+      { injector: this._injector },
+    );
   });
 
   @ViewChild(MatTable) table!: MatTable<any>;
@@ -163,6 +196,9 @@ export class DataGrid implements AfterViewInit, OnChanges {
   @ViewChild('tableContainer') tableContainer!: ElementRef<HTMLDivElement>;
 
   dataSource = new MatTableDataSource();
+
+  /** @internal Cached `dataSource.connect()` stream; see `renderedRows`. */
+  private _renderData$?: BehaviorSubject<any[]>;
 
   /** The grid's displayed columns. */
   @Input() displayedColumns: string[] = [];
@@ -397,7 +433,7 @@ export class DataGrid implements AfterViewInit, OnChanges {
    * Whether rows can be navigated with the keyboard: arrows, Home/End, PageUp/PageDown,
    * Enter (same as a click), Space (toggle selection) and Ctrl+A (select all).
    */
-  keyboardNavigation = input(this._defaultOptions?.keyboardNavigation ?? true, {
+  keyboardNavigation = input(this._defaultOptions?.keyboardNavigation ?? false, {
     transform: booleanAttribute,
   });
   /** Index (within the rendered page) of the row to mark as active. */
@@ -500,6 +536,8 @@ export class DataGrid implements AfterViewInit, OnChanges {
       this.displayedColumns.unshift('acpGridCheckboxColumnDef');
     }
 
+    this._updateGroupHeaderCells();
+
     // We should copy each item of data for expansion data
     if (this.expandable) {
       this.expansionRowStates = []; // reset
@@ -513,7 +551,10 @@ export class DataGrid implements AfterViewInit, OnChanges {
       this.rowSelection = new SelectionModel<any>(this.multiSelectable, this.rowSelected);
     }
 
+    this.dataSource.disconnect();
+    this.dataSource.disconnect();
     this.dataSource = new MatTableDataSource(this.data);
+    this._renderData$ = this.dataSource.connect();
 
     // Reapply sort and paginator after recreating dataSource
     if (this.pageOnFront && this.paginator) {
@@ -553,6 +594,213 @@ export class DataGrid implements AfterViewInit, OnChanges {
     if (this.footerRowDefs?.length > 0 && this.useContentFooterRowTemplate) {
       this.footerRowDefs.forEach(footerRowDef => this.table.addFooterRowDef(footerRowDef));
     }
+
+    this.columnResize?.columnResizeNotifier.resizeCompleted
+      .pipe(takeUntilDestroyed(this._destroyRef))
+      .subscribe(({ columnId, size }) => {
+        this._resizedColumnWidths.set(columnId, size);
+        this._changeDetectorRef.markForCheck();
+      });
+  }
+
+  /** Whether any visible column belongs to a group, so the group header rows are rendered. */
+  get _hasColumnGroups(): boolean {
+    return this._groupHeaderRows.length > 0;
+  }
+
+  /**
+   * Per-column widths for the hidden sizing row that keeps `table-layout: fixed`
+   * (enabled after the first column resize) aligned with the group header row.
+   */
+  get _sizingColumns(): { field: string; width?: string; minWidth: string }[] {
+    return this.displayedColumns.map(field => {
+      const resizedWidth = this._resizedColumnWidths.get(field);
+      const width =
+        resizedWidth != null
+          ? `${resizedWidth}px`
+          : (this._columnsByField.get(field)?.width ??
+            (field === 'acpGridCheckboxColumnDef' ? '60px' : undefined));
+      return { field, width, minWidth: width ?? '80px' };
+    });
+  }
+
+  /** CSS class(es) of the column group the column belongs to, if any. */
+  _groupClassFor(col: DataGridColumn): string | undefined {
+    return this._groupClassByField.get(col.field);
+  }
+
+  /** Rebuilds the column-group header rows from the currently visible columns. */
+  private _updateGroupHeaderCells(): void {
+    this._columnsByField.clear();
+    this._groupClassByField.clear();
+    this.columns.forEach(col => this._columnsByField.set(col.field, col));
+
+    const displayed = this.displayedColumns;
+    const paths = displayed.map(field => this._groupPathFor(this._columnsByField.get(field)));
+    const maxDepth = paths.reduce((max, path) => Math.max(max, path.length), 0);
+
+    const rows: DataGridGroupHeaderRow[] = [];
+    for (let level = 0; level < maxDepth; level++) {
+      const cells: DataGridGroupHeaderCell[] = [];
+      const columnIds: string[] = [];
+
+      for (let i = 0; i < displayed.length;) {
+        const field = displayed[i];
+        const path = paths[i];
+        const col = this._columnsByField.get(field);
+
+        if (path.length <= level) {
+          const id = `__acpGridGroupEmpty_${level}_${field}`;
+          cells.push({
+            id,
+            colspan: 1,
+            isGroup: false,
+            pinned: col?.pinned ?? null,
+          });
+          columnIds.push(id);
+          i++;
+          continue;
+        }
+
+        let end = i + 1;
+        const pinned = col?.pinned ?? null;
+        const members: DataGridColumn[] = [col!];
+        let uniformPin = true;
+        while (end < displayed.length) {
+          const nextPath = paths[end];
+          const next = this._columnsByField.get(displayed[end]);
+          if (nextPath.length <= level || !this._sameGroupPrefix(path, nextPath, level)) {
+            break;
+          }
+          members.push(next!);
+          if ((next?.pinned ?? null) !== pinned) {
+            uniformPin = false;
+          }
+          end++;
+        }
+
+        const header = path[level].label;
+        // Each member column resolves its own `groupClass` for this level; the
+        // group cell combines the distinct results so mixed groups still render.
+        const cellClasses: string[] = [];
+        members.forEach(member => {
+          const groupClass = member.groupClass;
+          const className =
+            typeof groupClass === 'function' ? groupClass(header, members) : groupClass;
+          if (!className) {
+            return;
+          }
+          if (!cellClasses.includes(className)) {
+            cellClasses.push(className);
+          }
+          const previous = this._groupClassByField.get(member.field);
+          const existing = previous?.split(' ') ?? [];
+          if (!existing.includes(className)) {
+            this._groupClassByField.set(
+              member.field,
+              previous ? `${previous} ${className}` : className,
+            );
+          }
+        });
+        const className = cellClasses.length ? cellClasses.join(' ') : undefined;
+
+        const id = `__acpGridGroup_${level}_${field}`;
+        cells.push({
+          id,
+          colspan: end - i,
+          isGroup: true,
+          header,
+          className,
+          pinned: uniformPin ? pinned : null,
+        });
+        columnIds.push(id);
+        i = end;
+      }
+
+      rows.push({ cells, columnIds });
+    }
+
+    this._groupHeaderRows = rows;
+  }
+
+  /** Normalizes a column `group` into an array of comparable `{ key, label }` levels. */
+  private _groupPathFor(col?: DataGridColumn): DataGridGroupLevelValue[] {
+    const group = col?.group;
+    if (group == null) {
+      return [];
+    }
+    const levels: DataGridColumnGroupItem[] = Array.isArray(group) ? group : [group];
+    return levels.map(item => {
+      const descriptor = this._asGroupDescriptor(item);
+      const keySource = descriptor ? descriptor.key : (item as DataGridColumnGroupLevel);
+      const labelSource = descriptor?.label ?? keySource;
+      const key = this._resolveGroupLevel(keySource);
+      this._trackGroupKey(key);
+      return {
+        key,
+        label: this._resolveGroupLevel(labelSource),
+      };
+    });
+  }
+
+  /**
+   * Subscribes once to an `Observable` group key so its first emitted value can
+   * be used when merging group header cells. If the value arrives after the
+   * header rows were built, they are rebuilt.
+   */
+  private _trackGroupKey(key: string | Observable<string>): void {
+    if (typeof key === 'string' || this._trackedGroupKeyObservables.has(key)) {
+      return;
+    }
+    this._trackedGroupKeyObservables.add(key);
+    key.pipe(take(1), takeUntilDestroyed(this._destroyRef)).subscribe(value => {
+      this._groupKeyValues.set(key, value);
+      this._updateGroupHeaderCells();
+      this._changeDetectorRef.markForCheck();
+    });
+  }
+
+  /** Resolves a group level (string, Observable or data function) to its display value. */
+  private _resolveGroupLevel(level: DataGridColumnGroupLevel): string | Observable<string> {
+    return typeof level === 'function' ? level(this.data) : level;
+  }
+
+  /** Returns the item as a `{ key, label }` descriptor, or `undefined` for plain levels. */
+  private _asGroupDescriptor(
+    item: DataGridColumnGroupItem,
+  ): DataGridColumnGroupDescriptor | undefined {
+    return typeof item === 'object' && item !== null && 'key' in item
+      ? (item as DataGridColumnGroupDescriptor)
+      : undefined;
+  }
+
+  /** Whether two group paths share the same group keys up to and including `level`. */
+  private _sameGroupPrefix(
+    a: DataGridGroupLevelValue[],
+    b: DataGridGroupLevelValue[],
+    level: number,
+  ): boolean {
+    for (let i = 0; i <= level; i++) {
+      if (!this._sameGroupKey(a[i].key, b[i].key)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
+   * Compares two group keys. `Observable` keys are compared by their first
+   * emitted value (see `_trackGroupKey`), so distinct instances that resolve to
+   * the same value still merge into one group.
+   */
+  private _sameGroupKey(a: unknown, b: unknown): boolean {
+    if (a === b) {
+      return true;
+    }
+    const resolve = (value: unknown) =>
+      isObservable(value) ? this._groupKeyValues.get(value as Observable<string>) : value;
+    const resolvedA = resolve(a);
+    return resolvedA !== undefined && resolvedA === resolve(b);
   }
 
   _countPinnedPosition() {
@@ -579,7 +827,8 @@ export class DataGrid implements AfterViewInit, OnChanges {
 
   /** Rows currently rendered (after sorting and front-end paging). */
   get renderedRows(): any[] {
-    return this.dataSource.connect().value;
+    this._renderData$ ??= this.dataSource.connect();
+    return this._renderData$.value;
   }
 
   /** Index of the active row within the rendered rows, or -1. */
@@ -921,6 +1170,8 @@ export class DataGrid implements AfterViewInit, OnChanges {
     if (this.rowSelectable && !this.hideRowSelectionCheckbox) {
       this.displayedColumns.unshift('acpGridCheckboxColumnDef');
     }
+
+    this._updateGroupHeaderCells();
   }
 
   getDisplayedColumnFields(columns: DataGridColumn[]): string[] {
@@ -968,4 +1219,23 @@ export class DataGrid implements AfterViewInit, OnChanges {
   _contextmenu(event: MouseEvent, rowData: Record<string, any>, index: number) {
     this.rowContextMenu.emit({ event, rowData, index });
   }
+}
+
+interface DataGridGroupHeaderCell {
+  id: string;
+  colspan: number;
+  isGroup: boolean;
+  header?: string | Observable<string>;
+  className?: string;
+  pinned: DataGridColumnPinValue;
+}
+
+interface DataGridGroupHeaderRow {
+  cells: DataGridGroupHeaderCell[];
+  columnIds: string[];
+}
+
+interface DataGridGroupLevelValue {
+  key: unknown;
+  label: string | Observable<string>;
 }

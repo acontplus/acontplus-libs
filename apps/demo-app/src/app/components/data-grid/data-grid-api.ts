@@ -348,6 +348,13 @@ export class DataGridApi {
       description: 'Close other rows when expanding',
       default: 'false',
     },
+    {
+      name: 'dataKey',
+      type: 'string | ((row: T) => unknown) | null',
+      description:
+        'Identifies each row so its expanded state survives sorting, paging and data reloads. Defaults to the row object reference',
+      default: 'null',
+    },
 
     // Infinite Scroll
     {

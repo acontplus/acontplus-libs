@@ -378,6 +378,30 @@ acp-data-grid {
 }
 ```
 
+#### Expandable Rows
+
+The expanded state is tracked per row, so it follows the row when sorting or changing pages.
+Set `dataKey` to keep it across data reloads (new row objects with the same id):
+
+```html
+<acp-data-grid
+  [data]="orders"
+  [columns]="columns"
+  [expandable]="true"
+  [expansionTemplate]="detailTpl"
+  dataKey="id"
+/>
+```
+
+```typescript
+grid.isRowExpanded(row); // boolean
+grid.toggleRowExpansion(row); // toggles; honors closeOthersOnExpand
+grid.toggleRowExpansion(row, true); // expands
+```
+
+`toggleExpansion(index)` and `expansionRowStates` are deprecated; they still work and use the
+position in `data`.
+
 #### Row Selection Formatting
 
 ```typescript

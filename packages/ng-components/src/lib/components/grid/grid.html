@@ -186,77 +186,10 @@
             [cellSelectable]="cellSelectable"
             (cellSelectedChange)="_selectCell($event, row, col)"
           >
-            @if (cellTemplate | isTemplateRef) {
-            <ng-template
-              [ngTemplateOutlet]="$any(cellTemplate)"
-              [ngTemplateOutletContext]="{
-                      $implicit: row,
-                      rowData: row,
-                      index: _getIndex(index, dataIndex),
-                      colDef: col,
-                    }"
-            ></ng-template>
-            } @else { @if ($safeNavigationMigration($any(cellTemplate)?.[col.field]) |
-            isTemplateRef) {
-            <ng-template
-              [ngTemplateOutlet]="$any(cellTemplate)[col.field]"
-              [ngTemplateOutletContext]="{
-                        $implicit: row,
-                        rowData: row,
-                        index: _getIndex(index, dataIndex),
-                        colDef: col,
-                      }"
-            ></ng-template>
-            } @else { @if (col.cellTemplate) {
-            <ng-template
-              [ngTemplateOutlet]="col.cellTemplate!"
-              [ngTemplateOutletContext]="{
-                          $implicit: row,
-                          rowData: row,
-                          index: _getIndex(index, dataIndex),
-                          colDef: col,
-                        }"
-            ></ng-template>
-            } @else { @if (col.showExpand) {
-            <button
-              class="acp-grid-row-expand-button"
-              matIconButton
-              acpGridExpansionToggle
-              type="button"
-              [(opened)]="expansionRowStates[dataIndex].expanded"
-              (toggleChange)="_onExpansionChange($event, row, col, dataIndex)"
-            >
-              <svg
-                class="acp-grid-icon acp-grid-row-expand-icon"
-                viewBox="0 0 24 24"
-                width="24px"
-                height="24px"
-                fill="currentColor"
-                focusable="false"
-              >
-                <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
-              </svg>
-            </button>
-            }
-            <acp-grid-cell
-              [rowData]="row"
-              [colDef]="col"
-              [placeholder]="emptyValuePlaceholder"
-              (rowDataChange)="_onRowDataChange($event)"
-            ></acp-grid-cell>
-            } } }
-            <!-- Inline cell editor overlay -->
-            @if (_isCellEditing(row, col.field)) {
-            <acp-grid-cell-edit
-              [value]="_editValue()"
-              [field]="col.field"
-              [colDef]="col"
-              [rowData]="row"
-              [error]="_editError()"
-              (editComplete)="_onEditComplete($event)"
-              (editCancel)="_onEditCancel()"
-            ></acp-grid-cell-edit>
-            }
+            <ng-container
+              [ngTemplateOutlet]="acpGridCellBody"
+              [ngTemplateOutletContext]="{ $implicit: row, col: col, index: index, dataIndex: dataIndex }"
+            ></ng-container>
           </td>
           <td
             mat-footer-cell
@@ -269,31 +202,10 @@
             [style.left]="col.left"
             [style.right]="col.right"
           >
-            @if (col.showExpand) {
-            <span class="acp-grid-expansion-placeholder"></span>
-            } @if (summaryTemplate | isTemplateRef) {
-            <ng-template
-              [ngTemplateOutlet]="$any(summaryTemplate)"
-              [ngTemplateOutletContext]="{ $implicit: col, colDef: col, data: data }"
-            ></ng-template>
-            } @else { @if ( $safeNavigationMigration($any(summaryTemplate)?.[col.field]) |
-            isTemplateRef ) {
-            <ng-template
-              [ngTemplateOutlet]="$any(summaryTemplate)[col.field]"
-              [ngTemplateOutletContext]="{
-                        $implicit: _getColData(data, col),
-                        colData: _getColData(data, col),
-                        colDef: col,
-                      }"
-            ></ng-template>
-            } @else {
-            <acp-grid-cell
-              [summary]="true"
-              [data]="data"
-              [colDef]="col"
-              [placeholder]="emptyValuePlaceholder"
-            ></acp-grid-cell>
-            } }
+            <ng-container
+              [ngTemplateOutlet]="acpGridFooterBody"
+              [ngTemplateOutletContext]="{ $implicit: col }"
+            ></ng-container>
           </td>
         </ng-container>
         } @if (!useContentHeaderRowTemplate && _hasColumnGroups) { @if (columnResizable) {
@@ -359,19 +271,10 @@
             *matCellDef="let row; let dataIndex = dataIndex"
             [attr.colspan]="displayedColumns.length"
           >
-            <div class="acp-grid-expansion-detail-wrapper">
-              <div class="acp-grid-expansion-detail">
-                <ng-template
-                  [ngTemplateOutlet]="expansionTemplate"
-                  [ngTemplateOutletContext]="{
-                        $implicit: row,
-                        rowData: row,
-                        index: dataIndex,
-                        expanded: expansionRowStates[dataIndex].expanded,
-                      }"
-                ></ng-template>
-              </div>
-            </div>
+            <ng-container
+              [ngTemplateOutlet]="acpGridExpansionBody"
+              [ngTemplateOutletContext]="{ $implicit: row, dataIndex: dataIndex }"
+            ></ng-container>
           </td>
         </ng-container>
         <tr
@@ -382,7 +285,7 @@
                 let dataIndex = dataIndex
               "
           class="acp-grid-expansion"
-          [class]="expansionRowStates[dataIndex].expanded ? 'expanded' : 'collapsed'"
+          [class]="isRowExpanded(row) ? 'expanded' : 'collapsed'"
         ></tr>
         }
       </table>
@@ -527,77 +430,10 @@
             [cellSelectable]="cellSelectable"
             (cellSelectedChange)="_selectCell($event, row, col)"
           >
-            @if (cellTemplate | isTemplateRef) {
-            <ng-template
-              [ngTemplateOutlet]="$any(cellTemplate)"
-              [ngTemplateOutletContext]="{
-                      $implicit: row,
-                      rowData: row,
-                      index: _getIndex(index, dataIndex),
-                      colDef: col,
-                    }"
-            ></ng-template>
-            } @else { @if ($safeNavigationMigration($any(cellTemplate)?.[col.field]) |
-            isTemplateRef) {
-            <ng-template
-              [ngTemplateOutlet]="$any(cellTemplate)[col.field]"
-              [ngTemplateOutletContext]="{
-                        $implicit: row,
-                        rowData: row,
-                        index: _getIndex(index, dataIndex),
-                        colDef: col,
-                      }"
-            ></ng-template>
-            } @else { @if (col.cellTemplate) {
-            <ng-template
-              [ngTemplateOutlet]="col.cellTemplate!"
-              [ngTemplateOutletContext]="{
-                          $implicit: row,
-                          rowData: row,
-                          index: _getIndex(index, dataIndex),
-                          colDef: col,
-                        }"
-            ></ng-template>
-            } @else { @if (col.showExpand) {
-            <button
-              class="acp-grid-row-expand-button"
-              matIconButton
-              acpGridExpansionToggle
-              type="button"
-              [(opened)]="expansionRowStates[dataIndex].expanded"
-              (toggleChange)="_onExpansionChange($event, row, col, dataIndex)"
-            >
-              <svg
-                class="acp-grid-icon acp-grid-row-expand-icon"
-                viewBox="0 0 24 24"
-                width="24px"
-                height="24px"
-                fill="currentColor"
-                focusable="false"
-              >
-                <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
-              </svg>
-            </button>
-            }
-            <acp-grid-cell
-              [rowData]="row"
-              [colDef]="col"
-              [placeholder]="emptyValuePlaceholder"
-              (rowDataChange)="_onRowDataChange($event)"
-            ></acp-grid-cell>
-            } } }
-            <!-- Inline cell editor overlay -->
-            @if (_isCellEditing(row, col.field)) {
-            <acp-grid-cell-edit
-              [value]="_editValue()"
-              [field]="col.field"
-              [colDef]="col"
-              [rowData]="row"
-              [error]="_editError()"
-              (editComplete)="_onEditComplete($event)"
-              (editCancel)="_onEditCancel()"
-            ></acp-grid-cell-edit>
-            }
+            <ng-container
+              [ngTemplateOutlet]="acpGridCellBody"
+              [ngTemplateOutletContext]="{ $implicit: row, col: col, index: index, dataIndex: dataIndex }"
+            ></ng-container>
           </td>
           <td
             mat-footer-cell
@@ -609,31 +445,10 @@
             [style.left]="col.left"
             [style.right]="col.right"
           >
-            @if (col.showExpand) {
-            <span class="acp-grid-expansion-placeholder"></span>
-            } @if (summaryTemplate | isTemplateRef) {
-            <ng-template
-              [ngTemplateOutlet]="$any(summaryTemplate)"
-              [ngTemplateOutletContext]="{ $implicit: col, colDef: col, data: data }"
-            ></ng-template>
-            } @else { @if ( $safeNavigationMigration($any(summaryTemplate)?.[col.field]) |
-            isTemplateRef ) {
-            <ng-template
-              [ngTemplateOutlet]="$any(summaryTemplate)[col.field]"
-              [ngTemplateOutletContext]="{
-                        $implicit: _getColData(data, col),
-                        colData: _getColData(data, col),
-                        colDef: col,
-                      }"
-            ></ng-template>
-            } @else {
-            <acp-grid-cell
-              [summary]="true"
-              [data]="data"
-              [colDef]="col"
-              [placeholder]="emptyValuePlaceholder"
-            ></acp-grid-cell>
-            } }
+            <ng-container
+              [ngTemplateOutlet]="acpGridFooterBody"
+              [ngTemplateOutletContext]="{ $implicit: col }"
+            ></ng-container>
           </td>
         </ng-container>
         } @if (!useContentHeaderRowTemplate && _hasColumnGroups) { @if (columnResizable) {
@@ -699,19 +514,10 @@
             *matCellDef="let row; let dataIndex = dataIndex"
             [attr.colspan]="displayedColumns.length"
           >
-            <div class="acp-grid-expansion-detail-wrapper">
-              <div class="acp-grid-expansion-detail">
-                <ng-template
-                  [ngTemplateOutlet]="expansionTemplate"
-                  [ngTemplateOutletContext]="{
-                        $implicit: row,
-                        rowData: row,
-                        index: dataIndex,
-                        expanded: expansionRowStates[dataIndex].expanded,
-                      }"
-                ></ng-template>
-              </div>
-            </div>
+            <ng-container
+              [ngTemplateOutlet]="acpGridExpansionBody"
+              [ngTemplateOutletContext]="{ $implicit: row, dataIndex: dataIndex }"
+            ></ng-container>
           </td>
         </ng-container>
         <tr
@@ -722,7 +528,7 @@
                 let dataIndex = dataIndex
               "
           class="acp-grid-expansion"
-          [class]="expansionRowStates[dataIndex].expanded ? 'expanded' : 'collapsed'"
+          [class]="isRowExpanded(row) ? 'expanded' : 'collapsed'"
         ></tr>
         }
       </table>
@@ -792,4 +598,121 @@
     [ngTemplateOutletContext]="{ $implicit: col, colDef: col }"
   ></ng-template>
   } }
+</ng-template>
+
+<!-- Shared cell bodies, rendered by both table variants (with and without column resize) -->
+<ng-template #acpGridCellBody let-row let-col="col" let-index="index" let-dataIndex="dataIndex">
+  @if (cellTemplate | isTemplateRef) {
+  <ng-template
+    [ngTemplateOutlet]="$any(cellTemplate)"
+    [ngTemplateOutletContext]="{
+                      $implicit: row,
+                      rowData: row,
+                      index: _getIndex(index, dataIndex),
+                      colDef: col,
+                    }"
+  ></ng-template>
+  } @else { @if ($safeNavigationMigration($any(cellTemplate)?.[col.field]) | isTemplateRef) {
+  <ng-template
+    [ngTemplateOutlet]="$any(cellTemplate)[col.field]"
+    [ngTemplateOutletContext]="{
+                        $implicit: row,
+                        rowData: row,
+                        index: _getIndex(index, dataIndex),
+                        colDef: col,
+                      }"
+  ></ng-template>
+  } @else { @if (col.cellTemplate) {
+  <ng-template
+    [ngTemplateOutlet]="col.cellTemplate!"
+    [ngTemplateOutletContext]="{
+                          $implicit: row,
+                          rowData: row,
+                          index: _getIndex(index, dataIndex),
+                          colDef: col,
+                        }"
+  ></ng-template>
+  } @else { @if (col.showExpand) {
+  <button
+    class="acp-grid-row-expand-button"
+    matIconButton
+    acpGridExpansionToggle
+    type="button"
+    [opened]="isRowExpanded(row)"
+    (toggleChange)="_onExpansionChange($event, row, col, dataIndex)"
+  >
+    <svg
+      class="acp-grid-icon acp-grid-row-expand-icon"
+      viewBox="0 0 24 24"
+      width="24px"
+      height="24px"
+      fill="currentColor"
+      focusable="false"
+    >
+      <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+    </svg>
+  </button>
+  }
+  <acp-grid-cell
+    [rowData]="row"
+    [colDef]="col"
+    [placeholder]="emptyValuePlaceholder"
+    (rowDataChange)="_onRowDataChange($event)"
+  ></acp-grid-cell>
+  } } }
+  <!-- Inline cell editor overlay -->
+  @if (_isCellEditing(row, col.field)) {
+  <acp-grid-cell-edit
+    [value]="_editValue()"
+    [field]="col.field"
+    [colDef]="col"
+    [rowData]="row"
+    [error]="_editError()"
+    (editComplete)="_onEditComplete($event)"
+    (editCancel)="_onEditCancel()"
+  ></acp-grid-cell-edit>
+  }
+</ng-template>
+
+<ng-template #acpGridFooterBody let-col>
+  @if (col.showExpand) {
+  <span class="acp-grid-expansion-placeholder"></span>
+  } @if (summaryTemplate | isTemplateRef) {
+  <ng-template
+    [ngTemplateOutlet]="$any(summaryTemplate)"
+    [ngTemplateOutletContext]="{ $implicit: col, colDef: col, data: data }"
+  ></ng-template>
+  } @else { @if ( $safeNavigationMigration($any(summaryTemplate)?.[col.field]) | isTemplateRef ) {
+  <ng-template
+    [ngTemplateOutlet]="$any(summaryTemplate)[col.field]"
+    [ngTemplateOutletContext]="{
+                        $implicit: _getColData(data, col),
+                        colData: _getColData(data, col),
+                        colDef: col,
+                      }"
+  ></ng-template>
+  } @else {
+  <acp-grid-cell
+    [summary]="true"
+    [data]="data"
+    [colDef]="col"
+    [placeholder]="emptyValuePlaceholder"
+  ></acp-grid-cell>
+  } }
+</ng-template>
+
+<ng-template #acpGridExpansionBody let-row let-dataIndex="dataIndex">
+  <div class="acp-grid-expansion-detail-wrapper">
+    <div class="acp-grid-expansion-detail">
+      <ng-template
+        [ngTemplateOutlet]="expansionTemplate"
+        [ngTemplateOutletContext]="{
+                        $implicit: row,
+                        rowData: row,
+                        index: dataIndex,
+                        expanded: isRowExpanded(row),
+                      }"
+      ></ng-template>
+    </div>
+  </div>
 </ng-template>

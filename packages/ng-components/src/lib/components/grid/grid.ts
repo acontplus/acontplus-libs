@@ -308,7 +308,30 @@ export class DataGrid implements AfterViewInit, OnChanges {
 
   // ===== Expandable Row =====
 
-  expansionRowStates: any[] = [];
+  /**
+   * Identifica cada fila para conservar su estado (por ejemplo, la expansión) aunque cambien el
+   * orden, la página o los datos. Acepta el nombre de un campo (`'id'`) o una función.
+   * Sin `dataKey` se usa la referencia del objeto de la fila.
+   */
+  dataKey = input<string | ((row: any) => unknown) | null>(null);
+  private readonly _expandedKeys = signal<ReadonlySet<unknown>>(new Set());
+
+  /**
+   * Estado de expansión en el orden de `data`.
+   * @deprecated Usa `isRowExpanded(row)` y `toggleRowExpansion(row)`.
+   */
+  get expansionRowStates(): { expanded: boolean }[] {
+    return (this.data ?? []).map(row => ({ expanded: this.isRowExpanded(row) }));
+  }
+  set expansionRowStates(states: { expanded: boolean }[]) {
+    const keys = new Set<unknown>();
+    (this.data ?? []).forEach((row, index) => {
+      if (states?.[index]?.expanded) {
+        keys.add(this._rowKey(row));
+      }
+    });
+    this._expandedKeys.set(keys);
+  }
 
   /** Whether the row is expandable. */
   @Input({ transform: booleanAttribute }) expandable = false;
@@ -587,13 +610,8 @@ export class DataGrid implements AfterViewInit, OnChanges {
 
     this._updateGroupHeaderCells();
 
-    // We should copy each item of data for expansion data
-    if (this.expandable) {
-      this.expansionRowStates = []; // reset
-
-      this.data?.forEach(_ => {
-        this.expansionRowStates.push({ expanded: false });
-      });
+    if (changes['data'] || changes['dataKey']) {
+      this._pruneExpandedKeys();
     }
 
     if (this.rowSelectable) {
@@ -1100,15 +1118,7 @@ export class DataGrid implements AfterViewInit, OnChanges {
     column: AcpDataGridColumn,
     index: number,
   ) {
-    const currentStates = structuredClone(this.expansionRowStates);
-
-    if (this.closeOthersOnExpand()) {
-      currentStates.forEach(item => (item.expanded = false));
-    }
-    if (currentStates[index]) {
-      currentStates[index].expanded = expansionRef.opened;
-      this.expansionRowStates = currentStates;
-    }
+    this._setRowExpanded(rowData, expansionRef.opened, this.closeOthersOnExpand());
     this.expansionChange.emit({ expanded: expansionRef.opened, data: rowData, index, column });
   }
 
@@ -1334,13 +1344,63 @@ export class DataGrid implements AfterViewInit, OnChanges {
     return fields;
   }
 
-  /** Customize expansion event */
+  /**
+   * Alterna la expansión de la fila en la posición `index` de `data`.
+   * @deprecated Usa `toggleRowExpansion(row)`, que no depende de la posición.
+   */
   toggleExpansion(index: number) {
     if (!this.expandable) {
       throw new Error('The `expandable` should be set true.');
     }
-    this.expansionRowStates[index].expanded = !this.expansionRowStates[index].expanded;
-    return this.expansionRowStates[index].expanded;
+    const row = this.data?.[index];
+    return this._setRowExpanded(row, !this.isRowExpanded(row));
+  }
+
+  /** Indica si la fila está expandida. */
+  isRowExpanded(row: unknown): boolean {
+    return this._expandedKeys().has(this._rowKey(row));
+  }
+
+  /**
+   * Expande o contrae una fila (alterna si no se indica `expanded`). Respeta
+   * `closeOthersOnExpand`. Devuelve el nuevo estado.
+   */
+  toggleRowExpansion(row: unknown, expanded = !this.isRowExpanded(row)): boolean {
+    if (!this.expandable) {
+      throw new Error('The `expandable` should be set true.');
+    }
+    return this._setRowExpanded(row, expanded, this.closeOthersOnExpand());
+  }
+
+  private _setRowExpanded(row: unknown, expanded: boolean, closeOthers = false): boolean {
+    const key = this._rowKey(row);
+    const keys = new Set(closeOthers && expanded ? [] : this._expandedKeys());
+    if (expanded) {
+      keys.add(key);
+    } else {
+      keys.delete(key);
+    }
+    this._expandedKeys.set(keys);
+    this._changeDetectorRef.markForCheck();
+    return expanded;
+  }
+
+  private _rowKey(row: any): unknown {
+    const dataKey = this.dataKey();
+    if (!dataKey || row == null) {
+      return row;
+    }
+    return typeof dataKey === 'function' ? dataKey(row) : row[dataKey];
+  }
+
+  /** Drops expansion state of rows that are no longer in `data`. */
+  private _pruneExpandedKeys(): void {
+    const current = this._expandedKeys();
+    if (current.size === 0) {
+      return;
+    }
+    const present = new Set((this.data ?? []).map(row => this._rowKey(row)));
+    this._expandedKeys.set(new Set([...current].filter(key => present.has(key))));
   }
 
   /** Scroll to top when turn to the next page. */

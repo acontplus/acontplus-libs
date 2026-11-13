@@ -234,11 +234,16 @@ interface PivotRow {
       <mat-card class="example-card">
         <mat-card-content>
           <acp-data-grid
-            [data]="demoData.slice(0, 5)"
-            [columns]="basicColumns"
+            class="expandable-demo-grid"
+            [data]="demoData"
+            [columns]="expandableColumns"
             [expandable]="true"
             [expansionTemplate]="expansionTpl"
             [closeOthersOnExpand]="true"
+            dataKey="id"
+            [showPaginator]="true"
+            [pageSize]="3"
+            [pageSizeOptions]="[3, 5, 10]"
           />
 
           <ng-template #expansionTpl let-row>
@@ -759,6 +764,11 @@ export class DataGridExamples {
   ];
 
   // Columns
+  expandableColumns: DataGridColumn<DemoData>[] = [
+    { field: 'id', header: 'ID', type: 'number', width: '80px', sortable: true },
+    { field: 'name', header: 'Name', showExpand: true, sortable: true },
+    { field: 'price', header: 'Price', type: 'currency', sortable: true },
+  ];
   basicColumns: DataGridColumn<DemoData>[] = [
     { field: 'id', header: 'ID', type: 'number', width: '80px' },
     { field: 'name', header: 'Name' },
@@ -1284,11 +1294,22 @@ rowClassFormatter = {
   [rowStriped]="true"
 />`;
 
-  expandableCode = `// Expandable Rows
+  expandableCode = `// Expandable Rows: showExpand renders the toggle; dataKey keeps the expanded
+// state with the row when sorting, paging or reloading data.
+columns: AcpDataGridColumn[] = [
+  { field: 'id', header: 'ID', sortable: true },
+  { field: 'name', header: 'Name', showExpand: true, sortable: true },
+];
+
 <acp-data-grid
   [data]="data"
   [columns]="columns"
+  [expandable]="true"
+  [expansionTemplate]="expansionTpl"
   [closeOthersOnExpand]="true"
+  dataKey="id"
+  [showPaginator]="true"
+  [pageSize]="3"
 />
 
 <ng-template #expansionTpl let-row>

@@ -13,7 +13,7 @@ import {
 import { MatError, MatFormFieldModule } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { DataGridColumn } from '../interfaces';
+import { AcpDataGridColumn } from '../interfaces';
 
 type EditOption = string | number | { value: string | number; label: string };
 
@@ -110,7 +110,7 @@ export class AcpGridCellEdit {
   // --- Signal inputs ---
   readonly value = input<any>('');
   readonly field = input('');
-  readonly colDef = input<DataGridColumn | undefined>(undefined);
+  readonly colDef = input<AcpDataGridColumn | undefined>(undefined);
   readonly rowData = input<Record<string, any> | undefined>(undefined);
   /** Validation error message shown under the editor, if any. */
   readonly error = input<string | null>(null);

@@ -81,7 +81,7 @@ interface ApiProperty {
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
 
-      <h2>DataGridColumn Interface</h2>
+      <h2>AcpDataGridColumn Interface</h2>
       <table mat-table [dataSource]="columnProperties" class="api-table">
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef>Property</th>
@@ -159,7 +159,7 @@ export class DataGridApi {
     },
     {
       name: 'columns',
-      type: 'DataGridColumn<T>[]',
+      type: 'AcpDataGridColumn<T>[]',
       description: 'Column definitions',
       default: '[]',
     },
@@ -300,7 +300,7 @@ export class DataGridApi {
     { name: 'rowSelected', type: 'T[]', description: 'Pre-selected rows', default: '[]' },
     {
       name: 'rowSelectionFormatter',
-      type: 'DataGridRowSelectionFormatter',
+      type: 'AcpDataGridRowSelectionFormatter',
       description: 'Formatter for row selection',
       default: '{}',
     },
@@ -315,7 +315,7 @@ export class DataGridApi {
     },
     {
       name: 'rowClassFormatter',
-      type: 'DataGridRowClassFormatter',
+      type: 'AcpDataGridRowClassFormatter',
       description: 'Dynamic row CSS classes',
       default: '-',
     },
@@ -413,9 +413,16 @@ export class DataGridApi {
     // Size
     {
       name: 'size',
-      type: "'small' | 'medium' | 'large'",
+      type: "'xs-small' | 'small' | 'medium' | 'large'",
       description: "Table density ('normal' is deprecated, alias of 'medium')",
       default: "'medium'",
+    },
+    {
+      name: 'scrollHeight',
+      type: "string | 'flex' | null",
+      description:
+        "Max height of the rows area before scrolling (e.g. '400px'). 'flex' fills the parent's height",
+      default: 'null',
     },
 
     // Summary
@@ -446,7 +453,7 @@ export class DataGridApi {
     },
     {
       name: 'cellClick',
-      type: 'EventEmitter<{row: T, column: DataGridColumn}>',
+      type: 'EventEmitter<{row: T, column: AcpDataGridColumn}>',
       description: 'Emits when cell is clicked',
     },
     {
@@ -499,7 +506,7 @@ export class DataGridApi {
     { name: 'class', type: 'string', description: 'CSS class for the column' },
     {
       name: 'formatter',
-      type: '(row: T, column: DataGridColumn) => string',
+      type: '(row: T, column: AcpDataGridColumn) => string',
       description: 'Custom cell value formatter',
     },
   ];

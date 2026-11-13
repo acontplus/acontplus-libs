@@ -9,7 +9,7 @@ import {
 import { MatIcon } from '@angular/material/icon';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { AcpGridCellActionDisablePipe } from './data-grid.pipes';
-import { DataGridMenuItem } from './interfaces';
+import { AcpDataGridMenuItem } from './interfaces';
 
 @Component({
   selector: 'acp-grid-menu',
@@ -71,7 +71,7 @@ import { DataGridMenuItem } from './interfaces';
 export class AcpGridMenu {
   @ViewChild(MatMenu, { static: true }) menu!: MatMenu;
 
-  @Input() items: DataGridMenuItem[] = [];
+  @Input() items: AcpDataGridMenuItem[] = [];
 
   @Input() data: Record<string, any> = {};
 }

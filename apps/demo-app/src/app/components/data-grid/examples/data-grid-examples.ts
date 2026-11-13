@@ -20,6 +20,7 @@ import {
   DataGridRowClassFormatter,
   DataGridRowSelectionFormatter,
   DataGridSize,
+  AcpDataGridScrollHeight,
 } from '@acontplus/ng-components';
 import { DocHeading } from '../../../shared/doc-heading/doc-heading';
 import { CodeExample } from '../../../shared/code-example/code-example';
@@ -330,6 +331,43 @@ interface PivotRow {
       </mat-card>
       <app-code-example [code]="sizeCode" [language]="'html'" />
 
+      <!-- Scroll Height -->
+      <h2>Scroll Height</h2>
+      <p>
+        Limit the height of the rows area; the header stays fixed while the rows scroll. In
+        <code>flex</code> mode the grid fills its parent: drag the bottom-right corner of the
+        container to resize it.
+      </p>
+      <mat-card class="example-card">
+        <mat-card-content>
+          <mat-button-toggle-group
+            class="size-toggle"
+            aria-label="Scroll mode"
+            [value]="scrollMode()"
+            (change)="scrollMode.set($event.value)"
+          >
+            <mat-button-toggle value="fixed">scrollHeight="300px"</mat-button-toggle>
+            <mat-button-toggle value="flex">scrollHeight="flex"</mat-button-toggle>
+            <mat-button-toggle value="css">CSS variable</mat-button-toggle>
+            <mat-button-toggle value="none">No limit</mat-button-toggle>
+          </mat-button-toggle-group>
+          <div
+            [class.scroll-flex-container]="scrollMode() === 'flex'"
+            [class.scroll-css-var]="scrollMode() === 'css'"
+          >
+            <acp-data-grid
+              [data]="scrollData"
+              [columns]="basicColumns"
+              [scrollHeight]="scrollHeight()"
+              size="small"
+              [rowHover]="true"
+              [rowStriped]="true"
+            />
+          </div>
+        </mat-card-content>
+      </mat-card>
+      <app-code-example [code]="scrollHeightCode" [language]="'html'" />
+
       <!-- Row Context Menu -->
       <h2>Row Context Menu</h2>
       <mat-card class="example-card">
@@ -526,6 +564,19 @@ interface PivotRow {
         max-width: 360px;
       }
 
+      .scroll-flex-container {
+        display: flex;
+        flex-direction: column;
+        height: 360px;
+        min-height: 160px;
+        overflow: hidden;
+        resize: vertical;
+      }
+
+      .scroll-css-var acp-data-grid {
+        --acp-grid-scroll-height: 240px;
+      }
+
       .size-toggle {
         margin-bottom: 1rem;
       }
@@ -679,6 +730,11 @@ export class DataGridExamples {
     { separator: true },
     { id: 'delete', label: 'Delete', icon: 'delete', danger: true },
   ];
+  scrollMode = signal<'fixed' | 'flex' | 'css' | 'none'>('fixed');
+  scrollHeight = computed<AcpDataGridScrollHeight | null>(() => {
+    const mode = this.scrollMode();
+    return mode === 'fixed' ? '300px' : mode === 'flex' ? 'flex' : null;
+  });
   sizeOptions: DataGridSize[] = ['xs-small', 'small', 'medium', 'large'];
 
   // Pagination signals
@@ -693,6 +749,7 @@ export class DataGridExamples {
   demoData = this.generateData(10);
   styledData = this.generateData(8);
   searchData = this.generateData(25);
+  scrollData = this.generateData(40);
   editableData = [
     { id: 1, name: 'Laptop Pro 15', category: 'Electronics', price: 1299.99, quantity: 25 },
     { id: 2, name: 'Wireless Mouse', category: 'Accessories', price: 49.99, quantity: 150 },
@@ -1280,6 +1337,18 @@ rowClassFormatter = {
   [expansionTemplate]="expansionTpl"
   [showPaginator]="true"
 />`;
+
+  scrollHeightCode = `<!-- Max height of the rows area; the grid shrinks when there are fewer rows -->
+<acp-data-grid [data]="data" [columns]="columns" scrollHeight="300px" />
+
+<!-- Fill the parent's height (the parent must have a height) -->
+<div style="height: 360px">
+  <acp-data-grid [data]="data" [columns]="columns" scrollHeight="flex" />
+</div>
+
+<!-- Same limit from a component stylesheet, without ::ng-deep -->
+<!-- acp-data-grid { --acp-grid-scroll-height: 240px; } -->
+<acp-data-grid [data]="data" [columns]="columns" />`;
 
   rowContextMenuCode = `// Row Context Menu
 <acp-data-grid

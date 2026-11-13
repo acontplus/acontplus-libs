@@ -299,8 +299,12 @@ import { Spinner } from '@acontplus/ng-components';
 - **TabulatorTable**: Advanced table with Tabulator.js integration
 
 ```typescript
-import { DataGrid, DataGridColumn, TabulatorTable } from '@acontplus/ng-components';
+import { DataGrid, AcpDataGridColumn, TabulatorTable } from '@acontplus/ng-components';
 ```
+
+Grid types use the `Acp` prefix (`AcpDataGridColumn`, `AcpDataGridDefaultOptions`, ...). The
+previous names (`DataGridColumn`, ...) remain as deprecated aliases and will be removed in a future
+major version.
 
 #### Data Grid Features
 
@@ -341,12 +345,36 @@ The DataGrid is the primary table component, built with modern Angular 22+ patte
   `,
 })
 export class MyComponent {
-  columns: DataGridColumn[] = [
+  columns: AcpDataGridColumn[] = [
     { field: 'id', header: 'ID', type: 'number', sortable: true },
     { field: 'name', header: 'Name', sortable: true },
     { field: 'status', header: 'Status', cellTemplate: statusTemplate },
     { field: 'actions', header: 'Actions', cellTemplate: actionsTemplate },
   ];
+}
+```
+
+#### Scroll Height
+
+Use `scrollHeight` to limit the height of the rows area. The header and footer rows stay fixed
+while the rows scroll. It is opt-in: without it, the grid grows with its content as before.
+
+```html
+<!-- Maximum height; the grid shrinks when there are fewer rows -->
+<acp-data-grid [data]="items" [columns]="columns" scrollHeight="400px" />
+
+<!-- Fill the parent's height (the parent must have a height) -->
+<div style="height: calc(100vh - 160px)">
+  <acp-data-grid [data]="items" [columns]="columns" scrollHeight="flex" />
+</div>
+```
+
+The same value can be set from a component stylesheet without `::ng-deep`, or globally through
+`DATA_GRID_DEFAULT_OPTIONS` (`{ scrollHeight: '60vh' }`):
+
+```scss
+acp-data-grid {
+  --acp-grid-scroll-height: 60vh;
 }
 ```
 
@@ -366,7 +394,7 @@ export class MyComponent {
 #### Column Configuration
 
 ```typescript
-const columns: DataGridColumn[] = [
+const columns: AcpDataGridColumn[] = [
   {
     field: 'price',
     header: 'Price',
@@ -420,7 +448,7 @@ const establecimiento = {
   label: (data: KardexRow[]) => data[0]?.establecimiento ?? 'Establecimiento',
 };
 
-const columns: DataGridColumn<KardexRow>[] = [
+const columns: AcpDataGridColumn<KardexRow>[] = [
   { field: 'item', header: 'Item' },
   {
     field: 'warehouseA',
@@ -445,7 +473,7 @@ editable cell opens an overlay editor; press `Enter` or click outside to
 confirm, `Escape` to cancel. Editable cells show a pointer cursor.
 
 ```typescript
-const columns: DataGridColumn<Product>[] = [
+const columns: AcpDataGridColumn<Product>[] = [
   { field: 'name', header: 'Name', editable: true },
   { field: 'price', header: 'Price', type: 'currency', editable: true },
   {

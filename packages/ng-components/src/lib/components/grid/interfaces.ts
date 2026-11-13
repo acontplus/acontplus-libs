@@ -6,13 +6,13 @@ import { SortDirection } from '@angular/material/sort';
 import { TooltipPosition, TooltipTouchGestures } from '@angular/material/tooltip';
 import { Observable } from 'rxjs';
 
-export interface DataGridColumn<T = any> {
+export interface AcpDataGridColumn<T = any> {
   field: string;
   header?: string | Observable<string>;
   hide?: boolean;
   show?: boolean;
   disabled?: boolean;
-  pinned?: DataGridColumnPinValue;
+  pinned?: AcpDataGridColumnPinValue;
   left?: string;
   right?: string;
   width?: string;
@@ -20,17 +20,17 @@ export interface DataGridColumn<T = any> {
   minWidth?: number;
   maxWidth?: number;
   sortable?: boolean | string;
-  sortProp?: DataGridSortProp;
-  type?: DataGridColumnType;
-  typeParameter?: DataGridColumnTypeParameter;
-  tag?: DataGridColumnTag;
-  buttons?: DataGridColumnButton<T>[] | ((rowData: T) => DataGridColumnButton<T>[]);
-  formatter?: (rowData: T, colDef?: DataGridColumn) => any;
+  sortProp?: AcpDataGridSortProp;
+  type?: AcpDataGridColumnType;
+  typeParameter?: AcpDataGridColumnTypeParameter;
+  tag?: AcpDataGridColumnTag;
+  buttons?: AcpDataGridColumnButton<T>[] | ((rowData: T) => AcpDataGridColumnButton<T>[]);
+  formatter?: (rowData: T, colDef?: AcpDataGridColumn) => any;
   cellTemplate?: TemplateRef<any> | null;
   showExpand?: boolean;
   description?: string;
-  summary?: ((data: T[], colDef?: DataGridColumn) => any) | string;
-  class?: string | ((rowData?: T, colDef?: DataGridColumn) => string);
+  summary?: ((data: T[], colDef?: AcpDataGridColumn) => any) | string;
+  class?: string | ((rowData?: T, colDef?: AcpDataGridColumn) => string);
   headerCellTemplate?: TemplateRef<any>;
   /**
    * Whether the cell value can be edited inline. When true, double-clicking a cell
@@ -69,7 +69,7 @@ export interface DataGridColumn<T = any> {
    * `data`; `Observable`s are compared by their first emitted value (the group
    * header is rebuilt once it arrives).
    */
-  group?: DataGridColumnGroupItem<T> | DataGridColumnGroupItem<T>[];
+  group?: AcpDataGridColumnGroupItem<T> | AcpDataGridColumnGroupItem<T>[];
   /**
    * CSS class(es) applied to the group header cells, or a formatter that receives
    * the group value of each level and the run's member columns and returns
@@ -81,35 +81,35 @@ export interface DataGridColumn<T = any> {
    */
   groupClass?:
     | string
-    | ((group: string | Observable<string>, columns: DataGridColumn[]) => string | undefined);
+    | ((group: string | Observable<string>, columns: AcpDataGridColumn[]) => string | undefined);
 }
 
-export type DataGridColumnGroupLevel<T = any> =
+export type AcpDataGridColumnGroupLevel<T = any> =
   string | Observable<string> | ((data: T[]) => string | Observable<string>);
 
 /**
  * Group level descriptor for cases where the value used to merge columns
  * (`key`) differs from the text shown in the group header (`label`).
  */
-export interface DataGridColumnGroupDescriptor<T = any> {
-  key: DataGridColumnGroupLevel<T>;
-  label?: DataGridColumnGroupLevel<T>;
+export interface AcpDataGridColumnGroupDescriptor<T = any> {
+  key: AcpDataGridColumnGroupLevel<T>;
+  label?: AcpDataGridColumnGroupLevel<T>;
 }
 
-export type DataGridColumnGroupItem<T = any> =
-  DataGridColumnGroupLevel<T> | DataGridColumnGroupDescriptor<T>;
+export type AcpDataGridColumnGroupItem<T = any> =
+  AcpDataGridColumnGroupLevel<T> | AcpDataGridColumnGroupDescriptor<T>;
 
-export declare type DataGridColumnPinValue = 'left' | 'right' | null;
+export declare type AcpDataGridColumnPinValue = 'left' | 'right' | null;
 
-export interface DataGridColumnPinOption {
+export interface AcpDataGridColumnPinOption {
   label: string | Observable<string>;
-  value: DataGridColumnPinValue;
+  value: AcpDataGridColumnPinValue;
 }
 
-export declare type DataGridColumnType =
+export declare type AcpDataGridColumnType =
   'button' | 'tag' | 'link' | 'image' | 'boolean' | 'number' | 'currency' | 'percent' | 'date';
 
-export interface DataGridColumnTypeParameter {
+export interface AcpDataGridColumnTypeParameter {
   currencyCode?: string;
   display?: string | boolean;
   digitsInfo?: string;
@@ -118,25 +118,25 @@ export interface DataGridColumnTypeParameter {
   timezone?: string;
 }
 
-export interface DataGridSortProp {
+export interface AcpDataGridSortProp {
   arrowPosition?: 'before' | 'after';
   disableClear?: boolean;
   id?: string;
   start?: 'asc' | 'desc';
 }
 
-export interface DataGridColumnTag {
-  [key: number]: DataGridColumnTagValue;
-  [key: string]: DataGridColumnTagValue;
+export interface AcpDataGridColumnTag {
+  [key: number]: AcpDataGridColumnTagValue;
+  [key: string]: AcpDataGridColumnTagValue;
 }
 
-export interface DataGridColumnTagValue {
+export interface AcpDataGridColumnTagValue {
   text?: string;
   color?: string;
 }
 
-export interface DataGridColumnButton<T = any> {
-  type?: DataGridButtonType;
+export interface AcpDataGridColumnButton<T = any> {
+  type?: AcpDataGridButtonType;
   text?: string | Observable<string>;
   icon?: string;
   fontIcon?: string;
@@ -146,13 +146,13 @@ export interface DataGridColumnButton<T = any> {
   disabled?: boolean | ((rowData: T) => boolean);
   click?: (rowData: T, event: Event) => void;
   iif?: (rowData: T) => boolean;
-  pop?: string | Observable<string> | DataGridColumnButtonPop;
-  tooltip?: string | Observable<string> | DataGridColumnButtonTooltip;
-  badge?: number | string | Observable<string> | DataGridColumnButtonBadge;
-  children?: DataGridMenuItem<T>[];
+  pop?: string | Observable<string> | AcpDataGridColumnButtonPop;
+  tooltip?: string | Observable<string> | AcpDataGridColumnButtonTooltip;
+  badge?: number | string | Observable<string> | AcpDataGridColumnButtonBadge;
+  children?: AcpDataGridMenuItem<T>[];
 }
 
-export interface DataGridColumnButtonPop {
+export interface AcpDataGridColumnButtonPop {
   title: string | Observable<string>;
   description?: string | Observable<string>;
   okColor?: ThemePalette;
@@ -161,7 +161,7 @@ export interface DataGridColumnButtonPop {
   closeText?: string | Observable<string>;
 }
 
-export interface DataGridColumnButtonTooltip {
+export interface AcpDataGridColumnButtonTooltip {
   message: string | Observable<string>;
   position?: TooltipPosition;
   positionAtOrigin?: boolean;
@@ -172,7 +172,7 @@ export interface DataGridColumnButtonTooltip {
   disabled?: boolean;
 }
 
-export interface DataGridColumnButtonBadge {
+export interface AcpDataGridColumnButtonBadge {
   content: number | string | Observable<string>;
   description?: string | Observable<string>;
   color?: ThemePalette;
@@ -183,27 +183,33 @@ export interface DataGridColumnButtonBadge {
   hidden?: boolean;
 }
 
-export type DataGridCellTemplate = Record<string, TemplateRef<any>>;
+export type AcpDataGridCellTemplate = Record<string, TemplateRef<any>>;
 
-export interface DataGridRowSelectionFormatter<T = any> {
+export interface AcpDataGridRowSelectionFormatter<T = any> {
   disabled?: (rowData: T, index: number) => boolean;
   hideCheckbox?: (rowData: T, index: number) => boolean;
 }
 
-export type DataGridRowClassFormatter<T = any> = Record<
+export type AcpDataGridRowClassFormatter<T = any> = Record<
   string,
   (rowData: T, index: number) => boolean
 >;
 
-export type DataGridButtonType = MatButtonAppearance | 'icon';
+export type AcpDataGridButtonType = MatButtonAppearance | 'icon';
 
-export type DataGridSize = 'xs-small' | 'small' | 'medium' | 'large';
+export type AcpDataGridSize = 'xs-small' | 'small' | 'medium' | 'large';
+
+/**
+ * Altura del área de filas con scroll: una longitud CSS (`'400px'`, `'60vh'`) que actúa como
+ * altura máxima, o `'flex'` para ocupar la altura del contenedor padre.
+ */
+export type AcpDataGridScrollHeight = 'flex' | (string & {});
 
 /**
  * Represents the default options for the grid that can be configured
  * using the `DATA_GRID_DEFAULT_OPTIONS` injection token.
  */
-export interface DataGridDefaultOptions {
+export interface AcpDataGridDefaultOptions {
   columnResizable?: boolean;
   emptyValuePlaceholder?: string;
 
@@ -243,11 +249,11 @@ export interface DataGridDefaultOptions {
   columnHideableChecked?: 'show' | 'hide';
   columnSortable?: boolean;
   columnPinnable?: boolean;
-  columnPinOptions?: DataGridColumnPinOption[];
+  columnPinOptions?: AcpDataGridColumnPinOption[];
 
   showColumnMenuButton?: boolean;
   columnMenuButtonText?: string;
-  columnMenuButtonType?: DataGridButtonType;
+  columnMenuButtonType?: AcpDataGridButtonType;
   columnMenuButtonColor?: ThemePalette;
   columnMenuButtonClass?: string;
   columnMenuButtonIcon?: string;
@@ -260,9 +266,11 @@ export interface DataGridDefaultOptions {
   columnMenuFooterText?: string;
 
   noResultText?: string;
+
+  scrollHeight?: AcpDataGridScrollHeight | null;
 }
 
-export interface DataGridMenuItem<T = any> {
+export interface AcpDataGridMenuItem<T = any> {
   text: string | Observable<string>;
   icon?: string;
   fontIcon?: string;
@@ -271,5 +279,54 @@ export interface DataGridMenuItem<T = any> {
   disabled?: boolean | ((rowData: T) => boolean);
   click?: (rowData: T, event: Event) => void;
   iif?: (rowData: T) => boolean;
-  children?: DataGridMenuItem[];
+  children?: AcpDataGridMenuItem[];
 }
+
+// Deprecated aliases kept for backward compatibility. Use the `Acp`-prefixed names.
+
+/** @deprecated Use `AcpDataGridColumn` instead. */
+export type DataGridColumn<T = any> = AcpDataGridColumn<T>;
+/** @deprecated Use `AcpDataGridColumnPinValue` instead. */
+export type DataGridColumnPinValue = AcpDataGridColumnPinValue;
+/** @deprecated Use `AcpDataGridSortProp` instead. */
+export type DataGridSortProp = AcpDataGridSortProp;
+/** @deprecated Use `AcpDataGridColumnType` instead. */
+export type DataGridColumnType = AcpDataGridColumnType;
+/** @deprecated Use `AcpDataGridColumnTypeParameter` instead. */
+export type DataGridColumnTypeParameter = AcpDataGridColumnTypeParameter;
+/** @deprecated Use `AcpDataGridColumnTag` instead. */
+export type DataGridColumnTag = AcpDataGridColumnTag;
+/** @deprecated Use `AcpDataGridColumnButton` instead. */
+export type DataGridColumnButton<T = any> = AcpDataGridColumnButton<T>;
+/** @deprecated Use `AcpDataGridColumnGroupItem` instead. */
+export type DataGridColumnGroupItem<T = any> = AcpDataGridColumnGroupItem<T>;
+/** @deprecated Use `AcpDataGridColumnGroupLevel` instead. */
+export type DataGridColumnGroupLevel<T = any> = AcpDataGridColumnGroupLevel<T>;
+/** @deprecated Use `AcpDataGridColumnGroupDescriptor` instead. */
+export type DataGridColumnGroupDescriptor<T = any> = AcpDataGridColumnGroupDescriptor<T>;
+/** @deprecated Use `AcpDataGridColumnPinOption` instead. */
+export type DataGridColumnPinOption = AcpDataGridColumnPinOption;
+/** @deprecated Use `AcpDataGridColumnTagValue` instead. */
+export type DataGridColumnTagValue = AcpDataGridColumnTagValue;
+/** @deprecated Use `AcpDataGridButtonType` instead. */
+export type DataGridButtonType = AcpDataGridButtonType;
+/** @deprecated Use `AcpDataGridColumnButtonPop` instead. */
+export type DataGridColumnButtonPop = AcpDataGridColumnButtonPop;
+/** @deprecated Use `AcpDataGridColumnButtonTooltip` instead. */
+export type DataGridColumnButtonTooltip = AcpDataGridColumnButtonTooltip;
+/** @deprecated Use `AcpDataGridColumnButtonBadge` instead. */
+export type DataGridColumnButtonBadge = AcpDataGridColumnButtonBadge;
+/** @deprecated Use `AcpDataGridMenuItem` instead. */
+export type DataGridMenuItem<T = any> = AcpDataGridMenuItem<T>;
+/** @deprecated Use `AcpDataGridCellTemplate` instead. */
+export type DataGridCellTemplate = AcpDataGridCellTemplate;
+/** @deprecated Use `AcpDataGridRowSelectionFormatter` instead. */
+export type DataGridRowSelectionFormatter<T = any> = AcpDataGridRowSelectionFormatter<T>;
+/** @deprecated Use `AcpDataGridRowClassFormatter` instead. */
+export type DataGridRowClassFormatter<T = any> = AcpDataGridRowClassFormatter<T>;
+/** @deprecated Use `AcpDataGridSize` instead. */
+export type DataGridSize = AcpDataGridSize;
+/** @deprecated Use `AcpDataGridScrollHeight` instead. */
+export type DataGridScrollHeight = AcpDataGridScrollHeight;
+/** @deprecated Use `AcpDataGridDefaultOptions` instead. */
+export type DataGridDefaultOptions = AcpDataGridDefaultOptions;

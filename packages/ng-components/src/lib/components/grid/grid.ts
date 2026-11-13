@@ -65,18 +65,19 @@ import { DataGridUtils } from './grid-utils';
 import { AcpGridCell } from './cell/cell';
 import { AcpGridCellEdit } from './cell/cell-edit';
 import {
-  DataGridButtonType,
-  DataGridCellTemplate,
-  DataGridColumn,
-  DataGridColumnGroupDescriptor,
-  DataGridColumnGroupItem,
-  DataGridColumnGroupLevel,
-  DataGridColumnPinOption,
-  DataGridColumnPinValue,
-  DataGridDefaultOptions,
-  DataGridRowClassFormatter,
-  DataGridRowSelectionFormatter,
-  DataGridSize,
+  AcpDataGridButtonType,
+  AcpDataGridCellTemplate,
+  AcpDataGridColumn,
+  AcpDataGridColumnGroupDescriptor,
+  AcpDataGridColumnGroupItem,
+  AcpDataGridColumnGroupLevel,
+  AcpDataGridColumnPinOption,
+  AcpDataGridColumnPinValue,
+  AcpDataGridDefaultOptions,
+  AcpDataGridRowClassFormatter,
+  AcpDataGridRowSelectionFormatter,
+  AcpDataGridScrollHeight,
+  AcpDataGridSize,
 } from './interfaces';
 import { AcpGridColClassPipe, AcpGridRowClassPipe } from './data-grid.pipes';
 import { _animationsDisabled, ThemePalette } from '@angular/material/core';
@@ -85,7 +86,7 @@ import { AcpGridColumnMenu } from './column-menu/column-menu';
 import { AcpGridExpansionToggle } from './grid-expansion-toggle';
 import { MatColumnResize, MatResizable } from './column-resize';
 
-export const DATA_GRID_DEFAULT_OPTIONS = new InjectionToken<DataGridDefaultOptions>(
+export const DATA_GRID_DEFAULT_OPTIONS = new InjectionToken<AcpDataGridDefaultOptions>(
   'acp-grid-default-options',
 );
 
@@ -138,15 +139,17 @@ export const DATA_GRID_DEFAULT_OPTIONS = new InjectionToken<DataGridDefaultOptio
     '[class.acp-grid-size-medium]': '_size() === "medium"',
     '[class.acp-grid-size-large]': '_size() === "large"',
     '[attr.tabindex]': 'keyboardNavigation() ? 0 : null',
+    '[style.--acp-grid-scroll-height]': '_scrollMaxHeight()',
+    '[class.acp-grid-scroll-flex]': 'scrollHeight() === "flex"',
   },
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DataGrid implements AfterViewInit, OnChanges {
   /** Densidad de la tabla. `'normal'` está obsoleto y equivale a `'medium'`. */
-  size = input<DataGridSize | 'normal'>('medium');
-  protected readonly _size = computed<DataGridSize>(() =>
-    this.size() === 'normal' ? 'medium' : (this.size() as DataGridSize),
+  size = input<AcpDataGridSize | 'normal'>('medium');
+  protected readonly _size = computed<AcpDataGridSize>(() =>
+    this.size() === 'normal' ? 'medium' : (this.size() as AcpDataGridSize),
   );
   protected _animationsDisabled = _animationsDisabled();
   private readonly _utils = inject(DataGridUtils);
@@ -158,19 +161,33 @@ export class DataGrid implements AfterViewInit, OnChanges {
   readonly gridId = `acp-grid-${DataGrid._nextId++}`;
   private readonly _activeRow = signal<unknown>(null);
   private readonly _destroyRef = inject(DestroyRef);
-  private readonly _columnsByField = new Map<string, DataGridColumn>();
+  private readonly _columnsByField = new Map<string, AcpDataGridColumn>();
   private readonly _resizedColumnWidths = new Map<string, number>();
   private readonly _groupClassByField = new Map<string, string>();
   /** @internal First emitted value of each tracked `Observable` group key, by instance. */
   private readonly _groupKeyValues = new Map<Observable<string>, string>();
   private readonly _trackedGroupKeyObservables = new Set<Observable<string>>();
   /** @internal Rows of column-group header cells, derived from `columns[].group`. */
-  _groupHeaderRows: DataGridGroupHeaderRow[] = [];
+  _groupHeaderRows: AcpDataGridGroupHeaderRow[] = [];
   private _focusFirstRowOnRender = false;
   /** @internal Set by `acpGridNavigationFor` to activate the first row when data changes. */
   _activateFirstRowOnDataChange = false;
-  private readonly _defaultOptions = inject<DataGridDefaultOptions>(DATA_GRID_DEFAULT_OPTIONS, {
+  private readonly _defaultOptions = inject<AcpDataGridDefaultOptions>(DATA_GRID_DEFAULT_OPTIONS, {
     optional: true,
+  });
+  /**
+   * Altura máxima del área de filas antes de hacer scroll (la cabecera y el pie quedan fijos).
+   * - Una longitud CSS (`'400px'`, `'60vh'`, `'calc(100vh - 200px)'`) limita la altura.
+   * - `'flex'` hace que el grid ocupe la altura de su contenedor padre, que debe tener altura.
+   * - `null` (por defecto) mantiene el comportamiento actual: el grid crece con su contenido.
+   *
+   * También se puede definir desde CSS sin `::ng-deep`:
+   * `acp-data-grid { --acp-grid-scroll-height: 400px; }`.
+   */
+  scrollHeight = input<AcpDataGridScrollHeight | null>(this._defaultOptions?.scrollHeight ?? null);
+  protected readonly _scrollMaxHeight = computed(() => {
+    const value = this.scrollHeight();
+    return value && value !== 'flex' ? value : null;
   });
 
   /**
@@ -207,7 +224,7 @@ export class DataGrid implements AfterViewInit, OnChanges {
   /** The grid's displayed columns. */
   @Input() displayedColumns: string[] = [];
   /** The grid's columns. */
-  @Input() columns: DataGridColumn[] = [];
+  @Input() columns: AcpDataGridColumn[] = [];
   /** The grid's data. */
   @Input() data: any[] = [];
   /** The total number of the data. */
@@ -320,9 +337,9 @@ export class DataGrid implements AfterViewInit, OnChanges {
   @Input({ transform: booleanAttribute })
   disableRowClickSelection = this._defaultOptions?.disableRowClickSelection ?? false;
   /** The formatter to disable the row selection or hide the row's checkbox. */
-  @Input() rowSelectionFormatter: DataGridRowSelectionFormatter = {};
+  @Input() rowSelectionFormatter: AcpDataGridRowSelectionFormatter = {};
   /** The formatter to set the row's class. */
-  @Input() rowClassFormatter?: DataGridRowClassFormatter;
+  @Input() rowClassFormatter?: AcpDataGridRowClassFormatter;
   /** The selected row items. */
   @Input() rowSelected: any[] = [];
   /** Event emitted when the row is selected. */
@@ -413,9 +430,9 @@ export class DataGrid implements AfterViewInit, OnChanges {
   @Input({ transform: booleanAttribute })
   columnPinnable = this._defaultOptions?.columnPinnable ?? true;
   /** Event emitted when the column is hided or is sorted. */
-  columnChange = output<DataGridColumn[]>();
+  columnChange = output<AcpDataGridColumn[]>();
   /** The options for the column pin list. */
-  @Input() columnPinOptions: DataGridColumnPinOption[] =
+  @Input() columnPinOptions: AcpDataGridColumnPinOption[] =
     this._defaultOptions?.columnPinOptions ?? [];
 
   /** Whether to show the column menu button. */
@@ -424,7 +441,7 @@ export class DataGrid implements AfterViewInit, OnChanges {
   /** The text for the column menu button. */
   @Input() columnMenuButtonText = this._defaultOptions?.columnMenuButtonText ?? '';
   /** The type for the column menu button. */
-  @Input() columnMenuButtonType: DataGridButtonType =
+  @Input() columnMenuButtonType: AcpDataGridButtonType =
     this._defaultOptions?.columnMenuButtonType ?? 'outlined';
   /** The color for the column menu button. */
   @Input() columnMenuButtonColor: ThemePalette = this._defaultOptions?.columnMenuButtonColor;
@@ -487,11 +504,11 @@ export class DataGrid implements AfterViewInit, OnChanges {
   // ===== Cell Templates =====
 
   /** The header's cell template for the grid. */
-  @Input() headerTemplate!: TemplateRef<any> | DataGridCellTemplate;
+  @Input() headerTemplate!: TemplateRef<any> | AcpDataGridCellTemplate;
   /** The header's cell template for the grid exclude sort. */
-  @Input() headerExtraTemplate!: TemplateRef<any> | DataGridCellTemplate;
+  @Input() headerExtraTemplate!: TemplateRef<any> | AcpDataGridCellTemplate;
   /** The cell template for the grid. */
-  @Input() cellTemplate!: TemplateRef<any> | DataGridCellTemplate;
+  @Input() cellTemplate!: TemplateRef<any> | AcpDataGridCellTemplate;
 
   // ===== Row Templates =====
 
@@ -507,7 +524,7 @@ export class DataGrid implements AfterViewInit, OnChanges {
   /** Whether to show the summary. */
   @Input({ transform: booleanAttribute }) showSummary = false;
   /** The template for the summary. */
-  @Input() summaryTemplate!: TemplateRef<any> | DataGridCellTemplate;
+  @Input() summaryTemplate!: TemplateRef<any> | AcpDataGridCellTemplate;
 
   // TODO: Summary display conditions
   get _whetherShowSummary() {
@@ -535,11 +552,11 @@ export class DataGrid implements AfterViewInit, OnChanges {
     this._changeDetectorRef.detectChanges();
   }
 
-  _getColData(data: any[], colDef: DataGridColumn) {
+  _getColData(data: any[], colDef: AcpDataGridColumn) {
     return this._utils.getColData(data, colDef);
   }
 
-  _isColumnHide(item: DataGridColumn) {
+  _isColumnHide(item: AcpDataGridColumn) {
     if (item.hide !== undefined) {
       return item.hide;
     }
@@ -656,7 +673,7 @@ export class DataGrid implements AfterViewInit, OnChanges {
   }
 
   /** CSS class(es) of the column group the column belongs to, if any. */
-  _groupClassFor(col: DataGridColumn): string | undefined {
+  _groupClassFor(col: AcpDataGridColumn): string | undefined {
     return this._groupClassByField.get(col.field);
   }
 
@@ -670,9 +687,9 @@ export class DataGrid implements AfterViewInit, OnChanges {
     const paths = displayed.map(field => this._groupPathFor(this._columnsByField.get(field)));
     const maxDepth = paths.reduce((max, path) => Math.max(max, path.length), 0);
 
-    const rows: DataGridGroupHeaderRow[] = [];
+    const rows: AcpDataGridGroupHeaderRow[] = [];
     for (let level = 0; level < maxDepth; level++) {
-      const cells: DataGridGroupHeaderCell[] = [];
+      const cells: AcpDataGridGroupHeaderCell[] = [];
       const columnIds: string[] = [];
 
       for (let i = 0; i < displayed.length;) {
@@ -695,7 +712,7 @@ export class DataGrid implements AfterViewInit, OnChanges {
 
         let end = i + 1;
         const pinned = col?.pinned ?? null;
-        const members: DataGridColumn[] = [col!];
+        const members: AcpDataGridColumn[] = [col!];
         let uniformPin = true;
         while (end < displayed.length) {
           const nextPath = paths[end];
@@ -755,15 +772,15 @@ export class DataGrid implements AfterViewInit, OnChanges {
   }
 
   /** Normalizes a column `group` into an array of comparable `{ key, label }` levels. */
-  private _groupPathFor(col?: DataGridColumn): DataGridGroupLevelValue[] {
+  private _groupPathFor(col?: AcpDataGridColumn): AcpDataGridGroupLevelValue[] {
     const group = col?.group;
     if (group == null) {
       return [];
     }
-    const levels: DataGridColumnGroupItem[] = Array.isArray(group) ? group : [group];
+    const levels: AcpDataGridColumnGroupItem[] = Array.isArray(group) ? group : [group];
     return levels.map(item => {
       const descriptor = this._asGroupDescriptor(item);
-      const keySource = descriptor ? descriptor.key : (item as DataGridColumnGroupLevel);
+      const keySource = descriptor ? descriptor.key : (item as AcpDataGridColumnGroupLevel);
       const labelSource = descriptor?.label ?? keySource;
       const key = this._resolveGroupLevel(keySource);
       this._trackGroupKey(key);
@@ -792,23 +809,23 @@ export class DataGrid implements AfterViewInit, OnChanges {
   }
 
   /** Resolves a group level (string, Observable or data function) to its display value. */
-  private _resolveGroupLevel(level: DataGridColumnGroupLevel): string | Observable<string> {
+  private _resolveGroupLevel(level: AcpDataGridColumnGroupLevel): string | Observable<string> {
     return typeof level === 'function' ? level(this.data) : level;
   }
 
   /** Returns the item as a `{ key, label }` descriptor, or `undefined` for plain levels. */
   private _asGroupDescriptor(
-    item: DataGridColumnGroupItem,
-  ): DataGridColumnGroupDescriptor | undefined {
+    item: AcpDataGridColumnGroupItem,
+  ): AcpDataGridColumnGroupDescriptor | undefined {
     return typeof item === 'object' && item !== null && 'key' in item
-      ? (item as DataGridColumnGroupDescriptor)
+      ? (item as AcpDataGridColumnGroupDescriptor)
       : undefined;
   }
 
   /** Whether two group paths share the same group keys up to and including `level`. */
   private _sameGroupPrefix(
-    a: DataGridGroupLevelValue[],
-    b: DataGridGroupLevelValue[],
+    a: AcpDataGridGroupLevelValue[],
+    b: AcpDataGridGroupLevelValue[],
     level: number,
   ): boolean {
     for (let i = 0; i <= level; i++) {
@@ -1080,7 +1097,7 @@ export class DataGrid implements AfterViewInit, OnChanges {
   _onExpansionChange(
     expansionRef: AcpGridExpansionToggle,
     rowData: Record<string, any>,
-    column: DataGridColumn,
+    column: AcpDataGridColumn,
     index: number,
   ) {
     const currentStates = structuredClone(this.expansionRowStates);
@@ -1099,7 +1116,7 @@ export class DataGrid implements AfterViewInit, OnChanges {
   _selectCell(
     cellRef: AcpGridSelectableCell,
     rowData: Record<string, any>,
-    colDef: DataGridColumn,
+    colDef: AcpDataGridColumn,
   ): void {
     // If not the same cell
     if (this._selectedCell !== cellRef) {
@@ -1120,7 +1137,7 @@ export class DataGrid implements AfterViewInit, OnChanges {
   // ===== Cell Editing Methods =====
 
   /** Start editing a cell on click */
-  _onCellClick(row: Record<string, any>, colDef: DataGridColumn): void {
+  _onCellClick(row: Record<string, any>, colDef: AcpDataGridColumn): void {
     if (!colDef.editable) {
       return;
     }
@@ -1298,7 +1315,7 @@ export class DataGrid implements AfterViewInit, OnChanges {
   }
 
   /** Column change event */
-  _onColumnChange(columns: DataGridColumn[]) {
+  _onColumnChange(columns: AcpDataGridColumn[]) {
     this.columnChange.emit(columns);
 
     this.displayedColumns = Object.assign([], this.getDisplayedColumnFields(columns));
@@ -1310,7 +1327,7 @@ export class DataGrid implements AfterViewInit, OnChanges {
     this._updateGroupHeaderCells();
   }
 
-  getDisplayedColumnFields(columns: DataGridColumn[]): string[] {
+  getDisplayedColumnFields(columns: AcpDataGridColumn[]): string[] {
     const fields = columns
       .filter(item => (this.columnHideableChecked === 'show' ? item.show : !item.hide))
       .map(item => item.field);
@@ -1357,21 +1374,21 @@ export class DataGrid implements AfterViewInit, OnChanges {
   }
 }
 
-interface DataGridGroupHeaderCell {
+interface AcpDataGridGroupHeaderCell {
   id: string;
   colspan: number;
   isGroup: boolean;
   header?: string | Observable<string>;
   className?: string;
-  pinned: DataGridColumnPinValue;
+  pinned: AcpDataGridColumnPinValue;
 }
 
-interface DataGridGroupHeaderRow {
-  cells: DataGridGroupHeaderCell[];
+interface AcpDataGridGroupHeaderRow {
+  cells: AcpDataGridGroupHeaderCell[];
   columnIds: string[];
 }
 
-interface DataGridGroupLevelValue {
+interface AcpDataGridGroupLevelValue {
   key: unknown;
   label: string | Observable<string>;
 }

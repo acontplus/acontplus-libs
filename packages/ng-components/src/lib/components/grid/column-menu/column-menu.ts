@@ -18,10 +18,10 @@ import { MatIcon } from '@angular/material/icon';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 
 import {
-  DataGridButtonType,
-  DataGridColumn,
-  DataGridColumnPinOption,
-  DataGridColumnPinValue,
+  AcpDataGridButtonType,
+  AcpDataGridColumn,
+  AcpDataGridColumnPinOption,
+  AcpDataGridColumnPinValue,
 } from './../interfaces';
 import { AcpToObservablePipe } from '../../../../core/pipes';
 
@@ -52,7 +52,7 @@ export class AcpGridColumnMenu {
   @ViewChild(MatMenu, { static: true }) menuPanel!: MatMenu;
   @ViewChild(MatMenuTrigger) menuTrigger!: MatMenuTrigger;
 
-  @Input() columns: DataGridColumn[] = [];
+  @Input() columns: AcpDataGridColumn[] = [];
   @Input() selectable = true;
   @Input() selectableChecked: 'show' | 'hide' = 'show';
   @Input() sortable = true;
@@ -68,7 +68,7 @@ export class AcpGridColumnMenu {
   }
   private _buttonText = '';
 
-  @Input() buttonType: DataGridButtonType = 'outlined';
+  @Input() buttonType: AcpDataGridButtonType = 'outlined';
   @Input() buttonColor: ThemePalette;
   @Input() buttonClass = '';
   @Input() buttonIcon = '';
@@ -82,18 +82,18 @@ export class AcpGridColumnMenu {
   @Input() footerText = 'Columns Footer';
   @Input() footerTemplate!: TemplateRef<any>;
 
-  @Output() columnChange = new EventEmitter<DataGridColumn[]>();
+  @Output() columnChange = new EventEmitter<AcpDataGridColumn[]>();
 
   @Input()
   get pinOptions() {
     return this._pinOptions;
   }
-  set pinOptions(value: DataGridColumnPinOption[]) {
+  set pinOptions(value: AcpDataGridColumnPinOption[]) {
     if (value.length > 0) {
       this._pinOptions = value;
     }
   }
-  private _pinOptions: DataGridColumnPinOption[] = [
+  private _pinOptions: AcpDataGridColumnPinOption[] = [
     { label: 'Pin Left', value: 'left' },
     { label: 'Pin Right', value: 'right' },
     { label: 'No Pin', value: null },
@@ -104,7 +104,7 @@ export class AcpGridColumnMenu {
     this.columnChange.emit(this.columns);
   }
 
-  _handleChecked(col: DataGridColumn) {
+  _handleChecked(col: AcpDataGridColumn) {
     if (this.selectableChecked === 'show') {
       col.hide = !col.show;
     } else {
@@ -113,7 +113,7 @@ export class AcpGridColumnMenu {
     this.columnChange.emit(this.columns);
   }
 
-  _handlePinSelect(col: DataGridColumn, val: DataGridColumnPinValue) {
+  _handlePinSelect(col: AcpDataGridColumn, val: AcpDataGridColumnPinValue) {
     if (col.pinned != val) {
       col.pinned = val;
       this.columnChange.emit(this.columns);

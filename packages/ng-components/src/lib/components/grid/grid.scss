@@ -82,6 +82,9 @@ $fallbacks: m3-grid.get-tokens();
 
   .mat-table-container {
     overflow: auto;
+    // Set through the `scrollHeight` input or directly on the host:
+    // `acp-data-grid { --acp-grid-scroll-height: 400px; }`.
+    max-height: var(--acp-grid-scroll-height, none);
 
     &.mat-table-with-data {
       flex: 1;
@@ -203,6 +206,13 @@ $fallbacks: m3-grid.get-tokens();
     min-width: 60px;
     padding: 0 calc((60px - var(--mat-checkbox-state-layer-size, 40px)) / 2);
   }
+}
+
+// `scrollHeight="flex"`: fill the parent's height; rows scroll inside the table container.
+.acp-grid.acp-grid-scroll-flex {
+  flex: 1 1 auto;
+  height: 100%;
+  min-height: 0;
 }
 
 .acp-grid-progress {

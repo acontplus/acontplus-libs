@@ -314,7 +314,8 @@ The DataGrid is the primary table component, built with modern Angular 22+ patte
 - **Modern APIs**: Uses `input()` and `output()` functions
 - **Row Selection**: Single/multiple selection with formatter support
 - **Row Highlighting**: Visual highlighting with `highlightedRowIndex`
-- **Keyboard Navigation**: On by default. Arrows, Home/End, PageUp/PageDown, Enter (row click),
+- **Keyboard Navigation**: Opt-in with `keyboardNavigation="true"` (or globally with
+  `DATA_GRID_DEFAULT_OPTIONS: { keyboardNavigation: true }`). Arrows, Home/End, PageUp/PageDown, Enter (row click),
   Space (toggle selection) and Ctrl+A (select all). Add `[acpGridNavigationFor]="grid"` to a
   search input to drive the rows while the focus stays in the input
 - **Column Pinning**: Sticky left/right columns
@@ -401,6 +402,38 @@ grid.toggleRowExpansion(row, true); // expands
 
 `toggleExpansion(index)` and `expansionRowStates` are deprecated; they still work and use the
 position in `data`.
+
+#### Row Groups
+
+Set `rowGroupMode="subheader"` and `groupRowsBy` (a field name or a function) to render rows under
+a header row per group. Rows of a group are kept together; groups follow the order of `data`, unless
+the grid is sorted by the grouping field itself. Sorting by any other column sorts rows inside each
+group.
+
+```html
+<acp-data-grid
+  [data]="stock"
+  [columns]="columns"
+  rowGroupMode="subheader"
+  groupRowsBy="warehouse"
+  [expandableRowGroups]="true"
+  [(collapsedRowGroups)]="collapsedWarehouses"
+  [showRowGroupFooter]="true"
+/>
+```
+
+- `expandableRowGroups` adds a toggle to each group header. `collapsedRowGroups` holds the keys of
+  collapsed groups and supports two-way binding; `rowGroupToggle` emits `{ key, expanded }`.
+- `showRowGroupFooter` adds a footer row after each group with each column's `summary` computed
+  over the group rows (subtotals). `summary(values, colDef, rows)` receives the column values and
+  the summarized rows, so computed columns can total other fields. `summaryTemplate` receives the group rows as `data` and the
+  group as `group`.
+- `rowGroupHeaderTemplate` replaces the header label; its context is `AcpDataGridRowGroupContext`
+  (`key`, `rows`, `count`, `expanded`).
+- Methods: `isRowGroupExpanded(key)` and `toggleRowGroup(key, expanded?)`.
+- With front-end paging, a group split across pages repeats its header on the next page; the
+  footer shows on the page with the group's last row and always totals the whole group.
+- With server-side paging (`pageOnFront=false`), groups are built from the current page only.
 
 #### Row Selection Formatting
 

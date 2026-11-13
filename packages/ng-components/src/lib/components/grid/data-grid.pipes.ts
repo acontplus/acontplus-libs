@@ -128,10 +128,7 @@ export class AcpGridCellSummaryPipe implements PipeTransform {
     if (typeof colDef.summary === 'string') {
       return colDef.summary;
     } else if (typeof colDef.summary === 'function') {
-      return (colDef.summary as (data: any[], colDef?: AcpDataGridColumn) => any)(
-        this.utils.getColData(data, colDef),
-        colDef,
-      );
+      return colDef.summary(this.utils.getColData(data, colDef), colDef, data);
     }
   }
 }

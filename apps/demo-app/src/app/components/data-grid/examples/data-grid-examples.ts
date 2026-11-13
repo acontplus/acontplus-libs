@@ -25,6 +25,14 @@ import {
 import { DocHeading } from '../../../shared/doc-heading/doc-heading';
 import { CodeExample } from '../../../shared/code-example/code-example';
 
+interface StockRow {
+  sku: string;
+  product: string;
+  warehouse: string;
+  quantity: number;
+  cost: number;
+}
+
 interface DemoData {
   id: number;
   name: string;
@@ -257,6 +265,36 @@ interface PivotRow {
         </mat-card-content>
       </mat-card>
       <app-code-example [code]="expandableCode" [language]="'typescript'" />
+
+      <!-- Row Groups -->
+      <h2>Row Groups</h2>
+      <p>
+        Rows are grouped by <code>groupRowsBy</code> under a header row. Rows of a group stay
+        together even when sorting by another column; group footers show subtotals computed with
+        each column's <code>summary</code>.
+      </p>
+      <mat-card class="example-card">
+        <mat-card-content>
+          <acp-data-grid
+            class="row-group-demo-grid"
+            [data]="stockData"
+            [columns]="stockColumns"
+            rowGroupMode="subheader"
+            groupRowsBy="warehouse"
+            [expandableRowGroups]="true"
+            [(collapsedRowGroups)]="collapsedWarehouses"
+            [showRowGroupFooter]="true"
+            keyboardNavigation="true"
+            [showPaginator]="true"
+            [pageSize]="10"
+            [pageSizeOptions]="[5, 10, 20]"
+            size="small"
+            [rowHover]="true"
+          />
+          <p class="row-group-state">Collapsed: {{ collapsedWarehouses().join(', ') || 'none' }}</p>
+        </mat-card-content>
+      </mat-card>
+      <app-code-example [code]="rowGroupsCode" [language]="'typescript'" />
 
       <!-- Custom Cell Templates -->
       <h2>Custom Cell Templates</h2>
@@ -764,6 +802,107 @@ export class DataGridExamples {
   ];
 
   // Columns
+  collapsedWarehouses = signal<unknown[]>([]);
+  stockData: StockRow[] = [
+    {
+      sku: 'A-100',
+      product: 'Steel screws 4mm',
+      warehouse: 'Main warehouse',
+      quantity: 1200,
+      cost: 0.05,
+    },
+    {
+      sku: 'B-210',
+      product: 'Copper wire 2.5mm',
+      warehouse: 'North branch',
+      quantity: 300,
+      cost: 1.2,
+    },
+    {
+      sku: 'A-101',
+      product: 'Steel screws 6mm',
+      warehouse: 'Main warehouse',
+      quantity: 800,
+      cost: 0.07,
+    },
+    {
+      sku: 'C-310',
+      product: 'PVC pipe 1in',
+      warehouse: 'South branch',
+      quantity: 150,
+      cost: 3.4,
+    },
+    {
+      sku: 'B-211',
+      product: 'Copper wire 4mm',
+      warehouse: 'North branch',
+      quantity: 180,
+      cost: 1.9,
+    },
+    {
+      sku: 'A-102',
+      product: 'Wall anchors',
+      warehouse: 'Main warehouse',
+      quantity: 2000,
+      cost: 0.03,
+    },
+    {
+      sku: 'C-311',
+      product: 'PVC elbow 1in',
+      warehouse: 'South branch',
+      quantity: 400,
+      cost: 0.8,
+    },
+    { sku: 'B-212', product: 'Breaker 20A', warehouse: 'North branch', quantity: 60, cost: 7.5 },
+    {
+      sku: 'A-103',
+      product: 'Hex bolts 8mm',
+      warehouse: 'Main warehouse',
+      quantity: 650,
+      cost: 0.12,
+    },
+    {
+      sku: 'C-312',
+      product: 'PVC glue 250ml',
+      warehouse: 'South branch',
+      quantity: 90,
+      cost: 4.25,
+    },
+    {
+      sku: 'B-213',
+      product: 'Junction box',
+      warehouse: 'North branch',
+      quantity: 120,
+      cost: 2.1,
+    },
+    {
+      sku: 'C-313',
+      product: 'Ball valve 1in',
+      warehouse: 'South branch',
+      quantity: 45,
+      cost: 9.9,
+    },
+  ];
+  stockColumns: DataGridColumn<StockRow>[] = [
+    { field: 'sku', header: 'SKU', width: '100px', sortable: true, summary: 'Subtotal' },
+    { field: 'product', header: 'Product', sortable: true },
+    {
+      field: 'quantity',
+      header: 'Qty',
+      type: 'number',
+      sortable: true,
+      summary: (values: number[]) => values.reduce((total, value) => total + value, 0),
+    },
+    {
+      field: 'value',
+      header: 'Stock value',
+      formatter: row => `$${(row.quantity * row.cost).toFixed(2)}`,
+      // Computed column: the subtotal uses the summarized rows (3rd argument).
+      summary: (_values, _col, rows) =>
+        `$${rows.reduce((total, row) => total + row.quantity * row.cost, 0).toFixed(2)}`,
+    },
+  ];
+
   expandableColumns: DataGridColumn<DemoData>[] = [
     { field: 'id', header: 'ID', type: 'number', width: '80px', sortable: true },
     { field: 'name', header: 'Name', showExpand: true, sortable: true },
@@ -1371,6 +1510,38 @@ columns: AcpDataGridColumn[] = [
 <!-- acp-data-grid { --acp-grid-scroll-height: 240px; } -->
 <acp-data-grid [data]="data" [columns]="columns" />`;
 
+  rowGroupsCode = `// Row Groups: rows sharing groupRowsBy are rendered under a header row.
+// Groups keep the order of \`data\` unless you sort by the grouping field.
+columns: AcpDataGridColumn<StockRow>[] = [
+  { field: 'sku', header: 'SKU', summary: 'Subtotal' },
+  { field: 'product', header: 'Product' },
+  { field: 'quantity', header: 'Qty', summary: (values: number[]) => values.reduce((a, b) => a + b, 0) },
+  {
+    field: 'value',
+    header: 'Stock value',
+    formatter: row => row.quantity * row.cost,
+    // Computed column: summary receives the summarized rows as 3rd argument
+    summary: (_values, _col, rows) => rows.reduce((t, r) => t + r.quantity * r.cost, 0),
+  },
+];
+collapsedWarehouses = signal<unknown[]>([]);
+
+<acp-data-grid
+  [data]="stock"
+  [columns]="columns"
+  rowGroupMode="subheader"
+  groupRowsBy="warehouse"
+  [expandableRowGroups]="true"
+  [(collapsedRowGroups)]="collapsedWarehouses"
+  [showRowGroupFooter]="true"
+/>
+
+<!-- Optional: custom header content (the toggle button is kept) -->
+<ng-template #groupHeader let-key="key" let-count="count">
+  {{ key }} · {{ count }} items
+</ng-template>
+<acp-data-grid ... [rowGroupHeaderTemplate]="groupHeader" />`;
+
   rowContextMenuCode = `// Row Context Menu
 <acp-data-grid
   [data]="data"
@@ -1407,16 +1578,16 @@ onCellClick(event: { row: T; column: DataGridColumn }) {
   console.log('Cell clicked:', event.column.field, event.row);
 }`;
 
-  keyboardNavCode = `<!-- No configuration needed: keyboard navigation is on by default -->
+  keyboardNavCode = `<!-- Keyboard navigation is opt-in -->
 <acp-data-grid
+  keyboardNavigation="true"
   [data]="data"
   [columns]="columns"
   (focusedRowChange)="onActiveRow($event)"
   (rowClick)="open($event.rowData)"
 />
 
-<!-- Disable it per grid with [keyboardNavigation]="false",
-     or globally with DATA_GRID_DEFAULT_OPTIONS: { keyboardNavigation: false } -->`;
+<!-- Enable it for every grid with DATA_GRID_DEFAULT_OPTIONS: { keyboardNavigation: true } -->`;
 
   searchNavCode = `<input matInput [acpGridNavigationFor]="grid" (input)="search($event)" />
 

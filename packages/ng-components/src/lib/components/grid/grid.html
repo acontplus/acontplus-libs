@@ -54,7 +54,7 @@
         [class.mat-table-hover]="rowHover"
         [class.mat-table-striped]="rowStriped"
         [class.mat-table-expandable]="expandable"
-        [dataSource]="dataSource"
+        [dataSource]="_rowGroupItems$ ?? dataSource"
         [multiTemplateDataRows]="expandable"
         matSort
         [matSortActive]="sortActive"
@@ -63,7 +63,7 @@
         [matSortDisabled]="sortDisabled"
         [matSortStart]="sortStart"
         (matSortChange)="_onSortChange($event)"
-        [trackBy]="trackBy"
+        [trackBy]="_rowGroupItems$ ? _rowGroupTrackBy : trackBy"
       >
         @if (rowSelectable && !hideRowSelectionCheckbox) {
         <ng-container matColumnDef="acpGridCheckboxColumnDef">
@@ -82,11 +82,11 @@
             class="acp-grid-checkbox-cell"
           >
             @if ( !( rowSelectionFormatter.hideCheckbox && rowSelectionFormatter.hideCheckbox(row,
-            _getIndex(index, dataIndex)) ) ) {
+            _rowIndex(row, index, dataIndex)) ) ) {
             <mat-checkbox
               [disabled]="
                       rowSelectionFormatter.disabled &&
-                      rowSelectionFormatter.disabled(row, _getIndex(index, dataIndex))
+                      rowSelectionFormatter.disabled(row, _rowIndex(row, index, dataIndex))
                     "
               [checked]="rowSelection.isSelected(row)"
               [tabIndex]="keyboardNavigation() ? -1 : 0"
@@ -204,7 +204,7 @@
           >
             <ng-container
               [ngTemplateOutlet]="acpGridFooterBody"
-              [ngTemplateOutletContext]="{ $implicit: col }"
+              [ngTemplateOutletContext]="{ $implicit: col, rows: data }"
             ></ng-container>
           </td>
         </ng-container>
@@ -247,21 +247,70 @@
                 let row;
                 let index = index;
                 let dataIndex = dataIndex;
-                columns: displayedColumns
+                columns: displayedColumns;
+                when: _isDataRow
               "
-          [class]="row | rowClass: index : dataIndex : rowClassFormatter"
+          [class]="row | rowClass: _rowIndex(row, index, dataIndex) : dataIndex : rowClassFormatter"
           [class.selected]="rowSelection.isSelected(row)"
           [class.acp-grid-row-active]="_isActiveRow(row)"
-          [attr.id]="_rowId(_getIndex(index, dataIndex))"
-          [attr.tabindex]="_rowTabIndex(row, _getIndex(index, dataIndex))"
+          [attr.id]="_rowId(_rowIndex(row, index, dataIndex))"
+          [attr.tabindex]="_rowTabIndex(row, _rowIndex(row, index, dataIndex))"
           (focus)="_onRowFocus(row)"
-          (click)="_selectRow($event, row, _getIndex(index, dataIndex))"
-          (contextmenu)="_contextmenu($event, row, _getIndex(index, dataIndex))"
-          (keydown)="_onRowKeyDown($event, row, _getIndex(index, dataIndex))"
-          (keyup)="_onRowKeyUp($event, row, _getIndex(index, dataIndex))"
-          (keypress)="_onRowKeyPress($event, row, _getIndex(index, dataIndex))"
+          (click)="_selectRow($event, row, _rowIndex(row, index, dataIndex))"
+          (contextmenu)="_contextmenu($event, row, _rowIndex(row, index, dataIndex))"
+          (keydown)="_onRowKeyDown($event, row, _rowIndex(row, index, dataIndex))"
+          (keyup)="_onRowKeyUp($event, row, _rowIndex(row, index, dataIndex))"
+          (keypress)="_onRowKeyPress($event, row, _rowIndex(row, index, dataIndex))"
         ></tr>
-        } @if (_whetherShowSummary) {
+        } @if (_rowGroupingActive) {
+        <ng-container matColumnDef="acpGridRowGroupHeaderColumnDef">
+          <td
+            mat-cell
+            *matCellDef="let item"
+            class="acp-grid-row-group-header-cell"
+            [attr.colspan]="displayedColumns.length"
+          >
+            <ng-container
+              [ngTemplateOutlet]="acpGridRowGroupHeaderBody"
+              [ngTemplateOutletContext]="{ $implicit: item.group }"
+            ></ng-container>
+          </td>
+        </ng-container>
+        <tr
+          mat-row
+          *matRowDef="let item; columns: ['acpGridRowGroupHeaderColumnDef']; when: _isRowGroupHeader"
+          class="acp-grid-row-group-header"
+          [class.acp-grid-row-group-collapsed]="!item.group.expanded"
+        ></tr>
+        @if (showRowGroupFooter()) { @for (colId of displayedColumns; track colId) {
+        <ng-container
+          [matColumnDef]="'acpGridRowGroupFooter:' + colId"
+          [sticky]="_columnFor(colId)?.pinned === 'left'"
+          [stickyEnd]="_columnFor(colId)?.pinned === 'right'"
+        >
+          <td
+            mat-cell
+            *matCellDef="let item"
+            class="acp-grid-row-group-footer-cell"
+            [class.acp-grid-checkbox-cell]="colId === 'acpGridCheckboxColumnDef'"
+            [class.mat-table-sticky-left]="_columnFor(colId)?.pinned === 'left'"
+            [class.mat-table-sticky-right]="_columnFor(colId)?.pinned === 'right'"
+          >
+            @if (_columnFor(colId); as col) {
+            <ng-container
+              [ngTemplateOutlet]="acpGridFooterBody"
+              [ngTemplateOutletContext]="{ $implicit: col, rows: item.group.rows, group: item.group }"
+            ></ng-container>
+            }
+          </td>
+        </ng-container>
+        }
+        <tr
+          mat-row
+          *matRowDef="let item; columns: _rowGroupFooterColumns; when: _isRowGroupFooter"
+          class="acp-grid-row-group-footer"
+        ></tr>
+        } } @if (_whetherShowSummary) {
         <tr mat-footer-row *matFooterRowDef="displayedColumns; sticky: true"></tr>
         } @if (expandable) {
         <!-- Expanded Content Column - The expandable row is made up of this one column that spans across all columns -->
@@ -282,7 +331,8 @@
           *matRowDef="
                 let row;
                 columns: ['acpGridExpansionColumnDef'];
-                let dataIndex = dataIndex
+                let dataIndex = dataIndex;
+                when: _isDataRow
               "
           class="acp-grid-expansion"
           [class]="isRowExpanded(row) ? 'expanded' : 'collapsed'"
@@ -297,7 +347,7 @@
         [class.mat-table-hover]="rowHover"
         [class.mat-table-striped]="rowStriped"
         [class.mat-table-expandable]="expandable"
-        [dataSource]="dataSource"
+        [dataSource]="_rowGroupItems$ ?? dataSource"
         [multiTemplateDataRows]="expandable"
         matSort
         [matSortActive]="sortActive"
@@ -306,7 +356,7 @@
         [matSortDisabled]="sortDisabled"
         [matSortStart]="sortStart"
         (matSortChange)="_onSortChange($event)"
-        [trackBy]="trackBy"
+        [trackBy]="_rowGroupItems$ ? _rowGroupTrackBy : trackBy"
       >
         @if (rowSelectable && !hideRowSelectionCheckbox) {
         <ng-container matColumnDef="acpGridCheckboxColumnDef">
@@ -325,11 +375,11 @@
             class="acp-grid-checkbox-cell"
           >
             @if ( !( rowSelectionFormatter.hideCheckbox && rowSelectionFormatter.hideCheckbox(row,
-            _getIndex(index, dataIndex)) ) ) {
+            _rowIndex(row, index, dataIndex)) ) ) {
             <mat-checkbox
               [disabled]="
                       rowSelectionFormatter.disabled &&
-                      rowSelectionFormatter.disabled(row, _getIndex(index, dataIndex))
+                      rowSelectionFormatter.disabled(row, _rowIndex(row, index, dataIndex))
                     "
               [checked]="rowSelection.isSelected(row)"
               [tabIndex]="keyboardNavigation() ? -1 : 0"
@@ -447,7 +497,7 @@
           >
             <ng-container
               [ngTemplateOutlet]="acpGridFooterBody"
-              [ngTemplateOutletContext]="{ $implicit: col }"
+              [ngTemplateOutletContext]="{ $implicit: col, rows: data }"
             ></ng-container>
           </td>
         </ng-container>
@@ -490,21 +540,70 @@
                 let row;
                 let index = index;
                 let dataIndex = dataIndex;
-                columns: displayedColumns
+                columns: displayedColumns;
+                when: _isDataRow
               "
-          [class]="row | rowClass: index : dataIndex : rowClassFormatter"
+          [class]="row | rowClass: _rowIndex(row, index, dataIndex) : dataIndex : rowClassFormatter"
           [class.selected]="rowSelection.isSelected(row)"
           [class.acp-grid-row-active]="_isActiveRow(row)"
-          [attr.id]="_rowId(_getIndex(index, dataIndex))"
-          [attr.tabindex]="_rowTabIndex(row, _getIndex(index, dataIndex))"
+          [attr.id]="_rowId(_rowIndex(row, index, dataIndex))"
+          [attr.tabindex]="_rowTabIndex(row, _rowIndex(row, index, dataIndex))"
           (focus)="_onRowFocus(row)"
-          (click)="_selectRow($event, row, _getIndex(index, dataIndex))"
-          (contextmenu)="_contextmenu($event, row, _getIndex(index, dataIndex))"
-          (keydown)="_onRowKeyDown($event, row, _getIndex(index, dataIndex))"
-          (keyup)="_onRowKeyUp($event, row, _getIndex(index, dataIndex))"
-          (keypress)="_onRowKeyPress($event, row, _getIndex(index, dataIndex))"
+          (click)="_selectRow($event, row, _rowIndex(row, index, dataIndex))"
+          (contextmenu)="_contextmenu($event, row, _rowIndex(row, index, dataIndex))"
+          (keydown)="_onRowKeyDown($event, row, _rowIndex(row, index, dataIndex))"
+          (keyup)="_onRowKeyUp($event, row, _rowIndex(row, index, dataIndex))"
+          (keypress)="_onRowKeyPress($event, row, _rowIndex(row, index, dataIndex))"
         ></tr>
-        } @if (_whetherShowSummary) {
+        } @if (_rowGroupingActive) {
+        <ng-container matColumnDef="acpGridRowGroupHeaderColumnDef">
+          <td
+            mat-cell
+            *matCellDef="let item"
+            class="acp-grid-row-group-header-cell"
+            [attr.colspan]="displayedColumns.length"
+          >
+            <ng-container
+              [ngTemplateOutlet]="acpGridRowGroupHeaderBody"
+              [ngTemplateOutletContext]="{ $implicit: item.group }"
+            ></ng-container>
+          </td>
+        </ng-container>
+        <tr
+          mat-row
+          *matRowDef="let item; columns: ['acpGridRowGroupHeaderColumnDef']; when: _isRowGroupHeader"
+          class="acp-grid-row-group-header"
+          [class.acp-grid-row-group-collapsed]="!item.group.expanded"
+        ></tr>
+        @if (showRowGroupFooter()) { @for (colId of displayedColumns; track colId) {
+        <ng-container
+          [matColumnDef]="'acpGridRowGroupFooter:' + colId"
+          [sticky]="_columnFor(colId)?.pinned === 'left'"
+          [stickyEnd]="_columnFor(colId)?.pinned === 'right'"
+        >
+          <td
+            mat-cell
+            *matCellDef="let item"
+            class="acp-grid-row-group-footer-cell"
+            [class.acp-grid-checkbox-cell]="colId === 'acpGridCheckboxColumnDef'"
+            [class.mat-table-sticky-left]="_columnFor(colId)?.pinned === 'left'"
+            [class.mat-table-sticky-right]="_columnFor(colId)?.pinned === 'right'"
+          >
+            @if (_columnFor(colId); as col) {
+            <ng-container
+              [ngTemplateOutlet]="acpGridFooterBody"
+              [ngTemplateOutletContext]="{ $implicit: col, rows: item.group.rows, group: item.group }"
+            ></ng-container>
+            }
+          </td>
+        </ng-container>
+        }
+        <tr
+          mat-row
+          *matRowDef="let item; columns: _rowGroupFooterColumns; when: _isRowGroupFooter"
+          class="acp-grid-row-group-footer"
+        ></tr>
+        } } @if (_whetherShowSummary) {
         <tr mat-footer-row *matFooterRowDef="displayedColumns; sticky: true"></tr>
         } @if (expandable) {
         <!-- Expanded Content Column - The expandable row is made up of this one column that spans across all columns -->
@@ -525,7 +624,8 @@
           *matRowDef="
                 let row;
                 columns: ['acpGridExpansionColumnDef'];
-                let dataIndex = dataIndex
+                let dataIndex = dataIndex;
+                when: _isDataRow
               "
           class="acp-grid-expansion"
           [class]="isRowExpanded(row) ? 'expanded' : 'collapsed'"
@@ -608,7 +708,7 @@
     [ngTemplateOutletContext]="{
                       $implicit: row,
                       rowData: row,
-                      index: _getIndex(index, dataIndex),
+                      index: _rowIndex(row, index, dataIndex),
                       colDef: col,
                     }"
   ></ng-template>
@@ -618,7 +718,7 @@
     [ngTemplateOutletContext]="{
                         $implicit: row,
                         rowData: row,
-                        index: _getIndex(index, dataIndex),
+                        index: _rowIndex(row, index, dataIndex),
                         colDef: col,
                       }"
   ></ng-template>
@@ -628,7 +728,7 @@
     [ngTemplateOutletContext]="{
                           $implicit: row,
                           rowData: row,
-                          index: _getIndex(index, dataIndex),
+                          index: _rowIndex(row, index, dataIndex),
                           colDef: col,
                         }"
   ></ng-template>
@@ -674,27 +774,29 @@
   }
 </ng-template>
 
-<ng-template #acpGridFooterBody let-col>
+<ng-template #acpGridFooterBody let-col let-rows="rows" let-group="group">
   @if (col.showExpand) {
   <span class="acp-grid-expansion-placeholder"></span>
   } @if (summaryTemplate | isTemplateRef) {
   <ng-template
     [ngTemplateOutlet]="$any(summaryTemplate)"
-    [ngTemplateOutletContext]="{ $implicit: col, colDef: col, data: data }"
+    [ngTemplateOutletContext]="{ $implicit: col, colDef: col, data: rows, group: group }"
   ></ng-template>
   } @else { @if ( $safeNavigationMigration($any(summaryTemplate)?.[col.field]) | isTemplateRef ) {
   <ng-template
     [ngTemplateOutlet]="$any(summaryTemplate)[col.field]"
     [ngTemplateOutletContext]="{
-                        $implicit: _getColData(data, col),
-                        colData: _getColData(data, col),
+                        $implicit: _getColData(rows, col),
+                        colData: _getColData(rows, col),
                         colDef: col,
+                        data: rows,
+                        group: group,
                       }"
   ></ng-template>
   } @else {
   <acp-grid-cell
     [summary]="true"
-    [data]="data"
+    [data]="rows"
     [colDef]="col"
     [placeholder]="emptyValuePlaceholder"
   ></acp-grid-cell>
@@ -714,5 +816,40 @@
                       }"
       ></ng-template>
     </div>
+  </div>
+</ng-template>
+
+<ng-template #acpGridRowGroupHeaderBody let-group>
+  <div class="acp-grid-row-group-header-content">
+    @if (expandableRowGroups()) {
+    <button
+      class="acp-grid-row-expand-button acp-grid-row-group-toggle"
+      matIconButton
+      type="button"
+      [class.expanded]="group.expanded"
+      [attr.aria-expanded]="group.expanded"
+      [attr.aria-label]="_rowGroupLabel(group)"
+      (click)="toggleRowGroup(group.key)"
+    >
+      <svg
+        class="acp-grid-icon acp-grid-row-expand-icon"
+        viewBox="0 0 24 24"
+        width="24px"
+        height="24px"
+        fill="currentColor"
+        focusable="false"
+      >
+        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+      </svg>
+    </button>
+    } @if (rowGroupHeaderTemplate(); as tpl) {
+    <ng-container
+      [ngTemplateOutlet]="tpl"
+      [ngTemplateOutletContext]="_rowGroupContext(group)"
+    ></ng-container>
+    } @else {
+    <span class="acp-grid-row-group-label">{{ _rowGroupLabel(group) }}</span>
+    <span class="acp-grid-row-group-count">{{ group.rows.length }}</span>
+    }
   </div>
 </ng-template>

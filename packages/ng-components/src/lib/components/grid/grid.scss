@@ -141,6 +141,51 @@ $fallbacks: m3-grid.get-tokens();
     }
   }
 
+  // Row groups (`rowGroupMode="subheader"`). Declared after the hover rules so group rows keep
+  // their own background on hover.
+  .mat-mdc-table .mat-mdc-row.acp-grid-row-group-header {
+    &,
+    &:hover {
+      background-color: token-utils.slot(grid-table-row-group-header-background-color, $fallbacks);
+    }
+
+    .acp-grid-row-group-header-cell {
+      font-weight: 600;
+    }
+  }
+
+  .mat-mdc-table .mat-mdc-row.acp-grid-row-group-footer {
+    &,
+    &:hover {
+      background-color: token-utils.slot(grid-table-row-group-footer-background-color, $fallbacks);
+    }
+
+    .acp-grid-row-group-footer-cell {
+      font-weight: 500;
+    }
+  }
+
+  // Keeps the group label visible while the table scrolls horizontally.
+  .acp-grid-row-group-header-content {
+    position: sticky;
+    inset-inline-start: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    vertical-align: middle;
+  }
+
+  .acp-grid-row-group-count {
+    min-width: 20px;
+    padding: 0 6px;
+    border-radius: 10px;
+    font-size: 0.75em;
+    font-weight: 500;
+    line-height: 20px;
+    text-align: center;
+    background-color: token-utils.slot(grid-table-row-hover-background-color, $fallbacks);
+  }
+
   .mat-sort-header-icon {
     margin-left: 4px;
 

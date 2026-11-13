@@ -27,10 +27,11 @@ import {
   Injector,
   untracked,
   DestroyRef,
+  model,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AsyncPipe, NgClass, NgTemplateOutlet } from '@angular/common';
-import { BehaviorSubject, isObservable, Observable, take } from 'rxjs';
+import { BehaviorSubject, combineLatest, isObservable, map, Observable, take } from 'rxjs';
 
 // Material Imports
 import {
@@ -75,11 +76,21 @@ import {
   AcpDataGridColumnPinValue,
   AcpDataGridDefaultOptions,
   AcpDataGridRowClassFormatter,
+  AcpDataGridRowGroup,
+  AcpDataGridRowGroupContext,
+  AcpDataGridRowGroupMode,
   AcpDataGridRowSelectionFormatter,
   AcpDataGridScrollHeight,
   AcpDataGridSize,
 } from './interfaces';
 import { AcpGridColClassPipe, AcpGridRowClassPipe } from './data-grid.pipes';
+import {
+  buildRowGroupView,
+  collectRowGroups,
+  groupRowsContiguous,
+  isRowGroupItem,
+  RowGroupItemCache,
+} from './grid-row-group';
 import { _animationsDisabled, ThemePalette } from '@angular/material/core';
 import { ColumnResize } from '../column-resize';
 import { AcpGridColumnMenu } from './column-menu/column-menu';
@@ -340,6 +351,38 @@ export class DataGrid implements AfterViewInit, OnChanges {
   /** Event emitted when the user toggles the expandable row. */
   expansionChange = output<any>();
   closeOthersOnExpand = input(false);
+
+  // ===== Row Group =====
+
+  /**
+   * Agrupa las filas por el valor de `groupRowsBy`. `'subheader'` inserta una fila de cabecera
+   * antes de cada grupo. Las filas de un mismo grupo se muestran juntas; los grupos siguen el
+   * orden de `data`, salvo cuando se ordena por el propio campo de agrupación.
+   */
+  rowGroupMode = input<AcpDataGridRowGroupMode | null>(null);
+  /** Campo (`'warehouse'`) o función que devuelve el valor por el que se agrupan las filas. */
+  groupRowsBy = input<string | ((row: any) => unknown) | null>(null);
+  /** Muestra un botón en la cabecera de cada grupo para contraer o expandir sus filas. */
+  expandableRowGroups = input(false, { transform: booleanAttribute });
+  /** Claves de los grupos contraídos. Admite enlace bidireccional: `[(collapsedRowGroups)]`. */
+  collapsedRowGroups = model<unknown[]>([]);
+  /**
+   * Muestra una fila de pie al final de cada grupo con el `summary` de cada columna calculado
+   * sobre las filas del grupo (subtotales). `summaryTemplate` también recibe las filas del grupo.
+   */
+  showRowGroupFooter = input(false, { transform: booleanAttribute });
+  /** Plantilla del contenido de la cabecera de grupo. Contexto: `AcpDataGridRowGroupContext`. */
+  rowGroupHeaderTemplate = input<TemplateRef<AcpDataGridRowGroupContext> | null>(null);
+  /** Se emite cuando el usuario contrae o expande un grupo. */
+  rowGroupToggle = output<{ key: unknown; expanded: boolean }>();
+
+  /** @internal Rows rendered by the table when row grouping is active. */
+  _rowGroupItems$: Observable<unknown[]> | null = null;
+  private _visibleRows: unknown[] | null = null;
+  private readonly _visibleRowIndex = new Map<unknown, number>();
+  private readonly _rowGroupRefresh$ = new BehaviorSubject<void>(undefined);
+  private _rowGroupContexts = new WeakMap<AcpDataGridRowGroup, AcpDataGridRowGroupContext>();
+  private _rowGroupFooterColumnsCache: { source: string[]; ids: string[] } | null = null;
   // ===== Row Selection =====
 
   rowSelection: SelectionModel<any> = new SelectionModel<any>(true, []);
@@ -631,6 +674,8 @@ export class DataGrid implements AfterViewInit, OnChanges {
       this.dataSource.sort = this.sort;
     }
 
+    this._setupRowGrouping();
+
     // Only scroll top with data change
     if (changes['data']) {
       this.scrollTop(0);
@@ -893,6 +938,9 @@ export class DataGrid implements AfterViewInit, OnChanges {
 
   /** Rows currently rendered (after sorting and front-end paging). */
   get renderedRows(): any[] {
+    if (this._visibleRows) {
+      return this._visibleRows;
+    }
     this._renderData$ ??= this.dataSource.connect();
     return this._renderData$.value;
   }
@@ -1100,6 +1148,152 @@ export class DataGrid implements AfterViewInit, OnChanges {
 
   _getIndex(index: number | undefined, dataIndex: number) {
     return index === undefined ? dataIndex : index;
+  }
+
+  /** @internal Index of a data row among the rendered data rows (group rows are not counted). */
+  _rowIndex(row: unknown, index: number | undefined, dataIndex: number): number {
+    return this._visibleRows
+      ? (this._visibleRowIndex.get(row) ?? -1)
+      : this._getIndex(index, dataIndex);
+  }
+
+  // ===== Row Group =====
+
+  /** @internal */
+  get _rowGroupingActive(): boolean {
+    return this.rowGroupMode() === 'subheader' && this.groupRowsBy() != null;
+  }
+
+  /** @internal Row predicates; data rows match whenever the item is not a group row. */
+  readonly _isDataRow = (_: number, item: unknown) => !isRowGroupItem(item);
+  readonly _isRowGroupHeader = (_: number, item: unknown) =>
+    isRowGroupItem(item) && item.acpRowGroupRow === 'header';
+  readonly _isRowGroupFooter = (_: number, item: unknown) =>
+    isRowGroupItem(item) && item.acpRowGroupRow === 'footer';
+
+  /** @internal Keeps the consumer `trackBy` for data rows; group rows are tracked by identity. */
+  readonly _rowGroupTrackBy: TrackByFunction<unknown> = (index, item) =>
+    isRowGroupItem(item) || !this.trackBy ? item : this.trackBy(index, item);
+
+  /** @internal */
+  get _rowGroupFooterColumns(): string[] {
+    const source = this.displayedColumns;
+    if (this._rowGroupFooterColumnsCache?.source !== source) {
+      this._rowGroupFooterColumnsCache = {
+        source,
+        ids: source.map(id => `acpGridRowGroupFooter:${id}`),
+      };
+    }
+    return this._rowGroupFooterColumnsCache.ids;
+  }
+
+  /** @internal */
+  _columnFor(field: string): AcpDataGridColumn | undefined {
+    return this._columnsByField.get(field);
+  }
+
+  /** @internal */
+  _rowGroupLabel(group: AcpDataGridRowGroup): string {
+    const key = group.key;
+    return key === null || key === undefined || key === '' ? this.emptyValuePlaceholder : `${key}`;
+  }
+
+  /** @internal Stable context object per group, so the header template is not re-created. */
+  _rowGroupContext(group: AcpDataGridRowGroup): AcpDataGridRowGroupContext {
+    let context = this._rowGroupContexts.get(group);
+    if (!context) {
+      context = {
+        $implicit: group,
+        group,
+        key: group.key,
+        rows: group.rows,
+        count: group.rows.length,
+        expanded: group.expanded,
+      };
+      this._rowGroupContexts.set(group, context);
+    }
+    return context;
+  }
+
+  /** Indica si el grupo con esa clave está expandido. */
+  isRowGroupExpanded(key: unknown): boolean {
+    return !this.collapsedRowGroups().includes(key);
+  }
+
+  /** Expande o contrae un grupo (alterna si no se indica `expanded`). Devuelve el nuevo estado. */
+  toggleRowGroup(key: unknown, expanded = !this.isRowGroupExpanded(key)): boolean {
+    const collapsed = this.collapsedRowGroups().filter(item => !Object.is(item, key));
+    if (!expanded) {
+      collapsed.push(key);
+    }
+    this.collapsedRowGroups.set(collapsed);
+    this._rowGroupRefresh$.next();
+    this.rowGroupToggle.emit({ key, expanded });
+    return expanded;
+  }
+
+  private _rowGroupKey(row: any): unknown {
+    const groupBy = this.groupRowsBy();
+    if (row == null || groupBy == null) {
+      return undefined;
+    }
+    return typeof groupBy === 'function' ? groupBy(row) : row[groupBy];
+  }
+
+  /**
+   * Wraps the data source ordering so rows of a group stay together, and derives the rendered
+   * items (group headers, visible rows, group footers) from each page.
+   */
+  private _setupRowGrouping(): void {
+    if (!this._rowGroupingActive) {
+      this._rowGroupItems$ = null;
+      this._visibleRows = null;
+      this._visibleRowIndex.clear();
+      return;
+    }
+
+    const dataSource = this.dataSource;
+    const keyOf = (row: unknown) => this._rowGroupKey(row);
+    const rank = new Map<unknown, number>();
+    for (const row of this.data ?? []) {
+      const key = keyOf(row);
+      if (!rank.has(key)) {
+        rank.set(key, rank.size);
+      }
+    }
+
+    let groups = new Map<unknown, unknown[]>();
+    const orderData = dataSource._orderData.bind(dataSource);
+    dataSource._orderData = rows => {
+      const sort = dataSource.sort;
+      const sortedByGroup =
+        typeof this.groupRowsBy() === 'string' &&
+        !!sort?.direction &&
+        sort.active === this.groupRowsBy();
+      const ordered = groupRowsContiguous(orderData(rows), keyOf, sortedByGroup ? undefined : rank);
+      groups = collectRowGroups(ordered, keyOf);
+      return ordered;
+    };
+    // Re-run the pipeline: the data source already emitted with the original ordering.
+    dataSource.data = this.data ?? [];
+
+    const cache = new RowGroupItemCache();
+    this._rowGroupContexts = new WeakMap();
+    this._rowGroupItems$ = combineLatest([dataSource.connect(), this._rowGroupRefresh$]).pipe(
+      map(([pageRows]) => {
+        const view = buildRowGroupView(pageRows, {
+          keyOf,
+          groups,
+          collapsed: new Set(this.collapsedRowGroups()),
+          footer: this.showRowGroupFooter(),
+          cache,
+        });
+        this._visibleRows = view.visibleRows;
+        this._visibleRowIndex.clear();
+        view.visibleRows.forEach((row, i) => this._visibleRowIndex.set(row, i));
+        return view.items as unknown[];
+      }),
+    );
   }
 
   _onSortChange(sort: Sort) {

@@ -355,6 +355,42 @@ export class DataGridApi {
         'Identifies each row so its expanded state survives sorting, paging and data reloads. Defaults to the row object reference',
       default: 'null',
     },
+    {
+      name: 'rowGroupMode',
+      type: "'subheader' | null",
+      description: 'Renders a header row before each group of rows',
+      default: 'null',
+    },
+    {
+      name: 'groupRowsBy',
+      type: 'string | ((row: T) => unknown) | null',
+      description: 'Field or function whose value groups the rows',
+      default: 'null',
+    },
+    {
+      name: 'expandableRowGroups',
+      type: 'boolean',
+      description: 'Adds a toggle to each group header to collapse its rows',
+      default: 'false',
+    },
+    {
+      name: 'collapsedRowGroups',
+      type: 'unknown[]',
+      description: 'Keys of the collapsed groups (two-way binding)',
+      default: '[]',
+    },
+    {
+      name: 'showRowGroupFooter',
+      type: 'boolean',
+      description: "Footer row per group with each column's summary over the group rows",
+      default: 'false',
+    },
+    {
+      name: 'rowGroupHeaderTemplate',
+      type: 'TemplateRef<AcpDataGridRowGroupContext> | null',
+      description: 'Custom content of the group header',
+      default: 'null',
+    },
 
     // Infinite Scroll
     {
@@ -382,7 +418,7 @@ export class DataGridApi {
       type: 'boolean',
       description:
         'Row keyboard navigation: arrows, Home/End, PageUp/PageDown, Enter (row click), Space (toggle selection), Ctrl+A (select all)',
-      default: 'true',
+      default: 'false',
     },
 
     // Templates
@@ -472,6 +508,11 @@ export class DataGridApi {
       name: 'expansionChange',
       type: 'EventEmitter<any>',
       description: 'Emits when expansion state changes',
+    },
+    {
+      name: 'rowGroupToggle',
+      type: 'EventEmitter<{ key: unknown; expanded: boolean }>',
+      description: 'Emits when a group is collapsed or expanded',
     },
     {
       name: 'rowContextMenu',

@@ -29,7 +29,13 @@ export interface AcpDataGridColumn<T = any> {
   cellTemplate?: TemplateRef<any> | null;
   showExpand?: boolean;
   description?: string;
-  summary?: ((data: T[], colDef?: AcpDataGridColumn) => any) | string;
+  /**
+   * Value of the summary (footer) cell of the column: a fixed text, or a function that receives
+   * the values of the column (`values`), the column definition and the rows being summarized
+   * (all rows in the grid footer, the group rows in a row-group footer). Use `rows` when the
+   * result depends on other fields, e.g. `(_, __, rows) => sum(rows.map(r => r.qty * r.cost))`.
+   */
+  summary?: ((values: any[], colDef: AcpDataGridColumn<T>, rows: T[]) => any) | string;
   class?: string | ((rowData?: T, colDef?: AcpDataGridColumn) => string);
   headerCellTemplate?: TemplateRef<any>;
   /**
@@ -204,6 +210,29 @@ export type AcpDataGridSize = 'xs-small' | 'small' | 'medium' | 'large';
  * altura máxima, o `'flex'` para ocupar la altura del contenedor padre.
  */
 export type AcpDataGridScrollHeight = 'flex' | (string & {});
+
+/** How rows are grouped. `'subheader'` inserts a header row before each group. */
+export type AcpDataGridRowGroupMode = 'subheader';
+
+/** A group of rows that share the same `groupRowsBy` value. */
+export interface AcpDataGridRowGroup<T = any> {
+  /** The value returned by `groupRowsBy` for the rows of the group. */
+  key: unknown;
+  /** All rows of the group, including those on other pages. */
+  rows: T[];
+  /** Whether the rows of the group are shown. */
+  expanded: boolean;
+}
+
+/** Context of the `rowGroupHeaderTemplate`. */
+export interface AcpDataGridRowGroupContext<T = any> {
+  $implicit: AcpDataGridRowGroup<T>;
+  group: AcpDataGridRowGroup<T>;
+  key: unknown;
+  rows: T[];
+  count: number;
+  expanded: boolean;
+}
 
 /**
  * Represents the default options for the grid that can be configured

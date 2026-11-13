@@ -43,6 +43,13 @@ export const COMPONENTS_MENU: ComponentCategory[] = [
       'Comprehensive date range picker with predefined options and human-readable expressions.',
     category: 'Form Controls',
   },
+  {
+    id: 'vanilla-date-range-picker',
+    name: 'Vanilla Date Range Picker',
+    summary:
+      'Date range picker wrapper around the vanilla JS library with dual calendars, time picker, and predefined ranges.',
+    category: 'Form Controls',
+  },
 
   // Buttons & Indicators
   {

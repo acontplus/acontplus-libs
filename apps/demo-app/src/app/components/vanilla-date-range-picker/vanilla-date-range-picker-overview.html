@@ -1,0 +1,11 @@
+<app-doc-heading>Vanilla Date Range Picker</app-doc-heading>
+
+<p>
+  Un componente de selección de rango de fechas con la misma UI y funcionalidad del picker vanilla
+  original: calendarios duales, rangos predefinidos, time picker y botones aplicar/cancelar.
+</p>
+
+@if (route.data | async; as data) { @for (exampleData of data["examples"]; track exampleData) {
+<app-doc-heading [text]="exampleData.title"></app-doc-heading>
+<app-example-viewer [exampleData]="exampleData"></app-example-viewer>
+} }

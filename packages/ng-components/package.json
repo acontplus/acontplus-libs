@@ -11,6 +11,7 @@
     "@angular/material": "^22.1.0",
     "@angular/platform-browser": "^22.1.0",
     "@angular/router": "^22.1.0",
+    "moment": "^2.29.0",
     "tabulator-tables": "^6.5.2"
   },
   "sideEffects": true,

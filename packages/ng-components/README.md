@@ -690,6 +690,64 @@ function getStatusStyle(status: string) {
 }
 ```
 
+### AcpVanillaDateRangePicker
+
+Picker de rango de fechas basado en la librería vanilla original. Mantiene la misma UI y funcionalidad: calendarios duales, rangos predefinidos, time picker y botones aplicar/cancelar.
+
+**Los scripts JS y estilos se cargan automáticamente** al usar el componente. No necesitas copiar archivos ni agregar script tags manualmente.
+
+#### Uso
+
+```typescript
+import { AcpVanillaDateRangePicker } from '@acontplus/ng-components';
+
+@Component({
+  standalone: true,
+  imports: [AcpVanillaDateRangePicker],
+  // ...
+})
+export class MiComponente {
+  from: string | null = null;
+  to: string | null = null;
+
+  onDateRangeChanged(range: { from: string; to: string }) {
+    this.from = range.from;
+    this.to = range.to;
+  }
+}
+```
+
+```html
+<!-- Uso básico -->
+<acp-vanilla-date-range-picker
+  label="Selecciona un rango"
+  [from]="from"
+  [to]="to"
+  [options]="{ timePicker: false, format: 'YYYY-MM-DD' }"
+  (dateRangeChange)="onDateRangeChanged($event)"
+/>
+
+<!-- Con time picker -->
+<acp-vanilla-date-range-picker
+  [options]="{ timePicker: true, format: 'YYYY-MM-DD HH:mm:ss' }"
+  (dateRangeChange)="onDateRangeChanged($event)"
+/>
+
+<!-- Con checkbox -->
+<acp-vanilla-date-range-picker
+  [showMatPrefix]="true"
+  [(checkbox)]="isRequired"
+  (checkboxToggled)="onCheckboxToggled()"
+  (dateRangeChange)="onDateRangeChanged($event)"
+/>
+```
+
+- Inputs: `from`, `to` (strings), `options` (`{ timePicker: boolean, format: string }`),
+  `label`, `showMatPrefix`, `showMatSuffix`, `checkbox`, `requiredDate`.
+- Outputs: `dateRangeChange` emite `{ from: string, to: string }`,
+  `checkboxToggled`, `valueChangeRequiredDate`.
+- Los rangos predefinidos incluyen: Hoy, Ayer, Últimos 5/10/15/30 días, Esta semana, Este mes, El mes pasado.
+
 ## Peer Dependencies
 
 - `@angular/cdk`: ^22.1.0

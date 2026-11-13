@@ -26,6 +26,11 @@ export const routes = [
         path: 'date-range-input',
         loadChildren: () => import('./date-range-input/date-range-input').then(m => m.routes),
       },
+      {
+        path: 'vanilla-date-range-picker',
+        loadChildren: () =>
+          import('./vanilla-date-range-picker/vanilla-date-range-picker').then(m => m.routes),
+      },
 
       // Buttons & Indicators
       {

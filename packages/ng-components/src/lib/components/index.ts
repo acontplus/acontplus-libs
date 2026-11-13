@@ -14,6 +14,7 @@ export * from './grid';
 export * from './drawer';
 export * from './popover';
 export * from './date-range-input';
+export * from './vanilla-date-range-picker';
 export * from './checkbox-group';
 export * from './card';
 export * from './kpi-card';

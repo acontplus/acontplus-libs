@@ -154,6 +154,7 @@ export const DATA_GRID_DEFAULT_OPTIONS = new InjectionToken<AcpDataGridDefaultOp
     '[attr.tabindex]': 'keyboardNavigation() ? 0 : null',
     '[style.--acp-grid-scroll-height]': '_scrollMaxHeight()',
     '[class.acp-grid-scroll-flex]': 'scrollHeight() === "flex"',
+    '[class.acp-grid-gridlines]': 'showGridlines',
   },
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -177,6 +178,7 @@ export class DataGrid implements AfterViewInit, OnChanges {
   private readonly _columnsByField = new Map<string, AcpDataGridColumn>();
   private readonly _resizedColumnWidths = new Map<string, number>();
   private readonly _groupClassByField = new Map<string, string>();
+  private readonly _groupColorByField = new Map<string, string>();
   /** @internal First emitted value of each tracked `Observable` group key, by instance. */
   private readonly _groupKeyValues = new Map<Observable<string>, string>();
   private readonly _trackedGroupKeyObservables = new Set<Observable<string>>();
@@ -318,6 +320,9 @@ export class DataGrid implements AfterViewInit, OnChanges {
   /** Whether to use the row striped style. */
   @Input({ transform: booleanAttribute })
   rowStriped = this._defaultOptions?.rowStriped ?? false;
+  /** Muestra bordes verticales entre todas las celdas. Color: `--acp-grid-gridline-color`. */
+  @Input({ transform: booleanAttribute })
+  showGridlines = this._defaultOptions?.showGridlines ?? false;
   /** Event emitted when the user clicks the row. */
   rowClick = output<any>();
   /** Event emitted when the user attempts to open a context menu. */
@@ -749,6 +754,11 @@ export class DataGrid implements AfterViewInit, OnChanges {
   }
 
   /** CSS class(es) of the column group the column belongs to, if any. */
+  /** @internal Color of the innermost colored group of the column (`groupColor`). */
+  _groupColorFor(field: string | undefined): string | null {
+    return (field && this._groupColorByField.get(field)) || null;
+  }
+
   _groupClassFor(col: AcpDataGridColumn): string | undefined {
     return this._groupClassByField.get(col.field);
   }
@@ -786,6 +796,7 @@ export class DataGrid implements AfterViewInit, OnChanges {
   private _updateGroupHeaderCells(): void {
     this._columnsByField.clear();
     this._groupClassByField.clear();
+    this._groupColorByField.clear();
     this.columns.forEach(col => this._columnsByField.set(col.field, col));
 
     const displayed = this.displayedColumns;
@@ -882,6 +893,18 @@ export class DataGrid implements AfterViewInit, OnChanges {
           }
         });
         const className = cellClasses.length ? cellClasses.join(' ') : undefined;
+        // First member color for this level; inner levels overwrite outer ones on the cells.
+        let color: string | undefined;
+        for (const member of members) {
+          const groupColor = member.groupColor;
+          color = typeof groupColor === 'function' ? groupColor(header, members) : groupColor;
+          if (color) {
+            break;
+          }
+        }
+        if (color) {
+          members.forEach(member => this._groupColorByField.set(member.field, color));
+        }
 
         const id = `__acpGridGroup_${level}_${field}`;
         cells.push({
@@ -890,6 +913,7 @@ export class DataGrid implements AfterViewInit, OnChanges {
           isGroup: true,
           header,
           className,
+          color,
           pinned: uniformPin ? pinned : null,
         });
         columnIds.push(id);
@@ -1764,6 +1788,7 @@ interface AcpDataGridGroupHeaderCell {
   rowspan?: number;
   header?: string | Observable<string>;
   className?: string;
+  color?: string;
   pinned: AcpDataGridColumnPinValue;
 }
 

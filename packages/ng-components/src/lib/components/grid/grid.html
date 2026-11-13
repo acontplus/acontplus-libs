@@ -168,6 +168,8 @@
             *matHeaderCellDef
             [class]="col | colClass"
             [ngClass]="_groupClassFor(col)"
+            [style.--acp-grid-group-color]="_groupColorFor(col.field)"
+            [class.acp-grid-group-colored]="!!_groupColorFor(col.field)"
             [class.acp-grid-header-cell-spanned]="_spannedHeaderFields.has(col.field)"
             [class.mat-table-sticky-left]="col.pinned === 'left'"
             [class.mat-table-sticky-right]="col.pinned === 'right'"
@@ -195,6 +197,8 @@
                       : $safeNavigationMigration(rowChangeRecord?.currentValue)
                 "
             [ngClass]="_groupClassFor(col)"
+            [style.--acp-grid-group-color]="_groupColorFor(col.field)"
+            [class.acp-grid-group-colored]="!!_groupColorFor(col.field)"
             [class.mat-table-sticky-left]="col.pinned === 'left'"
             [class.mat-table-sticky-right]="col.pinned === 'right'"
             [class.acp-grid-cell-editing]="_isCellEditing(row, col.field)"
@@ -220,6 +224,8 @@
             mat-footer-cell
             *matFooterCellDef
             [ngClass]="_groupClassFor(col)"
+            [style.--acp-grid-group-color]="_groupColorFor(col.field)"
+            [class.acp-grid-group-colored]="!!_groupColorFor(col.field)"
             [attr.colspan]="_summarySpan(col.field) || null"
             [class.acp-grid-summary-cell-covered]="_summarySpan(col.field) === 0"
             [class.mat-table-sticky-left]="col.pinned === 'left'"
@@ -254,6 +260,8 @@
             [class]="col | colClass"
             class="acp-grid-header-span-cell"
             [ngClass]="_groupClassFor(col)"
+            [style.--acp-grid-group-color]="_groupColorFor(col.field)"
+            [class.acp-grid-group-colored]="!!_groupColorFor(col.field)"
             [attr.rowspan]="gc.rowspan"
             [class.mat-table-sticky-left]="col.pinned === 'left'"
             [class.mat-table-sticky-right]="col.pinned === 'right'"
@@ -290,6 +298,8 @@
             *matHeaderCellDef
             class="acp-grid-header-group-cell"
             [ngClass]="gc.className"
+            [style.--acp-grid-group-color]="gc.color ?? null"
+            [class.acp-grid-group-colored]="!!gc.color"
             [attr.colspan]="gc.colspan"
           >
             @if (gc.isGroup) {
@@ -357,6 +367,8 @@
             mat-cell
             *matCellDef="let item"
             class="acp-grid-row-group-footer-cell"
+            [style.--acp-grid-group-color]="_groupColorFor(colId)"
+            [class.acp-grid-group-colored]="!!_groupColorFor(colId)"
             [attr.colspan]="_summarySpan(colId) || null"
             [class.acp-grid-summary-cell-covered]="_summarySpan(colId) === 0"
             [class.acp-grid-checkbox-cell]="colId === 'acpGridCheckboxColumnDef'"
@@ -471,6 +483,8 @@
             *matHeaderCellDef
             [class]="col | colClass"
             [ngClass]="_groupClassFor(col)"
+            [style.--acp-grid-group-color]="_groupColorFor(col.field)"
+            [class.acp-grid-group-colored]="!!_groupColorFor(col.field)"
             [class.mat-table-sticky-left]="col.pinned === 'left'"
             [class.mat-table-sticky-right]="col.pinned === 'right'"
             [style.width]="col.width"
@@ -535,6 +549,8 @@
                       : $safeNavigationMigration(rowChangeRecord?.currentValue)
                 "
             [ngClass]="_groupClassFor(col)"
+            [style.--acp-grid-group-color]="_groupColorFor(col.field)"
+            [class.acp-grid-group-colored]="!!_groupColorFor(col.field)"
             [class.mat-table-sticky-left]="col.pinned === 'left'"
             [class.mat-table-sticky-right]="col.pinned === 'right'"
             [class.acp-grid-cell-editing]="_isCellEditing(row, col.field)"
@@ -559,6 +575,8 @@
             mat-footer-cell
             *matFooterCellDef
             [ngClass]="_groupClassFor(col)"
+            [style.--acp-grid-group-color]="_groupColorFor(col.field)"
+            [class.acp-grid-group-colored]="!!_groupColorFor(col.field)"
             [attr.colspan]="_summarySpan(col.field) || null"
             [class.acp-grid-summary-cell-covered]="_summarySpan(col.field) === 0"
             [class.mat-table-sticky-left]="col.pinned === 'left'"
@@ -590,6 +608,8 @@
             *matHeaderCellDef
             class="acp-grid-header-group-cell"
             [ngClass]="gc.className"
+            [style.--acp-grid-group-color]="gc.color ?? null"
+            [class.acp-grid-group-colored]="!!gc.color"
             [attr.colspan]="gc.colspan"
           >
             @if (gc.isGroup) {
@@ -657,6 +677,8 @@
             mat-cell
             *matCellDef="let item"
             class="acp-grid-row-group-footer-cell"
+            [style.--acp-grid-group-color]="_groupColorFor(colId)"
+            [class.acp-grid-group-colored]="!!_groupColorFor(colId)"
             [attr.colspan]="_summarySpan(colId) || null"
             [class.acp-grid-summary-cell-covered]="_summarySpan(colId) === 0"
             [class.acp-grid-checkbox-cell]="colId === 'acpGridCheckboxColumnDef'"

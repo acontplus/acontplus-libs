@@ -462,6 +462,12 @@ export class DataGridApi {
       default: "'medium'",
     },
     {
+      name: 'showGridlines',
+      type: 'boolean',
+      description: 'Vertical borders between cells; color via --acp-grid-gridline-color',
+      default: 'false',
+    },
+    {
       name: 'scrollHeight',
       type: "string | 'flex' | null",
       description:
@@ -563,6 +569,12 @@ export class DataGridApi {
       type: 'string | ((values: any[], column: AcpDataGridColumn<T>, rows: T[]) => any)',
       description:
         'Footer value: fixed text, or computed from the column values or the summarized rows',
+    },
+    {
+      name: 'groupColor',
+      type: 'string | ((group, columns) => string | undefined)',
+      description:
+        'CSS color of the column group: header accent and a light tint over its columns (no ::ng-deep)',
     },
     {
       name: 'summaryColspan',

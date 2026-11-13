@@ -466,6 +466,17 @@ columns: AcpDataGridColumn<Row>[] = [
 - `mergeRows` is ignored when the grid is `expandable`, since detail rows would split the cells.
 - Clicking a merged cell acts on its first row; consider leaving `rowStriped` off.
 
+#### Gridlines
+
+`showGridlines` adds vertical borders between all cells (header, body, footer and
+group rows), like PrimeNG's `showGridlines`. Enable it for every grid with
+`DATA_GRID_DEFAULT_OPTIONS: { showGridlines: true }` and change the color with
+`--acp-grid-gridline-color`.
+
+```html
+<acp-data-grid [data]="data" [columns]="columns" showGridlines />
+```
+
 #### Row Selection Formatting
 
 ```typescript
@@ -522,7 +533,23 @@ Each level of `group` accepts:
 
 Strings are compared by value; `Observable`s are compared by instance.
 
-`groupClass` accepts a CSS class string or a formatter
+`groupColor` colors a group without `::ng-deep` or global CSS: it takes any CSS
+color (`'var(--mat-sys-tertiary)'`, `'#1976d2'`) or a function
+`(group, memberColumns) => color`. The group header gets a top border in that
+color and the member columns' header, data and footer cells a light tint
+(`--acp-grid-group-tint`, 10% by default). With nested groups each header uses
+its own level's color and the cells use the innermost one.
+
+```typescript
+const colors: Record<string, string> = {
+  Entradas: 'var(--mat-sys-tertiary)',
+  Salidas: 'var(--mat-sys-error)',
+};
+{ field: 'in', header: 'Qty', group: ['Kardex', 'Entradas'],
+  groupColor: g => (typeof g === 'string' ? colors[g] : undefined) },
+```
+
+For full control, `groupClass` accepts a CSS class string or a formatter
 `(group, memberColumns) => class`. The resolved classes are applied to each
 group header cell and propagated to every member column's header and data
 cells, so the whole column block can be styled (e.g. color entradas/salidas in

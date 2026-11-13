@@ -254,6 +254,23 @@ $fallbacks: m3-grid.get-tokens();
     display: none;
   }
 
+  // `groupColor`: a light tint over the cells of the group and an accent on its header. The
+  // tint is a background image so sticky cells keep their opaque background underneath and
+  // row hover/selection colors still show through on regular cells.
+  .mat-mdc-table
+    :is(.mat-mdc-header-cell, .mat-mdc-cell, .mat-mdc-footer-cell).acp-grid-group-colored {
+    $tint: color-mix(
+      in srgb,
+      var(--acp-grid-group-color) var(--acp-grid-group-tint, 10%),
+      transparent
+    );
+    background-image: linear-gradient($tint, $tint);
+  }
+
+  .mat-mdc-table .acp-grid-header-group-cell.acp-grid-group-colored {
+    border-top: 2px solid var(--acp-grid-group-color);
+  }
+
   .acp-grid-header-group-label {
     font-weight: 600;
   }
@@ -280,6 +297,14 @@ $fallbacks: m3-grid.get-tokens();
   flex: 1 1 auto;
   height: 100%;
   min-height: 0;
+}
+
+// `showGridlines`: vertical rules between cells (PrimeNG's `showGridlines`).
+.acp-grid.acp-grid-gridlines
+  .mat-mdc-table
+  :is(.mat-mdc-header-cell, .mat-mdc-cell, .mat-mdc-footer-cell):not(:last-child) {
+  border-inline-end: 1px solid
+    var(--acp-grid-gridline-color, var(--mat-table-row-item-outline-color));
 }
 
 .acp-grid-progress {

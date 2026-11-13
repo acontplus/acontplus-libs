@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { PageEvent } from '@angular/material/paginator';
@@ -82,6 +83,7 @@ interface PivotRow {
     MatChipsModule,
     MatIconModule,
     MatButtonToggleModule,
+    MatSlideToggleModule,
     MatFormFieldModule,
     MatInputModule,
     AcpGridNavigationFor,
@@ -109,8 +111,9 @@ interface PivotRow {
         Consecutive columns that share the same <code>group</code> path are merged under group
         headers, one row per level. Each level accepts a string, an
         <code>Observable&lt;string&gt;</code> or a function <code>(data) =&gt; label</code> for
-        dynamic titles. <code>groupClass</code> styles each group header and propagates to its
-        member columns' headers and cells.
+        dynamic titles. <code>groupColor</code> colors each group (header accent and a light tint
+        over its columns) without <code>::ng-deep</code>; <code>groupClass</code> remains for full
+        control. <code>showGridlines</code> adds vertical borders.
       </p>
       <mat-card class="example-card">
         <mat-card-content>
@@ -124,11 +127,18 @@ interface PivotRow {
               <mat-button-toggle [value]="option">{{ option }}</mat-button-toggle>
             }
           </mat-button-toggle-group>
+          <mat-slide-toggle
+            class="gridlines-toggle"
+            [checked]="kardexGridlines()"
+            (change)="kardexGridlines.set($event.checked)"
+            >showGridlines</mat-slide-toggle
+          >
           <acp-data-grid
             [data]="kardexData"
             [columns]="kardexColumns"
             [size]="gridSize()"
             [showSummary]="true"
+            [showGridlines]="kardexGridlines()"
           />
         </mat-card-content>
       </mat-card>
@@ -651,6 +661,10 @@ interface PivotRow {
         --acp-grid-scroll-height: 240px;
       }
 
+      .gridlines-toggle {
+        margin: 0 0 12px 16px;
+      }
+
       .size-toggle {
         margin-bottom: 1rem;
       }
@@ -699,72 +713,6 @@ interface PivotRow {
       }
       ::ng-deep .row-failed {
         background-color: var(--mat-sys-error-container);
-      }
-
-      ::ng-deep
-        .mat-mdc-table
-        :is(.mat-mdc-header-cell, .mat-mdc-cell, .mat-mdc-footer-cell).kardex-group-matriz {
-        background-color: color-mix(in srgb, var(--mat-sys-primary) 6%, transparent);
-      }
-      ::ng-deep
-        .mat-mdc-table
-        :is(.mat-mdc-header-cell, .mat-mdc-cell, .mat-mdc-footer-cell).kardex-group-entradas {
-        background-color: color-mix(in srgb, var(--mat-sys-tertiary) 10%, transparent);
-      }
-      ::ng-deep
-        .mat-mdc-table
-        :is(.mat-mdc-header-cell, .mat-mdc-cell, .mat-mdc-footer-cell).kardex-group-salidas {
-        background-color: color-mix(in srgb, var(--mat-sys-error) 10%, transparent);
-      }
-      ::ng-deep
-        .mat-mdc-table
-        :is(.mat-mdc-header-cell, .mat-mdc-cell, .mat-mdc-footer-cell).kardex-group-saldo {
-        background-color: color-mix(in srgb, var(--mat-sys-primary) 10%, transparent);
-      }
-      ::ng-deep .mat-mdc-table .acp-grid-header-group-cell.kardex-group-matriz {
-        border-top: 2px solid var(--mat-sys-primary);
-      }
-      ::ng-deep .mat-mdc-table .acp-grid-header-group-cell.kardex-group-entradas {
-        border-top: 2px solid var(--mat-sys-tertiary);
-      }
-      ::ng-deep .mat-mdc-table .acp-grid-header-group-cell.kardex-group-salidas {
-        border-top: 2px solid var(--mat-sys-error);
-      }
-      ::ng-deep .mat-mdc-table .acp-grid-header-group-cell.kardex-group-saldo {
-        border-top: 2px solid var(--mat-sys-primary);
-      }
-
-      ::ng-deep
-        .mat-mdc-table
-        :is(.mat-mdc-header-cell, .mat-mdc-cell, .mat-mdc-footer-cell).pivot-group-ecuador {
-        background-color: color-mix(in srgb, var(--mat-sys-primary) 6%, transparent);
-      }
-      ::ng-deep
-        .mat-mdc-table
-        :is(.mat-mdc-header-cell, .mat-mdc-cell, .mat-mdc-footer-cell).pivot-group-peru {
-        background-color: color-mix(in srgb, var(--mat-sys-secondary) 8%, transparent);
-      }
-      ::ng-deep
-        .mat-mdc-table
-        :is(.mat-mdc-header-cell, .mat-mdc-cell, .mat-mdc-footer-cell).pivot-group-bodega-norte {
-        background-color: color-mix(in srgb, var(--mat-sys-tertiary) 10%, transparent);
-      }
-      ::ng-deep
-        .mat-mdc-table
-        :is(.mat-mdc-header-cell, .mat-mdc-cell, .mat-mdc-footer-cell).pivot-group-bodega-sur {
-        background-color: color-mix(in srgb, var(--mat-sys-error) 8%, transparent);
-      }
-      ::ng-deep .mat-mdc-table .acp-grid-header-group-cell.pivot-group-ecuador {
-        border-top: 2px solid var(--mat-sys-primary);
-      }
-      ::ng-deep .mat-mdc-table .acp-grid-header-group-cell.pivot-group-peru {
-        border-top: 2px solid var(--mat-sys-secondary);
-      }
-      ::ng-deep .mat-mdc-table .acp-grid-header-group-cell.pivot-group-bodega-norte {
-        border-top: 2px solid var(--mat-sys-tertiary);
-      }
-      ::ng-deep .mat-mdc-table .acp-grid-header-group-cell.pivot-group-bodega-sur {
-        border-top: 2px solid var(--mat-sys-error);
       }
 
       ::ng-deep .mat-mdc-table .success {
@@ -1019,9 +967,15 @@ export class DataGridExamples {
     },
   ];
 
-  private readonly kardexGroupClass = (group: string | Observable<string>): string | undefined =>
+  // groupColor: any CSS color. The first level (establishment) is dynamic, so it falls back to
+  // the primary color.
+  private readonly kardexGroupColor = (group: string | Observable<string>): string | undefined =>
     typeof group === 'string'
-      ? `kardex-group-${group.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`
+      ? ({
+          Entradas: 'var(--mat-sys-tertiary)',
+          Salidas: 'var(--mat-sys-error)',
+          Saldo: 'var(--mat-sys-secondary)',
+        }[group] ?? 'var(--mat-sys-primary)')
       : undefined;
 
   // Groups by `establecimientoId` but displays `establecimiento` in the header.
@@ -1033,6 +987,7 @@ export class DataGridExamples {
   private readonly kardexTotal = (data: any[]): number =>
     data.reduce((acc, value) => acc + (Number(value) || 0), 0);
 
+  kardexGridlines = signal(true);
   kardexColumns: DataGridColumn<KardexRow>[] = [
     { field: 'descripcion', header: 'Descripción', summary: 'Total', summaryColspan: 2 },
     { field: 'codigo', header: 'Código', width: '100px' },
@@ -1041,7 +996,7 @@ export class DataGridExamples {
       header: 'Cantidad',
       type: 'number',
       group: [this.kardexEstablecimiento, 'Entradas'],
-      groupClass: group => (group === 'Matriz' ? 'kardex-group-matriz' : 'bg-primary'),
+      groupColor: this.kardexGroupColor,
       summary: this.kardexTotal,
     },
     {
@@ -1049,7 +1004,7 @@ export class DataGridExamples {
       header: 'Precio',
       type: 'currency',
       group: [this.kardexEstablecimiento, 'Entradas'],
-      groupClass: group => (group === 'Matriz' ? 'kardex-group-matriz' : 'bg-primary'),
+      groupColor: this.kardexGroupColor,
       summary: this.kardexTotal,
       width: '120px',
     },
@@ -1058,7 +1013,7 @@ export class DataGridExamples {
       header: 'Cantidad',
       type: 'number',
       group: [this.kardexEstablecimiento, 'Salidas'],
-      groupClass: this.kardexGroupClass,
+      groupColor: this.kardexGroupColor,
       summary: this.kardexTotal,
     },
     {
@@ -1066,7 +1021,7 @@ export class DataGridExamples {
       header: 'Precio',
       type: 'currency',
       group: [this.kardexEstablecimiento, 'Salidas'],
-      groupClass: this.kardexGroupClass,
+      groupColor: this.kardexGroupColor,
       summary: this.kardexTotal,
       width: '120px',
     },
@@ -1075,7 +1030,7 @@ export class DataGridExamples {
       header: 'Cantidad',
       type: 'number',
       group: [this.kardexEstablecimiento, 'Saldo'],
-      groupClass: this.kardexGroupClass,
+      groupColor: this.kardexGroupColor,
       summary: this.kardexTotal,
     },
   ];
@@ -1117,13 +1072,14 @@ export class DataGridExamples {
     { id: 'WH02', nombre: 'Bodega Sur' },
   ];
 
-  private readonly pivotGroupClass = (group: string | Observable<string>): string | undefined =>
+  private readonly pivotGroupColor = (group: string | Observable<string>): string | undefined =>
     typeof group === 'string'
-      ? `pivot-group-${group
-          .toLowerCase()
-          .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, '')
-          .replace(/[^a-z0-9]+/g, '-')}`
+      ? {
+          Ecuador: 'var(--mat-sys-primary)',
+          Perú: 'var(--mat-sys-secondary)',
+          'Bodega Norte': 'var(--mat-sys-tertiary)',
+          'Bodega Sur': 'var(--mat-sys-error)',
+        }[group]
       : undefined;
 
   pivotColumns: DataGridColumn<PivotRow>[] = [
@@ -1138,7 +1094,7 @@ export class DataGridExamples {
           { key: nation.id, label: nation.nombre },
           { key: warehouse.id, label: warehouse.nombre },
         ],
-        groupClass: this.pivotGroupClass,
+        groupColor: this.pivotGroupColor,
       })),
     ),
   ];
@@ -1321,12 +1277,14 @@ columns: DataGridColumn[] = [
   columnGroupsCode = `// Column Groups (Kardex, nested): \`group\` accepts a single level or an
 // array of levels — one header row is rendered per level. Each level can be a
 // string, an Observable<string>, or (data) => string | Observable<string> for
-// dynamic titles taken from the rows. \`groupClass\` accepts a class string or a
-// formatter (group, memberColumns) => class and is applied to the group header
-// plus every member column's header and data cells.
-const kardexGroupClass = (group: string | Observable<string>) =>
+// dynamic titles taken from the rows. \`groupColor\` takes any CSS color (or a
+// function of the group value): the group header gets an accent border and the
+// member columns a light tint, with no ::ng-deep. \`groupClass\` remains
+// available for full control.
+const kardexGroupColor = (group: string | Observable<string>) =>
   typeof group === 'string'
-    ? \`kardex-group-\${group.toLowerCase().replace(/[^a-z0-9]+/g, '-')}\`
+    ? ({ Entradas: 'var(--mat-sys-tertiary)', Salidas: 'var(--mat-sys-error)',
+        Saldo: 'var(--mat-sys-secondary)' }[group] ?? 'var(--mat-sys-primary)')
     : undefined;
 
 // Dynamic first level: group by establecimientoId but show establecimiento.
@@ -1343,28 +1301,26 @@ columns: DataGridColumn<KardexRow>[] = [
   { field: 'descripcion', header: 'Descripción', summary: 'Total', summaryColspan: 2 },
   { field: 'codigo', header: 'Código', width: '100px' },
   { field: 'entradasCantidad', header: 'Cantidad', type: 'number',
-    group: [establecimiento, 'Entradas'], groupClass: kardexGroupClass, summary: kardexTotal },
+    group: [establecimiento, 'Entradas'], groupColor: kardexGroupColor, summary: kardexTotal },
   { field: 'entradasPrecio', header: 'Precio', type: 'currency',
-    group: [establecimiento, 'Entradas'], groupClass: kardexGroupClass },
+    group: [establecimiento, 'Entradas'], groupColor: kardexGroupColor },
   { field: 'salidasCantidad', header: 'Cantidad', type: 'number',
-    group: [establecimiento, 'Salidas'], groupClass: kardexGroupClass },
+    group: [establecimiento, 'Salidas'], groupColor: kardexGroupColor },
   { field: 'salidasPrecio', header: 'Precio', type: 'currency',
-    group: [establecimiento, 'Salidas'], groupClass: kardexGroupClass },
+    group: [establecimiento, 'Salidas'], groupColor: kardexGroupColor },
   { field: 'saldoCantidad', header: 'Cantidad', type: 'number',
-    group: [establecimiento, 'Saldo'], groupClass: kardexGroupClass },
+    group: [establecimiento, 'Saldo'], groupColor: kardexGroupColor },
 ];
 
-<acp-data-grid [data]="kardexData" [columns]="columns" />`;
+<acp-data-grid [data]="kardexData" [columns]="columns" [showSummary]="true" showGridlines />`;
 
   pivotGroupsCode = `// Column Groups (dynamic pivot): columns are generated per
 // country/warehouse. Each level uses a { key, label } descriptor — columns merge
 // by key (nationalId / warehouseId) while the header shows label (the name).
-const pivotGroupClass = (group: string | Observable<string>) =>
-  typeof group === 'string'
-    ? \`pivot-group-\${group.toLowerCase().normalize('NFD')
-        .replace(/[\\u0300-\\u036f]/g, '')
-        .replace(/[^a-z0-9]+/g, '-')}\`
-    : undefined;
+const groupColors: Record<string, string> = {
+  Ecuador: 'var(--mat-sys-primary)', Perú: 'var(--mat-sys-secondary)',
+  'Bodega Norte': 'var(--mat-sys-tertiary)', 'Bodega Sur': 'var(--mat-sys-error)',
+};
 
 const nations = [
   { id: 'EC', nombre: 'Ecuador' },
@@ -1387,7 +1343,7 @@ columns: DataGridColumn<PivotRow>[] = [
         { key: nation.id, label: nation.nombre },   // nationalId -> nombre
         { key: warehouse.id, label: warehouse.nombre }, // warehouseId -> warehouseName
       ],
-      groupClass: pivotGroupClass,
+      groupColor: group => (typeof group === 'string' ? groupColors[group] : undefined),
     })),
   ),
 ];

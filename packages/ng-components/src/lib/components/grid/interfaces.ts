@@ -102,6 +102,17 @@ export interface AcpDataGridColumn<T = any> {
    * column's header and data cells, so the whole column block can be styled
    * (e.g. entradas/salidas in a kardex).
    */
+  /**
+   * Color of the column group, as any CSS color (`'var(--mat-sys-tertiary)'`, `'#1976d2'`), or
+   * a function that receives the group value of each level and the member columns. The group
+   * header cell gets a top border in that color, and the header, data and footer cells of the
+   * member columns get a light tint of it (`--acp-grid-group-tint`, 10% by default). With nested
+   * groups each header uses its own level's color and the cells use the innermost color.
+   * No `::ng-deep` or global CSS is needed. For full control use `groupClass`.
+   */
+  groupColor?:
+    | string
+    | ((group: string | Observable<string>, columns: AcpDataGridColumn[]) => string | undefined);
   groupClass?:
     | string
     | ((group: string | Observable<string>, columns: AcpDataGridColumn[]) => string | undefined);
@@ -317,6 +328,8 @@ export interface AcpDataGridDefaultOptions {
   columnMenuFooterText?: string;
 
   noResultText?: string;
+
+  showGridlines?: boolean;
 
   scrollHeight?: AcpDataGridScrollHeight | null;
 }

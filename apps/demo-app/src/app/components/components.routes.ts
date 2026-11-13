@@ -15,6 +15,10 @@ export const routes = [
         loadChildren: () => import('./input-chip/input-chip.routes').then(m => m.routes),
       },
       {
+        path: 'file-upload',
+        loadChildren: () => import('./file-upload/file-upload.routes').then(m => m.routes),
+      },
+      {
         path: 'search-select',
         loadChildren: () => import('./search-select/search-select.routes').then(m => m.routes),
       },

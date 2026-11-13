@@ -614,7 +614,7 @@ export class DataGridExamples {
     { separator: true },
     { id: 'delete', label: 'Delete', icon: 'delete', danger: true },
   ];
-  sizeOptions: DataGridSize[] = ['small', 'medium', 'large'];
+  sizeOptions: DataGridSize[] = ['xs-small', 'small', 'medium', 'large'];
 
   // Pagination signals
   currentPageIndex = signal(0);
@@ -1196,7 +1196,7 @@ rowClassFormatter = {
   toolbarTitle="Products"
 />`;
 
-  sizeCode = `<!-- size: 'small' | 'medium' (default) | 'large' -->
+  sizeCode = `<!-- size: 'xs-small' | 'small' | 'medium' (default) | 'large' -->
 <acp-data-grid
   [data]="data"
   [columns]="columns"

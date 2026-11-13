@@ -181,7 +181,7 @@ export type DataGridRowClassFormatter<T = any> = Record<
 
 export type DataGridButtonType = MatButtonAppearance | 'icon';
 
-export type DataGridSize = 'small' | 'medium' | 'large';
+export type DataGridSize = 'xs-small' | 'small' | 'medium' | 'large';
 
 /**
  * Represents the default options for the grid that can be configured

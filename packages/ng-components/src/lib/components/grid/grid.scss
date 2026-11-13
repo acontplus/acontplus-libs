@@ -297,6 +297,37 @@ $fallbacks: m3-grid.get-tokens();
   }
 }
 
+.acp-grid-size-xs-small {
+  --acp-grid-header-group-height: 20px;
+  --mat-table-header-container-height: 32px;
+  --mat-table-row-item-container-height: 28px;
+  --mat-table-footer-container-height: 28px;
+  --mat-table-header-headline-size: 0.75rem;
+  --mat-table-row-item-label-text-size: 0.75rem;
+  --mat-table-footer-supporting-text-size: 0.75rem;
+  --mat-icon-button-state-layer-size: 24px;
+  --mat-checkbox-state-layer-size: 24px;
+  --mat-paginator-container-size: 36px;
+  --mat-paginator-page-size-select-width: 64px;
+  --mat-paginator-form-field-container-height: 28px;
+  --mat-paginator-form-field-container-vertical-padding: 2px;
+  --mat-button-outlined-container-height: 24px;
+  --mat-button-filled-container-height: 24px;
+  --mat-button-protected-container-height: 24px;
+  --mat-button-text-container-height: 24px;
+  --mat-button-tonal-container-height: 24px;
+
+  :is(.mat-mdc-header-cell, .mat-mdc-footer-cell, .mat-mdc-cell):not(.acp-grid-checkbox-cell) {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  .acp-grid-toolbar,
+  .acp-grid-statusbar {
+    padding: 2px;
+  }
+}
+
 .acp-grid-size-small {
   --acp-grid-header-group-height: 24px;
   --mat-table-header-container-height: 40px;

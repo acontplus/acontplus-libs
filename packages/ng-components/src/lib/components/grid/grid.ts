@@ -130,6 +130,7 @@ export const DATA_GRID_DEFAULT_OPTIONS = new InjectionToken<DataGridDefaultOptio
   host: {
     class: 'acp-grid',
     '[class.acp-grid-animations-enabled]': '!_animationsDisabled',
+    '[class.acp-grid-size-xs-small]': '_size() === "xs-small"',
     '[class.acp-grid-size-small]': '_size() === "small"',
     '[class.acp-grid-size-medium]': '_size() === "medium"',
     '[class.acp-grid-size-large]': '_size() === "large"',

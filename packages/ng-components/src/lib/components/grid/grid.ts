@@ -87,8 +87,10 @@ import { AcpGridColClassPipe, AcpGridRowClassPipe } from './data-grid.pipes';
 import {
   buildRowGroupView,
   collectRowGroups,
+  computeRowSpans,
   groupRowsContiguous,
   isRowGroupItem,
+  RowSpanColumn,
   RowGroupItemCache,
 } from './grid-row-group';
 import { _animationsDisabled, ThemePalette } from '@angular/material/core';
@@ -379,6 +381,13 @@ export class DataGrid implements AfterViewInit, OnChanges {
   /** @internal Rows rendered by the table when row grouping is active. */
   _rowGroupItems$: Observable<unknown[]> | null = null;
   private _visibleRows: unknown[] | null = null;
+  /** Last items rendered with row groups (headers, rows and footers). */
+  private _renderedRowGroupItems: unknown[] | null = null;
+  private _rowSpanCache: {
+    source: unknown[];
+    columns: string[];
+    spans: Map<unknown, Map<string, number>>;
+  } | null = null;
   private readonly _visibleRowIndex = new Map<unknown, number>();
   private readonly _rowGroupRefresh$ = new BehaviorSubject<void>(undefined);
   private _rowGroupContexts = new WeakMap<AcpDataGridRowGroup, AcpDataGridRowGroupContext>();
@@ -1159,9 +1168,60 @@ export class DataGrid implements AfterViewInit, OnChanges {
 
   // ===== Row Group =====
 
-  /** @internal */
+  /** @internal Whether group header/footer rows are rendered. */
   get _rowGroupingActive(): boolean {
     return this.rowGroupMode() === 'subheader' && this.groupRowsBy() != null;
+  }
+
+  /** Whether rows are kept together by group (`subheader` and `rowspan` modes). */
+  private get _rowGroupOrderingActive(): boolean {
+    return this.rowGroupMode() !== null && this.groupRowsBy() != null;
+  }
+
+  /**
+   * @internal `rowspan` of a data cell: `null` for a regular cell, `n > 1` for the first cell of
+   * a merged block and `0` for the cells it covers (they are hidden).
+   */
+  _rowSpan(row: unknown, col: AcpDataGridColumn): number | null {
+    if (this.expandable || !this._mergesRows(col)) {
+      return null;
+    }
+    return this._rowSpans().get(row)?.get(col.field) ?? null;
+  }
+
+  /** @internal Whether the cells of the column can be merged (`mergeRows` or `rowspan` mode). */
+  _mergesRows(col: AcpDataGridColumn | undefined): boolean {
+    return (
+      !!col &&
+      (!!col.mergeRows || (this.rowGroupMode() === 'rowspan' && col.field === this.groupRowsBy()))
+    );
+  }
+
+  private _rowSpans(): Map<unknown, Map<string, number>> {
+    const source = this._renderedRowGroupItems ?? this.renderedRows;
+    const columns = this.displayedColumns;
+    if (this._rowSpanCache?.source === source && this._rowSpanCache.columns === columns) {
+      return this._rowSpanCache.spans;
+    }
+    const merged: RowSpanColumn<any>[] = [];
+    for (const field of columns) {
+      const col = this._columnsByField.get(field);
+      if (!col || !this._mergesRows(col)) {
+        continue;
+      }
+      const mergeRows = col.mergeRows;
+      merged.push({
+        field,
+        equals:
+          typeof mergeRows === 'function'
+            ? mergeRows
+            : (a, b) =>
+                Object.is(this._utils.getCellValue(a, col), this._utils.getCellValue(b, col)),
+      });
+    }
+    const spans = computeRowSpans(source, merged, isRowGroupItem);
+    this._rowSpanCache = { source, columns, spans };
+    return spans;
   }
 
   /** @internal Row predicates; data rows match whenever the item is not a group row. */
@@ -1245,10 +1305,11 @@ export class DataGrid implements AfterViewInit, OnChanges {
    * items (group headers, visible rows, group footers) from each page.
    */
   private _setupRowGrouping(): void {
-    if (!this._rowGroupingActive) {
-      this._rowGroupItems$ = null;
-      this._visibleRows = null;
-      this._visibleRowIndex.clear();
+    this._rowGroupItems$ = null;
+    this._visibleRows = null;
+    this._renderedRowGroupItems = null;
+    this._visibleRowIndex.clear();
+    if (!this._rowGroupOrderingActive) {
       return;
     }
 
@@ -1276,6 +1337,9 @@ export class DataGrid implements AfterViewInit, OnChanges {
     };
     // Re-run the pipeline: the data source already emitted with the original ordering.
     dataSource.data = this.data ?? [];
+    if (!this._rowGroupingActive) {
+      return;
+    }
 
     const cache = new RowGroupItemCache();
     this._rowGroupContexts = new WeakMap();
@@ -1289,6 +1353,7 @@ export class DataGrid implements AfterViewInit, OnChanges {
           cache,
         });
         this._visibleRows = view.visibleRows;
+        this._renderedRowGroupItems = view.items as unknown[];
         this._visibleRowIndex.clear();
         view.visibleRows.forEach((row, i) => this._visibleRowIndex.set(row, i));
         return view.items as unknown[];

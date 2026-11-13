@@ -357,8 +357,9 @@ export class DataGridApi {
     },
     {
       name: 'rowGroupMode',
-      type: "'subheader' | null",
-      description: 'Renders a header row before each group of rows',
+      type: "'subheader' | 'rowspan' | null",
+      description:
+        "'subheader' renders a header row before each group; 'rowspan' keeps groups together and merges the groupRowsBy column",
       default: 'null',
     },
     {
@@ -556,6 +557,19 @@ export class DataGridApi {
       name: 'formatter',
       type: '(row: T, column: AcpDataGridColumn) => string',
       description: 'Custom cell value formatter',
+    },
+    {
+      name: 'summary',
+      type: 'string | ((values: any[], column: AcpDataGridColumn<T>, rows: T[]) => any)',
+      description:
+        'Footer value: fixed text, or computed from the column values or the summarized rows',
+    },
+    {
+      name: 'mergeRows',
+      type: 'boolean | ((previous: T, current: T) => boolean)',
+      description:
+        'Merges consecutive equal cells into one (rowspan), nested inside merged columns to its left',
+      default: 'false',
     },
   ];
 }

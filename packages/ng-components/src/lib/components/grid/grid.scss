@@ -69,6 +69,16 @@ $fallbacks: m3-grid.get-tokens();
         cursor: pointer;
       }
 
+      // `mergeRows`: the first cell spans the block (`rowspan`), the cells it covers are hidden;
+      // a vertical rule separates the column so merged blocks read as one cell.
+      &.acp-grid-cell-merged-hidden {
+        display: none;
+      }
+
+      &.acp-grid-cell-mergeable {
+        border-inline-end: 1px solid var(--mat-table-row-item-outline-color);
+      }
+
       &.acp-grid-cell-editing {
         padding: 0 !important;
 

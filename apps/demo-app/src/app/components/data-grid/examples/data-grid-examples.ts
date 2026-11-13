@@ -25,6 +25,13 @@ import {
 import { DocHeading } from '../../../shared/doc-heading/doc-heading';
 import { CodeExample } from '../../../shared/code-example/code-example';
 
+interface BranchStockRow {
+  establishment: string;
+  warehouse: string;
+  product: string;
+  quantity: number;
+}
+
 interface StockRow {
   sku: string;
   product: string;
@@ -295,6 +302,30 @@ interface PivotRow {
         </mat-card-content>
       </mat-card>
       <app-code-example [code]="rowGroupsCode" [language]="'typescript'" />
+
+      <!-- Merged Cells -->
+      <h2>Merged Cells (rowspan)</h2>
+      <p>
+        <code>rowGroupMode="rowspan"</code> keeps the rows of each establishment together and merges
+        its cells; <code>mergeRows</code> on the warehouse column merges equal warehouses inside
+        each establishment. Sort by Qty: rows are sorted inside each block.
+      </p>
+      <mat-card class="example-card">
+        <mat-card-content>
+          <acp-data-grid
+            class="rowspan-demo-grid"
+            [data]="branchStockData"
+            [columns]="branchStockColumns"
+            rowGroupMode="rowspan"
+            groupRowsBy="establishment"
+            [showPaginator]="true"
+            [pageSize]="10"
+            [pageSizeOptions]="[5, 10, 20]"
+            size="small"
+          />
+        </mat-card-content>
+      </mat-card>
+      <app-code-example [code]="mergedCellsCode" [language]="'typescript'" />
 
       <!-- Custom Cell Templates -->
       <h2>Custom Cell Templates</h2>
@@ -901,6 +932,32 @@ export class DataGridExamples {
       summary: (_values, _col, rows) =>
         `$${rows.reduce((total, row) => total + row.quantity * row.cost, 0).toFixed(2)}`,
     },
+  ];
+
+  branchStockData: BranchStockRow[] = [
+    ['Quito', 'Main', 'Steel screws 4mm', 1200],
+    ['Guayaquil', 'Port', 'Copper wire 2.5mm', 300],
+    ['Quito', 'Main', 'Wall anchors', 2000],
+    ['Quito', 'Annex', 'PVC pipe 1in', 150],
+    ['Guayaquil', 'Port', 'Breaker 20A', 60],
+    ['Cuenca', 'Center', 'Ball valve 1in', 45],
+    ['Quito', 'Annex', 'PVC elbow 1in', 400],
+    ['Guayaquil', 'Downtown', 'Junction box', 120],
+    ['Cuenca', 'Center', 'PVC glue 250ml', 90],
+    ['Guayaquil', 'Downtown', 'Hex bolts 8mm', 650],
+    ['Cuenca', 'Center', 'Copper wire 4mm', 180],
+    ['Quito', 'Main', 'Hex bolts 8mm', 500],
+  ].map(([establishment, warehouse, product, quantity]) => ({
+    establishment: establishment as string,
+    warehouse: warehouse as string,
+    product: product as string,
+    quantity: quantity as number,
+  }));
+  branchStockColumns: DataGridColumn<BranchStockRow>[] = [
+    { field: 'establishment', header: 'Establishment', width: '140px' },
+    { field: 'warehouse', header: 'Warehouse', width: '120px', mergeRows: true },
+    { field: 'product', header: 'Product', sortable: true },
+    { field: 'quantity', header: 'Qty', type: 'number', sortable: true },
   ];
 
   expandableColumns: DataGridColumn<DemoData>[] = [
@@ -1541,6 +1598,24 @@ collapsedWarehouses = signal<unknown[]>([]);
   {{ key }} · {{ count }} items
 </ng-template>
 <acp-data-grid ... [rowGroupHeaderTemplate]="groupHeader" />`;
+
+  mergedCellsCode = `// Merged cells: rowGroupMode="rowspan" keeps each establishment together and
+// merges its cells; mergeRows merges equal warehouses inside each establishment.
+columns: AcpDataGridColumn<BranchStockRow>[] = [
+  { field: 'establishment', header: 'Establishment' },
+  { field: 'warehouse', header: 'Warehouse', mergeRows: true },
+  { field: 'product', header: 'Product', sortable: true },
+  { field: 'quantity', header: 'Qty', type: 'number', sortable: true },
+];
+
+<acp-data-grid
+  [data]="stock"
+  [columns]="columns"
+  rowGroupMode="rowspan"
+  groupRowsBy="establishment"
+/>
+
+// mergeRows also accepts a comparer: (previous, current) => boolean`;
 
   rowContextMenuCode = `// Row Context Menu
 <acp-data-grid

@@ -435,6 +435,37 @@ group.
   footer shows on the page with the group's last row and always totals the whole group.
 - With server-side paging (`pageOnFront=false`), groups are built from the current page only.
 
+#### Merged Cells (rowspan)
+
+`mergeRows` on a column merges consecutive cells with equal values into one cell. It also accepts
+a comparer `(previous, current) => boolean`. Merging is nested: a column only merges inside the
+merged blocks of the merged columns to its left. `rowGroupMode="rowspan"` keeps the rows of each
+`groupRowsBy` group together (also when sorting by another column) and merges that column.
+
+```typescript
+columns: AcpDataGridColumn<Row>[] = [
+  { field: 'establishment', header: 'Establishment' },
+  { field: 'warehouse', header: 'Warehouse', mergeRows: true },
+  { field: 'product', header: 'Product', sortable: true },
+];
+```
+
+```html
+<acp-data-grid
+  [data]="stock"
+  [columns]="columns"
+  rowGroupMode="rowspan"
+  groupRowsBy="establishment"
+/>
+```
+
+- Blocks are computed on the rendered page: a block split across pages starts again on the next
+  page. They never cross row-group headers or footers.
+- Only consecutive rows merge. Without `rowGroupMode`, sort or order the data so equal values are
+  together.
+- `mergeRows` is ignored when the grid is `expandable`, since detail rows would split the cells.
+- Clicking a merged cell acts on its first row; consider leaving `rowStriped` off.
+
 #### Row Selection Formatting
 
 ```typescript

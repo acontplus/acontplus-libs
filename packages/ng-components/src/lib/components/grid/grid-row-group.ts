@@ -128,3 +128,76 @@ export function buildRowGroupView<T>(
 
   return { items, visibleRows };
 }
+
+/** @internal A column whose consecutive equal cells are merged. */
+export interface RowSpanColumn<T> {
+  field: string;
+  equals: (a: T, b: T) => boolean;
+}
+
+/**
+ * @internal Computes `rowspan` values for merged columns. Returns, per row and field, `n > 1`
+ * for the first cell of a merged block, `0` for the cells it covers; cells absent from the map
+ * are regular cells. Blocks never cross a `isBreak` item (group headers/footers), and each
+ * column only merges inside the blocks of the merged columns to its left (nested merging).
+ */
+export function computeRowSpans<T>(
+  items: readonly unknown[],
+  columns: readonly RowSpanColumn<T>[],
+  isBreak: (item: unknown) => boolean,
+): Map<T, Map<string, number>> {
+  const spans = new Map<T, Map<string, number>>();
+  if (!columns.length) {
+    return spans;
+  }
+
+  // Runs of consecutive data rows between breaks.
+  const runs: T[][] = [];
+  let current: T[] = [];
+  for (const item of items) {
+    if (isBreak(item)) {
+      if (current.length) {
+        runs.push(current);
+      }
+      current = [];
+    } else {
+      current.push(item as T);
+    }
+  }
+  if (current.length) {
+    runs.push(current);
+  }
+
+  const set = (row: T, field: string, value: number) => {
+    let byField = spans.get(row);
+    if (!byField) {
+      byField = new Map();
+      spans.set(row, byField);
+    }
+    byField.set(field, value);
+  };
+
+  for (const rows of runs) {
+    // Indexes where a block starts; a column cannot merge across a boundary of a column to its left.
+    const boundaries = new Set<number>([0]);
+    for (const { field, equals } of columns) {
+      const starts: number[] = [];
+      rows.forEach((row, i) => {
+        if (boundaries.has(i) || !equals(rows[i - 1], row)) {
+          starts.push(i);
+        }
+      });
+      starts.forEach((start, s) => {
+        const end = s + 1 < starts.length ? starts[s + 1] : rows.length;
+        if (end - start > 1) {
+          set(rows[start], field, end - start);
+          for (let i = start + 1; i < end; i++) {
+            set(rows[i], field, 0);
+          }
+        }
+      });
+      starts.forEach(start => boundaries.add(start));
+    }
+  }
+  return spans;
+}

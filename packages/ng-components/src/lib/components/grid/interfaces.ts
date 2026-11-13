@@ -45,6 +45,16 @@ export interface AcpDataGridColumn<T = any> {
    */
   editable?: boolean;
   /**
+   * Merges consecutive cells of this column into one cell (`rowspan`) when their values are
+   * equal, or when the function returns `true` for two consecutive rows. Merging is nested: a
+   * column only merges inside the merged blocks of the merged columns to its left. Blocks are
+   * computed on the rendered page and never cross row-group headers or footers.
+   *
+   * Ignored when the grid is `expandable` (detail rows would split the merged cells). The grid
+   * keeps the order of the rows: sort or group them so equal values are consecutive.
+   */
+  mergeRows?: boolean | ((previous: T, current: T) => boolean);
+  /**
    * Validation function for editable cells. Return `true` to accept the value,
    * or a string error message to reject it. If not provided, any value is accepted.
    */
@@ -211,8 +221,13 @@ export type AcpDataGridSize = 'xs-small' | 'small' | 'medium' | 'large';
  */
 export type AcpDataGridScrollHeight = 'flex' | (string & {});
 
-/** How rows are grouped. `'subheader'` inserts a header row before each group. */
-export type AcpDataGridRowGroupMode = 'subheader';
+/**
+ * How rows are grouped:
+ * - `'subheader'` inserts a header row before each group.
+ * - `'rowspan'` keeps the rows of each group together and merges the cells of the
+ *   `groupRowsBy` column (it must be a field name) into one cell per group.
+ */
+export type AcpDataGridRowGroupMode = 'subheader' | 'rowspan';
 
 /** A group of rows that share the same `groupRowsBy` value. */
 export interface AcpDataGridRowGroup<T = any> {

@@ -466,6 +466,41 @@ columns: AcpDataGridColumn<Row>[] = [
 - `mergeRows` is ignored when the grid is `expandable`, since detail rows would split the cells.
 - Clicking a merged cell acts on its first row; consider leaving `rowStriped` off.
 
+#### Tree Table
+
+Set `treeChildren` (a field name or a function) to render nested rows, like PrimeNG's TreeTable.
+`data` holds the root nodes and rows keep their own fields, so columns work as usual.
+
+```html
+<acp-data-grid
+  #grid
+  [data]="accounts"
+  [columns]="columns"
+  treeChildren="children"
+  [(expandedTreeKeys)]="expanded"
+  dataKey="code"
+  [rowSelectable]="true"
+  [multiSelectable]="true"
+/>
+```
+
+- The indentation and toggle render in the column with `treeToggle: true` (the first displayed
+  column by default); indent size: `--acp-grid-tree-indent` (20px).
+- Nodes start collapsed. `expandedTreeKeys` holds the keys (`dataKey`, or the row itself) of the
+  expanded nodes and supports two-way binding. Methods: `isTreeNodeExpanded(row)`,
+  `toggleTreeNode(row, expanded?)`, `expandAll()`, `collapseAll()`.
+- Paging counts root nodes, so children never split from their parent. Sorting sorts the siblings
+  of each level.
+- With multiple selection, selecting a node selects its loaded descendants and a parent is
+  selected when all its children are (indeterminate when only some are). Disable with
+  `[treePropagateSelection]="false"`. The master checkbox selects every loaded node.
+- Lazy loading: return `true` from `treeHasChildren` for nodes whose children are not loaded
+  (`undefined`). Expanding one shows a spinner and emits `treeNodeExpand`; assign the children
+  and update `data` or call `grid.refreshTree()`.
+- Accessibility: `role="treegrid"`, `aria-level` and `aria-expanded` on rows; with
+  `keyboardNavigation`, → expands, ← collapses or moves to the parent.
+- `rowGroupMode` and `mergeRows` are ignored in tree mode.
+
 #### Gridlines
 
 `showGridlines` adds vertical borders between all cells (header, body, footer and

@@ -52,6 +52,11 @@ export interface AcpDataGridColumn<T = any> {
    */
   editable?: boolean;
   /**
+   * In tree mode (`treeChildren`), renders the indentation and the expand/collapse toggle of
+   * each node in this column. Defaults to the first displayed column when no column sets it.
+   */
+  treeToggle?: boolean;
+  /**
    * Merges consecutive cells of this column into one cell (`rowspan`) when their values are
    * equal, or when the function returns `true` for two consecutive rows. Merging is nested: a
    * column only merges inside the merged blocks of the merged columns to its left. Blocks are

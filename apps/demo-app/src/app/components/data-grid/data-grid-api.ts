@@ -462,6 +462,30 @@ export class DataGridApi {
       default: "'medium'",
     },
     {
+      name: 'treeChildren',
+      type: 'string | ((row: T) => T[] | null | undefined) | null',
+      description: 'Enables tree mode: field or function returning the children of a row',
+      default: 'null',
+    },
+    {
+      name: 'treeHasChildren',
+      type: 'string | ((row: T) => boolean) | null',
+      description: 'Whether a row has children not loaded yet (lazy loading)',
+      default: 'null',
+    },
+    {
+      name: 'expandedTreeKeys',
+      type: 'unknown[]',
+      description: 'Keys of the expanded tree nodes (two-way binding)',
+      default: '[]',
+    },
+    {
+      name: 'treePropagateSelection',
+      type: 'boolean',
+      description: 'Selecting a node selects its descendants and updates its ancestors',
+      default: 'true',
+    },
+    {
       name: 'showGridlines',
       type: 'boolean',
       description: 'Vertical borders between cells; color via --acp-grid-gridline-color',
@@ -517,6 +541,16 @@ export class DataGridApi {
       description: 'Emits when expansion state changes',
     },
     {
+      name: 'treeNodeExpand',
+      type: 'EventEmitter<{ row: T; key: unknown }>',
+      description: 'Emits when a tree node is expanded (load lazy children here)',
+    },
+    {
+      name: 'treeNodeCollapse',
+      type: 'EventEmitter<{ row: T; key: unknown }>',
+      description: 'Emits when a tree node is collapsed',
+    },
+    {
       name: 'rowGroupToggle',
       type: 'EventEmitter<{ key: unknown; expanded: boolean }>',
       description: 'Emits when a group is collapsed or expanded',
@@ -569,6 +603,12 @@ export class DataGridApi {
       type: 'string | ((values: any[], column: AcpDataGridColumn<T>, rows: T[]) => any)',
       description:
         'Footer value: fixed text, or computed from the column values or the summarized rows',
+    },
+    {
+      name: 'treeToggle',
+      type: 'boolean',
+      description: 'Tree mode: column with the indentation and toggle (first column by default)',
+      default: 'false',
     },
     {
       name: 'groupColor',

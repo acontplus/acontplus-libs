@@ -54,7 +54,8 @@
         [class.mat-table-hover]="rowHover"
         [class.mat-table-striped]="rowStriped"
         [class.mat-table-expandable]="expandable"
-        [dataSource]="_rowGroupItems$ ?? dataSource"
+        [dataSource]="_rowGroupItems$ ?? _treeRows$ ?? dataSource"
+        [attr.role]="_treeActive ? 'treegrid' : null"
         [multiTemplateDataRows]="expandable"
         matSort
         [matSortActive]="sortActive"
@@ -88,7 +89,7 @@
               [arrowPosition]="$safeNavigationMigration(col.sortProp?.arrowPosition)!"
               [start]="$safeNavigationMigration(col.sortProp?.start)!"
             >
-              @if (col.showExpand) {
+              @if (col.showExpand || _isTreeToggleColumn(col)) {
               <span class="acp-grid-expansion-placeholder"></span>
               }
               <span>{{ col.header | toObservable | async }}</span>
@@ -146,6 +147,7 @@
                       rowSelectionFormatter.disabled(row, _rowIndex(row, index, dataIndex))
                     "
               [checked]="rowSelection.isSelected(row)"
+              [indeterminate]="_treeIndeterminate(row)"
               [tabIndex]="keyboardNavigation() ? -1 : 0"
               (click)="$event.stopPropagation()"
               (change)="$event ? _toggleNormalCheckbox(row) : null"
@@ -328,6 +330,8 @@
           [class]="row | rowClass: _rowIndex(row, index, dataIndex) : dataIndex : rowClassFormatter"
           [class.selected]="rowSelection.isSelected(row)"
           [class.acp-grid-row-active]="_isActiveRow(row)"
+          [attr.aria-level]="_treeActive ? _treeLevelOf(row) + 1 : null"
+          [attr.aria-expanded]="_treeActive && _treeHasChildren(row) ? isTreeNodeExpanded(row) : null"
           [attr.id]="_rowId(_rowIndex(row, index, dataIndex))"
           [attr.tabindex]="_rowTabIndex(row, _rowIndex(row, index, dataIndex))"
           (focus)="_onRowFocus(row)"
@@ -426,7 +430,8 @@
         [class.mat-table-hover]="rowHover"
         [class.mat-table-striped]="rowStriped"
         [class.mat-table-expandable]="expandable"
-        [dataSource]="_rowGroupItems$ ?? dataSource"
+        [dataSource]="_rowGroupItems$ ?? _treeRows$ ?? dataSource"
+        [attr.role]="_treeActive ? 'treegrid' : null"
         [multiTemplateDataRows]="expandable"
         matSort
         [matSortActive]="sortActive"
@@ -461,6 +466,7 @@
                       rowSelectionFormatter.disabled(row, _rowIndex(row, index, dataIndex))
                     "
               [checked]="rowSelection.isSelected(row)"
+              [indeterminate]="_treeIndeterminate(row)"
               [tabIndex]="keyboardNavigation() ? -1 : 0"
               (click)="$event.stopPropagation()"
               (change)="$event ? _toggleNormalCheckbox(row) : null"
@@ -514,7 +520,7 @@
                 [arrowPosition]="$safeNavigationMigration(col.sortProp?.arrowPosition)!"
                 [start]="$safeNavigationMigration(col.sortProp?.start)!"
               >
-                @if (col.showExpand) {
+                @if (col.showExpand || _isTreeToggleColumn(col)) {
                 <span class="acp-grid-expansion-placeholder"></span>
                 }
                 <span>{{ col.header | toObservable | async }}</span>
@@ -638,6 +644,8 @@
           [class]="row | rowClass: _rowIndex(row, index, dataIndex) : dataIndex : rowClassFormatter"
           [class.selected]="rowSelection.isSelected(row)"
           [class.acp-grid-row-active]="_isActiveRow(row)"
+          [attr.aria-level]="_treeActive ? _treeLevelOf(row) + 1 : null"
+          [attr.aria-expanded]="_treeActive && _treeHasChildren(row) ? isTreeNodeExpanded(row) : null"
           [attr.id]="_rowId(_rowIndex(row, index, dataIndex))"
           [attr.tabindex]="_rowTabIndex(row, _rowIndex(row, index, dataIndex))"
           (focus)="_onRowFocus(row)"
@@ -798,7 +806,38 @@
 
 <!-- Shared cell bodies, rendered by both table variants (with and without column resize) -->
 <ng-template #acpGridCellBody let-row let-col="col" let-index="index" let-dataIndex="dataIndex">
-  @if (cellTemplate | isTemplateRef) {
+  @if (_isTreeToggleColumn(col)) {
+  <span class="acp-grid-tree-indent" [style.--acp-grid-tree-level]="_treeLevelOf(row)"></span>
+  @if (_treeHasChildren(row)) {
+  <button
+    class="acp-grid-row-expand-button acp-grid-tree-toggle"
+    matIconButton
+    type="button"
+    [class.expanded]="isTreeNodeExpanded(row)"
+    [attr.aria-expanded]="isTreeNodeExpanded(row)"
+    [attr.aria-label]="_treeToggleLabel(row, col)"
+    [attr.aria-busy]="_treeLoading(row) || null"
+    [tabIndex]="keyboardNavigation() ? -1 : 0"
+    (click)="$event.stopPropagation(); toggleTreeNode(row)"
+  >
+    @if (_treeLoading(row)) {
+    <mat-progress-spinner mode="indeterminate" diameter="18"></mat-progress-spinner>
+    } @else {
+    <svg
+      class="acp-grid-icon acp-grid-row-expand-icon"
+      viewBox="0 0 24 24"
+      width="24px"
+      height="24px"
+      fill="currentColor"
+      focusable="false"
+    >
+      <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+    </svg>
+    }
+  </button>
+  } @else {
+  <span class="acp-grid-expansion-placeholder"></span>
+  } } @if (cellTemplate | isTemplateRef) {
   <ng-template
     [ngTemplateOutlet]="$any(cellTemplate)"
     [ngTemplateOutletContext]="{
@@ -871,7 +910,7 @@
 </ng-template>
 
 <ng-template #acpGridFooterBody let-col let-rows="rows" let-group="group">
-  @if (col.showExpand) {
+  @if (col.showExpand || _isTreeToggleColumn(col)) {
   <span class="acp-grid-expansion-placeholder"></span>
   } @if (summaryTemplate | isTemplateRef) {
   <ng-template

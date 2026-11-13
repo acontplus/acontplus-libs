@@ -33,6 +33,15 @@ interface BranchStockRow {
   quantity: number;
 }
 
+interface Account {
+  code: string;
+  name: string;
+  balance: number;
+  children?: Account[];
+  /** Children are loaded on demand. */
+  lazy?: boolean;
+}
+
 interface StockRow {
   sku: string;
   product: string;
@@ -336,6 +345,49 @@ interface PivotRow {
         </mat-card-content>
       </mat-card>
       <app-code-example [code]="mergedCellsCode" [language]="'typescript'" />
+
+      <!-- Tree Table -->
+      <h2>Tree Table</h2>
+      <p>
+        <code>treeChildren</code> renders nested rows. Paging counts root accounts, sorting sorts
+        siblings on each level, and selecting an account selects its sub-accounts. "Gastos" loads
+        its children on expand. Keyboard: ← → collapse and expand.
+      </p>
+      <mat-card class="example-card">
+        <mat-card-content>
+          <div class="tree-actions">
+            <button matButton="outlined" type="button" (click)="accountsGrid.expandAll()">
+              Expand all
+            </button>
+            <button matButton="outlined" type="button" (click)="accountsGrid.collapseAll()">
+              Collapse all
+            </button>
+            <span>Selected: {{ selectedAccounts().length }}</span>
+          </div>
+          <acp-data-grid
+            #accountsGrid
+            class="tree-demo-grid"
+            [data]="accounts"
+            [columns]="accountColumns"
+            treeChildren="children"
+            [treeHasChildren]="hasAccountChildren"
+            [(expandedTreeKeys)]="expandedAccounts"
+            dataKey="code"
+            (treeNodeExpand)="loadAccountChildren($event.row, accountsGrid)"
+            [rowSelectable]="true"
+            [multiSelectable]="true"
+            [multiSelectionWithClick]="true"
+            (rowSelectedChange)="selectedAccounts.set($event)"
+            keyboardNavigation="true"
+            [showPaginator]="true"
+            [pageSize]="3"
+            [pageSizeOptions]="[3, 5, 10]"
+            size="small"
+            showGridlines
+          />
+        </mat-card-content>
+      </mat-card>
+      <app-code-example [code]="treeTableCode" [language]="'typescript'" />
 
       <!-- Custom Cell Templates -->
       <h2>Custom Cell Templates</h2>
@@ -661,6 +713,13 @@ interface PivotRow {
         --acp-grid-scroll-height: 240px;
       }
 
+      .tree-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
       .gridlines-toggle {
         margin: 0 0 12px 16px;
       }
@@ -782,6 +841,98 @@ export class DataGridExamples {
 
   // Columns
   collapsedWarehouses = signal<unknown[]>([]);
+
+  expandedAccounts = signal<unknown[]>([]);
+  selectedAccounts = signal<Account[]>([]);
+  accounts: Account[] = [
+    {
+      code: '1',
+      name: 'Activo',
+      balance: 185000,
+      children: [
+        {
+          code: '1.1',
+          name: 'Activo corriente',
+          balance: 65000,
+          children: [
+            { code: '1.1.01', name: 'Caja', balance: 5000 },
+            { code: '1.1.02', name: 'Bancos', balance: 42000 },
+            { code: '1.1.03', name: 'Cuentas por cobrar', balance: 18000 },
+          ],
+        },
+        {
+          code: '1.2',
+          name: 'Activo no corriente',
+          balance: 120000,
+          children: [
+            { code: '1.2.01', name: 'Propiedad, planta y equipo', balance: 150000 },
+            { code: '1.2.02', name: 'Depreciación acumulada', balance: -30000 },
+          ],
+        },
+      ],
+    },
+    {
+      code: '2',
+      name: 'Pasivo',
+      balance: 70000,
+      children: [
+        {
+          code: '2.1',
+          name: 'Pasivo corriente',
+          balance: 25000,
+          children: [
+            { code: '2.1.01', name: 'Proveedores', balance: 17000 },
+            { code: '2.1.02', name: 'Impuestos por pagar', balance: 8000 },
+          ],
+        },
+        {
+          code: '2.2',
+          name: 'Pasivo a largo plazo',
+          balance: 45000,
+          children: [{ code: '2.2.01', name: 'Préstamos bancarios', balance: 45000 }],
+        },
+      ],
+    },
+    {
+      code: '3',
+      name: 'Patrimonio',
+      balance: 115000,
+      children: [
+        { code: '3.1', name: 'Capital social', balance: 100000 },
+        { code: '3.2', name: 'Resultados acumulados', balance: 15000 },
+      ],
+    },
+    {
+      code: '4',
+      name: 'Ingresos',
+      balance: 98000,
+      children: [
+        { code: '4.1', name: 'Ventas', balance: 95000 },
+        { code: '4.2', name: 'Otros ingresos', balance: 3000 },
+      ],
+    },
+    { code: '5', name: 'Gastos', balance: 61000, lazy: true },
+  ];
+  accountColumns: DataGridColumn<Account>[] = [
+    { field: 'code', header: 'Code', width: '180px', treeToggle: true, sortable: true },
+    { field: 'name', header: 'Account', sortable: true },
+    { field: 'balance', header: 'Balance', type: 'currency', sortable: true },
+  ];
+  readonly hasAccountChildren = (account: Account) => !!account.lazy || !!account.children?.length;
+
+  /** Simulates loading the children of a lazy account from the backend. */
+  loadAccountChildren(account: Account, grid: DataGrid): void {
+    if (!account.lazy || account.children) {
+      return;
+    }
+    setTimeout(() => {
+      account.children = [
+        { code: '5.1', name: 'Gastos administrativos', balance: 38000 },
+        { code: '5.2', name: 'Gastos de ventas', balance: 23000 },
+      ];
+      grid.refreshTree();
+    }, 800);
+  }
   stockData: StockRow[] = [
     {
       sku: 'A-100',
@@ -1572,6 +1723,31 @@ columns: AcpDataGridColumn<BranchStockRow>[] = [
 />
 
 // mergeRows also accepts a comparer: (previous, current) => boolean`;
+
+  treeTableCode = `// Tree Table: rows carry their children; data holds the root nodes.
+columns: AcpDataGridColumn<Account>[] = [
+  { field: 'code', header: 'Code', treeToggle: true, sortable: true },
+  { field: 'name', header: 'Account', sortable: true },
+  { field: 'balance', header: 'Balance', type: 'currency', sortable: true },
+];
+// Lazy nodes: report children before loading them
+hasChildren = (a: Account) => !!a.lazy || !!a.children?.length;
+
+<acp-data-grid
+  #grid
+  [data]="accounts"
+  [columns]="columns"
+  treeChildren="children"
+  [treeHasChildren]="hasChildren"
+  [(expandedTreeKeys)]="expanded"
+  dataKey="code"
+  (treeNodeExpand)="load($event.row, grid)"
+  [rowSelectable]="true"
+  [multiSelectable]="true"
+/>
+
+// Load children, then redraw: account.children = loaded; grid.refreshTree();
+// Also: grid.expandAll(), grid.collapseAll(), grid.toggleTreeNode(row)`;
 
   rowContextMenuCode = `// Row Context Menu
 <acp-data-grid

@@ -384,6 +384,11 @@ $fallbacks: m3-grid.get-tokens();
     --mat-icon-button-state-layer-size,
     token-utils.slot(grid-row-expand-button-size, $fallbacks)
   );
+
+  // Leaf tree nodes: align the text with the nodes that have a toggle.
+  + acp-grid-cell {
+    vertical-align: middle;
+  }
 }
 
 .acp-grid-expansion-detail-wrapper {
@@ -405,6 +410,17 @@ $fallbacks: m3-grid.get-tokens();
 
 .acp-grid-animations-enabled .acp-grid-expansion-detail-wrapper {
   transition: all 225ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+// Tree mode: indentation per level (`--acp-grid-tree-indent`, 20px by default).
+.acp-grid-tree-indent {
+  display: inline-block;
+  width: calc(var(--acp-grid-tree-level, 0) * var(--acp-grid-tree-indent, 20px));
+  vertical-align: middle;
+}
+
+.acp-grid-tree-toggle .mat-mdc-progress-spinner {
+  margin: auto;
 }
 
 .acp-grid-row-expand-button {

@@ -56,7 +56,9 @@ import { MatSort, MatSortHeader, Sort, SortDirection } from '@angular/material/s
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatIconButton } from '@angular/material/button';
 import { MatProgressBar } from '@angular/material/progress-bar';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { SelectionModel } from '@angular/cdk/collections';
+import { Directionality } from '@angular/cdk/bidi';
 
 // Shared Imports
 
@@ -111,6 +113,7 @@ export const DATA_GRID_DEFAULT_OPTIONS = new InjectionToken<AcpDataGridDefaultOp
     NgClass,
     NgTemplateOutlet,
     MatProgressBar,
+    MatProgressSpinner,
     MatIconButton,
     MatCheckbox,
     MatTable,
@@ -170,6 +173,7 @@ export class DataGrid implements AfterViewInit, OnChanges {
   private readonly _changeDetectorRef = inject(ChangeDetectorRef);
   private readonly _elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly _injector = inject(Injector);
+  private readonly _dir = inject(Directionality, { optional: true });
   private static _nextId = 0;
   /** Unique id of the grid, used for row ids and `aria-controls`. */
   readonly gridId = `acp-grid-${DataGrid._nextId++}`;
@@ -386,6 +390,39 @@ export class DataGrid implements AfterViewInit, OnChanges {
   rowGroupHeaderTemplate = input<TemplateRef<AcpDataGridRowGroupContext> | null>(null);
   /** Se emite cuando el usuario contrae o expande un grupo. */
   rowGroupToggle = output<{ key: unknown; expanded: boolean }>();
+
+  // ===== Tree =====
+
+  /**
+   * Activa el modo árbol: campo (`'children'`) o función que devuelve los hijos de cada fila.
+   * `data` contiene los nodos raíz. La paginación cuenta nodos raíz y al ordenar se ordenan los
+   * hermanos de cada nivel. En modo árbol se ignoran `rowGroupMode` y `mergeRows`.
+   */
+  treeChildren = input<string | ((row: any) => any[] | null | undefined) | null>(null);
+  /**
+   * Indica si una fila tiene hijos aunque aún no estén cargados (carga perezosa). Por defecto,
+   * una fila tiene hijos si `treeChildren` devuelve un arreglo no vacío. Al expandir un nodo con
+   * hijos sin cargar (`undefined`/`null`) se muestra un indicador hasta que lleguen; asígnalos y
+   * actualiza `data` o llama a `refreshTree()`.
+   */
+  treeHasChildren = input<string | ((row: any) => boolean) | null>(null);
+  /** Claves (`dataKey` o la propia fila) de los nodos expandidos. Admite `[(expandedTreeKeys)]`. */
+  expandedTreeKeys = model<unknown[]>([]);
+  /**
+   * Con selección múltiple, marcar un nodo marca sus descendientes cargados, y un padre queda
+   * marcado cuando todos sus hijos lo están (indeterminado si solo algunos).
+   */
+  treePropagateSelection = input(true, { transform: booleanAttribute });
+  /** Se emite al expandir un nodo (útil para cargar sus hijos de forma perezosa). */
+  treeNodeExpand = output<{ row: any; key: unknown }>();
+  /** Se emite al contraer un nodo. */
+  treeNodeCollapse = output<{ row: any; key: unknown }>();
+
+  /** @internal Visible tree rows rendered by the table in tree mode. */
+  _treeRows$: Observable<unknown[]> | null = null;
+  private readonly _treeRefresh$ = new BehaviorSubject<void>(undefined);
+  private readonly _treeLevels = new Map<unknown, number>();
+  private readonly _treeParents = new Map<unknown, unknown>();
 
   /** @internal Rows rendered by the table when row grouping is active. */
   _rowGroupItems$: Observable<unknown[]> | null = null;
@@ -675,7 +712,15 @@ export class DataGrid implements AfterViewInit, OnChanges {
       this._pruneExpandedKeys();
     }
 
-    if (this.rowSelectable) {
+    // Rebuild the selection only when its inputs or the rows change, so unrelated input changes
+    // (e.g. `loading`, or `expandedTreeKeys` on every tree toggle) keep the user's selection.
+    if (
+      this.rowSelectable &&
+      (changes['rowSelected'] ||
+        changes['rowSelectable'] ||
+        changes['multiSelectable'] ||
+        changes['data'])
+    ) {
       this.rowSelection = new SelectionModel<any>(this.multiSelectable, this.rowSelected);
     }
 
@@ -693,6 +738,7 @@ export class DataGrid implements AfterViewInit, OnChanges {
     }
 
     this._setupRowGrouping();
+    this._setupTree();
 
     // Only scroll top with data change
     if (changes['data']) {
@@ -1211,6 +1257,24 @@ export class DataGrid implements AfterViewInit, OnChanges {
       case 'PageUp':
         this.previousPage(true);
         break;
+      case 'ArrowRight':
+      case 'ArrowLeft': {
+        if (!onRow || !this._treeActive) {
+          return;
+        }
+        const expand = (event.key === 'ArrowRight') !== (this._dir?.value === 'rtl');
+        const expanded = this.isTreeNodeExpanded(row);
+        if (expand && this._treeHasChildren(row) && !expanded) {
+          this.toggleTreeNode(row, true);
+        } else if (!expand && expanded) {
+          this.toggleTreeNode(row, false);
+        } else if (!expand && this._treeParents.has(row)) {
+          this.setActiveRow(this.renderedRows.indexOf(this._treeParents.get(row)), true);
+        } else if (expand && expanded) {
+          this.setActiveRow(index + 1, true);
+        }
+        break;
+      }
       case 'Enter':
         if (!onRow) {
           return;
@@ -1258,7 +1322,193 @@ export class DataGrid implements AfterViewInit, OnChanges {
 
   /** Whether rows are kept together by group (`subheader` and `rowspan` modes). */
   private get _rowGroupOrderingActive(): boolean {
-    return this.rowGroupMode() !== null && this.groupRowsBy() != null;
+    return !this._treeActive && this.rowGroupMode() !== null && this.groupRowsBy() != null;
+  }
+
+  // ===== Tree =====
+
+  /** @internal Whether the grid renders a tree (`treeChildren`). */
+  get _treeActive(): boolean {
+    return this.treeChildren() != null;
+  }
+
+  /** @internal Children of a node, or `null`/`undefined` when it has none or they are not loaded. */
+  _treeChildrenOf(row: any): any[] | null | undefined {
+    const children = this.treeChildren();
+    if (row == null || children == null) {
+      return null;
+    }
+    return typeof children === 'function' ? children(row) : row[children];
+  }
+
+  /** @internal */
+  _treeHasChildren(row: any): boolean {
+    const hasChildren = this.treeHasChildren();
+    if (hasChildren != null && row != null) {
+      return !!(typeof hasChildren === 'function' ? hasChildren(row) : row[hasChildren]);
+    }
+    return (this._treeChildrenOf(row)?.length ?? 0) > 0;
+  }
+
+  /** @internal Expanded node whose children are not loaded yet. */
+  _treeLoading(row: any): boolean {
+    return this.isTreeNodeExpanded(row) && this._treeChildrenOf(row) == null;
+  }
+
+  /** @internal Depth of a rendered node (roots are 0). */
+  _treeLevelOf(row: unknown): number {
+    return this._treeLevels.get(row) ?? 0;
+  }
+
+  /** @internal Column that renders the indentation and toggle. */
+  _isTreeToggleColumn(col: AcpDataGridColumn): boolean {
+    if (!this._treeActive) {
+      return false;
+    }
+    const marked = this.columns.some(item => item.treeToggle);
+    if (marked) {
+      return !!col.treeToggle;
+    }
+    return col.field === this.displayedColumns.find(field => this._columnsByField.has(field));
+  }
+
+  /** @internal Accessible name of a tree toggle: the node's text in the toggle column. */
+  _treeToggleLabel(row: any, col: AcpDataGridColumn): string {
+    const value = this._utils.getCellValue(row, col);
+    return value == null ? '' : `${value}`;
+  }
+
+  /** Indica si el nodo está expandido. */
+  isTreeNodeExpanded(row: unknown): boolean {
+    return this.expandedTreeKeys().includes(this._rowKey(row));
+  }
+
+  /** Expande o contrae un nodo (alterna si no se indica `expanded`). Devuelve el nuevo estado. */
+  toggleTreeNode(row: unknown, expanded = !this.isTreeNodeExpanded(row)): boolean {
+    const key = this._rowKey(row);
+    const keys = this.expandedTreeKeys().filter(item => !Object.is(item, key));
+    if (expanded) {
+      keys.push(key);
+    }
+    this.expandedTreeKeys.set(keys);
+    this._treeRefresh$.next();
+    (expanded ? this.treeNodeExpand : this.treeNodeCollapse).emit({ row, key });
+    return expanded;
+  }
+
+  /** Expande todos los nodos con hijos cargados. */
+  expandAll(): void {
+    const keys = this._treeAllNodes()
+      .filter(row => this._treeHasChildren(row))
+      .map(row => this._rowKey(row));
+    this.expandedTreeKeys.set(keys);
+    this._treeRefresh$.next();
+  }
+
+  /** Contrae todos los nodos. */
+  collapseAll(): void {
+    this.expandedTreeKeys.set([]);
+    this._treeRefresh$.next();
+  }
+
+  /** Vuelve a dibujar el árbol, p. ej. tras asignar hijos cargados de forma perezosa. */
+  refreshTree(): void {
+    this._treeRefresh$.next();
+  }
+
+  /** All loaded nodes, depth-first. */
+  private _treeAllNodes(): any[] {
+    const nodes: any[] = [];
+    const visit = (row: any) => {
+      nodes.push(row);
+      this._treeChildrenOf(row)?.forEach(visit);
+    };
+    (this.data ?? []).forEach(visit);
+    return nodes;
+  }
+
+  private _treeDescendants(row: any): any[] {
+    const nodes: any[] = [];
+    const visit = (node: any) => {
+      this._treeChildrenOf(node)?.forEach(child => {
+        nodes.push(child);
+        visit(child);
+      });
+    };
+    visit(row);
+    return nodes;
+  }
+
+  private get _treeSelectionPropagates(): boolean {
+    return this._treeActive && this.multiSelectable && this.treePropagateSelection();
+  }
+
+  /** @internal Partially selected node: some, but not all, descendants are selected. */
+  _treeIndeterminate(row: any): boolean {
+    if (!this._treeSelectionPropagates || this.rowSelection.isSelected(row)) {
+      return false;
+    }
+    return this._treeDescendants(row).some(node => this.rowSelection.isSelected(node));
+  }
+
+  /** Selects or deselects a node with its descendants, then updates its ancestors. */
+  private _toggleTreeSelection(row: any): void {
+    const selected = !this.rowSelection.isSelected(row);
+    const nodes = [row, ...this._treeDescendants(row)];
+    if (selected) {
+      this.rowSelection.select(...nodes);
+    } else {
+      this.rowSelection.deselect(...nodes);
+    }
+    let parent = this._treeParents.get(row);
+    while (parent !== undefined) {
+      const children = this._treeChildrenOf(parent) ?? [];
+      const allSelected = children.every(child => this.rowSelection.isSelected(child));
+      if (allSelected) {
+        this.rowSelection.select(parent);
+      } else {
+        this.rowSelection.deselect(parent);
+      }
+      parent = this._treeParents.get(parent);
+    }
+  }
+
+  /** Flattens the current page of root nodes into the visible tree rows. */
+  private _setupTree(): void {
+    this._treeRows$ = null;
+    this._treeLevels.clear();
+    this._treeParents.clear();
+    if (!this._treeActive) {
+      return;
+    }
+    const dataSource = this.dataSource;
+    this._treeRows$ = combineLatest([dataSource.connect(), this._treeRefresh$]).pipe(
+      map(([roots]) => {
+        const sort = dataSource.sort;
+        const sorted = (rows: any[]) =>
+          sort?.active && sort.direction ? dataSource.sortData(rows.slice(), sort) : rows;
+        const expanded = new Set(this.expandedTreeKeys());
+        const rows: unknown[] = [];
+        this._treeLevels.clear();
+        this._treeParents.clear();
+        const visit = (row: any, level: number, parent: unknown) => {
+          rows.push(row);
+          this._treeLevels.set(row, level);
+          if (parent !== undefined) {
+            this._treeParents.set(row, parent);
+          }
+          const children = this._treeChildrenOf(row);
+          if (children?.length && expanded.has(this._rowKey(row))) {
+            sorted(children).forEach(child => visit(child, level + 1, row));
+          }
+        };
+        roots.forEach(row => visit(row, 0, undefined));
+        this._visibleRows = rows;
+        this._visibleRowIndex.clear();
+        rows.forEach((row, i) => this._visibleRowIndex.set(row, i));
+        return rows;
+      }),
+    );
   }
 
   /**
@@ -1266,7 +1516,7 @@ export class DataGrid implements AfterViewInit, OnChanges {
    * a merged block and `0` for the cells it covers (they are hidden).
    */
   _rowSpan(row: unknown, col: AcpDataGridColumn): number | null {
-    if (this.expandable || !this._mergesRows(col)) {
+    if (this.expandable || this._treeActive || !this._mergesRows(col)) {
       return null;
     }
     return this._rowSpans().get(row)?.get(col.field) ?? null;
@@ -1613,7 +1863,7 @@ export class DataGrid implements AfterViewInit, OnChanges {
   /** Whether the number of selected elements matches the total number of rows. */
   _isAllSelected() {
     const numSelected = this.rowSelection.selected.length;
-    const numRows = this.dataSource.data.filter(
+    const numRows = this._selectableRows().filter(
       (row, index) => !this.rowSelectionFormatter.disabled?.(row, index),
     ).length;
     return numSelected === numRows;
@@ -1624,7 +1874,7 @@ export class DataGrid implements AfterViewInit, OnChanges {
     if (this._isAllSelected()) {
       this.rowSelection.clear();
     } else {
-      this.dataSource.data.forEach((row, index) => {
+      this._selectableRows().forEach((row, index) => {
         if (!this.rowSelectionFormatter.disabled?.(row, index)) {
           this.rowSelection.select(row);
         }
@@ -1634,8 +1884,17 @@ export class DataGrid implements AfterViewInit, OnChanges {
   }
 
   /** Select normal row */
+  /** Rows the master checkbox acts on: every loaded node in tree mode. */
+  private _selectableRows(): any[] {
+    return this._treeActive ? this._treeAllNodes() : this.dataSource.data;
+  }
+
   _toggleNormalCheckbox(row: Record<string, any>) {
-    this.rowSelection.toggle(row);
+    if (this._treeSelectionPropagates) {
+      this._toggleTreeSelection(row);
+    } else {
+      this.rowSelection.toggle(row);
+    }
     this.rowSelectedChange.emit(this.rowSelection.selected);
   }
 

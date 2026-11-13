@@ -438,6 +438,48 @@ const columns: DataGridColumn<KardexRow>[] = [
 ];
 ```
 
+#### Inline Cell Editing
+
+Mark a column with `editable: true` to enable inline editing. Clicking an
+editable cell opens an overlay editor; press `Enter` or click outside to
+confirm, `Escape` to cancel. Editable cells show a pointer cursor.
+
+```typescript
+const columns: DataGridColumn<Product>[] = [
+  { field: 'name', header: 'Name', editable: true },
+  { field: 'price', header: 'Price', type: 'currency', editable: true },
+  {
+    field: 'quantity',
+    header: 'Qty',
+    type: 'number',
+    editable: true,
+    editValidator: value => {
+      const num = Number(value);
+      return Number.isInteger(num) && num >= 0 ? true : 'Must be a non-negative integer';
+    },
+  },
+];
+
+<acp-data-grid
+  [data]="products"
+  [columns]="columns"
+  (cellEditChange)="onCellEdit($event)"
+/>
+
+// event: { row, field, oldValue, newValue }
+onCellEdit(event: { row: Product; field: string; oldValue: any; newValue: any }) {
+  // persist the change...
+}
+```
+
+- `editValidator(value, rowData)` returns `true` to accept the value or a `string`
+  error message to reject it. On failure the editor stays open, the message is
+  shown under the field, and other cells cannot be edited until the value is
+  fixed or the edit is cancelled.
+- `editOptions` renders a dropdown (`mat-select`) instead of a text input. Each
+  option can be a `string`/`number` or an object `{ value, label }`.
+- Fields support nested paths (`'a.b.c'`), mirroring the cell value resolution.
+
 #### Tabulator Table Features
 
 - **Row Styling**: Same rowStyle property support as Dynamic Table

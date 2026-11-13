@@ -65,6 +65,10 @@ $fallbacks: m3-grid.get-tokens();
       position: relative;
       overflow: hidden;
 
+      &.acp-grid-cell-editable:not(.acp-grid-cell-editing) {
+        cursor: pointer;
+      }
+
       &.acp-grid-cell-editing {
         padding: 0 !important;
 

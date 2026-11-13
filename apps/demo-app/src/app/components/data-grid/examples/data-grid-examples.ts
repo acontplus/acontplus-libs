@@ -469,6 +469,29 @@ interface PivotRow {
         </mat-card-content>
       </mat-card>
       <app-code-example [code]="editableSelectCode" [language]="'typescript'" />
+
+      <!-- Editable Cells with Validation -->
+      <h2>Editable Cells with Validation</h2>
+      <p class="instruction">
+        Use <code>editValidator</code> to reject invalid values: return <code>true</code> to accept
+        or a <code>string</code> with the error message to reject. When validation fails, the
+        message is shown under the editor and the grid blocks editing other cells until the value is
+        fixed or cancelled with <code>Escape</code>. Try entering a negative price or a non-integer
+        quantity.
+      </p>
+      <mat-card class="example-card">
+        <mat-card-content>
+          <div class="selection-info">
+            <span>Last edit: {{ lastEdit() ?? 'None' }}</span>
+          </div>
+          <acp-data-grid
+            [data]="editableValidationData"
+            [columns]="editableValidationColumns"
+            (cellEditChange)="onCellEditChange($event)"
+          />
+        </mat-card-content>
+      </mat-card>
+      <app-code-example [code]="editableValidationCode" [language]="'typescript'" />
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -1336,6 +1359,69 @@ onCellClick(event: { row: T; column: DataGridColumn }) {
     },
   ];
 
+  // Editable cells with validation
+  editableValidationData: DemoData[] = [
+    {
+      id: 101,
+      name: 'Laptop Pro 15',
+      description: 'High-performance laptop',
+      category: 'Electronics',
+      price: 1299.99,
+      quantity: 25,
+      status: 'completed',
+      createdAt: new Date('2024-01-15'),
+    },
+    {
+      id: 102,
+      name: 'Wireless Mouse',
+      description: 'Ergonomic wireless mouse',
+      category: 'Accessories',
+      price: 49.99,
+      quantity: 150,
+      status: 'completed',
+      createdAt: new Date('2024-02-20'),
+    },
+    {
+      id: 103,
+      name: 'USB-C Hub',
+      description: '7-in-1 USB-C hub',
+      category: 'Accessories',
+      price: 79.99,
+      quantity: 80,
+      status: 'processing',
+      createdAt: new Date('2024-03-10'),
+    },
+  ];
+
+  editableValidationColumns: DataGridColumn<DemoData>[] = [
+    { field: 'id', header: 'ID', type: 'number', width: '60px' },
+    {
+      field: 'name',
+      header: 'Name',
+      editable: true,
+      editValidator: value =>
+        value == null || String(value).trim() === '' ? 'Name is required' : true,
+    },
+    {
+      field: 'price',
+      header: 'Price',
+      type: 'currency',
+      editable: true,
+      editValidator: value => (Number(value) >= 0 ? true : 'Price must be zero or positive'),
+    },
+    {
+      field: 'quantity',
+      header: 'Qty',
+      type: 'number',
+      width: '80px',
+      editable: true,
+      editValidator: value => {
+        const num = Number(value);
+        return Number.isInteger(num) && num > 0 ? true : 'Quantity must be a positive integer';
+      },
+    },
+  ];
+
   // Editable cells with select dropdown
   editableWithSelectColumns: DataGridColumn<DemoData>[] = [
     { field: 'id', header: 'ID', type: 'number', width: '60px' },
@@ -1408,6 +1494,44 @@ editableColumns: DataGridColumn<DemoData>[] = [
       { value: 'inactive', label: 'Inactive' },
       { value: 'pending', label: 'Pending' },
     ],
+  },
+];
+
+<acp-data-grid
+  [data]="data"
+  [columns]="editableColumns"
+  (cellEditChange)="onCellEditChange($event)"
+/>`;
+
+  editableValidationCode = `// Editable Cells with Validation — editValidator returns
+// true to accept or a string error message to reject. On failure the message
+// is shown under the editor and other cells cannot be edited until the value
+// is fixed or the edit is cancelled with Escape.
+editableColumns: DataGridColumn<DemoData>[] = [
+  { field: 'id', header: 'ID', type: 'number' },
+  {
+    field: 'name',
+    header: 'Name',
+    editable: true,
+    editValidator: (value) =>
+      value == null || String(value).trim() === '' ? 'Name is required' : true,
+  },
+  {
+    field: 'price',
+    header: 'Price',
+    type: 'currency',
+    editable: true,
+    editValidator: (value) => (Number(value) >= 0 ? true : 'Price must be >= 0'),
+  },
+  {
+    field: 'quantity',
+    header: 'Qty',
+    type: 'number',
+    editable: true,
+    editValidator: (value) => {
+      const num = Number(value);
+      return Number.isInteger(num) && num > 0 ? true : 'Must be a positive integer';
+    },
   },
 ];
 

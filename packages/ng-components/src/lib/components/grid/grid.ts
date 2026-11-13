@@ -373,17 +373,20 @@ export class DataGrid implements AfterViewInit, OnChanges {
     newValue: any;
   }>();
 
-  /** Current cell being edited: rendered row index, row reference and field */
-  _editingCell = signal<{
-    rowIndex: number;
-    row: Record<string, any>;
-    field: string;
-  } | null>(null);
+  /** Current cell being edited: row reference and field */
+  _editingCell = signal<{ row: Record<string, any>; field: string } | null>(null);
   /** Current edit value */
   _editValue = signal<any>('');
+  /**
+   * Validation error of the current edit, if any. While set, the grid blocks
+   * starting another edit so an invalid value cannot be discarded silently.
+   */
+  _editError = signal<string | null>(null);
 
   /** Rendered cell components, used to refresh a cell after an inline edit. */
   private readonly _cellComponents = viewChildren(AcpGridCell);
+  /** Rendered cell editors, used to restore focus after a failed validation. */
+  private readonly _cellEditComponents = viewChildren(AcpGridCellEdit);
 
   // ===== Toolbar =====
 
@@ -1117,15 +1120,21 @@ export class DataGrid implements AfterViewInit, OnChanges {
   // ===== Cell Editing Methods =====
 
   /** Start editing a cell on click */
-  _onCellClick(row: Record<string, any>, colDef: DataGridColumn, index: number): void {
+  _onCellClick(row: Record<string, any>, colDef: DataGridColumn): void {
     if (!colDef.editable) {
       return;
     }
-    const currentValue = this._utils.getCellValue(row, colDef);
     // Keep the row reference: `dataIndex` is not the index in `dataSource.data`
     // (it is undefined unless `multiTemplateDataRows` is on, and indexes the
     // rendered/sorted/paginated stream, not the raw data array).
-    this._editingCell.set({ rowIndex: index, row, field: colDef.field });
+    // While the current edit has a validation error, block starting another
+    // one so the invalid value is not silently discarded (like Tabulator's
+    // `invalidEdit` blocking mode).
+    if (this._editError() !== null) {
+      return;
+    }
+    const currentValue = this._utils.getCellValue(row, colDef);
+    this._editingCell.set({ row, field: colDef.field });
     this._editValue.set(currentValue);
   }
 
@@ -1155,11 +1164,14 @@ export class DataGrid implements AfterViewInit, OnChanges {
     if (colDef.editValidator) {
       const result = colDef.editValidator(newValue, row);
       if (result !== true) {
-        // Validation failed - keep editing
+        // Validation failed - keep editing and surface the message
+        this._editError.set(typeof result === 'string' ? result : 'Invalid value');
         this._changeDetectorRef.markForCheck();
+        this._cellEditComponents().at(0)?.focusAndSelect();
         return;
       }
     }
+    this._editError.set(null);
 
     // Update the row data (supports nested paths like `a.b.c`, mirroring getCellValue)
     this._setCellValue(row, editing.field, newValue);
@@ -1186,6 +1198,7 @@ export class DataGrid implements AfterViewInit, OnChanges {
   private _cancelEdit(): void {
     this._editingCell.set(null);
     this._editValue.set('');
+    this._editError.set(null);
     this._changeDetectorRef.markForCheck();
   }
 
@@ -1204,9 +1217,9 @@ export class DataGrid implements AfterViewInit, OnChanges {
   }
 
   /** Check if a specific cell is currently being edited */
-  _isCellEditing(rowIndex: number, field: string): boolean {
+  _isCellEditing(row: Record<string, any>, field: string): boolean {
     const editing = this._editingCell();
-    return editing !== null && editing.rowIndex === rowIndex && editing.field === field;
+    return editing !== null && editing.row === row && editing.field === field;
   }
 
   /** Row select event */

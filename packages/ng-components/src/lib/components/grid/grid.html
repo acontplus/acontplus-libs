@@ -175,12 +175,13 @@
             [ngClass]="_groupClassFor(col)"
             [class.mat-table-sticky-left]="col.pinned === 'left'"
             [class.mat-table-sticky-right]="col.pinned === 'right'"
-            [class.acp-grid-cell-editing]="_isCellEditing(index, col.field)"
+            [class.acp-grid-cell-editing]="_isCellEditing(row, col.field)"
+            [class.acp-grid-cell-editable]="col.editable"
             [style.width]="col.width"
             [style.min-width]="col.width"
             [style.left]="col.left"
             [style.right]="col.right"
-            (click)="_onCellClick(row, col, index)"
+            (click)="_onCellClick(row, col)"
             acpGridSelectableCell
             [cellSelectable]="cellSelectable"
             (cellSelectedChange)="_selectCell($event, row, col)"
@@ -245,12 +246,13 @@
             ></acp-grid-cell>
             } } }
             <!-- Inline cell editor overlay -->
-            @if (_isCellEditing(index, col.field)) {
+            @if (_isCellEditing(row, col.field)) {
             <acp-grid-cell-edit
               [value]="_editValue()"
               [field]="col.field"
               [colDef]="col"
               [rowData]="row"
+              [error]="_editError()"
               (editComplete)="_onEditComplete($event)"
               (editCancel)="_onEditCancel()"
             ></acp-grid-cell-edit>
@@ -515,11 +517,12 @@
             [ngClass]="_groupClassFor(col)"
             [class.mat-table-sticky-left]="col.pinned === 'left'"
             [class.mat-table-sticky-right]="col.pinned === 'right'"
-            [class.acp-grid-cell-editing]="_isCellEditing(index, col.field)"
+            [class.acp-grid-cell-editing]="_isCellEditing(row, col.field)"
+            [class.acp-grid-cell-editable]="col.editable"
             [style.width]="col.width"
             [style.left]="col.left"
             [style.right]="col.right"
-            (click)="_onCellClick(row, col, index)"
+            (click)="_onCellClick(row, col)"
             acpGridSelectableCell
             [cellSelectable]="cellSelectable"
             (cellSelectedChange)="_selectCell($event, row, col)"
@@ -584,12 +587,13 @@
             ></acp-grid-cell>
             } } }
             <!-- Inline cell editor overlay -->
-            @if (_isCellEditing(index, col.field)) {
+            @if (_isCellEditing(row, col.field)) {
             <acp-grid-cell-edit
               [value]="_editValue()"
               [field]="col.field"
               [colDef]="col"
               [rowData]="row"
+              [error]="_editError()"
               (editComplete)="_onEditComplete($event)"
               (editCancel)="_onEditCancel()"
             ></acp-grid-cell-edit>

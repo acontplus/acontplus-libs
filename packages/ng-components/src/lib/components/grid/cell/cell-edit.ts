@@ -10,7 +10,7 @@ import {
   ChangeDetectionStrategy,
   viewChild,
 } from '@angular/core';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatError, MatFormFieldModule } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { DataGridColumn } from '../interfaces';
@@ -47,6 +47,9 @@ type EditOption = string | number | { value: string | number; label: string };
           [attr.data-field]="field()"
         />
       }
+      @if (error(); as err) {
+        <mat-error>{{ err }}</mat-error>
+      }
     </mat-form-field>
   `,
   styles: `
@@ -76,7 +79,7 @@ type EditOption = string | number | { value: string | number; label: string };
   `,
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatFormFieldModule, MatInput, MatSelectModule],
+  imports: [MatFormFieldModule, MatError, MatInput, MatSelectModule],
 })
 export class AcpGridCellEdit {
   // --- Signal inputs ---
@@ -84,6 +87,8 @@ export class AcpGridCellEdit {
   readonly field = input('');
   readonly colDef = input<DataGridColumn | undefined>(undefined);
   readonly rowData = input<Record<string, any> | undefined>(undefined);
+  /** Validation error message shown under the editor, if any. */
+  readonly error = input<string | null>(null);
 
   // --- Signal outputs ---
   readonly valueChange = output<any>();

@@ -504,8 +504,12 @@ const columns: AcpDataGridColumn[] = [
 #### Column Groups
 
 Consecutive columns that share the same `group` path are merged under group
-headers — one header row per level, so nested groups are supported. Ungrouped
-columns show an empty cell above their header.
+headers — one header row per level, so nested groups are supported. The header
+of an ungrouped column (or of a column with fewer levels) spans the remaining
+header rows (`rowspan`), like a PrimeNG column group; sorting, pinning and the
+selection checkbox keep working from that cell. With `columnResizable`, headers
+stay in the column header row with empty cells above them, because the resize
+handles live on that row.
 
 Each level of `group` accepts:
 
@@ -523,6 +527,14 @@ Strings are compared by value; `Observable`s are compared by instance.
 group header cell and propagated to every member column's header and data
 cells, so the whole column block can be styled (e.g. color entradas/salidas in
 a kardex).
+
+Use `summaryColspan` to make a summary (footer) cell span several columns, e.g. a
+`'Total'` label over the first two columns. It applies to the grid footer and to
+row-group footers, and stops at the first column with a different `pinned` value.
+
+```typescript
+{ field: 'description', header: 'Description', summary: 'Total', summaryColspan: 2 },
+```
 
 ```typescript
 const kardexGroupClass = (group: string | Observable<string>) =>

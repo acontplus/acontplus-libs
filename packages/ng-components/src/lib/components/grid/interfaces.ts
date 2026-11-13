@@ -36,6 +36,13 @@ export interface AcpDataGridColumn<T = any> {
    * result depends on other fields, e.g. `(_, __, rows) => sum(rows.map(r => r.qty * r.cost))`.
    */
   summary?: ((values: any[], colDef: AcpDataGridColumn<T>, rows: T[]) => any) | string;
+  /**
+   * Number of columns the summary (footer) cell of this column spans, starting at this column,
+   * like `colspan` (e.g. a `'Total'` label over the first two columns). The summary cells of the
+   * covered columns are not rendered. Applies to the grid footer and to row-group footers.
+   * The span stops at the first column whose pinning (`pinned`) differs.
+   */
+  summaryColspan?: number;
   class?: string | ((rowData?: T, colDef?: AcpDataGridColumn) => string);
   headerCellTemplate?: TemplateRef<any>;
   /**

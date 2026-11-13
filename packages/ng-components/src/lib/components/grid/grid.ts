@@ -180,6 +180,10 @@ export class DataGrid implements AfterViewInit, OnChanges {
   /** @internal First emitted value of each tracked `Observable` group key, by instance. */
   private readonly _groupKeyValues = new Map<Observable<string>, string>();
   private readonly _trackedGroupKeyObservables = new Set<Observable<string>>();
+  /** @internal Columns whose header is rendered in a group header row with `rowspan`. */
+  readonly _spannedHeaderFields = new Set<string>();
+  /** @internal `summaryColspan` per displayed column: `n > 1` spans, `0` is covered (hidden). */
+  private readonly _summarySpans = new Map<string, number>();
   /** @internal Rows of column-group header cells, derived from `columns[].group`. */
   _groupHeaderRows: AcpDataGridGroupHeaderRow[] = [];
   private _focusFirstRowOnRender = false;
@@ -749,6 +753,35 @@ export class DataGrid implements AfterViewInit, OnChanges {
     return this._groupClassByField.get(col.field);
   }
 
+  /** @internal `colspan` of a summary (footer) cell; `0` when covered by a previous cell. */
+  _summarySpan(field: string): number | null {
+    return this._summarySpans.get(field) ?? null;
+  }
+
+  private _updateSummarySpans(): void {
+    this._summarySpans.clear();
+    const displayed = this.displayedColumns;
+    for (let i = 0; i < displayed.length; i++) {
+      const col = this._columnsByField.get(displayed[i]);
+      const span = Math.floor(col?.summaryColspan ?? 1);
+      let end = i + 1;
+      // A span stops where the pinning changes: a sticky cell cannot cover scrolling columns.
+      while (
+        end < Math.min(i + span, displayed.length) &&
+        (this._columnsByField.get(displayed[end])?.pinned ?? null) === (col?.pinned ?? null)
+      ) {
+        end++;
+      }
+      if (end - i > 1) {
+        this._summarySpans.set(displayed[i], end - i);
+        for (let j = i + 1; j < end; j++) {
+          this._summarySpans.set(displayed[j], 0);
+        }
+        i = end - 1;
+      }
+    }
+  }
+
   /** Rebuilds the column-group header rows from the currently visible columns. */
   private _updateGroupHeaderCells(): void {
     this._columnsByField.clear();
@@ -758,6 +791,13 @@ export class DataGrid implements AfterViewInit, OnChanges {
     const displayed = this.displayedColumns;
     const paths = displayed.map(field => this._groupPathFor(this._columnsByField.get(field)));
     const maxDepth = paths.reduce((max, path) => Math.max(max, path.length), 0);
+
+    // Without column resize, headers of columns with fewer group levels span down to the column
+    // header row (`rowspan`). Resize handles live on the column header cell, so resizable grids
+    // keep empty cells above those headers instead.
+    const spanHeaders = !this.columnResizable;
+    this._spannedHeaderFields.clear();
+    this._updateSummarySpans();
 
     const rows: AcpDataGridGroupHeaderRow[] = [];
     for (let level = 0; level < maxDepth; level++) {
@@ -769,6 +809,25 @@ export class DataGrid implements AfterViewInit, OnChanges {
         const path = paths[i];
         const col = this._columnsByField.get(field);
 
+        if (spanHeaders && path.length < level) {
+          i++;
+          continue;
+        }
+        if (spanHeaders && path.length === level) {
+          const id = `__acpGridHeaderSpan_${field}`;
+          cells.push({
+            id,
+            colspan: 1,
+            isGroup: false,
+            leafField: field,
+            rowspan: maxDepth - level + 1,
+            pinned: col?.pinned ?? null,
+          });
+          columnIds.push(id);
+          this._spannedHeaderFields.add(field);
+          i++;
+          continue;
+        }
         if (path.length <= level) {
           const id = `__acpGridGroupEmpty_${level}_${field}`;
           cells.push({
@@ -1697,6 +1756,12 @@ interface AcpDataGridGroupHeaderCell {
   id: string;
   colspan: number;
   isGroup: boolean;
+  /**
+   * Header of a column without group at this level: it spans the remaining header rows
+   * (`rowspan`) and its cell in the column header row is hidden.
+   */
+  leafField?: string;
+  rowspan?: number;
   header?: string | Observable<string>;
   className?: string;
   pinned: AcpDataGridColumnPinValue;

@@ -565,6 +565,13 @@ export class DataGridApi {
         'Footer value: fixed text, or computed from the column values or the summarized rows',
     },
     {
+      name: 'summaryColspan',
+      type: 'number',
+      description:
+        'Columns the summary (footer) cell spans, like colspan; stops where the pinning changes',
+      default: '1',
+    },
+    {
       name: 'mergeRows',
       type: 'boolean | ((previous: T, current: T) => boolean)',
       description:

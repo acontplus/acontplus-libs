@@ -1034,7 +1034,7 @@ export class DataGridExamples {
     data.reduce((acc, value) => acc + (Number(value) || 0), 0);
 
   kardexColumns: DataGridColumn<KardexRow>[] = [
-    { field: 'descripcion', header: 'Descripción', summary: 'Total' },
+    { field: 'descripcion', header: 'Descripción', summary: 'Total', summaryColspan: 2 },
     { field: 'codigo', header: 'Código', width: '100px' },
     {
       field: 'entradasCantidad',
@@ -1340,7 +1340,7 @@ const establecimiento = {
 const kardexTotal = (data: any[]) => data.reduce((acc, v) => acc + (Number(v) || 0), 0);
 
 columns: DataGridColumn<KardexRow>[] = [
-  { field: 'descripcion', header: 'Descripción', summary: 'Total' },
+  { field: 'descripcion', header: 'Descripción', summary: 'Total', summaryColspan: 2 },
   { field: 'codigo', header: 'Código', width: '100px' },
   { field: 'entradasCantidad', header: 'Cantidad', type: 'number',
     group: [establecimiento, 'Entradas'], groupClass: kardexGroupClass, summary: kardexTotal },

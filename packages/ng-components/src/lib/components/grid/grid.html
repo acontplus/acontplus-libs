@@ -65,15 +65,72 @@
         (matSortChange)="_onSortChange($event)"
         [trackBy]="_rowGroupItems$ ? _rowGroupTrackBy : trackBy"
       >
+        <!-- Header contents, shared by the column header cells and the spanned (rowspan) header
+             cells. Declared inside the table so the sort header finds its MatSort. -->
+        <ng-template #acpGridHeaderBody let-col>
+          <div class="mat-header-cell-inner">
+            @if (headerTemplate | isTemplateRef) {
+            <ng-template
+              [ngTemplateOutlet]="$any(headerTemplate)"
+              [ngTemplateOutletContext]="{ $implicit: col, colDef: col }"
+            ></ng-template>
+            } @else { @if ( $safeNavigationMigration($any(headerTemplate)?.[col.field]) |
+            isTemplateRef ) {
+            <ng-template
+              [ngTemplateOutlet]="$any(headerTemplate)[col.field]"
+              [ngTemplateOutletContext]="{ $implicit: col, colDef: col }"
+            ></ng-template>
+            } @else {
+            <div
+              [mat-sort-header]="col.sortProp?.id || col.field"
+              [disabled]="!col.sortable"
+              [disableClear]="col.sortProp?.disableClear ?? sortDisableClear"
+              [arrowPosition]="$safeNavigationMigration(col.sortProp?.arrowPosition)!"
+              [start]="$safeNavigationMigration(col.sortProp?.start)!"
+            >
+              @if (col.showExpand) {
+              <span class="acp-grid-expansion-placeholder"></span>
+              }
+              <span>{{ col.header | toObservable | async }}</span>
+              @if (col.sortable) {
+              <svg
+                class="acp-grid-icon mat-sort-header-icon"
+                viewBox="0 0 24 24"
+                width="24px"
+                height="24px"
+                fill="currentColor"
+                focusable="false"
+              >
+                <path d="M3,13H15V11H3M3,6V8H21V6M3,18H9V16H3V18Z" />
+              </svg>
+              }
+            </div>
+            <ng-template
+              [ngTemplateOutlet]="headerExtraTplBase"
+              [ngTemplateOutletContext]="{ $implicit: headerExtraTemplate, colDef: col }"
+            ></ng-template>
+            } }
+          </div>
+        </ng-template>
+        <ng-template #acpGridMasterCheckbox>
+          @if (multiSelectable) {
+          <mat-checkbox
+            [checked]="rowSelection.hasValue() && _isAllSelected()"
+            [indeterminate]="rowSelection.hasValue() && !_isAllSelected()"
+            (change)="$event ? _toggleMasterCheckbox() : null"
+          ></mat-checkbox>
+          }
+        </ng-template>
         @if (rowSelectable && !hideRowSelectionCheckbox) {
         <ng-container matColumnDef="acpGridCheckboxColumnDef">
-          <th mat-header-cell *matHeaderCellDef class="acp-grid-checkbox-cell">
-            @if (multiSelectable) {
-            <mat-checkbox
-              [checked]="rowSelection.hasValue() && _isAllSelected()"
-              [indeterminate]="rowSelection.hasValue() && !_isAllSelected()"
-              (change)="$event ? _toggleMasterCheckbox() : null"
-            ></mat-checkbox>
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            class="acp-grid-checkbox-cell"
+            [class.acp-grid-header-cell-spanned]="_spannedHeaderFields.has('acpGridCheckboxColumnDef')"
+          >
+            @if (!_spannedHeaderFields.has('acpGridCheckboxColumnDef')) {
+            <ng-container [ngTemplateOutlet]="acpGridMasterCheckbox"></ng-container>
             }
           </th>
           <td
@@ -111,6 +168,7 @@
             *matHeaderCellDef
             [class]="col | colClass"
             [ngClass]="_groupClassFor(col)"
+            [class.acp-grid-header-cell-spanned]="_spannedHeaderFields.has(col.field)"
             [class.mat-table-sticky-left]="col.pinned === 'left'"
             [class.mat-table-sticky-right]="col.pinned === 'right'"
             [style.width]="col.width"
@@ -118,49 +176,13 @@
             [style.left]="col.left"
             [style.right]="col.right"
           >
-            <div class="mat-header-cell-inner">
-              @if (headerTemplate | isTemplateRef) {
-              <ng-template
-                [ngTemplateOutlet]="$any(headerTemplate)"
-                [ngTemplateOutletContext]="{ $implicit: col, colDef: col }"
-              ></ng-template>
-              } @else { @if ( $safeNavigationMigration($any(headerTemplate)?.[col.field]) |
-              isTemplateRef ) {
-              <ng-template
-                [ngTemplateOutlet]="$any(headerTemplate)[col.field]"
-                [ngTemplateOutletContext]="{ $implicit: col, colDef: col }"
-              ></ng-template>
-              } @else {
-              <div
-                [mat-sort-header]="col.sortProp?.id || col.field"
-                [disabled]="!col.sortable"
-                [disableClear]="col.sortProp?.disableClear ?? sortDisableClear"
-                [arrowPosition]="$safeNavigationMigration(col.sortProp?.arrowPosition)!"
-                [start]="$safeNavigationMigration(col.sortProp?.start)!"
-              >
-                @if (col.showExpand) {
-                <span class="acp-grid-expansion-placeholder"></span>
-                }
-                <span>{{ col.header | toObservable | async }}</span>
-                @if (col.sortable) {
-                <svg
-                  class="acp-grid-icon mat-sort-header-icon"
-                  viewBox="0 0 24 24"
-                  width="24px"
-                  height="24px"
-                  fill="currentColor"
-                  focusable="false"
-                >
-                  <path d="M3,13H15V11H3M3,6V8H21V6M3,18H9V16H3V18Z" />
-                </svg>
-                }
-              </div>
-              <ng-template
-                [ngTemplateOutlet]="headerExtraTplBase"
-                [ngTemplateOutletContext]="{ $implicit: headerExtraTemplate, colDef: col }"
-              ></ng-template>
-              } }
-            </div>
+            <!-- Spanned headers render in the group header row; skip here to avoid a second sort header -->
+            @if (!_spannedHeaderFields.has(col.field)) {
+            <ng-container
+              [ngTemplateOutlet]="acpGridHeaderBody"
+              [ngTemplateOutletContext]="{ $implicit: col }"
+            ></ng-container>
+            }
           </th>
           <td
             mat-cell
@@ -198,6 +220,8 @@
             mat-footer-cell
             *matFooterCellDef
             [ngClass]="_groupClassFor(col)"
+            [attr.colspan]="_summarySpan(col.field) || null"
+            [class.acp-grid-summary-cell-covered]="_summarySpan(col.field) === 0"
             [class.mat-table-sticky-left]="col.pinned === 'left'"
             [class.mat-table-sticky-right]="col.pinned === 'right'"
             [style.width]="col.width"
@@ -217,7 +241,45 @@
           <th [style.width]="s.width" [style.min-width]="s.minWidth"></th>
           }
         </tr>
-        } @for (row of _groupHeaderRows; track $index) { @for (gc of row.cells; track gc.id) {
+        } @for (row of _groupHeaderRows; track $index) { @for (gc of row.cells; track gc.id) { @if
+        (gc.leafField && _columnFor(gc.leafField); as col) {
+        <ng-container
+          [matColumnDef]="gc.id"
+          [sticky]="gc.pinned === 'left'"
+          [stickyEnd]="gc.pinned === 'right'"
+        >
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            [class]="col | colClass"
+            class="acp-grid-header-span-cell"
+            [ngClass]="_groupClassFor(col)"
+            [attr.rowspan]="gc.rowspan"
+            [class.mat-table-sticky-left]="col.pinned === 'left'"
+            [class.mat-table-sticky-right]="col.pinned === 'right'"
+            [style.width]="col.width"
+            [style.min-width]="col.width"
+            [style.left]="col.left"
+            [style.right]="col.right"
+          >
+            <ng-container
+              [ngTemplateOutlet]="acpGridHeaderBody"
+              [ngTemplateOutletContext]="{ $implicit: col }"
+            ></ng-container>
+          </th>
+        </ng-container>
+        } @else if (gc.leafField) {
+        <ng-container [matColumnDef]="gc.id">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            class="acp-grid-header-span-cell acp-grid-checkbox-cell"
+            [attr.rowspan]="gc.rowspan"
+          >
+            <ng-container [ngTemplateOutlet]="acpGridMasterCheckbox"></ng-container>
+          </th>
+        </ng-container>
+        } @else {
         <ng-container
           [matColumnDef]="gc.id"
           [sticky]="gc.pinned === 'left'"
@@ -235,7 +297,7 @@
             }
           </th>
         </ng-container>
-        }
+        } }
         <tr
           mat-header-row
           *matHeaderRowDef="row.columnIds; sticky: true"
@@ -295,6 +357,8 @@
             mat-cell
             *matCellDef="let item"
             class="acp-grid-row-group-footer-cell"
+            [attr.colspan]="_summarySpan(colId) || null"
+            [class.acp-grid-summary-cell-covered]="_summarySpan(colId) === 0"
             [class.acp-grid-checkbox-cell]="colId === 'acpGridCheckboxColumnDef'"
             [class.mat-table-sticky-left]="_columnFor(colId)?.pinned === 'left'"
             [class.mat-table-sticky-right]="_columnFor(colId)?.pinned === 'right'"
@@ -495,6 +559,8 @@
             mat-footer-cell
             *matFooterCellDef
             [ngClass]="_groupClassFor(col)"
+            [attr.colspan]="_summarySpan(col.field) || null"
+            [class.acp-grid-summary-cell-covered]="_summarySpan(col.field) === 0"
             [class.mat-table-sticky-left]="col.pinned === 'left'"
             [class.mat-table-sticky-right]="col.pinned === 'right'"
             [style.width]="col.width"
@@ -591,6 +657,8 @@
             mat-cell
             *matCellDef="let item"
             class="acp-grid-row-group-footer-cell"
+            [attr.colspan]="_summarySpan(colId) || null"
+            [class.acp-grid-summary-cell-covered]="_summarySpan(colId) === 0"
             [class.acp-grid-checkbox-cell]="colId === 'acpGridCheckboxColumnDef'"
             [class.mat-table-sticky-left]="_columnFor(colId)?.pinned === 'left'"
             [class.mat-table-sticky-right]="_columnFor(colId)?.pinned === 'right'"

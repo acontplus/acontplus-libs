@@ -242,6 +242,18 @@ $fallbacks: m3-grid.get-tokens();
     }
   }
 
+  // Header of a column with fewer group levels: it spans down to the column header row
+  // (`rowspan`), and its own cell in that row is hidden.
+  .acp-grid-header-group-row .mat-mdc-header-cell.acp-grid-header-span-cell {
+    text-align: start;
+  }
+
+  .mat-mdc-header-cell.acp-grid-header-cell-spanned,
+  .mat-mdc-footer-cell.acp-grid-summary-cell-covered,
+  .mat-mdc-cell.acp-grid-summary-cell-covered {
+    display: none;
+  }
+
   .acp-grid-header-group-label {
     font-weight: 600;
   }

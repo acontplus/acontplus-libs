@@ -121,6 +121,11 @@ export class AcpGridCell implements OnInit, DoCheck {
     });
   }
 
+  /** Marks the cell view for check; used by the grid after committing an inline edit. */
+  markForCheck(): void {
+    this._changeDetectorRef.markForCheck();
+  }
+
   _getText(value: any) {
     if (value === undefined) {
       return '';

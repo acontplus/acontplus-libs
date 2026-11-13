@@ -428,6 +428,47 @@ interface PivotRow {
         </mat-card-content>
       </mat-card>
       <app-code-example [code]="searchNavCode" [language]="'html'" />
+
+      <!-- Editable Cells -->
+      <h2>Editable Cells</h2>
+      <p class="instruction">
+        Mark a column with <code>editable: true</code> to enable inline editing. Click a cell to
+        start editing, press <code>Enter</code> to confirm or <code>Escape</code> to cancel.
+      </p>
+      <mat-card class="example-card">
+        <mat-card-content>
+          <div class="selection-info">
+            <span>Last edit: {{ lastEdit() ?? 'None' }}</span>
+          </div>
+          <acp-data-grid
+            [data]="editableData"
+            [columns]="editableColumns"
+            (cellEditChange)="onCellEditChange($event)"
+          />
+        </mat-card-content>
+      </mat-card>
+      <app-code-example [code]="editableCode" [language]="'typescript'" />
+
+      <!-- Editable Cells with Select -->
+      <h2>Editable Cells with Select</h2>
+      <p class="instruction">
+        Add <code>editOptions</code> to a column to render a dropdown select instead of a text
+        input. Options can be simple values or objects with <code>value</code> and
+        <code>label</code>.
+      </p>
+      <mat-card class="example-card">
+        <mat-card-content>
+          <div class="selection-info">
+            <span>Last edit: {{ lastEdit() ?? 'None' }}</span>
+          </div>
+          <acp-data-grid
+            [data]="editableData"
+            [columns]="editableWithSelectColumns"
+            (cellEditChange)="onCellEditChange($event)"
+          />
+        </mat-card-content>
+      </mat-card>
+      <app-code-example [code]="editableSelectCode" [language]="'typescript'" />
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -608,6 +649,7 @@ export class DataGridExamples {
   });
   gridSize = signal<DataGridSize>('small');
   lastRowAction = signal('');
+  lastEdit = signal<string | null>(null);
   rowMenuItems: AcpContextMenuItem[] = [
     { id: 'view', label: 'View', icon: 'visibility' },
     { id: 'edit', label: 'Edit', icon: 'edit' },
@@ -628,6 +670,13 @@ export class DataGridExamples {
   demoData = this.generateData(10);
   styledData = this.generateData(8);
   searchData = this.generateData(25);
+  editableData = [
+    { id: 1, name: 'Laptop Pro 15', category: 'Electronics', price: 1299.99, quantity: 25 },
+    { id: 2, name: 'Wireless Mouse', category: 'Accessories', price: 49.99, quantity: 150 },
+    { id: 3, name: 'USB-C Hub', category: 'Accessories', price: 79.99, quantity: 80 },
+    { id: 4, name: 'Mechanical Keyboard', category: 'Accessories', price: 149.99, quantity: 60 },
+    { id: 5, name: 'Monitor 27" 4K', category: 'Electronics', price: 599.99, quantity: 35 },
+  ];
 
   // Columns
   basicColumns: DataGridColumn<DemoData>[] = [
@@ -1267,4 +1316,104 @@ onCellClick(event: { row: T; column: DataGridColumn }) {
 
 <!-- The first row becomes active when results change.
      Opt out with [acpGridNavigationActivateFirstRow]="false" -->`;
+
+  // Editable cells
+  editableColumns: DataGridColumn<DemoData>[] = [
+    { field: 'id', header: 'ID', type: 'number', width: '60px' },
+    { field: 'name', header: 'Name', editable: true },
+    { field: 'category', header: 'Category', editable: true },
+    { field: 'price', header: 'Price', type: 'currency', editable: true },
+    {
+      field: 'quantity',
+      header: 'Qty',
+      type: 'number',
+      width: '80px',
+      editable: true,
+      editValidator: value => {
+        const num = Number(value);
+        return Number.isInteger(num) && num >= 0 ? true : 'Quantity must be a non-negative integer';
+      },
+    },
+  ];
+
+  // Editable cells with select dropdown
+  editableWithSelectColumns: DataGridColumn<DemoData>[] = [
+    { field: 'id', header: 'ID', type: 'number', width: '60px' },
+    { field: 'name', header: 'Name', editable: true },
+    {
+      field: 'category',
+      header: 'Category',
+      editable: true,
+      editOptions: ['Electronics', 'Clothing', 'Food', 'Books', 'Toys'],
+    },
+    {
+      field: 'status',
+      header: 'Status',
+      editable: true,
+      width: '120px',
+      editOptions: [
+        { value: 'active', label: 'Active' },
+        { value: 'inactive', label: 'Inactive' },
+        { value: 'pending', label: 'Pending' },
+      ],
+    },
+    { field: 'price', header: 'Price', type: 'currency' },
+  ];
+
+  onCellEditChange(event: {
+    row: Record<string, any>;
+    field: string;
+    oldValue: any;
+    newValue: any;
+  }): void {
+    this.lastEdit.set(`${event.field}: "${event.oldValue}" → "${event.newValue}"`);
+  }
+
+  editableCode = `// Editable Cells — click to edit, Enter to confirm, Escape to cancel
+editableColumns: DataGridColumn<DemoData>[] = [
+  { field: 'id', header: 'ID', type: 'number' },
+  { field: 'name', header: 'Name', editable: true },
+  { field: 'category', header: 'Category', editable: true },
+  { field: 'price', header: 'Price', type: 'currency', editable: true },
+  { field: 'quantity', header: 'Qty', type: 'number', editable: true,
+    editValidator: (value) => Number.isInteger(value) && value >= 0 ? true : 'Must be ≥ 0' },
+];
+
+<acp-data-grid
+  [data]="data"
+  [columns]="editableColumns"
+  (cellEditChange)="onCellEditChange($event)"
+/>
+
+onCellEditChange(event: { row, field, oldValue, newValue }) {
+  console.log('Changed', event.field, event.oldValue, '→', event.newValue);
+}`;
+
+  editableSelectCode = `// Editable Cells with Select — click to open dropdown
+editableColumns: DataGridColumn<DemoData>[] = [
+  { field: 'id', header: 'ID', type: 'number' },
+  { field: 'name', header: 'Name', editable: true },
+  {
+    field: 'category',
+    header: 'Category',
+    editable: true,
+    editOptions: ['Electronics', 'Clothing', 'Food', 'Books', 'Toys'],
+  },
+  {
+    field: 'status',
+    header: 'Status',
+    editable: true,
+    editOptions: [
+      { value: 'active', label: 'Active' },
+      { value: 'inactive', label: 'Inactive' },
+      { value: 'pending', label: 'Pending' },
+    ],
+  },
+];
+
+<acp-data-grid
+  [data]="data"
+  [columns]="editableColumns"
+  (cellEditChange)="onCellEditChange($event)"
+/>`;
 }

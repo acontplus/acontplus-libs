@@ -59,6 +59,21 @@ $fallbacks: m3-grid.get-tokens();
       box-shadow: inset 0 0 0 1px
         token-utils.slot(grid-table-cell-selected-outline-color, $fallbacks);
     }
+
+    // Editable cell styles
+    .mat-mdc-cell {
+      position: relative;
+      overflow: hidden;
+
+      &.acp-grid-cell-editing {
+        padding: 0 !important;
+
+        // Hide the cell content so it doesn't show through the editor overlay
+        > :not(acp-grid-cell-edit) {
+          visibility: hidden;
+        }
+      }
+    }
   }
 
   .mat-table-container {

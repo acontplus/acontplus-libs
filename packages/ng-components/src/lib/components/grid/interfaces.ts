@@ -33,6 +33,22 @@ export interface DataGridColumn<T = any> {
   class?: string | ((rowData?: T, colDef?: DataGridColumn) => string);
   headerCellTemplate?: TemplateRef<any>;
   /**
+   * Whether the cell value can be edited inline. When true, double-clicking a cell
+   * enters edit mode with an input field. The grid emits `cellEditChange` when the
+   * user confirms the change (Enter) or cancels it (Escape).
+   */
+  editable?: boolean;
+  /**
+   * Validation function for editable cells. Return `true` to accept the value,
+   * or a string error message to reject it. If not provided, any value is accepted.
+   */
+  editValidator?: (value: any, rowData: T) => boolean | string;
+  /**
+   * When provided, the editable cell renders as a dropdown (select) instead of a text input.
+   * Each option can be a simple string/value or an object with `value` and `label` properties.
+   */
+  editOptions?: (string | number | { value: string | number; label: string })[];
+  /**
    * Groups consecutive columns under shared header cells. Columns next to each
    * other that share the same group path are merged into group header cells that
    * span them.

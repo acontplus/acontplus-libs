@@ -9,6 +9,7 @@ import {
   TrackByFunction,
   ViewChild,
   ContentChildren,
+  viewChildren,
   QueryList,
   ElementRef,
   SimpleChanges,
@@ -62,6 +63,7 @@ import { AcpToObservablePipe, AcpIsTemplateRefPipe } from '../../../core/pipes';
 import { AcpGridSelectableCell } from './grid-selectable-cell';
 import { DataGridUtils } from './grid-utils';
 import { AcpGridCell } from './cell/cell';
+import { AcpGridCellEdit } from './cell/cell-edit';
 import {
   DataGridButtonType,
   DataGridCellTemplate,
@@ -117,6 +119,7 @@ export const DATA_GRID_DEFAULT_OPTIONS = new InjectionToken<DataGridDefaultOptio
     MatResizable,
     MatColumnResize,
     AcpGridCell,
+    AcpGridCellEdit,
     AcpGridColumnMenu,
     AcpGridSelectableCell,
     AcpGridExpansionToggle,
@@ -356,6 +359,31 @@ export class DataGrid implements AfterViewInit, OnChanges {
   cellSelectedChange = output<any[]>();
 
   private _selectedCell?: AcpGridSelectableCell;
+
+  // ===== Cell Editing =====
+
+  /**
+   * Event emitted when an editable cell value changes.
+   * Contains the row data, column field, old value, and new value.
+   */
+  cellEditChange = output<{
+    row: Record<string, any>;
+    field: string;
+    oldValue: any;
+    newValue: any;
+  }>();
+
+  /** Current cell being edited: rendered row index, row reference and field */
+  _editingCell = signal<{
+    rowIndex: number;
+    row: Record<string, any>;
+    field: string;
+  } | null>(null);
+  /** Current edit value */
+  _editValue = signal<any>('');
+
+  /** Rendered cell components, used to refresh a cell after an inline edit. */
+  private readonly _cellComponents = viewChildren(AcpGridCell);
 
   // ===== Toolbar =====
 
@@ -1084,6 +1112,101 @@ export class DataGrid implements AfterViewInit, OnChanges {
     }
 
     this._selectedCell = cellRef.selected ? cellRef : undefined;
+  }
+
+  // ===== Cell Editing Methods =====
+
+  /** Start editing a cell on click */
+  _onCellClick(row: Record<string, any>, colDef: DataGridColumn, index: number): void {
+    if (!colDef.editable) {
+      return;
+    }
+    const currentValue = this._utils.getCellValue(row, colDef);
+    // Keep the row reference: `dataIndex` is not the index in `dataSource.data`
+    // (it is undefined unless `multiTemplateDataRows` is on, and indexes the
+    // rendered/sorted/paginated stream, not the raw data array).
+    this._editingCell.set({ rowIndex: index, row, field: colDef.field });
+    this._editValue.set(currentValue);
+  }
+
+  /** Confirm the cell edit */
+  _onEditComplete(newValue: any): void {
+    const editing = this._editingCell();
+    if (!editing) {
+      return;
+    }
+
+    const row = editing.row;
+    if (!row) {
+      this._cancelEdit();
+      return;
+    }
+
+    // Find the column definition
+    const colDef = this.columns.find(c => c.field === editing.field);
+    if (!colDef) {
+      this._cancelEdit();
+      return;
+    }
+
+    const oldValue = this._utils.getCellValue(row, colDef);
+
+    // Run validator if provided
+    if (colDef.editValidator) {
+      const result = colDef.editValidator(newValue, row);
+      if (result !== true) {
+        // Validation failed - keep editing
+        this._changeDetectorRef.markForCheck();
+        return;
+      }
+    }
+
+    // Update the row data (supports nested paths like `a.b.c`, mirroring getCellValue)
+    this._setCellValue(row, editing.field, newValue);
+
+    // The row object is mutated in place, so the OnPush cell inputs do not
+    // change; mark the edited cells for check so they render the new value.
+    this._cellComponents()
+      .filter(c => c.rowData === row && c.colDef?.field === editing.field)
+      .forEach(c => c.markForCheck());
+
+    // Emit the change event
+    this.cellEditChange.emit({ row, field: editing.field, oldValue, newValue });
+
+    this._editingCell.set(null);
+    this._editValue.set('');
+    this._changeDetectorRef.markForCheck();
+  }
+
+  /** Cancel the cell edit */
+  _onEditCancel(): void {
+    this._cancelEdit();
+  }
+
+  private _cancelEdit(): void {
+    this._editingCell.set(null);
+    this._editValue.set('');
+    this._changeDetectorRef.markForCheck();
+  }
+
+  /** Write a value into a row following the same dotted-path semantics as `getCellValue`. */
+  private _setCellValue(row: Record<string, any>, field: string, value: any): void {
+    const keys = field.split('.');
+    let target: Record<string, any> = row;
+    for (let i = 0; i < keys.length - 1; i++) {
+      const key = keys[i];
+      if (target[key] == null || typeof target[key] !== 'object') {
+        target[key] = {};
+      }
+      target = target[key];
+    }
+    target[keys[keys.length - 1]] = value;
+  }
+
+  /** Check if a specific cell is currently being edited */
+  _isCellEditing(rowIndex: number, field: string): boolean {
+    const editing = this._editingCell();
+    return editing !== null && editing.rowIndex === rowIndex && editing.field === field;
   }
 
   /** Row select event */

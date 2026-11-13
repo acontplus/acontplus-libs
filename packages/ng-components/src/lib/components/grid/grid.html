@@ -175,10 +175,12 @@
             [ngClass]="_groupClassFor(col)"
             [class.mat-table-sticky-left]="col.pinned === 'left'"
             [class.mat-table-sticky-right]="col.pinned === 'right'"
+            [class.acp-grid-cell-editing]="_isCellEditing(index, col.field)"
             [style.width]="col.width"
             [style.min-width]="col.width"
             [style.left]="col.left"
             [style.right]="col.right"
+            (click)="_onCellClick(row, col, index)"
             acpGridSelectableCell
             [cellSelectable]="cellSelectable"
             (cellSelectedChange)="_selectCell($event, row, col)"
@@ -242,6 +244,17 @@
               (rowDataChange)="_onRowDataChange($event)"
             ></acp-grid-cell>
             } } }
+            <!-- Inline cell editor overlay -->
+            @if (_isCellEditing(index, col.field)) {
+            <acp-grid-cell-edit
+              [value]="_editValue()"
+              [field]="col.field"
+              [colDef]="col"
+              [rowData]="row"
+              (editComplete)="_onEditComplete($event)"
+              (editCancel)="_onEditCancel()"
+            ></acp-grid-cell-edit>
+            }
           </td>
           <td
             mat-footer-cell
@@ -502,9 +515,11 @@
             [ngClass]="_groupClassFor(col)"
             [class.mat-table-sticky-left]="col.pinned === 'left'"
             [class.mat-table-sticky-right]="col.pinned === 'right'"
+            [class.acp-grid-cell-editing]="_isCellEditing(index, col.field)"
             [style.width]="col.width"
             [style.left]="col.left"
             [style.right]="col.right"
+            (click)="_onCellClick(row, col, index)"
             acpGridSelectableCell
             [cellSelectable]="cellSelectable"
             (cellSelectedChange)="_selectCell($event, row, col)"
@@ -568,6 +583,17 @@
               (rowDataChange)="_onRowDataChange($event)"
             ></acp-grid-cell>
             } } }
+            <!-- Inline cell editor overlay -->
+            @if (_isCellEditing(index, col.field)) {
+            <acp-grid-cell-edit
+              [value]="_editValue()"
+              [field]="col.field"
+              [colDef]="col"
+              [rowData]="row"
+              (editComplete)="_onEditComplete($event)"
+              (editCancel)="_onEditCancel()"
+            ></acp-grid-cell-edit>
+            }
           </td>
           <td
             mat-footer-cell

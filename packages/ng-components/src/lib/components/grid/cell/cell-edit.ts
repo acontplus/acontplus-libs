@@ -21,7 +21,12 @@ type EditOption = string | number | { value: string | number; label: string };
   selector: 'acp-grid-cell-edit',
   exportAs: 'acpGridCellEdit',
   template: `
-    <mat-form-field class="acp-grid-cell-edit-field" appearance="outline">
+    <mat-form-field
+      class="acp-grid-cell-edit-field"
+      appearance="outline"
+      [class.mat-form-field-invalid]="error() !== null"
+      [class.acp-grid-cell-edit--error]="error() !== null"
+    >
       @if (hasOptions()) {
         <mat-select
           #selectElement
@@ -75,6 +80,26 @@ type EditOption = string | number | { value: string | number; label: string };
 
     .acp-grid-cell-edit-field :where(.mat-mdc-form-field) {
       width: 100%;
+    }
+
+    /* Error state: the editor has no form control, so mat-form-field never
+       applies mdc-text-field--invalid. These rules replicate the MDC invalid
+       styles for the outlined appearance using the same theme tokens. */
+    .acp-grid-cell-edit-field.acp-grid-cell-edit--error {
+      /* The extra .mdc-text-field/.mdc-text-field--focused ancestors raise
+         specificity above the Material default and focused outline rules. */
+      .mdc-text-field .mat-mdc-notch-piece,
+      .mdc-text-field.mdc-text-field--focused .mat-mdc-notch-piece {
+        border-color: var(--mat-form-field-outlined-error-outline-color, var(--mat-sys-error));
+      }
+
+      .mdc-text-field__input {
+        caret-color: var(--mat-form-field-outlined-error-caret-color, var(--mat-sys-error));
+      }
+
+      .mdc-select__selected-text {
+        color: var(--mat-form-field-outlined-error-label-text-color, var(--mat-sys-error));
+      }
     }
   `,
   encapsulation: ViewEncapsulation.None,

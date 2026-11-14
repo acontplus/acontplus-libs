@@ -1,4 +1,5 @@
-import { Component, signal, computed, ChangeDetectionStrategy } from '@angular/core';
+import { Component, signal, computed, viewChild, ChangeDetectionStrategy } from '@angular/core';
+import { CdkConnectedOverlay, CdkOverlayOrigin } from '@angular/cdk/overlay';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -96,6 +97,8 @@ interface PivotRow {
     MatFormFieldModule,
     MatInputModule,
     AcpGridNavigationFor,
+    CdkConnectedOverlay,
+    CdkOverlayOrigin,
     DataGrid,
     AcpContextMenu,
     DocHeading,
@@ -603,6 +606,65 @@ interface PivotRow {
       </mat-card>
       <app-code-example [code]="searchNavCode" [language]="'html'" />
 
+      <!-- Autocomplete: Overlay + Grid -->
+      <h2>Autocomplete (Overlay + Grid)</h2>
+      <mat-card class="example-card">
+        <mat-card-content>
+          <p class="instruction">
+            The grid lives in a <code>cdkConnectedOverlay</code> <code>ng-template</code> and is
+            only rendered while the panel is open. Focus or type to open, ↑/↓ to move (wraps
+            around), PageUp/PageDown to change page, Enter or click to pick, Escape or Tab to close.
+            With the panel closed, ↓ opens it.
+          </p>
+          <mat-form-field
+            appearance="outline"
+            class="search-field"
+            subscriptSizing="dynamic"
+            cdkOverlayOrigin
+            #acOrigin="cdkOverlayOrigin"
+          >
+            <mat-label>Product</mat-label>
+            <input
+              matInput
+              role="combobox"
+              aria-autocomplete="list"
+              autocomplete="off"
+              [attr.aria-expanded]="acOpen()"
+              [attr.aria-controls]="acGrid()?.gridId ?? null"
+              [acpGridNavigationFor]="acGrid()"
+              [value]="acText()"
+              (input)="onAcInput($any($event.target).value)"
+              (focus)="acOpen.set(true)"
+              (click)="acOpen.set(true)"
+              (keydown)="onAcKeydown($event)"
+            />
+          </mat-form-field>
+          <ng-template
+            cdkConnectedOverlay
+            [cdkConnectedOverlayOrigin]="acOrigin"
+            [cdkConnectedOverlayOpen]="acOpen()"
+            (overlayOutsideClick)="onAcOutsideClick($event, acOrigin)"
+            (detach)="acOpen.set(false)"
+          >
+            <div class="ac-panel" (mousedown)="$event.preventDefault()">
+              <acp-data-grid
+                #acGrid
+                size="small"
+                [data]="acResults()"
+                [columns]="basicColumns"
+                [pageSize]="5"
+                [hidePageSize]="true"
+                (rowClick)="pickAc($event.rowData)"
+              />
+            </div>
+          </ng-template>
+          @if (acPicked()) {
+            <p class="cell-info">Picked: {{ acPicked() }}</p>
+          }
+        </mat-card-content>
+      </mat-card>
+      <app-code-example [code]="acNavCode" [language]="'typescript'" />
+
       <!-- Editable Cells -->
       <h2>Editable Cells</h2>
       <p class="instruction">
@@ -698,6 +760,15 @@ interface PivotRow {
       .search-field {
         width: 100%;
         max-width: 360px;
+      }
+
+      .ac-panel {
+        width: min(560px, calc(100vw - 32px));
+        margin-top: 4px;
+        overflow: hidden;
+        border-radius: 4px;
+        background: var(--mat-sys-surface-container);
+        box-shadow: var(--mat-sys-level2);
       }
 
       .scroll-flex-container {
@@ -798,6 +869,14 @@ export class DataGridExamples {
   lastKeyboardAction = signal('');
   searchText = signal('');
   pickedProduct = signal('');
+  acGrid = viewChild<DataGrid>('acGrid');
+  acOpen = signal(false);
+  acText = signal('');
+  acPicked = signal('');
+  acResults = computed(() => {
+    const text = this.acText().trim().toLowerCase();
+    return this.searchData.filter(item => item.name.toLowerCase().includes(text));
+  });
   searchResults = computed(() => {
     const text = this.searchText().trim().toLowerCase();
     return this.searchData.filter(item => item.name.toLowerCase().includes(text));
@@ -1807,6 +1886,82 @@ onCellClick(event: { row: T; column: DataGridColumn }) {
 
 <!-- The first row becomes active when results change.
      Opt out with [acpGridNavigationActivateFirstRow]="false" -->`;
+
+  acNavCode = `// The grid is inside the overlay template: query it and pass the signal value,
+// it is undefined while the panel is closed.
+acGrid = viewChild<DataGrid>('acGrid');
+open = signal(false);
+
+// Template
+<mat-form-field cdkOverlayOrigin #origin="cdkOverlayOrigin" subscriptSizing="dynamic">
+  <input
+    matInput
+    role="combobox"
+    [attr.aria-expanded]="open()"
+    [acpGridNavigationFor]="acGrid()"
+    (input)="search($event); open.set(true)"
+    (focus)="open.set(true)"
+    (click)="open.set(true)"
+    (keydown)="onKeydown($event)"
+  />
+</mat-form-field>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="origin"
+  [cdkConnectedOverlayOpen]="open()"
+  (overlayOutsideClick)="onOutsideClick($event, origin)"
+  (detach)="open.set(false)"
+>
+  <!-- mousedown.preventDefault keeps the focus in the input when clicking rows or the paginator -->
+  <div class="panel" (mousedown)="$event.preventDefault()">
+    <acp-data-grid #acGrid [data]="results()" [columns]="columns" [pageSize]="5"
+      [hidePageSize]="true" (rowClick)="pick($event.rowData)" />
+  </div>
+</ng-template>
+
+// Escape/Tab close, ArrowDown opens. The directive ignores keys while the grid is not rendered.
+onKeydown(event: KeyboardEvent) {
+  if (event.key === 'Escape' || event.key === 'Tab') {
+    this.open.set(false);
+  } else if (event.key === 'ArrowDown' && !this.open()) {
+    this.open.set(true);
+    event.preventDefault();
+  }
+}
+
+// A click on the input itself is "outside" the overlay: ignore it.
+onOutsideClick(event: MouseEvent, origin: CdkOverlayOrigin) {
+  if (!origin.elementRef.nativeElement.contains(event.target as Node)) {
+    this.open.set(false);
+  }
+}`;
+
+  onAcInput(value: string) {
+    this.acText.set(value);
+    this.acOpen.set(true);
+  }
+
+  onAcKeydown(event: KeyboardEvent) {
+    if (event.key === 'Escape' || event.key === 'Tab') {
+      this.acOpen.set(false);
+    } else if (event.key === 'ArrowDown' && !this.acOpen()) {
+      this.acOpen.set(true);
+      event.preventDefault();
+    }
+  }
+
+  onAcOutsideClick(event: MouseEvent, origin: CdkOverlayOrigin) {
+    if (!origin.elementRef.nativeElement.contains(event.target as Node)) {
+      this.acOpen.set(false);
+    }
+  }
+
+  pickAc(row: DemoData) {
+    this.acText.set(row.name);
+    this.acPicked.set(row.name);
+    this.acOpen.set(false);
+  }
 
   // Editable cells
   editableColumns: DataGridColumn<DemoData>[] = [

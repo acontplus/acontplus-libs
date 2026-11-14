@@ -1129,12 +1129,12 @@ export class DataGrid implements AfterViewInit, OnChanges {
     return true;
   }
 
-  /** Goes to the next page, if there is one, and activates its first row. */
+  /** Goes to the next page and activates its first row; on the last page, activates the last row. */
   nextPage(focus = false): void {
     this._changePage(1, focus);
   }
 
-  /** Goes to the previous page, if there is one, and activates its first row. */
+  /** Goes to the previous page and activates its first row; on the first page, activates the first row. */
   previousPage(focus = false): void {
     this._changePage(-1, focus);
   }
@@ -1182,11 +1182,12 @@ export class DataGrid implements AfterViewInit, OnChanges {
 
   private _changePage(delta: 1 | -1, focus: boolean): void {
     const paginator = this.paginator;
-    if (!this.showPaginator || !paginator) {
-      return;
-    }
-    const canMove = delta === 1 ? paginator.hasNextPage() : paginator.hasPreviousPage();
+    const canMove =
+      this.showPaginator &&
+      !!paginator &&
+      (delta === 1 ? paginator.hasNextPage() : paginator.hasPreviousPage());
     if (!canMove) {
+      this.setActiveRow(delta === 1 ? this.renderedRows.length - 1 : 0, focus);
       return;
     }
     this._focusFirstRowOnRender = focus;
@@ -1203,6 +1204,9 @@ export class DataGrid implements AfterViewInit, OnChanges {
   }
 
   private _syncActiveRowWithData(): void {
+    if (this._activateFirstRowOnDataChange && this.pageOnFront && this.paginator?.pageIndex) {
+      this.paginator.firstPage();
+    }
     const rows = this.renderedRows;
     if (this._focusFirstRowOnRender || this._activateFirstRowOnDataChange) {
       this._activateFirstRowAfterRender();

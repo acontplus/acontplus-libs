@@ -317,7 +317,9 @@ The DataGrid is the primary table component, built with modern Angular 22+ patte
 - **Keyboard Navigation**: Opt-in with `keyboardNavigation="true"` (or globally with
   `DATA_GRID_DEFAULT_OPTIONS: { keyboardNavigation: true }`). Arrows, Home/End, PageUp/PageDown, Enter (row click),
   Space (toggle selection) and Ctrl+A (select all). Add `[acpGridNavigationFor]="grid"` to a
-  search input to drive the rows while the focus stays in the input
+  search input to drive the rows while the focus stays in the input (no `keyboardNavigation`
+  needed). For an autocomplete, the grid can live in a `cdkConnectedOverlay` `ng-template`: pass
+  `viewChild<DataGrid>('grid')()` to the directive; keys are ignored while the grid is not rendered
 - **Column Pinning**: Sticky left/right columns
 - **Infinite Scroll**: Load more data on scroll
 - **Server-side Support**: `pageOnFront`/`sortOnFront` toggles for backend pagination

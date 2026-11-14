@@ -5,6 +5,7 @@ export * from './dialog';
 export * from './dialog-wrapper';
 export * from './dynamic-select';
 export * from './search-select';
+export * from './file-upload';
 export * from './icons';
 export * from './input-chip';
 export * from './button';

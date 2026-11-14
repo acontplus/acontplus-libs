@@ -786,6 +786,67 @@ with `ngModel`, reactive forms (including the `required` error state) and `[(val
 - Typed text that is not selected is discarded when the panel closes, so the
   field always shows the current value.
 
+### AcpFileUpload
+
+File picker and uploader similar to PrimeNG's FileUpload: toolbar (choose, upload, cancel),
+drag-and-drop zone, image previews, upload progress, validation and a single-button `basic` mode.
+Files are uploaded with `HttpClient` as `multipart/form-data`, so the app interceptors apply.
+
+```typescript
+import { AcpFileUpload } from '@acontplus/ng-components';
+```
+
+```html
+<!-- Advanced: images and PDF up to 1 MB, at most 5 files -->
+<acp-file-upload
+  url="/api/attachments"
+  name="files"
+  [multiple]="true"
+  accept="image/*,.pdf"
+  [maxFileSize]="1048576"
+  [fileLimit]="5"
+  (uploadSuccess)="onUploaded($event)"
+  (uploadError)="onError($event)"
+/>
+
+<!-- Basic: one button that uploads as soon as a file is chosen -->
+<acp-file-upload
+  mode="basic"
+  url="/api/sri/xml"
+  accept=".xml"
+  [auto]="true"
+  chooseLabel="Cargar XML"
+/>
+
+<!-- Custom upload through your own service -->
+<acp-file-upload #upload [customUpload]="true" (uploadHandler)="save($event.files, upload)" />
+
+<!-- Forms: the value is File[] or null -->
+<acp-file-upload [formControl]="attachments" [multiple]="true" />
+```
+
+- **Upload:** `url`, `method` (`post`/`put`), `name` (multipart field, `files` by default),
+  `headers`, `withCredentials`. `beforeUpload` exposes the `FormData` to append fields.
+  `uploadProgress`, `uploadSuccess` and `uploadError` report the request. Without `url`, or with
+  `customUpload`, `uploadHandler` is emitted instead; call `completeUpload(files)` when done.
+- **Validation:** `accept` (same format as the input attribute), `maxFileSize` in bytes and
+  `fileLimit` (counting uploaded files). Rejected files show a dismissible message and are listed
+  in `filesSelect.rejected`. A file with the same name, type and size is not added twice.
+- **Behavior:** `mode` (`advanced`/`basic`), `multiple`, `auto`, `disabled`, `showUploadButton`,
+  `showCancelButton`, `previewWidth`.
+- **Texts** (Spanish by default): `chooseLabel`, `uploadLabel`, `cancelLabel`, `removeLabel`,
+  `emptyText`, `pendingLabel`, `uploadedLabel`, `dismissLabel`, and the messages
+  `invalidFileSizeMessage` (`{0}` name, `{1}` size), `invalidFileTypeMessage` (`{0}` name,
+  `{1}` types) and `invalidFileLimitMessage` (`{0}` limit).
+- **Templates:** `<ng-template #file let-file let-status="status" let-remove="remove">` for each
+  row (`AcpFileUploadFileContext`), `#empty` for the drop zone, `#toolbar` for extra actions.
+- **Methods:** `choose()`, `upload()`, `clear()` (also cancels an upload in progress),
+  `remove(file)`, `completeUpload(files?)`. Signals: `files`, `uploadedFiles`, `progress`,
+  `uploading`.
+- **Styling:** `--acp-file-upload-border-color`, `--acp-file-upload-radius` and
+  `--acp-file-upload-dragover-color`. Helpers `acpFileUploadFormatSize(bytes)` and
+  `acpFileUploadAccepts(file, accept)` are exported.
+
 ## Directives
 
 ### ToUpperCase

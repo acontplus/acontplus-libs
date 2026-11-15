@@ -60,6 +60,9 @@ export const apiInterceptor: HttpInterceptorFn = (req, next) => {
     // (needed to properly throw ApiResponse errors into the RxJS stream).
     switchMap((event: HttpEvent<unknown>) => {
       if (event instanceof HttpResponse) {
+        // 204 No Content / empty body: nothing to report, hand null to the consumer.
+        if (event.body === null || event.body === undefined) return of(event);
+
         const standardized = standardizeApiResponse(event.body, languageInfo);
 
         // Error envelopes get a single error notification path — showing both

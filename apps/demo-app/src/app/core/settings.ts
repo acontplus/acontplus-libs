@@ -1,3 +1,5 @@
+import { ACP_LAYOUT_DEFAULTS } from '@acontplus/ng-components';
+
 export type AppTheme = 'light' | 'dark' | 'auto';
 export type AppThemeColor =
   'blue' | 'aqua' | 'purple' | 'green' | 'cyan' | 'orange' | 'pink' | 'rose';
@@ -11,6 +13,8 @@ export interface AppSettings {
   dir: AppDirection;
   container: AppContainer;
   cardStyle: AppCardStyle;
+  /** Theme border radius in px (`--acp-skin-radius`). */
+  radius: number;
 }
 
 export const THEME_COLORS: AppThemeColor[] = [
@@ -30,4 +34,5 @@ export const defaults: AppSettings = {
   dir: 'ltr',
   container: 'full',
   cardStyle: 'shadow',
+  radius: ACP_LAYOUT_DEFAULTS.radius,
 };

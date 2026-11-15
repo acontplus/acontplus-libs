@@ -165,6 +165,19 @@
           ><mat-icon>close_fullscreen</mat-icon>{{ text().boxed }}</mat-button-toggle
         >
       </mat-button-toggle-group>
+
+      <h6 class="acp-customizer__title">{{ text().radius }}</h6>
+      <div class="acp-customizer-radius">
+        <mat-slider [min]="radiusRange.min" [max]="radiusRange.max" step="1" discrete>
+          <input
+            matSliderThumb
+            [attr.aria-label]="text().radius"
+            [value]="options().radius"
+            (valueChange)="set('radius', $event)"
+          />
+        </mat-slider>
+        <span class="acp-customizer-radius__value">{{ options().radius }}px</span>
+      </div>
     </div>
   </div>
 </ng-template>

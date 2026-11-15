@@ -772,6 +772,7 @@ provideAcpLayout({
 <!-- admin-layout.html -->
 <acp-layout [menu]="menu()">
   <acp-apps-button acpHeaderStart [apps]="apps" />
+  <acp-theme-toggle acpHeaderEnd />
   <acp-notifications-button acpHeaderEnd [items]="notices()" footerLabel="Ver en el inicio" />
   <acp-user-menu acpHeaderEnd [user]="user()" [items]="userItems" (selected)="onUserItem($event)" />
   <acp-user-panel
@@ -800,9 +801,9 @@ provideAcpLayout({
   permissions package.
 - Options (`AcpLayoutOptions`): `navPos` (`side` / `top`), `headerPos` (`fixed` / `static` /
   `above`), `showHeader`, `showUserPanel`, `sidenavOpened`, `sidenavCollapsed`, `dir`, `theme`
-  (`light` / `dark` / `auto`), `themeColor` (a prebuilt theme), `cardBorder` and `boxed`.
+  (`light` / `dark` / `auto`), `themeColor` (a prebuilt theme), `cardBorder`, `boxed` and `radius` (px, 4-24, default 10).
 - `AcpLayoutSettings` applies them to `<html>`: `color-scheme` and `theme-dark`, `theme-<color>`,
-  `dir`, `acp-card-border` and `acp-boxed`. Read them with `settings.options()` / `isDark()` and
+  `dir`, `acp-card-border`, `acp-boxed` and `--acp-skin-radius`. Read them with `settings.options()` / `isDark()` and
   change them with `settings.set({ ... })`. `provideAcpLayout` creates it on startup, so pages
   outside the layout (login) get the theme too.
 - `acp-customizer` labels are Spanish by default; override them with `[labels]`. The panel is
@@ -810,6 +811,8 @@ provideAcpLayout({
 - Header and sidebar widgets (data comes from the app):
   - `acp-apps-button`: dropdown grid of `AcpAppShortcut` (`title`, `subtitle`, `icon`, `color`,
     `route` or `href`).
+  - `acp-theme-toggle`: light/dark button synced with `AcpLayoutSettings` and `acp-customizer`
+    (see Theme Toggle).
   - `acp-notifications-button`: bell with a pulsing dot while `items` (`AcpNotificationItem`:
     `icon`, `tone` `primary`/`success`/`warning`/`error`, `title`, `text`, `route` +
     `queryParams` or `href`) is not empty; optional `footerLabel` / `footerRoute`; Spanish
@@ -834,8 +837,8 @@ Dark/light mode toggle component for theme switching. Provides accessible theme 
 - ✅ Accessible - ARIA labels and pressed state
 - ✅ Customizable icons and labels
 - ✅ Signal-based reactive state
-- ✅ Automatic theme persistence to localStorage
-- ✅ System theme preference detection
+- ✅ Shares state with `acp-layout` and `acp-customizer` through `AcpLayoutSettings` (persisted)
+- ✅ `auto` follows the system preference; the toggle switches to the opposite of the effective mode
 - ✅ OnPush change detection for performance
 
 ```typescript
@@ -847,7 +850,7 @@ import { ThemeToggle } from '@acontplus/ng-components';
     <acp-theme-toggle />
 
     <!-- With custom labels (i18n ready) -->
-    <acp-theme-toggle lightModeLabel="Cambiar a modo claro" darkModeLabel="Cambiar a modo oscuro" />
+    <acp-theme-toggle lightModeLabel="Switch to light mode" darkModeLabel="Switch to dark mode" />
 
     <!-- With custom icons -->
     <acp-theme-toggle lightModeIcon="wb_sunny" darkModeIcon="nightlight" />
@@ -862,13 +865,13 @@ export class HeaderComponent {}
 
 **Theme Toggle API:**
 
-| Input            | Type     | Default                  | Description                                   |
-| ---------------- | -------- | ------------------------ | --------------------------------------------- |
-| `lightModeIcon`  | `string` | `'light_mode'`           | Icon shown when in dark mode (Material icon)  |
-| `darkModeIcon`   | `string` | `'dark_mode'`            | Icon shown when in light mode (Material icon) |
-| `lightModeLabel` | `string` | `'Switch to light mode'` | Accessible label when in dark mode            |
-| `darkModeLabel`  | `string` | `'Switch to dark mode'`  | Accessible label when in light mode           |
-| `testId`         | `string` | `''`                     | data-testid attribute for testing             |
+| Input            | Type     | Default         | Description                                   |
+| ---------------- | -------- | --------------- | --------------------------------------------- |
+| `lightModeIcon`  | `string` | `'light_mode'`  | Icon shown when in dark mode (Material icon)  |
+| `darkModeIcon`   | `string` | `'dark_mode'`   | Icon shown when in light mode (Material icon) |
+| `lightModeLabel` | `string` | `'Modo claro'`  | Accessible label when in dark mode            |
+| `darkModeLabel`  | `string` | `'Modo oscuro'` | Accessible label when in light mode           |
+| `testId`         | `string` | `''`            | data-testid attribute for testing             |
 
 ### AcpSearchSelect
 
@@ -1007,14 +1010,6 @@ Manages overlay components and positioning.
 
 ```typescript
 import { OverlayService } from '@acontplus/ng-components';
-```
-
-### ThemeSwitcher
-
-Manages application theme (dark/light mode) with persistence.
-
-```typescript
-import { ThemeSwitcher } from '@acontplus/ng-components';
 ```
 
 ### AutocompleteWrapperService
@@ -1183,7 +1178,7 @@ Components support dynamic row styling that adapts to Material Design themes:
 
 ```typescript
 // Theme detection utility
-const isDark = document.documentElement.classList.contains('dark-theme');
+const isDark = inject(AcpLayoutSettings).isDark();
 
 // Status-based styling
 function getStatusStyle(status: string) {

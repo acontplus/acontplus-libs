@@ -29,10 +29,12 @@ import { CodeExample } from '../../shared/code-example/code-example';
 
       <app-code-example [code]="basicToggleCode" [language]="'typescript'" />
 
-      <h2>Theme Switcher Service</h2>
+      <h2>Layout Settings</h2>
       <p class="section-description">
-        The ThemeSwitcher service manages application theme (dark/light mode) with persistence to
-        localStorage. It automatically applies the theme class to the document element.
+        The toggle reads and changes the theme through <code>AcpLayoutSettings</code>, the same
+        state used by <code>acp-layout</code> and <code>acp-customizer</code>. It is persisted to
+        localStorage and applied as <code>color-scheme</code> and <code>theme-dark</code> on the
+        document element.
       </p>
 
       <app-code-example [code]="serviceCode" [language]="'typescript'" />
@@ -95,34 +97,22 @@ export class ThemeToggleOverview {
   basicToggleCode = `<!-- Simply add the component to your template -->
 <acp-theme-toggle />`;
 
-  serviceCode = `import { ThemeSwitcher } from '@acontplus/ng-components';
+  serviceCode = `import { AcpLayoutSettings } from '@acontplus/ng-components';
 
 export class AppComponent {
-  private themeSwitcher = inject(ThemeSwitcher);
+  private settings = inject(AcpLayoutSettings);
 
-  ngOnInit() {
-    // Get current theme
-    const currentTheme = this.themeSwitcher.currentTheme();
-    console.log('Current theme:', currentTheme);
+  // Effective dark mode (Signal<boolean>)
+  readonly isDark = this.settings.isDark;
 
-    // Listen to theme changes
-    effect(() => {
-      console.log('Theme changed to:', this.themeSwitcher.currentTheme());
-    });
-  }
-
-  toggleTheme() {
-    this.themeSwitcher.toggleTheme();
-  }
-
-  setTheme(theme: 'light' | 'dark') {
-    this.themeSwitcher.setTheme(theme);
+  setTheme(theme: 'light' | 'dark' | 'auto') {
+    this.settings.set({ theme });
   }
 }`;
 
   usageCode = `// In your component
 import { Component, inject } from '@angular/core';
-import { ThemeToggle, ThemeSwitcher } from '@acontplus/ng-components';
+import { ThemeToggle } from '@acontplus/ng-components';
 
 @Component({
   selector: 'app-header',
@@ -134,17 +124,5 @@ import { ThemeToggle, ThemeSwitcher } from '@acontplus/ng-components';
   \`,
   imports: [ThemeToggle]
 })
-export class HeaderComponent {
-  private themeSwitcher = inject(ThemeSwitcher);
-
-  // Access current theme
-  get isDarkMode() {
-    return this.themeSwitcher.currentTheme() === 'dark';
-  }
-
-  // Programmatically toggle
-  toggleTheme() {
-    this.themeSwitcher.toggleTheme();
-  }
-}`;
+export class HeaderComponent {}`;
 }

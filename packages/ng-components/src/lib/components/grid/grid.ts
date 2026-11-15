@@ -1744,7 +1744,7 @@ export class DataGrid implements AfterViewInit, OnChanges {
 
   /** Start editing a cell on click */
   _onCellClick(row: Record<string, any>, colDef: AcpDataGridColumn): void {
-    if (!colDef.editable) {
+    if (!this._isCellEditable(row, colDef)) {
       return;
     }
     // Keep the row reference: `dataIndex` is not the index in `dataSource.data`
@@ -1837,6 +1837,12 @@ export class DataGrid implements AfterViewInit, OnChanges {
       target = target[key];
     }
     target[keys[keys.length - 1]] = value;
+  }
+
+  /** @internal Whether the cell can be edited: `editable` is a flag or a per-row function. */
+  _isCellEditable(row: Record<string, any>, colDef: AcpDataGridColumn): boolean {
+    const editable = colDef.editable;
+    return typeof editable === 'function' ? editable(row) : !!editable;
   }
 
   /** Check if a specific cell is currently being edited */

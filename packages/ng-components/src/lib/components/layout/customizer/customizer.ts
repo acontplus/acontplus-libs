@@ -12,9 +12,14 @@ import {
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSliderModule } from '@angular/material/slider';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AcpDrawer, type AcpDrawerRef } from '../../drawer';
-import { ACP_THEME_COLORS, type AcpLayoutOptions } from '../layout/layout.config';
+import {
+  ACP_LAYOUT_RADIUS_RANGE,
+  ACP_THEME_COLORS,
+  type AcpLayoutOptions,
+} from '../layout/layout.config';
 import { AcpLayoutSettings } from '../layout/layout-settings';
 
 export interface AcpCustomizerLabels {
@@ -47,6 +52,7 @@ export interface AcpCustomizerLabels {
   container: string;
   full: string;
   boxed: string;
+  radius: string;
 }
 
 export const ACP_CUSTOMIZER_LABELS: AcpCustomizerLabels = {
@@ -79,6 +85,7 @@ export const ACP_CUSTOMIZER_LABELS: AcpCustomizerLabels = {
   container: 'Contenedor',
   full: 'Completo',
   boxed: 'Encajonado',
+  radius: 'Radio del borde',
 };
 
 /** Draggable settings button that opens a drawer to edit the `acp-layout` options. */
@@ -88,7 +95,14 @@ export const ACP_CUSTOMIZER_LABELS: AcpCustomizerLabels = {
   styleUrl: './customizer.scss',
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CdkDrag, MatButtonModule, MatButtonToggleModule, MatIconModule, MatTooltipModule],
+  imports: [
+    CdkDrag,
+    MatButtonModule,
+    MatButtonToggleModule,
+    MatIconModule,
+    MatSliderModule,
+    MatTooltipModule,
+  ],
 })
 export class AcpCustomizer {
   readonly #settings = inject(AcpLayoutSettings);
@@ -105,6 +119,7 @@ export class AcpCustomizer {
   protected readonly text = computed(() => ({ ...ACP_CUSTOMIZER_LABELS, ...this.labels() }));
   protected readonly options = this.#settings.options;
   protected readonly themeColors = ACP_THEME_COLORS;
+  protected readonly radiusRange = ACP_LAYOUT_RADIUS_RANGE;
 
   // Combinations the layout cannot render.
   protected readonly headerAbove = computed(() => this.options().headerPos === 'above');

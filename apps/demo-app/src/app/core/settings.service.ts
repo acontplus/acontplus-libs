@@ -55,13 +55,14 @@ export class SettingsService {
 
   private applyTheme() {
     const html = this.document.documentElement;
-    const { theme, themeColor, dir, container, cardStyle } = this.options();
+    const { theme, themeColor, dir, container, cardStyle, radius } = this.options();
 
     html.classList.remove(...THEME_COLORS.map(color => `theme-${color}`));
     html.classList.add(`theme-${themeColor}`);
     html.dir = dir;
     html.classList.toggle('acp-boxed', container === 'boxed');
     html.classList.toggle('acp-card-border', cardStyle === 'border');
+    html.style.setProperty('--acp-skin-radius', `${radius}px`);
 
     // Apply dark mode
     if (theme === 'auto') {

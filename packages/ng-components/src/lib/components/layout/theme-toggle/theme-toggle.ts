@@ -6,15 +6,15 @@ import {
   input,
   ViewEncapsulation,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { ThemeSwitcher } from '../../../services';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
+import { AcpLayoutSettings } from '../layout/layout-settings';
 
 /**
- * A theme toggle button component that allows users to switch between
- * light and dark modes. Follows WAI-ARIA best practices for toggle buttons.
+ * Button that switches between light and dark mode. Shares its state with `acp-layout` and
+ * `acp-customizer` through `AcpLayoutSettings` (persisted; from `auto` it switches to the
+ * opposite of the effective mode). Follows WAI-ARIA best practices for toggle buttons.
  */
 @Component({
   selector: 'acp-theme-toggle',
@@ -28,7 +28,7 @@ import { MatTooltip } from '@angular/material/tooltip';
   },
 })
 export class ThemeToggle {
-  private readonly themeSwitcher = inject(ThemeSwitcher);
+  readonly #settings = inject(AcpLayoutSettings);
 
   /** Icon to display when in dark mode (clicking will switch to light) */
   readonly lightModeIcon = input<string>('light_mode');
@@ -37,31 +37,27 @@ export class ThemeToggle {
   readonly darkModeIcon = input<string>('dark_mode');
 
   /** Accessible label for when in dark mode */
-  readonly lightModeLabel = input<string>('Switch to light mode');
+  readonly lightModeLabel = input<string>('Modo claro');
 
   /** Accessible label for when in light mode */
-  readonly darkModeLabel = input<string>('Switch to dark mode');
+  readonly darkModeLabel = input<string>('Modo oscuro');
 
   /** Test ID for automated testing */
   readonly testId = input<string>('');
 
-  /** Current dark mode state as a signal */
-  protected readonly isDarkMode = toSignal(this.themeSwitcher.isDarkMode$, {
-    initialValue: false,
-  });
+  /** Effective dark mode (`dark`, or `auto` with a dark system preference) */
+  protected readonly isDarkMode = this.#settings.isDark;
 
-  /** Computed icon based on current theme */
   protected readonly currentIcon = computed(() =>
     this.isDarkMode() ? this.lightModeIcon() : this.darkModeIcon(),
   );
 
-  /** Computed accessible label based on current theme */
   protected readonly currentLabel = computed(() =>
     this.isDarkMode() ? this.lightModeLabel() : this.darkModeLabel(),
   );
 
   /** Toggle between dark and light mode */
   toggleDarkMode(): void {
-    this.themeSwitcher.toggleDarkMode();
+    this.#settings.set({ theme: this.isDarkMode() ? 'light' : 'dark' });
   }
 }

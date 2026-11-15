@@ -196,7 +196,8 @@
 .acp-daterangepicker td.week,
 .acp-daterangepicker th.week {
   font-size: 80%;
-  color: var(--mat-sys-on-surface-variant, #ccc);
+  // Week number column ("W"): faded like the days of the previous/next month.
+  color: color-mix(in srgb, var(--mat-sys-on-surface-variant, #999) 50%, transparent);
 }
 
 .acp-daterangepicker td.off,
@@ -205,7 +206,8 @@
 .acp-daterangepicker td.off.end-date {
   background-color: transparent;
   border-color: transparent;
-  color: var(--mat-sys-on-surface-variant, #999);
+  // Days of the previous/next month: faded so the current month stands out.
+  color: color-mix(in srgb, var(--mat-sys-on-surface-variant, #999) 50%, transparent);
 }
 
 .acp-daterangepicker td.in-range {

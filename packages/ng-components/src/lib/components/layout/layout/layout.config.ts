@@ -23,6 +23,11 @@ export interface AcpLayoutOptions {
   cardBorder: boolean;
   /** Page content limited to a centered max width (`acp-boxed` on `<html>`, acontpluspro). */
   boxed: boolean;
+  /**
+   * Corner radius (px) of cards, menus, fields... (`--acp-skin-radius` on `<html>`,
+   * acontpluspro).
+   */
+  radius: number;
 }
 
 export const ACP_LAYOUT_DEFAULTS: AcpLayoutOptions = {
@@ -37,7 +42,11 @@ export const ACP_LAYOUT_DEFAULTS: AcpLayoutOptions = {
   sidenavCollapsed: false,
   cardBorder: false,
   boxed: false,
+  radius: 10,
 };
+
+/** Range of the theme border radius (px) offered by the customizer. */
+export const ACP_LAYOUT_RADIUS_RANGE = { min: 4, max: 24 } as const;
 
 /** Prebuilt themes with the brand color shown by the customizer. */
 export const ACP_THEME_COLORS: readonly { value: AcpThemeColor; label: string; color: string }[] = [

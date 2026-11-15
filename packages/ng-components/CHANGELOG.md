@@ -165,7 +165,6 @@
     `.acp-font-*` utility classes (`acontpluspro-utilities($prefix)` generates them with another
     prefix, e.g. `''` for Tailwind names).
 
-
 ### 🩹 Fixes
 
 - Fixed `AcpVanillaDateRangePicker` leaving its dropdown in the page after the component is destroyed ([#156](https://github.com/acontplus/acontplus-libs/pull/156))
@@ -187,7 +186,7 @@
   - Accepts a grid that is not rendered yet (`null`/`undefined`), so the grid can live in an overlay
     `ng-template` for an autocomplete; the first row becomes active when the grid appears.
 
-### ⚠️  Breaking Changes
+### ⚠️ Breaking Changes
 
 - Rebuilt `AcpBadge` on native elements with the MaterialPro look and a consistent API. ([#156](https://github.com/acontplus/acontplus-libs/pull/156))
 
@@ -263,12 +262,12 @@
 - Replaced the shell components with `acp-layout`, the admin layout of acontplus-frontend. ([#156](https://github.com/acontplus/acontplus-libs/pull/156))
 
   - New `acp-layout`: header, collapsible sidebar with `acp-sidemenu`, `acp-topmenu` (`navPos:
-  'top'`) and the page. Handles mobile (overlay sidenav closed after navigating), the collapsed
+'top'`) and the page. Handles mobile (overlay sidenav closed after navigating), the collapsed
     rail, header positions (`fixed`, `static`, `above`) and scrolling to the top. Apps project their
     widgets with the `acpHeaderStart`, `acpHeaderEnd`, `acpSidebarUser` and `acpSidebarFooter`
     attributes and the page as default content.
   - New `AcpLayoutSettings` (signals, persisted in `localStorage`) and `provideAcpLayout({ defaults,
-  storageKey, branding, mobileQuery, fullscreenButton })`. It applies `color-scheme`,
+storageKey, branding, mobileQuery, fullscreenButton })`. It applies `color-scheme`,
     `theme-dark`, `theme-<color>`, `dir`, `acp-card-border` and `acp-boxed` on `<html>`.
   - New `acp-customizer`: draggable settings button with a drawer to edit the layout options
     (Spanish labels by default, `[labels]` to override).

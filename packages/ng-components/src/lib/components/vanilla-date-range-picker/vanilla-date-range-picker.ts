@@ -6,6 +6,7 @@ import {
   output,
   viewChild,
   AfterViewInit,
+  OnDestroy,
   ChangeDetectionStrategy,
   ViewEncapsulation,
 } from '@angular/core';
@@ -23,7 +24,7 @@ import { DateRangePicker } from './vanilla-datetimerange-picker';
   encapsulation: ViewEncapsulation.None,
   styleUrl: './vanilla-date-range-picker.scss',
 })
-export class AcpVanillaDateRangePicker implements AfterViewInit {
+export class AcpVanillaDateRangePicker implements AfterViewInit, OnDestroy {
   showInputMaterial = input(false);
   showMatSuffix = input(false);
   showMatPrefix = input(false);
@@ -49,6 +50,12 @@ export class AcpVanillaDateRangePicker implements AfterViewInit {
 
   ngAfterViewInit() {
     this.setConfigDateRange();
+  }
+
+  ngOnDestroy() {
+    // The picker lives in <body>, outside this component: remove it with the component.
+    this.selfDateRef?.remove();
+    this.selfDateRef = undefined;
   }
 
   setConfigDateRange = () => {

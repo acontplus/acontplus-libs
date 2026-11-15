@@ -16,7 +16,7 @@ import { FormsModule } from '@angular/forms';
 /* Services */
 import { NotificationService } from '@acontplus/ng-notifications';
 import { NotificationProvider } from '@acontplus/ui-kit';
-import { AdvancedDialogService } from '@acontplus/ng-components';
+import { AcpButton, AdvancedDialogService } from '@acontplus/ng-components';
 
 /* ======================================================
  * NOTIFICATION DEMO COMPONENT
@@ -39,6 +39,7 @@ import { AdvancedDialogService } from '@acontplus/ng-components';
     MatChipsModule,
     MatDialogModule,
     FormsModule,
+    AcpButton,
   ],
 })
 export class NotificationDemoComponent {
@@ -672,6 +673,7 @@ interface ModalData {
     MatFormFieldModule,
     MatInputModule,
     FormsModule,
+    AcpButton,
   ],
   template: `
     <mat-dialog-content>
@@ -691,34 +693,10 @@ interface ModalData {
 
       <h4>Snackbar Demos:</h4>
       <div class="demo-buttons">
-        <button
-          mat-raised-button
-          style="background: #4caf50; color: white"
-          (click)="showSnackbarSuccess()"
-        >
-          Snackbar Success
-        </button>
-        <button
-          mat-raised-button
-          style="background: #f44336; color: white"
-          (click)="showSnackbarError()"
-        >
-          Snackbar Error
-        </button>
-        <button
-          mat-raised-button
-          style="background: #2196f3; color: white"
-          (click)="showSnackbarInfo()"
-        >
-          Snackbar Info
-        </button>
-        <button
-          mat-raised-button
-          style="background: #ff9800; color: white"
-          (click)="showSnackbarWarning()"
-        >
-          Snackbar Warning
-        </button>
+        <acp-button color="success" (click)="showSnackbarSuccess()">Snackbar Success</acp-button>
+        <acp-button color="error" (click)="showSnackbarError()">Snackbar Error</acp-button>
+        <acp-button color="info" (click)="showSnackbarInfo()">Snackbar Info</acp-button>
+        <acp-button color="warning" (click)="showSnackbarWarning()">Snackbar Warning</acp-button>
       </div>
 
       <div class="form-section">

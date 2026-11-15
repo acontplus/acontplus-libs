@@ -1,24 +1,49 @@
-export type AcpBadgeColor =
-  | 'primary'
-  | 'secondary'
-  | 'tertiary'
-  | 'success'
-  | 'warning'
-  | 'danger'
-  | 'info'
-  | 'neutral'
-  | 'custom';
+/** Colors, M3 roles plus semantic status colors. */
+export const ACP_BADGE_COLORS = [
+  'primary',
+  'secondary',
+  'tertiary',
+  'success',
+  'warning',
+  'error',
+  'info',
+  'neutral',
+  'custom',
+] as const;
+export type AcpBadgeColor = (typeof ACP_BADGE_COLORS)[number];
 
-export type AcpBadgeVariant = 'filled' | 'outlined' | 'soft' | 'tonal' | 'text';
+/** `tonal` (default, 15% tint as in MaterialPro), `filled`, `outlined` or `text`. */
+export const ACP_BADGE_VARIANTS = ['tonal', 'filled', 'outlined', 'text'] as const;
+export type AcpBadgeVariant = (typeof ACP_BADGE_VARIANTS)[number];
 
-export type AcpBadgeSize = 'xs' | 'sm' | 'md' | 'lg';
+/** Density, same scale as `acp-data-grid` and `acp-kpi-card`. */
+export const ACP_BADGE_SIZES = ['xs-small', 'small', 'medium', 'large'] as const;
+export type AcpBadgeSize = (typeof ACP_BADGE_SIZES)[number];
 
-export type AcpBadgeShape = 'rounded' | 'pill' | 'square';
+export const ACP_BADGE_SHAPES = ['pill', 'rounded', 'square'] as const;
+export type AcpBadgeShape = (typeof ACP_BADGE_SHAPES)[number];
 
-export type AcpBadgeTrend = 'up' | 'down' | 'neutral' | 'none';
+/** Direction of a change. Sets the trend icon and, with `lowerIsBetter`, the color. */
+export type AcpBadgeTrend = 'up' | 'down' | 'neutral';
 
-export interface AcpBadgeTrendConfig {
-  value: string;
-  icon: string;
-  color: AcpBadgeColor;
+/** Texts read by screen readers. */
+export interface AcpBadgeLabels {
+  /** Remove button; `{label}` is replaced with the badge label. */
+  remove: string;
+  increase: string;
+  decrease: string;
+  noChange: string;
+}
+
+/**
+ * Application-wide or subtree defaults for `acp-badge`.
+ * Provide them with `provideAcpBadgeDefaults()` or `ACP_BADGE_DEFAULT_OPTIONS`.
+ * Inputs set on an individual badge always win.
+ */
+export interface AcpBadgeConfig {
+  variant?: AcpBadgeVariant;
+  color?: AcpBadgeColor;
+  size?: AcpBadgeSize;
+  shape?: AcpBadgeShape;
+  labels?: Partial<AcpBadgeLabels>;
 }

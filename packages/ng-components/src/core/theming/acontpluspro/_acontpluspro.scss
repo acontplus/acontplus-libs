@@ -1,0 +1,523 @@
+@use 'sass:map';
+@use '@angular/material' as mat;
+@use '../../tokens/acp-system';
+
+// ============================================================================
+// acontpluspro: estilos globales de acontplus inspirados en MaterialPro. Define la tipografia,
+// las elevaciones, los bordes, los radios y las superficies que usan todos los componentes
+// (Material y acontplus) solo con tokens y unas pocas reglas estructurales.
+// `html:root` gana a las clases `.theme-*`, que aportan solo los colores.
+// Uso: `@use '@acontplus/ng-components/acontpluspro';` despues de los prebuilt themes.
+// ============================================================================
+
+$palette: (
+  background: light-dark(#eef5f9, #141a21),
+  surface: light-dark(#fff, #1c252e),
+  surface-muted: light-dark(#f6f9fc, #19212a),
+  text: light-dark(#3a4752, rgb(255 255 255 / 0.9)),
+  text-muted: light-dark(#768b9e, rgb(255 255 255 / 0.67)),
+  border: light-dark(#ebf1f6, #2e3f50),
+  field-border: light-dark(#dfe5ef, #465670),
+  field-background: light-dark(#fbfbfb, transparent),
+  radius: 10px,
+  shadow-card: 0 1px 16px light-dark(rgb(145 158 171 / 0.12), rgb(0 0 0 / 0.2)),
+  shadow-popup: 0 12px 24px -4px light-dark(rgb(145 158 171 / 0.3), rgb(0 0 0 / 0.35)),
+  shadow-nav: (
+    0 3px 4px rgb(0 0 0 / 0.03),
+    0 0 1px rgb(0 0 0 / 0.1),
+  ),
+  accent: var(--acp-theme-primary-color, var(--mat-sys-primary)),
+) !default;
+
+$boxed-max-width: 1300px !default;
+
+@function _skin($name) {
+  @return var(--acp-skin-#{$name});
+}
+
+/// Emits the skin variables and every token override. Include it inside a selector.
+/// @param {Map} $overrides Values to replace in `$palette`, e.g. `(radius: 8px)`.
+@mixin tokens($overrides: ()) {
+  @each $name, $value in map.merge($palette, $overrides) {
+    --acp-skin-#{$name}: #{$value};
+  }
+
+  // Sistema M3
+  --mat-sys-background: #{_skin(background)};
+  --mat-sys-surface: #{_skin(surface)};
+  --mat-sys-on-background: #{_skin(text)};
+  --mat-sys-outline-variant: #{_skin(border)};
+  --mat-sys-corner-small: #{_skin(radius)};
+  --mat-sys-level1: #{_skin(shadow-popup)};
+  --mat-sys-level2: #{_skin(shadow-card)};
+
+  // Tokens de diseno de acontplus (card y demas componentes los leen)
+  @include acp-system.tokens(
+    (
+      surface-raised: _skin(surface),
+      shadow-1: _skin(shadow-card),
+      shadow-2: _skin(shadow-popup),
+      heading-weight: 500,
+    )
+  );
+
+  // Layout and text scale
+  @include acp-system.layout-tokens;
+  @include acp-system.text-tokens;
+
+  --acp-body-font-family: #{acp-system.$font-family};
+  --acp-code-font-family: 'Roboto Mono', monospace;
+  --acp-code-border-color: color-mix(in srgb, var(--mat-sys-on-surface) 8%, transparent);
+  --acp-code-background-color: color-mix(in srgb, var(--mat-sys-on-surface) 4%, transparent);
+  --acp-link-color: var(--mat-sys-primary);
+  --acp-link-hover-color: var(--mat-sys-primary);
+  --acp-header-background-color: var(--acp-theme-primary-color);
+  --acp-header-text-color: #fff;
+  --acp-topmenu-text-color: var(--mat-sys-on-background);
+  --acp-topmenu-item-active-background-color: var(--mat-sys-primary-container);
+  --acp-topmenu-dropdown-item-active-text-color: var(--mat-sys-primary);
+  --acp-body-background-color: #{_skin(background)};
+  --acp-color-border: #{_skin(border)};
+  --acp-user-panel-background-color: #{_skin(surface-muted)};
+  --acp-user-panel-hover-background-color: #{_skin(border)};
+  --acp-sidemenu-expanded-background-color: transparent;
+  --acp-sidemenu-heading-hover-background-color: transparent;
+  --acp-sidemenu-active-heading-text-color: #{_skin(accent)};
+  --acp-sidemenu-active-heading-background-color: color-mix(
+    in srgb,
+    #{_skin(accent)} 10%,
+    transparent
+  );
+  --acp-sidemenu-active-heading-hover-background-color: var(
+    --acp-sidemenu-active-heading-background-color
+  );
+
+  // Componentes de acontplus
+  --acp-kpi-card-container-shape: #{_skin(radius)};
+  --acp-grid-container-shape: #{_skin(radius)};
+  --acp-grid-outline-color: #{_skin(border)};
+  --acp-grid-column-menu-divider-color: #{_skin(border)};
+  --acp-grid-table-footer-background-color: #{_skin(surface-muted)};
+  --acp-grid-table-row-striped-background-color: #{_skin(surface-muted)};
+  --acp-grid-table-row-hover-background-color: #{_skin(surface-muted)};
+  --acp-popover-container-shape: #{_skin(radius)};
+  --acp-drawer-container-shape: #{_skin(radius)};
+  --acp-dialog-header-border-color: #{_skin(border)};
+  --acp-dialog-actions-border-color: #{_skin(border)};
+
+  color: _skin(text);
+
+  // Tipografia: la familia compartida y la escala MaterialPro (cuerpo a 14px)
+  @include mat.theme(
+    (
+      typography: (
+        plain-family: acp-system.$font-family,
+        brand-family: acp-system.$font-family,
+      ),
+    )
+  );
+
+  --mat-sys-body-large: 400 14px / 1.5rem var(--mat-sys-body-large-font);
+  --mat-sys-body-large-size: 14px;
+  --mat-sys-body-medium: 400 14px / 1.25rem var(--mat-sys-body-medium-font);
+  --mat-sys-body-medium-size: 14px;
+  --mat-form-field-container-text-tracking: normal;
+  --mat-dialog-subhead-tracking: normal;
+  --mat-dialog-supporting-text-tracking: normal;
+
+  @include mat.button-overrides(
+    (
+      filled-label-text-weight: 400,
+      outlined-label-text-weight: 400,
+      protected-label-text-weight: 400,
+      text-label-text-weight: 400,
+      tonal-label-text-weight: 400,
+      protected-hover-container-elevation-shadow: _skin(shadow-popup),
+    )
+  );
+
+  @include mat.fab-overrides(
+    (
+      container-elevation-shadow: none,
+      hover-container-elevation-shadow: _skin(shadow-popup),
+      small-container-elevation-shadow: none,
+      small-hover-container-elevation-shadow: _skin(shadow-popup),
+      extended-container-elevation-shadow: none,
+      extended-hover-container-elevation-shadow: _skin(shadow-popup),
+    )
+  );
+
+  @include mat.list-overrides(
+    (
+      list-item-container-shape: _skin(radius),
+      active-indicator-shape: _skin(radius),
+    )
+  );
+
+  @include mat.card-overrides(
+    (
+      elevated-container-color: _skin(surface),
+      outlined-container-color: _skin(surface),
+      elevated-container-shape: _skin(radius),
+      outlined-container-shape: _skin(radius),
+      elevated-container-elevation: _skin(shadow-card),
+      outlined-outline-color: _skin(border),
+      subtitle-text-color: _skin(text-muted),
+      title-text-size: var(--acp-sys-heading-size),
+      title-text-line-height: var(--acp-sys-heading-line-height),
+      title-text-weight: var(--acp-sys-heading-weight),
+      subtitle-text-size: 14px,
+    )
+  );
+
+  @include mat.dialog-overrides(
+    (
+      container-color: _skin(surface),
+      container-shape: _skin(radius),
+      subhead-size: var(--acp-sys-heading-size),
+      subhead-weight: 600,
+    )
+  );
+
+  // Compact menus: 13px text, 12px sides, 18px icons 8px from the text
+  @include mat.menu-overrides(
+    (
+      container-color: _skin(surface),
+      container-shape: _skin(radius),
+      container-elevation-shadow: _skin(shadow-popup),
+      item-hover-state-layer-color: _skin(surface-muted),
+      item-label-text-size: 0.8125rem,
+      item-label-text-tracking: 0.01em,
+      item-leading-spacing: 12px,
+      item-trailing-spacing: 12px,
+      item-with-icon-leading-spacing: 12px,
+      item-with-icon-trailing-spacing: 12px,
+      item-icon-size: 18px,
+      item-spacing: 8px,
+    )
+  );
+
+  @include mat.select-overrides(
+    (
+      panel-background-color: _skin(surface),
+      container-elevation-shadow: _skin(shadow-popup),
+    )
+  );
+
+  @include mat.autocomplete-overrides(
+    (
+      background-color: _skin(surface),
+      container-shape: _skin(radius),
+      container-elevation-shadow: _skin(shadow-popup),
+    )
+  );
+
+  // Compact select and autocomplete options
+  @include mat.option-overrides(
+    (
+      hover-state-layer-color: _skin(surface-muted),
+      focus-state-layer-color: _skin(surface-muted),
+      label-text-size: 0.8825rem,
+    )
+  );
+
+  @include mat.datepicker-overrides(
+    (
+      calendar-container-background-color: _skin(surface),
+      calendar-container-shape: _skin(radius),
+      calendar-container-elevation-shadow: _skin(shadow-popup),
+    )
+  );
+
+  @include mat.form-field-overrides(
+    (
+      outlined-container-shape: _skin(radius),
+      outlined-outline-color: _skin(field-border),
+      outlined-hover-outline-color: _skin(field-border),
+      outlined-error-outline-color: var(--mat-sys-error),
+      outlined-error-hover-outline-color: var(--mat-sys-error),
+      outlined-error-focus-outline-color: var(--mat-sys-error),
+    )
+  );
+
+  @include mat.expansion-overrides(
+    (
+      container-background-color: _skin(surface),
+      container-shape: _skin(radius),
+      header-hover-state-layer-color: _skin(surface-muted),
+    )
+  );
+
+  @include mat.table-overrides(
+    (
+      background-color: _skin(surface),
+      row-item-outline-color: _skin(border),
+    )
+  );
+
+  @include mat.paginator-overrides(
+    (
+      container-background-color: _skin(surface),
+    )
+  );
+
+  @include mat.sidenav-overrides(
+    (
+      container-background-color: _skin(surface),
+      container-divider-color: _skin(border),
+      container-shape: 0,
+    )
+  );
+
+  @include mat.divider-overrides(
+    (
+      color: _skin(border),
+    )
+  );
+
+  @include mat.tooltip-overrides(
+    (
+      container-shape: var(--mat-sys-corner-full),
+    )
+  );
+
+  @include mat.button-toggle-overrides(
+    (
+      shape: _skin(radius),
+      divider-color: _skin(border),
+    )
+  );
+}
+
+/// Structural rules that tokens cannot express. `html` raises specificity instead of `!important`.
+@mixin structural() {
+  html body {
+    color: _skin(text);
+    font-family: var(--acp-body-font-family);
+  }
+
+  html {
+    .mdc-text-field--outlined {
+      background: _skin(field-background);
+      border-radius: _skin(radius);
+    }
+
+    div.mat-mdc-select-panel {
+      padding: 8px;
+
+      .mat-mdc-option {
+        min-height: 33px;
+        padding-inline: 13px;
+        border-radius: 6px;
+      }
+    }
+
+    .mat-mdc-menu-content {
+      padding: 6px;
+
+      .mat-mdc-menu-item {
+        border-radius: 6px;
+      }
+    }
+
+    // Compact menus (sizes without a Material token). Panels of acontplus widgets override them.
+    .mat-mdc-menu-panel {
+      min-width: 160px;
+      max-width: 320px;
+    }
+
+    .mat-mdc-menu-item {
+      min-height: 36px;
+    }
+
+    .mat-expansion-panel:not([class*='mat-elevation-z']) {
+      box-shadow: _skin(shadow-card);
+    }
+
+    .mat-mdc-progress-bar {
+      border-radius: _skin(radius);
+    }
+
+    // Layout de ng-components
+    .acp-layout-header {
+      box-shadow: _skin(shadow-card);
+    }
+
+    .acp-layout__sidenav {
+      box-shadow: _skin(shadow-nav);
+    }
+
+    .acp-layout-sidebar__header {
+      --mat-toolbar-container-background-color: #{_skin(surface)};
+      --mat-toolbar-container-text-color: #{_skin(text)};
+    }
+
+    // Menu superior: barra blanca con items en pildora, centrada al ancho encajonado
+    .acp-layout--navbar-top .acp-layout-header .mat-toolbar {
+      padding-inline: max(1rem, calc((100% - #{$boxed-max-width}) / 2));
+    }
+
+    .acp-topmenu {
+      --mat-button-text-label-text-color: #{_skin(text)};
+
+      padding: 8px max(1rem, calc((100% - #{$boxed-max-width}) / 2));
+      background-color: _skin(surface);
+      backdrop-filter: none;
+      box-shadow: _skin(shadow-card);
+
+      .mat-mdc-tab-links {
+        gap: 3px;
+      }
+
+      .mat-mdc-button {
+        height: 40px;
+        padding: 0 14px;
+        font-size: acp-system.text-size(sm);
+        font-weight: acp-system.font-weight(normal);
+        border-radius: var(--mat-sys-corner-full);
+        transition:
+          color 0.2s,
+          background-color 0.2s;
+
+        &:hover {
+          color: _skin(accent);
+          background-color: _skin(surface-muted);
+        }
+
+        &.active,
+        &.active:hover {
+          color: #fff;
+          background-color: _skin(accent);
+        }
+
+        .mat-mdc-button-persistent-ripple::before {
+          display: none;
+        }
+      }
+
+      .mat-icon.menu-caret {
+        width: 18px;
+        height: 18px;
+        margin-right: -0.25rem;
+        font-size: 18px;
+
+        [dir='rtl'] & {
+          margin-right: auto;
+          margin-left: -0.25rem;
+        }
+      }
+    }
+
+    .acp-topmenu-panel.mat-mdc-menu-panel {
+      min-width: 250px;
+
+      .mat-mdc-menu-item {
+        min-height: 40px;
+        padding: 0 14px;
+        font-size: acp-system.text-size(sm);
+        border-radius: var(--mat-sys-corner-full);
+
+        &:hover:not([disabled]) {
+          color: _skin(accent);
+          background-color: _skin(surface-muted);
+        }
+
+        &.active {
+          color: _skin(accent);
+          background-color: color-mix(in srgb, #{_skin(accent)} 10%, transparent);
+        }
+
+        .mat-mdc-menu-item-text {
+          color: inherit;
+        }
+      }
+    }
+
+    .acp-sidemenu {
+      .menu-heading {
+        min-height: 44px;
+        border-radius: 26px;
+        transition:
+          color 0.2s,
+          background-color 0.2s;
+
+        &:hover,
+        &:focus {
+          color: _skin(accent);
+        }
+      }
+
+      .menu-item {
+        border-radius: 26px;
+
+        &.active > a.menu-heading,
+        &.active > a.menu-heading:hover,
+        &.active > a.menu-heading:focus {
+          color: #fff;
+          background-color: _skin(accent);
+        }
+      }
+
+      &.level-0 > li > .menu-heading {
+        font-size: 15px;
+      }
+
+      &.submenu .menu-heading {
+        font-size: 14px;
+      }
+    }
+  }
+
+  // Customizer: tarjetas con borde en lugar de sombra (`class="acp-card-border"` en <html>)
+  html:root.acp-card-border {
+    --acp-skin-shadow-card: none;
+
+    .mat-mdc-card,
+    .mat-expansion-panel {
+      border: 1px solid _skin(border);
+    }
+  }
+
+  // Customizer: contenido encajonado (`class="acp-boxed"` en <html>)
+  html.acp-boxed .acp-layout__page {
+    max-width: $boxed-max-width;
+    margin: 0 auto;
+  }
+
+  // Pantalla encajonada: `class="acp-page-boxed"` en el elemento raiz del template
+  .acp-page-boxed {
+    display: block;
+    max-width: $boxed-max-width;
+    margin-inline: auto;
+  }
+}
+
+$utility-prefix: 'acp-' !default;
+
+/// Text utility classes from MaterialPro (`.acp-text-sm`, `.acp-font-semibold`...), backed by the
+/// `--acp-sys-text-*` and `--acp-sys-font-weight-*` tokens.
+/// @param {String} $prefix Class prefix; pass `''` for MaterialPro/Tailwind names (`.text-sm`).
+@mixin utilities($prefix: $utility-prefix) {
+  @each $name, $value in acp-system.$text-scale {
+    .#{$prefix}text-#{$name} {
+      font-size: acp-system.text-size($name);
+      line-height: acp-system.text-line-height($name);
+    }
+  }
+
+  @each $name, $weight in acp-system.$font-weights {
+    .#{$prefix}font-#{$name} {
+      font-weight: acp-system.font-weight($name);
+    }
+  }
+}
+
+/// Applies acontpluspro: tokens on `html:root`, the structural rules and the text utilities.
+@mixin apply($overrides: ()) {
+  html:root {
+    @include tokens($overrides);
+  }
+
+  @include structural;
+  @include utilities;
+}

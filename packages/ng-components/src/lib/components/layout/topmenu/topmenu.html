@@ -1,0 +1,42 @@
+<nav mat-tab-nav-bar [tabPanel]="tabPanel">
+  @for (item of items(); track $index) { @switch (item.type) { @case ('link') {
+  <a matButton [routerLink]="route([item.route])" routerLinkActive="active">
+    <ng-container [ngTemplateOutlet]="headingTpl" [ngTemplateOutletContext]="{ item }" />
+  </a>
+  } @case ('sub') {
+  <button
+    type="button"
+    matButton
+    [matMenuTriggerFor]="submenu.menuPanel()"
+    [class.active]="isActive(item, path())"
+  >
+    <ng-container [ngTemplateOutlet]="headingTpl" [ngTemplateOutletContext]="{ item }" />
+    <acp-topmenu-panel #submenu [items]="item.children ?? []" [parentRoute]="[item.route]" />
+  </button>
+  } @default {
+  <a
+    matButton
+    [href]="item.route"
+    [attr.target]="item.type === 'extTabLink' ? '_blank' : null"
+    [attr.rel]="item.type === 'extTabLink' ? 'noopener' : null"
+  >
+    <ng-container [ngTemplateOutlet]="headingTpl" [ngTemplateOutletContext]="{ item }" />
+  </a>
+  } } }
+</nav>
+
+<mat-tab-nav-panel #tabPanel />
+
+<ng-template #headingTpl let-item="item">
+  @if (item.icon) {
+  <mat-icon class="menu-icon">{{ item.icon }}</mat-icon>
+  }
+  <span class="menu-name">{{ item.name }}</span>
+  @if (item.label) {
+  <span class="menu-label bg-{{ item.label.color }}">{{ item.label.value }}</span>
+  } @if (item.badge) {
+  <span class="menu-badge bg-{{ item.badge.color }}">{{ item.badge.value }}</span>
+  } @if (item.type !== 'link') {
+  <mat-icon class="menu-caret">{{ item.type === 'sub' ? 'arrow_drop_down' : 'launch' }}</mat-icon>
+  }
+</ng-template>

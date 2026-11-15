@@ -1,12 +1,22 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { AcpKpiCard } from '@acontplus/ng-components';
+import { ACP_KPI_CARD_SLOTS, AcpKpiCard } from '@acontplus/ng-components';
 import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 import { DocHeading } from '../../shared/doc-heading/doc-heading';
 
 @Component({
   selector: 'app-kpi-card-overview',
-  imports: [AcpKpiCard, MatCardModule, MatDividerModule, DocHeading],
+  imports: [
+    AcpKpiCard,
+    ACP_KPI_CARD_SLOTS,
+    MatCardModule,
+    MatDividerModule,
+    MatIconModule,
+    MatMenuModule,
+    DocHeading,
+  ],
   template: `
     <div class="docs-component-viewer-content">
       <app-doc-heading>KPI Card</app-doc-heading>
@@ -23,7 +33,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
           <acp-kpi-card
             title="Revenue"
             value="$145,230"
-            percentage="+12.4"
+            delta="+12.4"
             icon="add"
             color="primary"
           ></acp-kpi-card>
@@ -31,7 +41,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
           <acp-kpi-card
             title="Orders"
             value="1,542"
-            percentage="+5.6"
+            delta="+5.6"
             trend="up"
             color="success"
           ></acp-kpi-card>
@@ -39,7 +49,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
           <acp-kpi-card
             title="Customers"
             value="8,321"
-            percentage="+18"
+            delta="+18"
             trend="up"
             icon="people"
             color="info"
@@ -48,7 +58,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
           <acp-kpi-card
             title="Conversion Rate"
             value="4.8%"
-            percentage="+0.6"
+            delta="+0.6"
             trend="up"
             icon="trending_up"
             color="secondary"
@@ -57,10 +67,9 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
           <acp-kpi-card
             title="Total Users"
             value="12,456"
-            percentage="+8.2"
+            delta="+8.2"
             trend="up"
             icon="group"
-            color="surface"
           ></acp-kpi-card>
         </mat-card-content>
       </mat-card>
@@ -72,16 +81,17 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
           <acp-kpi-card
             title="Products"
             value="2,134"
-            percentage="-1.3"
+            delta="-1.3"
             trend="down"
             icon="inventory"
-            color="warning-light"
+            color="warning"
+            variant="tonal"
           ></acp-kpi-card>
 
           <acp-kpi-card
             title="Alerts"
             value="45"
-            percentage="+8.2"
+            delta="+8.2"
             trend="up"
             icon="warning"
             color="warning"
@@ -90,7 +100,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
           <acp-kpi-card
             title="Expenses"
             value="$45,900"
-            percentage="-4.1"
+            delta="-4.1"
             lowerIsBetter
             trendLabel="vs last month"
             trend="down"
@@ -101,7 +111,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
           <acp-kpi-card
             title="Bounce Rate"
             value="32.5%"
-            percentage="-2.3"
+            delta="-2.3"
             lowerIsBetter
             trend="down"
             icon="trending_down"
@@ -111,7 +121,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
           <acp-kpi-card
             title="Churn"
             value="1.9%"
-            percentage="0"
+            delta="0"
             trend="neutral"
             icon="trending_flat"
             color="info"
@@ -127,7 +137,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
             title="Total Sales"
             value="$234,567"
             description="Last 30 days"
-            percentage="+8.2"
+            delta="+8.2"
             trend="up"
             icon="attach_money"
             color="primary"
@@ -137,7 +147,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
             title="Active Users"
             value="12,456"
             description="Currently online"
-            percentage="+15.3"
+            delta="+15.3"
             trend="up"
             icon="person"
             color="success"
@@ -147,7 +157,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
             title="Support Tickets"
             value="234"
             description="Pending resolution"
-            percentage="-12.1"
+            delta="-12.1"
             trend="down"
             icon="support_agent"
             color="warning"
@@ -157,7 +167,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
             title="Profit Margin"
             value="28.5%"
             description="Year to date"
-            percentage="+3.2"
+            delta="+3.2"
             trend="up"
             icon="trending_up"
             color="info"
@@ -218,7 +228,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
           <acp-kpi-card
             title="Default"
             value="$125,000"
-            percentage="+5.2"
+            delta="+5.2"
             trend="up"
             icon="trending_up"
             color="primary"
@@ -228,7 +238,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
           <acp-kpi-card
             title="Elevated"
             value="$125,000"
-            percentage="+5.2"
+            delta="+5.2"
             trend="up"
             icon="trending_up"
             color="primary"
@@ -238,7 +248,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
           <acp-kpi-card
             title="Outlined"
             value="$125,000"
-            percentage="+5.2"
+            delta="+5.2"
             trend="up"
             icon="trending_up"
             color="primary"
@@ -248,7 +258,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
           <acp-kpi-card
             title="Filled"
             value="$125,000"
-            percentage="+5.2"
+            delta="+5.2"
             trend="up"
             icon="trending_up"
             color="primary"
@@ -258,7 +268,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
           <acp-kpi-card
             title="Tonal"
             value="$125,000"
-            percentage="+5.2"
+            delta="+5.2"
             trend="up"
             icon="trending_up"
             color="primary"
@@ -274,7 +284,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
           <acp-kpi-card
             title="Primary"
             value="$125,000"
-            percentage="+5.2"
+            delta="+5.2"
             trend="up"
             icon="trending_up"
             color="primary"
@@ -283,7 +293,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
           <acp-kpi-card
             title="Secondary"
             value="$125,000"
-            percentage="+5.2"
+            delta="+5.2"
             trend="up"
             icon="trending_up"
             color="secondary"
@@ -292,79 +302,83 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
           <acp-kpi-card
             title="Success"
             value="$125,000"
-            percentage="+5.2"
+            delta="+5.2"
             trend="up"
             icon="trending_up"
             color="success"
           ></acp-kpi-card>
 
           <acp-kpi-card
-            title="Success Light"
+            title="Success Tonal"
             value="$125,000"
-            percentage="+5.2"
+            delta="+5.2"
             trend="up"
             icon="trending_up"
-            color="success-light"
+            color="success"
+            variant="tonal"
           ></acp-kpi-card>
 
           <acp-kpi-card
             title="Warning"
             value="$125,000"
-            percentage="+5.2"
+            delta="+5.2"
             trend="up"
             icon="trending_up"
             color="warning"
           ></acp-kpi-card>
 
           <acp-kpi-card
-            title="Warning Light"
+            title="Warning Tonal"
             value="$125,000"
-            percentage="+5.2"
+            delta="+5.2"
             trend="up"
             icon="trending_up"
-            color="warning-light"
+            color="warning"
+            variant="tonal"
           ></acp-kpi-card>
 
           <acp-kpi-card
             title="Error"
             value="$125,000"
-            percentage="+5.2"
+            delta="+5.2"
             trend="up"
             icon="trending_up"
             color="error"
           ></acp-kpi-card>
 
           <acp-kpi-card
-            title="Error Light"
+            title="Error Tonal"
             value="$125,000"
-            percentage="+5.2"
+            delta="+5.2"
             trend="up"
             icon="trending_up"
-            color="error-light"
+            color="error"
+            variant="tonal"
           ></acp-kpi-card>
 
           <acp-kpi-card
             title="Info"
             value="$125,000"
-            percentage="+5.2"
+            delta="+5.2"
             trend="up"
             icon="trending_up"
             color="info"
           ></acp-kpi-card>
 
           <acp-kpi-card
-            title="Info Light"
+            title="Info Tonal"
             value="$125,000"
-            percentage="+5.2"
+            delta="+5.2"
             trend="up"
             icon="trending_up"
-            color="info-light"
+            color="info"
+            variant="tonal"
           ></acp-kpi-card>
 
           <acp-kpi-card
             title="Neutral"
             value="$125,000"
-            percentage="+5.2"
+            delta="+5.2"
             trend="up"
             icon="trending_up"
             color="neutral"
@@ -373,10 +387,9 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
           <acp-kpi-card
             title="White"
             value="$125,000"
-            percentage="+5.2"
+            delta="+5.2"
             trend="up"
             icon="trending_up"
-            color="surface"
           ></acp-kpi-card>
         </mat-card-content>
       </mat-card>
@@ -388,41 +401,41 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
           <acp-kpi-card
             title="Extra Small"
             value="$25,000"
-            percentage="+1.2"
+            delta="+1.2"
             trend="up"
             icon="trending_up"
             color="primary"
-            size="xs"
+            size="xs-small"
           ></acp-kpi-card>
 
           <acp-kpi-card
             title="Small"
             value="$45,000"
-            percentage="+3.2"
+            delta="+3.2"
             trend="up"
             icon="trending_up"
             color="primary"
-            size="sm"
+            size="small"
           ></acp-kpi-card>
 
           <acp-kpi-card
             title="Medium"
             value="$125,000"
-            percentage="+5.2"
+            delta="+5.2"
             trend="up"
             icon="trending_up"
             color="primary"
-            size="md"
+            size="medium"
           ></acp-kpi-card>
 
           <acp-kpi-card
             title="Large"
             value="$245,000"
-            percentage="+8.5"
+            delta="+8.5"
             trend="up"
             icon="trending_up"
             color="primary"
-            size="lg"
+            size="large"
           ></acp-kpi-card>
         </mat-card-content>
       </mat-card>
@@ -435,7 +448,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
             title="Revenue"
             [value]="1452300.5"
             [valueFormat]="{ style: 'currency', currency: 'USD', maximumFractionDigits: 0 }"
-            [percentage]="12.4"
+            [delta]="12.4"
             trendLabel="vs last month"
             icon="payments"
             variant="outlined"
@@ -446,7 +459,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
             [value]="98765.432"
             [valueFormat]="{ maximumFractionDigits: 1 }"
             locale="es-EC"
-            [percentage]="-3.75"
+            [delta]="-3.75"
             suffix="u"
             icon="shopping_cart"
             variant="tonal"
@@ -456,10 +469,9 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
           <acp-kpi-card
             title="Open Tickets"
             [value]="0"
-            [percentage]="-100"
+            [delta]="-100"
             lowerIsBetter
             icon="support_agent"
-            color="surface"
           ></acp-kpi-card>
         </mat-card-content>
       </mat-card>
@@ -471,7 +483,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
           <acp-kpi-card
             title="Start"
             value="$125,000"
-            percentage="+5.2"
+            delta="+5.2"
             icon="payments"
             align="start"
             variant="outlined"
@@ -481,7 +493,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
           <acp-kpi-card
             title="Center"
             value="$125,000"
-            percentage="+5.2"
+            delta="+5.2"
             icon="payments"
             align="center"
             variant="outlined"
@@ -491,7 +503,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
           <acp-kpi-card
             title="End"
             value="$125,000"
-            percentage="-5.2"
+            delta="-5.2"
             align="end"
             variant="outlined"
             [showTrendIcon]="false"
@@ -507,7 +519,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
           <acp-kpi-card
             title="Normal"
             value="$125,000"
-            percentage="+5.2"
+            delta="+5.2"
             trend="up"
             icon="trending_up"
             color="primary"
@@ -518,7 +530,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
           <acp-kpi-card
             title="Disabled"
             value="$125,000"
-            percentage="+5.2"
+            delta="+5.2"
             trend="up"
             icon="trending_up"
             color="primary"
@@ -528,7 +540,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
           <acp-kpi-card
             title="Selected"
             value="$125,000"
-            percentage="+5.2"
+            delta="+5.2"
             trend="up"
             icon="trending_up"
             color="primary"
@@ -544,7 +556,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
           <acp-kpi-card
             title="Click Me"
             value="$125,000"
-            percentage="+5.2"
+            delta="+5.2"
             trend="up"
             icon="trending_up"
             color="primary"
@@ -555,7 +567,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
           <acp-kpi-card
             title="Interactive"
             value="$245,000"
-            percentage="+12.3"
+            delta="+12.3"
             trend="up"
             icon="trending_up"
             color="success"
@@ -566,7 +578,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
           <acp-kpi-card
             title="With Footer"
             value="$89,000"
-            percentage="+2.1"
+            delta="+2.1"
             trend="up"
             icon="trending_up"
             color="info"
@@ -576,6 +588,60 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
           ></acp-kpi-card>
         </mat-card-content>
       </mat-card>
+
+      <!-- Links -->
+      <h2>Link Cards</h2>
+      <p class="section-description">
+        With <code>routerLink</code> the whole card is a native link: Enter, Ctrl+click and "open in
+        new tab" work, and the card value describes the link for screen readers.
+      </p>
+      <mat-card class="docs-example-card">
+        <mat-card-content class="kpi-grid">
+          <acp-kpi-card
+            title="Invoices"
+            [value]="1284"
+            delta="+4.1"
+            trendLabel="vs last month"
+            icon="receipt_long"
+            color="info"
+            routerLink="/components/data-grid"
+          ></acp-kpi-card>
+          <acp-kpi-card
+            title="Customers"
+            [value]="86"
+            delta="+9.8"
+            icon="group_add"
+            color="success"
+            routerLink="/components/card"
+          ></acp-kpi-card>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Slots -->
+      <h2>Slots and Headings</h2>
+      <p class="section-description">
+        Use <code>ACP_KPI_CARD_SLOTS</code> for custom icon, avatar, footer and menu actions. Set
+        <code>headingLevel</code> when the title should be part of the page outline.
+      </p>
+      <mat-card class="docs-example-card">
+        <mat-card-content class="kpi-grid">
+          <acp-kpi-card
+            title="Cash Flow"
+            [headingLevel]="3"
+            [value]="48250"
+            [valueFormat]="{ style: 'currency', currency: 'USD', maximumFractionDigits: 0 }"
+            delta="-2.4"
+            color="warning"
+          >
+            <ng-template acpKpiCardIcon><mat-icon>account_balance</mat-icon></ng-template>
+            <ng-template acpKpiCardActions>
+              <button mat-menu-item>Export</button>
+              <button mat-menu-item>View report</button>
+            </ng-template>
+            <ng-template acpKpiCardFooter>Updated 5 minutes ago</ng-template>
+          </acp-kpi-card>
+        </mat-card-content>
+      </mat-card>
     </div>
   `,
   styles: `
@@ -583,13 +649,6 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 16px;
-    }
-
-    h2 {
-      margin-top: 32px;
-      margin-bottom: 12px;
-      font-size: 20px;
-      font-weight: 500;
     }
 
     mat-card {

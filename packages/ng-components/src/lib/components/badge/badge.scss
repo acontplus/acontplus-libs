@@ -1,330 +1,229 @@
-@use '@angular/material' as mat;
+@use 'sass:list';
 @use '../../../core/tokens/token-utils';
 @use './m3-badge';
 
+// Public hooks: the `badge-*` theme tokens (`--acp-badge-<token>`, e.g. `--acp-badge-custom-bg`
+// / `-fg` / `-accent` for `color="custom"`). Internal state uses `--_acp-badge-*`.
+
 $fallbacks: m3-badge.get-tokens();
 
+@function tok($name) {
+  @return token-utils.slot(badge-#{$name}, $fallbacks);
+}
+
+$colors: (primary, secondary, tertiary, success, warning, error, info, neutral, custom);
+
+// height, inline padding, gap, icon size, typescale role (acontpluspro)
+$sizes: (
+  xs-small: 18px 6px 2px 12px label-small,
+  small: 22px 8px 4px 14px label-small,
+  medium: 26px 10px 4px 16px label-medium,
+  large: 30px 12px 6px 18px label-large,
+);
+
 .acp-badge {
-  --acp-badge-bg: #{token-utils.slot(badge-primary-bg, $fallbacks)};
-  --acp-badge-fg: #{token-utils.slot(badge-primary-color, $fallbacks)};
+  // Text on a tint: darkened in light mode to keep WCAG AA contrast
+  --_acp-badge-on-tint: light-dark(
+    color-mix(in oklab, var(--_acp-badge-accent) 82%, black),
+    var(--_acp-badge-accent)
+  );
 
   display: inline-flex;
-  vertical-align: middle;
+  align-items: center;
   max-width: 100%;
+  height: var(--_acp-badge-height);
+  overflow: hidden;
+  vertical-align: middle;
+  border: 1px solid transparent;
+  border-radius: var(--_acp-badge-shape);
+  background: var(--_acp-badge-container);
+  color: var(--_acp-badge-content);
+  font: var(--_acp-badge-font);
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  transition:
+    background-color 150ms var(--acp-sys-easing-standard, ease),
+    box-shadow 150ms var(--acp-sys-easing-standard, ease);
 
-  &__set {
+  &__body {
     display: inline-flex;
-    max-width: 100%;
+    align-items: center;
+    gap: var(--_acp-badge-gap);
+    min-width: 0;
+    height: 100%;
+    margin: 0;
+    padding: 0 var(--_acp-badge-padding);
+    border: 0;
+    border-radius: inherit;
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-decoration: none;
+
+    &:focus-visible {
+      outline: 2px solid var(--_acp-badge-accent);
+      outline-offset: 2px;
+    }
   }
 
-  &__chip.mat-mdc-chip {
-    position: relative;
-    max-width: 100%;
+  &__visual {
+    display: contents;
   }
 
   &__label,
   &__value {
-    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
-  &__separator {
-    margin: 0 6px;
-    opacity: 0.6;
+  &__label + &__value {
+    padding-inline-start: var(--_acp-badge-gap);
+    border-inline-start: 1px solid color-mix(in srgb, currentColor 35%, transparent);
   }
 
-  &__loader {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: inherit;
-    border-radius: inherit;
-    z-index: 1;
+  &__icon {
+    display: inline-flex;
+    flex-shrink: 0;
+    width: var(--_acp-badge-icon);
+    height: var(--_acp-badge-icon);
+    font-size: var(--_acp-badge-icon);
+  }
 
-    &::after {
-      content: '';
-      width: 16px;
-      height: 16px;
-      border: 2px solid currentColor;
-      border-right-color: transparent;
-      border-radius: 50%;
-      animation: acp-badge-spin 0.75s linear infinite;
-    }
+  &__spinner {
+    flex-shrink: 0;
+    width: var(--_acp-badge-icon);
+    height: var(--_acp-badge-icon);
+    box-sizing: border-box;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: acp-badge-spin 0.75s linear infinite;
   }
 
   &__remove {
+    display: inline-grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: calc(var(--_acp-badge-icon) + 4px);
+    height: calc(var(--_acp-badge-icon) + 4px);
+    margin: 0 calc(var(--_acp-badge-padding) / 2) 0 calc(var(--_acp-badge-padding) / -2);
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    color: inherit;
     cursor: pointer;
 
+    .mat-icon {
+      width: var(--_acp-badge-icon);
+      height: var(--_acp-badge-icon);
+      font-size: var(--_acp-badge-icon);
+    }
+
+    &:hover {
+      background: color-mix(in srgb, currentColor 14%, transparent);
+    }
+
     &:focus-visible {
-      outline: 2px solid currentColor;
+      outline: 2px solid var(--_acp-badge-accent);
       outline-offset: 1px;
     }
   }
 
-  @keyframes acp-badge-spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
-  // Colors - set CSS variables on host
-  &.acp-badge--primary {
-    --acp-badge-bg: #{token-utils.slot(badge-primary-bg, $fallbacks)};
-    --acp-badge-fg: #{token-utils.slot(badge-primary-color, $fallbacks)};
-  }
-
-  &.acp-badge--secondary {
-    --acp-badge-bg: #{token-utils.slot(badge-secondary-bg, $fallbacks)};
-    --acp-badge-fg: #{token-utils.slot(badge-secondary-color, $fallbacks)};
-  }
-
-  &.acp-badge--tertiary {
-    --acp-badge-bg: #{token-utils.slot(badge-tertiary-bg, $fallbacks)};
-    --acp-badge-fg: #{token-utils.slot(badge-tertiary-color, $fallbacks)};
-  }
-
-  &.acp-badge--success {
-    --acp-badge-bg: #{token-utils.slot(badge-success-bg, $fallbacks)};
-    --acp-badge-fg: #{token-utils.slot(badge-success-fg, $fallbacks)};
-  }
-
-  &.acp-badge--warning {
-    --acp-badge-bg: #{token-utils.slot(badge-warning-bg, $fallbacks)};
-    --acp-badge-fg: #{token-utils.slot(badge-warning-fg, $fallbacks)};
-  }
-
-  &.acp-badge--danger {
-    --acp-badge-bg: #{token-utils.slot(badge-danger-bg, $fallbacks)};
-    --acp-badge-fg: #{token-utils.slot(badge-danger-fg, $fallbacks)};
-  }
-
-  &.acp-badge--info {
-    --acp-badge-bg: #{token-utils.slot(badge-info-bg, $fallbacks)};
-    --acp-badge-fg: #{token-utils.slot(badge-info-fg, $fallbacks)};
-  }
-
-  &.acp-badge--neutral {
-    --acp-badge-bg: #{token-utils.slot(badge-neutral-bg, $fallbacks)};
-    --acp-badge-fg: #{token-utils.slot(badge-neutral-color, $fallbacks)};
-  }
-
-  // `surface-variant` is a container color: as text (soft, tonal, outlined, text) it is almost
-  // invisible, so those variants use `on-surface-variant` instead
-  &.acp-badge--neutral:not(.acp-badge--filled) {
-    --acp-badge-bg: #{token-utils.slot(badge-neutral-color, $fallbacks)};
-  }
-
-  &.acp-badge--custom {
-    --acp-badge-bg: var(--acp-badge-custom-bg, #{token-utils.slot(badge-custom-bg, $fallbacks)});
-    --acp-badge-fg: var(--acp-badge-custom-fg, #{token-utils.slot(badge-custom-color, $fallbacks)});
-  }
-
-  // Variants - apply styles based on variant
-  &.acp-badge--filled &__chip.mat-mdc-chip {
-    @include mat.chips-overrides(
-      (
-        elevated-container-color: var(--acp-badge-bg),
-        elevated-selected-container-color: var(--acp-badge-bg),
-        label-text-color: var(--acp-badge-fg),
-        selected-label-text-color: var(--acp-badge-fg),
-        with-icon-icon-color: var(--acp-badge-fg),
-        with-icon-selected-icon-color: var(--acp-badge-fg),
-        with-trailing-icon-trailing-icon-color: var(--acp-badge-fg),
-        selected-trailing-icon-color: var(--acp-badge-fg),
-        outline-color: transparent,
-      )
-    );
-  }
-
-  &.acp-badge--outlined &__chip.mat-mdc-chip {
-    @include mat.chips-overrides(
-      (
-        elevated-container-color: transparent,
-        elevated-selected-container-color: transparent,
-        label-text-color: var(--acp-badge-bg),
-        selected-label-text-color: var(--acp-badge-bg),
-        with-icon-icon-color: var(--acp-badge-bg),
-        with-icon-selected-icon-color: var(--acp-badge-bg),
-        with-trailing-icon-trailing-icon-color: var(--acp-badge-bg),
-        selected-trailing-icon-color: var(--acp-badge-bg),
-        outline-color: var(--acp-badge-bg),
-        outline-width: 1px,
-      )
-    );
-  }
-
-  &.acp-badge--soft &__chip.mat-mdc-chip {
-    @include mat.chips-overrides(
-      (
-        elevated-container-color: color-mix(in srgb, var(--acp-badge-bg) 12%, transparent),
-        elevated-selected-container-color: color-mix(in srgb, var(--acp-badge-bg) 12%, transparent),
-        label-text-color: var(--acp-badge-bg),
-        selected-label-text-color: var(--acp-badge-bg),
-        with-icon-icon-color: var(--acp-badge-bg),
-        with-icon-selected-icon-color: var(--acp-badge-bg),
-        with-trailing-icon-trailing-icon-color: var(--acp-badge-bg),
-        selected-trailing-icon-color: var(--acp-badge-bg),
-        outline-color: transparent,
-      )
-    );
-  }
-
-  &.acp-badge--tonal &__chip.mat-mdc-chip {
-    // The 22% tint is darker than `soft`; darken the text in light mode to keep WCAG AA contrast
-    --acp-badge-tonal-fg: light-dark(
-      color-mix(in oklab, var(--acp-badge-bg) 80%, black),
-      var(--acp-badge-bg)
-    );
-
-    @include mat.chips-overrides(
-      (
-        elevated-container-color: color-mix(in srgb, var(--acp-badge-bg) 22%, transparent),
-        elevated-selected-container-color: color-mix(in srgb, var(--acp-badge-bg) 22%, transparent),
-        label-text-color: var(--acp-badge-tonal-fg),
-        selected-label-text-color: var(--acp-badge-tonal-fg),
-        with-icon-icon-color: var(--acp-badge-tonal-fg),
-        with-icon-selected-icon-color: var(--acp-badge-tonal-fg),
-        with-trailing-icon-trailing-icon-color: var(--acp-badge-tonal-fg),
-        selected-trailing-icon-color: var(--acp-badge-tonal-fg),
-        outline-color: transparent,
-      )
-    );
-  }
-
-  &.acp-badge--text &__chip.mat-mdc-chip {
-    @include mat.chips-overrides(
-      (
-        elevated-container-color: transparent,
-        elevated-selected-container-color: transparent,
-        label-text-color: var(--acp-badge-bg),
-        selected-label-text-color: var(--acp-badge-bg),
-        with-icon-icon-color: var(--acp-badge-bg),
-        with-icon-selected-icon-color: var(--acp-badge-bg),
-        with-trailing-icon-trailing-icon-color: var(--acp-badge-bg),
-        selected-trailing-icon-color: var(--acp-badge-bg),
-        outline-color: transparent,
-      )
-    );
-  }
-
   // Sizes
-  &.acp-badge--xs &__chip.mat-mdc-chip {
-    @include mat.chips-overrides(
-      (
-        container-height: 20px,
-        label-text-size: 10px,
-      )
-    );
-
-    .mat-icon {
-      --acp-badge-icon-size: 12px;
-    }
-  }
-
-  &.acp-badge--sm &__chip.mat-mdc-chip {
-    @include mat.chips-overrides(
-      (
-        container-height: 24px,
-        label-text-size: 11px,
-      )
-    );
-
-    .mat-icon {
-      --acp-badge-icon-size: 14px;
-    }
-  }
-
-  &.acp-badge--md &__chip.mat-mdc-chip {
-    @include mat.chips-overrides(
-      (
-        container-height: 28px,
-        label-text-size: 12px,
-      )
-    );
-
-    .mat-icon {
-      --acp-badge-icon-size: 16px;
-    }
-  }
-
-  &.acp-badge--lg &__chip.mat-mdc-chip {
-    @include mat.chips-overrides(
-      (
-        container-height: 32px,
-        label-text-size: 14px,
-      )
-    );
-
-    .mat-icon {
-      --acp-badge-icon-size: 18px;
+  @each $size, $v in $sizes {
+    &--#{$size} {
+      --_acp-badge-height: #{list.nth($v, 1)};
+      --_acp-badge-padding: #{list.nth($v, 2)};
+      --_acp-badge-gap: #{list.nth($v, 3)};
+      --_acp-badge-icon: #{list.nth($v, 4)};
+      --_acp-badge-font: var(--mat-sys-#{list.nth($v, 5)});
     }
   }
 
   // Shapes
-  &.acp-badge--rounded &__chip.mat-mdc-chip {
-    @include mat.chips-overrides(
-      (
-        container-shape-radius: #{token-utils.slot(badge-container-shape, $fallbacks)},
-      )
-    );
+  &--pill {
+    --_acp-badge-shape: #{tok(pill-shape)};
   }
 
-  &.acp-badge--pill &__chip.mat-mdc-chip {
-    @include mat.chips-overrides(
-      (
-        container-shape-radius: #{token-utils.slot(badge-pill-shape, $fallbacks)},
-      )
-    );
+  &--rounded {
+    --_acp-badge-shape: #{tok(container-shape)};
   }
 
-  &.acp-badge--square &__chip.mat-mdc-chip {
-    @include mat.chips-overrides(
-      (
-        container-shape-radius: 0,
-      )
-    );
+  &--square {
+    --_acp-badge-shape: 0;
   }
 
-  // Icon sizing
-  &__chip.mat-mdc-chip .mat-icon {
-    width: var(--acp-badge-icon-size, 18px);
-    height: var(--acp-badge-icon-size, 18px);
-    font-size: var(--acp-badge-icon-size, 18px);
-    line-height: var(--acp-badge-icon-size, 18px);
+  // Colors
+  @each $color in $colors {
+    &--#{$color} {
+      --_acp-badge-bg: #{tok(#{$color}-bg)};
+      --_acp-badge-fg: #{tok(#{$color}-fg)};
+      --_acp-badge-accent: #{tok(#{$color}-accent)};
+    }
+  }
+
+  // Variants
+  &--tonal {
+    --_acp-badge-container: color-mix(in srgb, var(--_acp-badge-accent) 15%, transparent);
+    --_acp-badge-content: var(--_acp-badge-on-tint);
+  }
+
+  &--filled {
+    --_acp-badge-container: var(--_acp-badge-bg);
+    --_acp-badge-content: var(--_acp-badge-fg);
+  }
+
+  &--outlined {
+    --_acp-badge-container: transparent;
+    --_acp-badge-content: var(--_acp-badge-on-tint);
+
+    border-color: color-mix(in srgb, var(--_acp-badge-accent) 60%, transparent);
+  }
+
+  &--text {
+    --_acp-badge-container: transparent;
+    --_acp-badge-content: var(--_acp-badge-on-tint);
+    --_acp-badge-padding: 2px;
   }
 
   // States
-  &.acp-badge--interactive &__chip.mat-mdc-chip {
+  &--interactive:not(&--disabled):hover {
+    box-shadow: inset 0 0 0 100vmax color-mix(in srgb, currentColor 8%, transparent);
+  }
+
+  &--interactive &__body {
     cursor: pointer;
   }
 
-  &.acp-badge--disabled &__chip.mat-mdc-chip {
-    cursor: not-allowed;
+  &--selected {
+    box-shadow: inset 0 0 0 1.5px currentColor;
+  }
+
+  &--disabled {
     opacity: 0.5;
-  }
 
-  &.acp-badge--loading &__chip.mat-mdc-chip {
-    pointer-events: none;
-  }
-
-  &.acp-badge--selected &__chip.mat-mdc-chip.mdc-evolution-chip--selected,
-  &.acp-badge--selected &__chip.mat-mdc-chip.mat-mdc-chip-highlighted {
-    box-shadow: inset 0 0 0 2px currentColor;
+    .acp-badge__body {
+      cursor: not-allowed;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    &__loader::after {
+    transition: none;
+
+    &__spinner {
       animation: none;
     }
   }
 
-  @media (prefers-contrast: more) {
-    &__chip.mat-mdc-chip {
-      outline: 2px solid currentColor;
-      outline-offset: 1px;
-    }
+  @media (forced-colors: active) {
+    border-color: CanvasText;
+  }
+}
+
+@keyframes acp-badge-spin {
+  to {
+    transform: rotate(360deg);
   }
 }

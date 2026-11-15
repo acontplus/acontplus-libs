@@ -31,26 +31,24 @@ pnpm add @acontplus/ng-components
 
 #### AcpCard
 
-Material Design 3 card built on `mat-card`. Props can be passed in three ways,
-from lowest to highest priority: injected defaults, plain inputs, and slot
-templates for rich content.
+Card built on `mat-card` with the MaterialPro look (acontpluspro tokens). Props come from, lowest
+to highest priority: injected defaults, inputs and slot templates for rich content.
 
 ```typescript
 import { ACP_CARD_SLOTS, AcpCard, provideAcpCardDefaults } from '@acontplus/ng-components';
 
 // app.config.ts (optional, application-wide defaults)
-providers: [provideAcpCardDefaults({ appearance: 'outlined', rounded: 12 })];
+providers: [provideAcpCardDefaults({ appearance: 'outlined', padding: 'small' })];
 
 @Component({
   template: `
     <acp-card
       title="Order #1024"
       subtitle="Pending"
-      color="surface-container"
+      [headingLevel]="2"
       imageRatio="16:9"
       actionsAlign="end"
-      clickable
-      (clicked)="open()"
+      routerLink="/orders/1024"
     >
       <ng-template acpCardMedia><img src="cover.jpg" alt="" /></ng-template>
       <p>Card content goes here</p>
@@ -62,29 +60,31 @@ providers: [provideAcpCardDefaults({ appearance: 'outlined', rounded: 12 })];
 export class OrderComponent {}
 ```
 
-- Inputs: `title`, `subtitle`, `appearance` (`elevated` | `outlined` | `filled`),
-  `color`, `elevation` (0-5), `rounded` (`true` | `false` | px), `padding`
-  (`none` | `small` | `medium` | `large`), `hoverable`, `clickable`, `disabled`,
-  `loading`, `imageRatio`, `actionsAlign`, `fullHeight`, `fullWidth`,
-  `ariaLabel` and `passThrough` (per-section `class`/`style`).
-- Output: `clicked`, emitted on click, Enter or Space when `clickable`. Clicks on
-  actions or nested buttons/links are ignored.
-- Slots: `acpCardHeader`, `acpCardMedia`, `acpCardAvatar`, `acpCardTitle`,
-  `acpCardSubtitle`, `acpCardActions` and `acpCardFooter`. Slot templates win
-  over `title`/`subtitle`. Legacy `#title`-style template refs still work.
-- Styling hooks: `--acp-card-shape`, `--acp-card-elevation`, `--acp-card-padding`,
-  `--acp-card-container-color`, `--acp-card-on-color`, `--acp-card-subtitle-color`
-  and `--acp-card-outline-color`.
-- Removed in this major: `backgroundColor` (use `color`), `hover` (use
-  `hoverable`), `outlined` (use `appearance="outlined"`), the appearances
-  `default`, `interactive` and `compact`, and the unused `AcpCardBadge` and
-  `AcpCardBackgroundColor` types. `DynamicCard` (`acp-dynamic-card`) was removed;
-  use `AcpCard`.
+- Inputs: `title`, `subtitle`, `headingLevel` (1-6; without it the title is plain text),
+  `appearance` (`elevated` | `outlined` | `filled`), `color` (M3 container roles such as
+  `primary-container` or `surface-container`), `padding` (`none` | `small` | `medium` | `large`),
+  `hoverable`, `imageRatio`, `actionsAlign`, `fullHeight`, `fullWidth`, `disabled`, `loading`
+  and `passThrough` (per-section `class`/`style`).
+- Interaction: `routerLink` makes the whole card a native link; `clickable` makes it a native
+  button that emits `clicked`. The content describes the link or button; `ariaLabel` overrides
+  its name (defaults to `title`). Actions and footer stay clickable.
+- Slots (`ACP_CARD_SLOTS`): `acpCardHeader` (replaces avatar, title and subtitle),
+  `acpCardMedia`, `acpCardAvatar`, `acpCardTitle`, `acpCardSubtitle`, `acpCardActions` and
+  `acpCardFooter`. Slot templates win over `title`/`subtitle`.
+- Shape and shadows come from the theme (`corner-small`, `--acp-sys-shadow-*`). Per-card hooks:
+  `--acp-card-shape`, `--acp-card-elevation`, `--acp-card-hover-elevation`, `--acp-card-padding`,
+  `--acp-card-gap`, `--acp-card-container-color`, `--acp-card-on-color`,
+  `--acp-card-subtitle-color` and `--acp-card-outline-color`.
+- `padding` is 16, 24 (default) or 30px and is shared by header, content, actions and footer.
+  `hoverable` and interactive cards lift 2px with a larger soft shadow (no motion with
+  `prefers-reduced-motion`). For bordered cards app-wide use
+  `provideAcpCardDefaults({ appearance: 'outlined' })` or the acontpluspro `acp-card-border`
+  class.
 
 #### AcpKpiCard
 
-Metric card for dashboards. Numeric values and changes are formatted with
-`Intl.NumberFormat` using the app `LOCALE_ID` (or `locale`).
+Metric card for dashboards with the MaterialPro look. Numeric values and changes are formatted
+with `Intl.NumberFormat` using the app `LOCALE_ID` (or `locale`).
 
 ```html
 <acp-kpi-card
@@ -92,25 +92,66 @@ Metric card for dashboards. Numeric values and changes are formatted with
   icon="payments"
   [value]="45900"
   [valueFormat]="{ style: 'currency', currency: 'USD', maximumFractionDigits: 0 }"
-  [percentage]="-4.1"
+  [delta]="-4.1"
   lowerIsBetter
   trendLabel="vs last month"
-  variant="outlined"
+  routerLink="/expenses"
 />
 ```
 
-- `trend` is inferred from the sign of `percentage` when unset. The delta badge
-  color comes from the trend sentiment, not from the card `color`; set
-  `lowerIsBetter` for costs, churn or error rates.
-- Other inputs: `subtitle`, `prefix`, `suffix`, `description`, `footer`,
-  `variant`, `color` (including `surface` and `custom`), `size`, `align`
-  (`start` | `center` | `end`), `showTrendIcon`, `icon`,
-  `svgIcon`, `avatar`, `avatarInitials`, `progress`, `progressColor`, `loading`,
-  `disabled`, `clickable`, `selected`, `routerLink`, `ariaLabel`,
-  `menuAriaLabel` and `tooltip`. Output: `clicked` (click, Enter or Space).
-- Templates: `#icon`, `#avatar`, `#footer` and `#actions` (rendered in a menu).
-- Styling hooks: `--acp-kpi-card-custom-bg`, `--acp-kpi-card-custom-fg` and
-  `--acp-kpi-card-custom-accent`, plus the `kpi-card-*` theme tokens.
+- `delta` is the change vs. the previous period; `deltaFormat` is `percent` (default, `12.5` →
+  `+12.5%`) or `number`. `trend` is inferred from its sign. The badge color comes from the trend
+  sentiment, not from `color`; set `lowerIsBetter` for costs, churn or error rates.
+- `variant`: `default` (raised surface, soft shadow, tinted icon tile), `elevated`, `outlined`,
+  `tonal` (15% tint of `color`) or `filled` (solid `color`). `color`: `primary`, `secondary`,
+  `success`, `warning`, `error`, `info`, `neutral` or `custom`. `size`: `xs-small`, `small`,
+  `medium` (default) or `large`; text sizes follow the theme typescale. `align`: `start`,
+  `center` or `end`.
+- Interaction: `routerLink` makes the whole card a native link; `clickable` makes it a native
+  button that emits `clicked` (`selected` sets `aria-pressed`). The card value describes the link
+  or button; `ariaLabel` overrides its name (defaults to `title`). The menu and footer stay
+  clickable.
+- `headingLevel` (1-6) renders the title as a heading; without it the title is plain text.
+- Other inputs: `subtitle`, `prefix`, `suffix`, `description`, `footer`, `showTrendIcon`, `icon`,
+  `svgIcon`, `avatar`, `avatarInitials`, `progress`, `progressColor`, `loading`, `disabled`,
+  `menuAriaLabel` and `tooltip`.
+- Slots (`ACP_KPI_CARD_SLOTS`): `acpKpiCardIcon`, `acpKpiCardAvatar`, `acpKpiCardFooter` and
+  `acpKpiCardActions` (menu items).
+- Defaults and screen reader texts: `provideAcpKpiCardDefaults({ size: 'small', labels: {
+increase: 'Aumento', decrease: 'Disminución', noChange: 'Sin cambio', moreOptions: 'Más
+opciones' } })` or `ACP_KPI_CARD_DEFAULT_OPTIONS` at component level.
+- Theme tokens (`kpi-card-overrides`): `container-shape`, `<color>-bg` / `-fg` / `-accent` and
+  `delta-<positive|negative|neutral>-bg` / `-fg`. For `color="custom"` set
+  `--acp-kpi-card-custom-bg`, `--acp-kpi-card-custom-fg` and `--acp-kpi-card-custom-accent`.
+
+#### AcpBadge
+
+Status label, counter or filter chip with the MaterialPro look (15% tinted pill by default).
+
+```html
+<acp-badge label="Paid" color="success" />
+<acp-badge label="Churn" value="1.9%" trend="down" lowerIsBetter />
+<acp-badge label="Angular" removable (removed)="removeTag('angular')" />
+<acp-badge label="Open orders" value="12" routerLink="/orders" />
+```
+
+- `variant`: `tonal` (default), `filled`, `outlined` or `text`. `color`: `primary`, `secondary`,
+  `tertiary`, `success`, `warning`, `error`, `info`, `neutral` or `custom`. `size`: `xs-small`,
+  `small`, `medium` (default) or `large` (theme typescale). `shape`: `pill` (default), `rounded` or
+  `square`.
+- `trend` (`up` | `down` | `neutral`) shows the trend icon, picks the color (`up` = success) and
+  announces the change; `lowerIsBetter` inverts the color.
+- Interaction: `routerLink` or `href` render a native link, `clickable` a native button that
+  emits `clicked` (`selected` sets `aria-pressed`), and `removable` adds a remove button that
+  emits `removed`. Static badges render a `<span>`.
+- Other inputs: `value`, `icon`, `svgIcon`, `trailingIcon`, `trailingSvgIcon`, `disabled`,
+  `loading` and `ariaLabel`. Slots (`ACP_BADGE_SLOTS`): `acpBadgeIcon`, `acpBadgeTrailingIcon`.
+- Defaults and screen reader texts: `provideAcpBadgeDefaults({ labels: { remove: 'Quitar
+{label}', increase: 'Aumento', decrease: 'Disminución', noChange: 'Sin cambio' } })`.
+- Theme tokens (`badge-overrides`): `container-shape`, `pill-shape` and `<color>-bg` / `-fg` /
+  `-accent`. For `color="custom"` set `--acp-badge-custom-bg`, `--acp-badge-custom-fg` and
+  `--acp-badge-custom-accent`. `ACP_BADGE_COLORS`, `ACP_BADGE_VARIANTS`, `ACP_BADGE_SIZES` and
+  `ACP_BADGE_SHAPES` list the allowed values.
 
 ### Buttons
 
@@ -711,6 +752,79 @@ Both table components support automatic theme adaptation:
 
 Row colors automatically adapt to light/dark themes using Material Design tokens or custom theme detection.
 
+### Layout
+
+`acp-layout` is the admin layout of the apps (MaterialPro style): header, collapsible sidebar with
+the side menu, optional top menu and the page. It also handles mobile (overlay sidenav, closed after
+navigating), the collapsed rail and scrolling to the top on navigation. Its options live in
+`AcpLayoutSettings` (signals, persisted in `localStorage`) and `acp-customizer` edits them.
+
+```typescript
+// app.config.ts
+provideAcpLayout({
+  storageKey: 'acontplus-settings', // `null` keeps the options in memory
+  branding: { name: 'AcontPlus', logo: 'images/logo.png' },
+  defaults: { themeColor: 'pink', headerPos: 'fixed' },
+});
+```
+
+```html
+<!-- admin-layout.html -->
+<acp-layout [menu]="menu()">
+  <acp-apps-button acpHeaderStart [apps]="apps" />
+  <acp-notifications-button acpHeaderEnd [items]="notices()" footerLabel="Ver en el inicio" />
+  <acp-user-menu acpHeaderEnd [user]="user()" [items]="userItems" (selected)="onUserItem($event)" />
+  <acp-user-panel
+    acpSidebarUser
+    [title]="company()"
+    [subtitle]="username()"
+    [details]="defaults()"
+  />
+  <router-outlet />
+</acp-layout>
+
+<acp-customizer />
+```
+
+| Slot               | Where                                                  |
+| ------------------ | ------------------------------------------------------ |
+| `acpHeaderStart`   | Header, after the menu button and branding             |
+| `acpHeaderEnd`     | Header, right side (after the fullscreen button)       |
+| `acpSidebarUser`   | Top of the sidebar; hidden with `showUserPanel: false` |
+| `acpSidebarFooter` | Bottom of the sidebar                                  |
+| default            | Page content (`<router-outlet />`)                     |
+
+- `menu` takes `AcpMenuItem[]` (`route`, `name`, `type`: `link` / `sub` / `extLink` /
+  `extTabLink`, `icon`, `label`, `badge`, `children`). Routes are segments relative to the parent.
+  Filter the items by permission before passing them; the library does not depend on a
+  permissions package.
+- Options (`AcpLayoutOptions`): `navPos` (`side` / `top`), `headerPos` (`fixed` / `static` /
+  `above`), `showHeader`, `showUserPanel`, `sidenavOpened`, `sidenavCollapsed`, `dir`, `theme`
+  (`light` / `dark` / `auto`), `themeColor` (a prebuilt theme), `cardBorder` and `boxed`.
+- `AcpLayoutSettings` applies them to `<html>`: `color-scheme` and `theme-dark`, `theme-<color>`,
+  `dir`, `acp-card-border` and `acp-boxed`. Read them with `settings.options()` / `isDark()` and
+  change them with `settings.set({ ... })`. `provideAcpLayout` creates it on startup, so pages
+  outside the layout (login) get the theme too.
+- `acp-customizer` labels are Spanish by default; override them with `[labels]`. The panel is
+  360px wide (Material's sidenav width, as in MaterialPro); change it with `[width]`.
+- Header and sidebar widgets (data comes from the app):
+  - `acp-apps-button`: dropdown grid of `AcpAppShortcut` (`title`, `subtitle`, `icon`, `color`,
+    `route` or `href`).
+  - `acp-notifications-button`: bell with a pulsing dot while `items` (`AcpNotificationItem`:
+    `icon`, `tone` `primary`/`success`/`warning`/`error`, `title`, `text`, `route` +
+    `queryParams` or `href`) is not empty; optional `footerLabel` / `footerRoute`; Spanish
+    `[labels]` by default.
+  - `acp-user-menu`: avatar (or initials) with a profile dropdown. `user`
+    (`AcpUserMenuUser`: `name`, `subtitle`, `caption`, `role`, `avatar`) and `items`
+    (`AcpUserMenuItem`: `id`, `label`, `icon`, `route`, `danger`); items without `route` emit
+    `selected` (logout, reload...).
+  - `acp-user-panel`: `title`, `subtitle`, optional `avatar`, `link` and `details`
+    (`AcpUserPanelDetail`: `icon`, `value`, `tooltip`).
+- `acp-sidemenu`, `acp-topmenu` and `acp-branding` can be used on their own. `buildMenuRoute` and
+  `isMenuItemActive` are exported for app menus.
+- Look: structural styles only (Material fallbacks). With acontpluspro the header takes the brand
+  color, the sidebar header the surface, and the menus the pill style.
+
 ### Theme Toggle
 
 Dark/light mode toggle component for theme switching. Provides accessible theme switching with customizable icons and labels.
@@ -959,6 +1073,109 @@ Import styles in your application:
 // For Tabulator Material theme
 @import 'tabulator-tables/dist/css/tabulator_materialize.min.css';
 ```
+
+### Prebuilt Themes
+
+Color themes (`blue`, `aqua`, `purple`, `green`, `cyan`, `orange`, `pink`, `rose`), each a
+`.theme-<name>` class to put on `<html>`. They provide colors only (M3 palette and the brand color
+`--acp-theme-primary-color`); the look comes from acontpluspro. All of them are defined in one map,
+`$prebuilt-themes` (`core/theming/prebuilt/_themes.scss`).
+
+```scss
+@use '@acontplus/ng-components/prebuilt-themes/all'; // the 8 themes
+@use '@acontplus/ng-components/prebuilt-themes/blue'; // or only the ones you need
+```
+
+Or generate them in Sass: `@include acp.prebuilt-theme('blue')` / `acp.prebuilt-all-themes()`.
+
+### Design Tokens
+
+The shared look of every component (inspired by MaterialPro) is defined once in
+`core/tokens/_acp-system.scss` and emitted as `--acp-sys-*` CSS variables
+only by acontpluspro. Components read them with an M3 fallback, so they also work with a plain
+`mat.theme()` or a prebuilt theme alone (Material look).
+
+| Token                                               | Use                                         |
+| --------------------------------------------------- | ------------------------------------------- |
+| `--acp-sys-surface-raised`                          | Cards and panels (white in light mode)      |
+| `--acp-sys-shadow-1` / `--acp-sys-shadow-2`         | Soft resting shadow / raised (hover) shadow |
+| `--acp-sys-heading-size`, `-line-height`, `-weight` | Card, panel and dialog titles (18px/600)    |
+| `--acp-sys-easing-standard`                         | Transitions                                 |
+
+The prebuilt themes provide colors only (Roboto, Material look). acontpluspro switches the font to
+**Poppins** (`Poppins, Roboto, 'Helvetica Neue', sans-serif`). The library does not load fonts;
+add Poppins to your app, e.g. in `index.html`:
+
+```html
+<link
+  href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+  rel="stylesheet"
+/>
+```
+
+Override tokens with CSS, e.g. `--acp-sys-heading-weight: 600`.
+
+### acontpluspro
+
+`acontpluspro` holds the global styles that every component (Material and acontplus) inherits,
+inspired by MaterialPro: typography (Poppins, 14px body), elevations (`--mat-sys-level1/2`),
+borders, corner radius (10px) and surfaces (white on a blue-gray background). Prebuilt themes only
+provide colors; acontpluspro provides the look. It only sets tokens (`--mat-sys-*`, Material
+component overrides, `--acp-sys-*` and `--acp-*` component tokens) plus a few structural rules
+(select/menu panels, side and top menu pills, header and sidenav shadows, sidebar header on the
+surface). Load it after the themes:
+
+```scss
+@use '@acontplus/ng-components/prebuilt-themes/blue';
+@use '@acontplus/ng-components/acontpluspro';
+```
+
+acontpluspro is the single global style layer: besides the look it emits the layout sizes
+(`--acp-gutter`, `--acp-spacing`, `--acp-sidenav-width`, `--acp-sidenav-collapsed-width`) and the
+body, code, link, header, top menu, side menu and user panel variables. Components read all of
+them with a fallback (Material values, or `acp-system.$layout` defaults), so they also work
+without it.
+
+Text utilities (MaterialPro / Tailwind scale), backed by `--acp-sys-text-*` and
+`--acp-sys-font-weight-*`:
+
+| Class                                                       | Size / line height                                       |
+| ----------------------------------------------------------- | -------------------------------------------------------- |
+| `acp-text-xs` · `sm` · `base` · `lg` · `xl` · `2xl` · `3xl` | 12/16 · 14/20 · 16/24 · 18/28 · 20/28 · 24/32 · 30/36 px |
+| `acp-font-normal` · `medium` · `semibold` · `bold`          | 400 · 500 · 600 · 700                                    |
+
+```html
+<h4 class="acp-text-lg acp-font-semibold">Revenue</h4>
+```
+
+For MaterialPro/Tailwind class names without prefix (`text-sm`, `font-semibold`), include
+`@include acp.acontpluspro-utilities('')`. In component styles, use the tokens instead of the
+classes: `font-size: acp.acp-system-text-size(sm)`.
+
+Or with your own values:
+
+```scss
+@use '@acontplus/ng-components' as acp;
+
+@include acp.acontpluspro-apply(
+  (
+    radius: 8px,
+    background: light-dark(#f4f7fb, #141a21),
+  )
+);
+```
+
+- Variables: `--acp-skin-background`, `-surface`, `-surface-muted`, `-text`, `-text-muted`,
+  `-border`, `-field-border`, `-field-background`, `-radius`, `-shadow-card`, `-shadow-popup`,
+  `-shadow-nav` and `-accent`. Use them in app screens instead of literal colors.
+- Top menu (`navPos: 'top'`): white bar with pill items, aligned with the header to the boxed
+  width (1300px).
+- Opt-in classes: `acp-card-border` on `<html>` (borders instead of card shadows), `acp-boxed` on
+  `<html>` (centered page content, max 1300px) and `acp-page-boxed` on a page root.
+- Dark values use `light-dark()`, so the app must set `color-scheme: dark` in dark mode.
+- The library does not load fonts: add Poppins to the app (see Design Tokens).
+- App-specific styles (Bootstrap `.card`/`.table`/`.form-control`, global `h1`-`h6` resets,
+  `.text-muted`) are not part of acontpluspro; keep them in the app.
 
 ### Theme-Aware Row Styling
 

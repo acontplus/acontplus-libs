@@ -22,8 +22,8 @@
     ".": {
       "sass": "./src/_index.scss"
     },
-    "./global-variables": {
-      "sass": "./src/core/tokens/_global-variables.scss"
+    "./prebuilt-themes/all": {
+      "sass": "./src/core/theming/prebuilt/all.scss"
     },
     "./prebuilt-themes/blue": {
       "sass": "./src/core/theming/prebuilt/blue.scss"
@@ -48,6 +48,9 @@
     },
     "./prebuilt-themes/rose": {
       "sass": "./src/core/theming/prebuilt/rose.scss"
+    },
+    "./acontpluspro": {
+      "sass": "./src/core/theming/acontpluspro/index.scss"
     }
   },
   "files": [

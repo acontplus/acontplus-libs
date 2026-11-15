@@ -1,4 +1,4 @@
 export * from './badge';
-export * from './badge.types';
+export * from './badge-slots';
 export * from './badge.tokens';
-export * from './badge.utils';
+export * from './badge.types';

@@ -1,55 +1,29 @@
 <ng-progress ngProgressRouter />
 
-<acp-shell-layout
-  #shell
-  [navPos]="options().navPos"
-  [headerPos]="options().headerPos!"
-  [sidenavOpened]="options().sidenavOpened"
-  [sidenavCollapsed]="options().sidenavCollapsed"
-  [isMobile]="isMobile()"
-  [dir]="options().dir"
-  (sidenavOpenedChange)="onSidenavOpenedChange($event)"
->
-  <!-- ── Slot: Header ────────────────────────────────────────────────────────
-       app-header define su contenido; el shell lo posiciona según headerPos.
-  ──────────────────────────────────────────────────────────────────────────── -->
-  @if (options().showHeader) {
-    <ng-template acpShellHeader>
-      <app-header
-        [showToggle]="!options().sidenavCollapsed && options().navPos !== 'top'"
-        [showBranding]="options().navPos === 'top' || options().headerPos === 'above'"
-        (toggleSidenav)="shell.toggleSidenav()"
-        (toggleSidenavNotice)="toggleNotice()"
-      />
-    </ng-template>
-  }
+<acp-layout [menu]="menu()">
+  <acp-apps-button acpHeaderStart [apps]="apps" />
+  <acp-notifications-button
+    acpHeaderEnd
+    [items]="notifications"
+    footerLabel="Ver todas"
+    footerRoute="/"
+  />
+  <acp-user-menu
+    acpHeaderEnd
+    [user]="userProfile()"
+    [items]="userMenuItems"
+    (selected)="onUserMenu($event)"
+  />
 
-  <!-- ── Slot: Sidebar ───────────────────────────────────────────────────────
-       app-sidebar define su contenido; el shell lo monta en el MatSidenav.
-  ──────────────────────────────────────────────────────────────────────────── -->
-  <ng-template acpShellSidebar>
-    <app-sidebar
-      [showToggle]="!isMobile()"
-      [showUser]="options().showUserPanel"
-      [showHeader]="options().headerPos !== 'above'"
-      [toggleChecked]="options().sidenavCollapsed"
-      [isOver]="isMobile()"
-      (toggleCollapsed)="toggleCollapsed()"
-      (closeSidenav)="shell.closeSidenav()"
-    />
-  </ng-template>
-
-  <!-- ── Slot: Top menu ─────────────────────────────────────────────────────
-       Projected into the shell as a named slot, similar to the sidebar.
-  ──────────────────────────────────────────────────────────────────────────── -->
-  @if (options().navPos === 'top') {
-    <ng-template acpShellTopmenu>
-      <acp-topmenu [items]="topMenuItems() || []" [buildRoute]="buildRoute" />
-    </ng-template>
-  }
+  <acp-user-panel
+    acpSidebarUser
+    link="/profile/overview"
+    [avatar]="userProfile().avatar"
+    [title]="userProfile().name"
+    [subtitle]="userProfile().subtitle"
+  />
 
   <router-outlet />
-</acp-shell-layout>
+</acp-layout>
 
-<!-- Customizer (demo only) -->
-<app-customizer (optionsChange)="updateOptions($event)" />
+<acp-customizer />

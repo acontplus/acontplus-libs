@@ -547,20 +547,6 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
         max-width: 1200px;
       }
 
-      .docs-component-description {
-        font-size: 16px;
-        line-height: 1.6;
-        margin-bottom: 32px;
-        color: var(--mat-sys-on-surface-variant);
-      }
-
-      h2 {
-        font-size: 24px;
-        font-weight: 500;
-        margin: 32px 0 16px;
-        color: var(--mat-sys-on-surface);
-      }
-
       .docs-example-card {
         margin-bottom: 16px;
       }
@@ -578,7 +564,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
         background-color: var(--mat-sys-primary-container);
         color: var(--mat-sys-on-primary-container);
         border-radius: 4px;
-        font-size: 14px;
+        font-size: var(--mat-sys-body-medium-size);
       }
     `,
   ],

@@ -122,11 +122,6 @@ interface ApiProperty {
         max-width: 1400px;
       }
 
-      h2 {
-        margin-top: 32px;
-        margin-bottom: 16px;
-      }
-
       .api-table {
         width: 100%;
         margin-bottom: 24px;
@@ -134,13 +129,6 @@ interface ApiProperty {
         th,
         td {
           padding: 12px 16px;
-        }
-
-        code {
-          background: var(--mat-sys-surface-container);
-          padding: 2px 6px;
-          border-radius: 4px;
-          font-size: 13px;
         }
       }
     `,

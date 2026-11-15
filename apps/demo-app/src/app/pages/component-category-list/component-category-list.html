@@ -1,24 +1,21 @@
-<div class="docs-component-category-list-summary" id="category-summary">
-  <h1 class="docs-page-title">Component Library</h1>
-  <p class="docs-page-description">
-    Explore our comprehensive collection of Angular Material components for building modern,
-    responsive applications. Each component is designed with accessibility, theming, and developer
-    experience in mind.
+<header class="docs-category-header">
+  <h1>Components</h1>
+  <p>
+    Angular components built on Angular Material, styled with acontpluspro and ready for business
+    applications. Pick a component to see its overview, examples and API.
   </p>
-</div>
+</header>
 
-@for (group of groupedComponents; track group.category) {
-<div class="component-category-section">
-  <h2 class="category-title">{{ group.category }}</h2>
-  <div class="docs-component-category-list">
+@for (group of groups; track group.category) {
+<section class="docs-category" [attr.aria-labelledby]="'category-' + $index">
+  <h2 class="docs-category__title" [id]="'category-' + $index">{{ group.category }}</h2>
+  <div class="docs-category__grid">
     @for (item of group.components; track item.id) {
-    <a class="docs-component-category-list-item" [routerLink]="['/components/' + item.id]">
-      <div class="docs-component-category-list-card">
-        <div class="docs-component-category-list-card-title">{{ item.name }}</div>
-        <div class="docs-component-category-list-card-summary">{{ item.summary }}</div>
-      </div>
+    <a class="docs-category__card" [routerLink]="['/components', item.id]">
+      <span class="docs-category__name">{{ item.name }}</span>
+      <span class="docs-category__summary">{{ item.summary }}</span>
     </a>
     }
   </div>
-</div>
+</section>
 }

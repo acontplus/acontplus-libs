@@ -1,6 +1,7 @@
 @use '@angular/material' as mat;
 @use './styles/constants';
 @use './styles/reboot';
+@use './styles/docs';
 @use 'highlight.js/styles/github-dark.css';
 @use 'node_modules/bootstrap/dist/css/bootstrap.min.css';
 
@@ -8,19 +9,8 @@
 @use '../../../packages/ng-notifications/src/styles/snackbar-themes.scss';
 
 // Import prebuilt themes from ng-components
-@use '@acontplus/ng-components/prebuilt-themes/blue';
-@use '@acontplus/ng-components/prebuilt-themes/aqua';
-@use '@acontplus/ng-components/prebuilt-themes/purple';
-@use '@acontplus/ng-components/prebuilt-themes/green';
-@use '@acontplus/ng-components/prebuilt-themes/cyan';
-@use '@acontplus/ng-components/prebuilt-themes/orange';
-@use '@acontplus/ng-components/prebuilt-themes/pink';
-@use '@acontplus/ng-components/prebuilt-themes/rose';
-
-// Set default theme color
-html {
-  --theme-primary-color: #1b84ff;
-}
+@use '@acontplus/ng-components/prebuilt-themes/all';
+@use '@acontplus/ng-components/acontpluspro';
 
 $config: (
   color: (

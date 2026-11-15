@@ -9,11 +9,5 @@
 // @use 'styles/helpers';
 // @use 'styles/plugins';
 @use 'styles/custom';
-@use '@acontplus/ng-components/prebuilt-themes/blue';
-@use '@acontplus/ng-components/prebuilt-themes/aqua';
-@use '@acontplus/ng-components/prebuilt-themes/purple';
-@use '@acontplus/ng-components/prebuilt-themes/green';
-@use '@acontplus/ng-components/prebuilt-themes/cyan';
-@use '@acontplus/ng-components/prebuilt-themes/orange';
-@use '@acontplus/ng-components/prebuilt-themes/pink';
-@use '@acontplus/ng-components/prebuilt-themes/rose';
+@use '@acontplus/ng-components/prebuilt-themes/all';
+@use '@acontplus/ng-components/acontpluspro';

@@ -67,20 +67,6 @@ import { CodeExample } from '../../shared/code-example/code-example';
       }
 
       .docs-component-description,
-      .section-description {
-        font-size: 16px;
-        line-height: 1.6;
-        margin-bottom: 24px;
-        color: var(--mat-sys-on-surface-variant);
-      }
-
-      h2 {
-        font-size: 24px;
-        font-weight: 500;
-        margin: 32px 0 16px;
-        color: var(--mat-sys-on-surface);
-      }
-
       .docs-example-card {
         margin-bottom: 16px;
       }
@@ -97,13 +83,6 @@ import { CodeExample } from '../../shared/code-example/code-example';
         list-style: none;
         padding: 0;
         margin: 0;
-      }
-
-      .features-list li {
-        padding: 12px 0;
-        border-bottom: 1px solid var(--mat-sys-outline-variant);
-        font-size: 16px;
-        line-height: 1.6;
       }
 
       .features-list li:last-child {

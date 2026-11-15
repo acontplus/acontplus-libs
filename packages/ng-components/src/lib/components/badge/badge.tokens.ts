@@ -1,25 +1,18 @@
-import { AcpBadgeColor, AcpBadgeSize, AcpBadgeShape, AcpBadgeVariant } from './badge.types';
+import { EnvironmentProviders, InjectionToken, makeEnvironmentProviders } from '@angular/core';
+import { AcpBadgeConfig } from './badge.types';
 
-export const ACP_BADGE_COLORS: AcpBadgeColor[] = [
-  'primary',
-  'secondary',
-  'tertiary',
-  'success',
-  'warning',
-  'danger',
-  'info',
-  'neutral',
-  'custom',
-];
+/**
+ * Defaults for every `acp-badge` in the injector tree.
+ * Can also be provided at component level: `providers: [{ provide: ACP_BADGE_DEFAULT_OPTIONS, useValue }]`.
+ */
+export const ACP_BADGE_DEFAULT_OPTIONS = new InjectionToken<AcpBadgeConfig>(
+  'ACP_BADGE_DEFAULT_OPTIONS',
+);
 
-export const ACP_BADGE_VARIANTS: AcpBadgeVariant[] = [
-  'filled',
-  'outlined',
-  'soft',
-  'tonal',
-  'text',
-];
-
-export const ACP_BADGE_SIZES: AcpBadgeSize[] = ['xs', 'sm', 'md', 'lg'];
-
-export const ACP_BADGE_SHAPES: AcpBadgeShape[] = ['rounded', 'pill', 'square'];
+/**
+ * Registers application-wide badge defaults, e.g.
+ * `provideAcpBadgeDefaults({ size: 'small', labels: { remove: 'Quitar {label}' } })`.
+ */
+export function provideAcpBadgeDefaults(defaults: AcpBadgeConfig): EnvironmentProviders {
+  return makeEnvironmentProviders([{ provide: ACP_BADGE_DEFAULT_OPTIONS, useValue: defaults }]);
+}

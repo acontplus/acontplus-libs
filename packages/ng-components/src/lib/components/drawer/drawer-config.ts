@@ -41,7 +41,10 @@ export class AcpDrawerConfig<D = any> {
   /** The ARIA role of the dialog element. */
   role?: DialogRole = 'dialog';
 
-  /** Extra CSS classes to be added to the drawer container. */
+  /**
+   * Extra CSS classes added to the overlay pane (`.cdk-overlay-pane`) that holds the drawer
+   * container. Style the container with `.my-class .acp-drawer-container`.
+   */
   panelClass?: string | string[];
 
   /** Text layout direction for the drawer. */

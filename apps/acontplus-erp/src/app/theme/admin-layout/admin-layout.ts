@@ -1,166 +1,88 @@
-import { BreakpointObserver } from '@angular/cdk/layout';
-import {
-  Component,
-  OnDestroy,
-  ViewEncapsulation,
-  inject,
-  viewChild,
-  ChangeDetectionStrategy,
-  computed,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { NgProgressbar } from 'ngx-progressbar';
 import { NgProgressRouter } from 'ngx-progressbar/router';
-import { Subscription, filter, map } from 'rxjs';
-
-import { AppSettings, SettingsService, MenuService, Menu } from '@core';
-import { Customizer } from '../customizer/customizer';
-import { Header } from './header/header';
-import { Sidebar } from './sidebar/sidebar';
-import { SidebarNotice } from '../sidebar-notice/sidebar-notice';
 import {
-  AcpShellLayout,
-  AcpShellSlotHeader,
-  AcpShellSlotSidebar,
-  AcpShellSlotTopmenu,
-  AcpTopmenu,
-  AcpDrawer,
-  type AcpTopmenuItem,
-  type MenuItem,
+  AcpAppsButton,
+  AcpCustomizer,
+  AcpLayout,
+  AcpNotificationsButton,
+  AcpUserPanel,
+  AcpUserMenu,
+  type AcpAppShortcut,
+  type AcpNotificationItem,
+  type AcpUserMenuItem,
+  type AcpUserMenuUser,
 } from '@acontplus/ng-components';
 
-const MOBILE_MEDIAQUERY = 'screen and (max-width: 599px)';
-const MONITOR_MEDIAQUERY = 'screen and (min-width: 600px)';
+import { AuthService, MenuService, type User } from '@core';
 
 @Component({
   selector: 'app-admin-layout',
   templateUrl: './admin-layout.html',
-  styleUrl: './admin-layout.scss',
-  encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     RouterOutlet,
     NgProgressbar,
     NgProgressRouter,
-    // Shell layout + slot directives
-    AcpShellLayout,
-    AcpShellSlotHeader,
-    AcpShellSlotSidebar,
-    AcpShellSlotTopmenu,
-    AcpTopmenu,
-    // App-specific sub-components projected into slots
-    Header,
-    Sidebar,
-    Customizer,
+    AcpLayout,
+    AcpCustomizer,
+    AcpAppsButton,
+    AcpNotificationsButton,
+    AcpUserPanel,
+    AcpUserMenu,
   ],
 })
-export class AdminLayout implements OnDestroy {
-  // ── Template refs ──────────────────────────────────────────────────────────
-
-  /** Reference to the AcpShellLayout so we can call toggleSidenav() etc. */
-  readonly shell = viewChild.required<AcpShellLayout>('shell');
-
-  private readonly breakpointObserver = inject(BreakpointObserver);
+export class AdminLayout {
   private readonly router = inject(Router);
-  private readonly settings = inject(SettingsService);
-  private readonly menuService = inject(MenuService);
-  private readonly drawer = inject(AcpDrawer);
+  private readonly auth = inject(AuthService);
 
-  // ── State ──────────────────────────────────────────────────────────────────
+  readonly menu = toSignal(inject(MenuService).getAll(), { initialValue: [] });
 
-  readonly options = this.settings.options;
+  private readonly user = toSignal(this.auth.user(), { initialValue: {} as User });
+  readonly userProfile = computed<AcpUserMenuUser>(() => ({
+    name: this.user().name ?? '',
+    subtitle: this.user().email,
+    avatar: this.user().avatar ?? '/images/profile/user-1.jpg',
+  }));
 
-  readonly topMenuItems = toSignal(
-    this.menuService.getAll().pipe(map((menus) => menus as AcpTopmenuItem[])),
-  );
+  readonly userMenuItems: AcpUserMenuItem[] = [
+    { id: 'profile', label: 'Profile', icon: 'person', route: '/profile/overview' },
+    { id: 'settings', label: 'Settings', icon: 'settings', route: '/settings' },
+    { id: 'logout', label: 'Logout', icon: 'logout', danger: true },
+  ];
 
-  readonly buildRoute = (routeArr: string[]) => this.menuService.buildRoute(routeArr);
-
-  readonly isMobile = toSignal(
-    this.breakpointObserver.observe(MOBILE_MEDIAQUERY).pipe(map((r) => r.matches)),
-    { initialValue: false },
-  );
-
-  readonly menuItemsSafe = computed<MenuItem[]>(() => {
-    const menus = this.menuService.getAll() as unknown as Menu[] | undefined;
-    if (!menus) return [];
-    return menus.map((menu): MenuItem => ({
-      route: menu.route,
-      name: menu.name,
-      type: menu.type,
-      icon: menu.icon,
-      label: menu.label,
-      badge: menu.badge,
-      permissions: menu.permissions,
-      children: menu.children?.map((child): MenuItem => ({
-        route: child.route,
-        name: child.name,
-        type: child.type,
-        children: child.children?.map((grandchild): MenuItem => ({
-          route: grandchild.route,
-          name: grandchild.name,
-          type: grandchild.type,
-          children: grandchild.children?.map((ggchild) => ({
-            route: ggchild.route,
-            name: ggchild.name,
-            type: ggchild.type,
-          })),
-        })),
-      })),
-    }));
-  });
-
-  private isMobileScreen = false;
-  private layoutChangesSub = Subscription.EMPTY;
-
-  constructor() {
-    this.layoutChangesSub = this.breakpointObserver
-      .observe([MOBILE_MEDIAQUERY, MONITOR_MEDIAQUERY])
-      .subscribe((state) => {
-        if (state.breakpoints[MOBILE_MEDIAQUERY]) {
-          this.isMobileScreen = true;
-          this.settings.setOptions({ sidenavCollapsed: false });
-        } else {
-          this.isMobileScreen = false;
-        }
-      });
-
-    this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
-      if (this.isMobileScreen) {
-        this.shell().closeSidenav();
-      }
-      this.shell().scrollToTop();
-    });
+  onUserMenu(item: AcpUserMenuItem): void {
+    if (item.id === 'logout') {
+      this.auth.logout().subscribe(() => this.router.navigateByUrl('/auth/login'));
+    }
   }
 
-  ngOnDestroy() {
-    this.layoutChangesSub.unsubscribe();
-  }
+  readonly apps: AcpAppShortcut[] = [
+    {
+      title: 'Tables',
+      subtitle: 'Data grid examples',
+      icon: 'table_chart',
+      route: '/tables',
+    },
+    {
+      title: 'Material',
+      subtitle: 'Component examples',
+      icon: 'widgets',
+      color: '#fa896b',
+      route: '/material',
+    },
+  ];
 
-  // ── Layout event handlers ──────────────────────────────────────────────────
-
-  onSidenavOpenedChange(isOpened: boolean) {
-    this.settings.setOptions({ sidenavOpened: isOpened });
-  }
-
-  toggleCollapsed() {
-    const current = this.options().sidenavCollapsed;
-    this.settings.setOptions({ sidenavCollapsed: !current });
-    setTimeout(() => this.settings.setOptions(this.options()), 400);
-  }
-
-  toggleNotice() {
-    this.drawer.open(SidebarNotice, {
-      width: '400px',
-      position: 'right',
-    });
-  }
-
-  updateOptions(options: AppSettings) {
-    this.settings.setOptions(options);
-    this.settings.setDirection();
-    this.settings.setTheme();
-    this.settings.setThemeColor();
-  }
+  readonly notifications: AcpNotificationItem[] = [
+    {
+      icon: 'event_busy',
+      tone: 'warning',
+      title: 'Subscription',
+      text: 'Your plan expires in 5 days',
+      route: '/tables',
+    },
+    { icon: 'new_releases', title: 'Releases', text: '2 unread releases', route: '/tables' },
+  ];
 }

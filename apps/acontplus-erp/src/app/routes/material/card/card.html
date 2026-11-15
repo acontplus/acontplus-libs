@@ -1,0 +1,119 @@
+<div class="card-page">
+  <h1>Tarjeta</h1>
+
+  <section>
+    <h3>Apariencias</h3>
+    <div class="grid">
+      <acp-card title="Elevada" subtitle="Superficie blanca y sombra suave">
+        Apariencia por defecto. Toma la sombra y la superficie de los tokens del tema.
+      </acp-card>
+      <acp-card appearance="outlined" title="Con borde" subtitle="Sin sombra">
+        Útil en formularios y vistas densas donde la sombra agrega ruido.
+      </acp-card>
+      <acp-card appearance="filled" title="Rellena" subtitle="Fondo tonal">
+        Para agrupar contenido secundario dentro de otra superficie.
+      </acp-card>
+    </div>
+  </section>
+
+  <section>
+    <h3>Indicadores</h3>
+    <div class="grid">
+      @for (stat of stats; track stat.label) {
+        <acp-card hoverable>
+          <div class="stat">
+            <div class="stat__icon">
+              <mat-icon>{{ stat.icon }}</mat-icon>
+            </div>
+            <div>
+              <div class="stat__label">{{ stat.label }}</div>
+              <div class="stat__value">{{ stat.value }}</div>
+              <div class="stat__delta">{{ stat.delta }} vs. mes anterior</div>
+            </div>
+          </div>
+        </acp-card>
+      }
+    </div>
+  </section>
+
+  <section>
+    <h3>Avatar, acciones y pie</h3>
+    <div class="grid">
+      <acp-card actionsAlign="end">
+        <ng-template acpCardAvatar>
+          <span class="avatar"><mat-icon>person</mat-icon></span>
+        </ng-template>
+        <ng-template acpCardTitle>María Torres</ng-template>
+        <ng-template acpCardSubtitle>Contadora · Quito</ng-template>
+        Responsable de cierres mensuales y conciliaciones bancarias.
+        <ng-template acpCardActions>
+          <button matButton>Mensaje</button>
+          <button matButton="filled">Ver perfil</button>
+        </ng-template>
+      </acp-card>
+
+      <acp-card title="Pedido #10234" subtitle="Pendiente de aprobación">
+        3 ítems · Total $ 1.250,00
+        <ng-template acpCardFooter>Actualizado hace 5 minutos</ng-template>
+      </acp-card>
+
+      <acp-card>
+        <ng-template acpCardMedia>
+          <div class="media"><mat-icon>insights</mat-icon></div>
+        </ng-template>
+        <ng-template acpCardTitle>Reporte trimestral</ng-template>
+        <ng-template acpCardSubtitle>Q3 2026</ng-template>
+        Resumen de ingresos, gastos y flujo de caja.
+      </acp-card>
+    </div>
+  </section>
+
+  <section>
+    <h3>Interacción y estados</h3>
+    <div class="grid">
+      <acp-card
+        clickable
+        ariaLabel="Abrir clientes"
+        title="Clickeable"
+        subtitle="Click, Enter o Espacio"
+        (clicked)="lastClicked.set('Clientes')"
+      >
+        @if (lastClicked()) {
+          Última acción: {{ lastClicked() }}
+        } @else {
+          Se eleva al pasar el mouse.
+        }
+      </acp-card>
+      <acp-card title="Cargando" subtitle="Barra de progreso" [loading]="loading()">
+        <button matButton="outlined" (click)="toggleLoading()">
+          {{ loading() ? 'Detener' : 'Iniciar' }}
+        </button>
+      </acp-card>
+      <acp-card disabled title="Deshabilitada" subtitle="Sin interacción">
+        No responde al mouse ni al teclado.
+      </acp-card>
+    </div>
+  </section>
+
+  <section>
+    <h3>Colores</h3>
+    <div class="grid">
+      @for (color of colors; track color) {
+        <acp-card [color]="color" [title]="color" subtitle="Rol de color del tema">
+          Texto con el contraste del rol.
+        </acp-card>
+      }
+    </div>
+  </section>
+
+  <section>
+    <h3>Padding</h3>
+    <div class="grid">
+      @for (padding of paddings; track padding) {
+        <acp-card [padding]="padding" [title]="padding" subtitle="Header, contenido y acciones">
+          El mismo espaciado en todas las secciones.
+        </acp-card>
+      }
+    </div>
+  </section>
+</div>

@@ -1,0 +1,162 @@
+@use '../../../../core/style/breakpoints';
+@use '../../../../core/tokens/acp-system';
+
+$_sidenav-width: acp-system.layout(sidenav-width);
+$_collapsed-width: acp-system.layout(sidenav-collapsed-width);
+// Toolbar heights; the tokens exist only when the app emits Material's density tokens.
+$_toolbar-height: var(--mat-toolbar-standard-height, 64px);
+$_toolbar-mobile-height: var(--mat-toolbar-mobile-height, 56px);
+// Text of the sidebar that fades out in the collapsed rail.
+$_collapsible: '.menu-name, .menu-label, .menu-badge, .menu-caret, .acp-layout-sidebar__user';
+
+.acp-layout-host {
+  display: block;
+  height: 100%;
+}
+
+.acp-layout,
+.acp-layout__container {
+  --mat-sidenav-content-background-color: transparent;
+
+  height: 100%;
+}
+
+.acp-layout__spacer {
+  flex: 1 1 auto;
+}
+
+.acp-layout__sidenav {
+  --mat-sidenav-container-width: #{$_sidenav-width};
+
+  position: absolute;
+  overflow-x: hidden;
+  border-width: 0 !important;
+  transition-property: transform, width !important;
+
+  // Sidebar header on top, menu filling the rest
+  .mat-drawer-inner-container {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.acp-layout__page {
+  position: relative;
+  display: block;
+  padding: acp-system.layout(gutter);
+}
+
+// Header
+.acp-layout-header {
+  --mat-toolbar-container-background-color: var(
+    --acp-header-background-color,
+    var(--mat-sys-surface)
+  );
+  --mat-toolbar-container-text-color: var(--acp-header-text-color, var(--mat-sys-on-surface));
+  --mat-icon-button-icon-color: var(--acp-header-text-color, var(--mat-sys-on-surface-variant));
+  --acp-branding-color: var(--acp-header-text-color, inherit);
+
+  position: relative;
+  z-index: 200;
+  display: block;
+}
+
+.acp-layout--header-fixed .acp-layout-header {
+  position: sticky;
+  top: 0;
+}
+
+.acp-layout-header__fullscreen {
+  @include breakpoints.bp-lt(small) {
+    display: none;
+  }
+}
+
+// Sidebar
+.acp-layout-sidebar__header {
+  flex: none;
+  width: $_sidenav-width;
+  padding: 0 0.5rem;
+  overflow: hidden;
+
+  // The slide toggle has no label.
+  .mdc-label {
+    display: none;
+  }
+}
+
+.acp-layout-sidebar__main {
+  flex: 1;
+  min-height: 0;
+  padding: 0 0.5rem 0.5rem;
+  overflow: auto;
+  scrollbar-width: none;
+}
+
+.acp-layout-sidebar__user {
+  transition: opacity 200ms;
+
+  &:empty {
+    display: none;
+  }
+}
+
+.acp-layout--header-above {
+  .acp-layout__container {
+    height: calc(100% - #{$_toolbar-height}) !important;
+
+    @include breakpoints.bp-lt(small) {
+      height: calc(100% - #{$_toolbar-mobile-height}) !important;
+    }
+  }
+
+  .acp-layout-sidebar__main {
+    padding-top: 0.5rem;
+  }
+}
+
+// Collapsed rail: icons only, expands on hover
+.acp-layout--collapsed {
+  .acp-layout__sidenav {
+    width: $_collapsed-width;
+
+    #{$_collapsible} {
+      opacity: 0;
+    }
+
+    .menu-icon.submenu-icon {
+      opacity: 1;
+    }
+
+    &:hover {
+      width: $_sidenav-width;
+
+      #{$_collapsible} {
+        opacity: 1;
+      }
+
+      .menu-icon.submenu-icon {
+        opacity: 0;
+      }
+    }
+  }
+
+  .acp-layout__content {
+    margin-inline: $_collapsed-width 0 !important;
+  }
+}
+
+// Top menu
+.acp-layout--navbar-top {
+  .acp-topmenu {
+    top: 0;
+  }
+}
+
+.acp-layout--header-fixed .acp-topmenu {
+  top: $_toolbar-height;
+
+  @include breakpoints.bp-lt(small) {
+    top: $_toolbar-mobile-height;
+  }
+}

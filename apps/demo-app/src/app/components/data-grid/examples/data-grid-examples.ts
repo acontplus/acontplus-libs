@@ -738,11 +738,6 @@ interface PivotRow {
         max-width: 1400px;
       }
 
-      h2 {
-        margin-top: 32px;
-        margin-bottom: 16px;
-      }
-
       .example-card {
         margin-bottom: 16px;
       }

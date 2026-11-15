@@ -38,6 +38,7 @@
 /// e.g. --mat-sys-surface: #E5E5E5
 ///
 /// @param {Map} $config The color configuration with optional keys color, typography, or density.
+/// @param {Map} $overrides Overrides for `--mat-sys-*` values.
 @mixin theme($config, $overrides: ()) {
   $color: map.get($config, color);
   $color-config: null;

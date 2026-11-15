@@ -90,13 +90,6 @@ interface ApiRow {
         max-width: 1200px;
       }
 
-      h2 {
-        font-size: 24px;
-        font-weight: 500;
-        margin: 32px 0 16px;
-        color: var(--mat-sys-on-surface);
-      }
-
       .api-table {
         width: 100%;
         margin-bottom: 24px;

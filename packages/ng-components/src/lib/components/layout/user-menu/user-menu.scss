@@ -1,0 +1,116 @@
+@use '../../../../core/tokens/acp-system';
+
+$_primary: var(--acp-theme-primary-color, var(--mat-sys-primary));
+
+.acp-user-menu__trigger.mat-mdc-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.acp-user-menu__avatar {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  overflow: hidden;
+  font-size: acp-system.text-size(sm);
+  font-weight: acp-system.font-weight(semibold);
+  color: $_primary;
+  object-fit: cover;
+  background: var(--mat-sys-surface-container-lowest);
+  border-radius: 50%;
+}
+
+.acp-user-menu-panel.mat-mdc-menu-panel {
+  min-width: 300px;
+  max-width: 360px;
+}
+
+.acp-user-menu-panel .mat-mdc-menu-content {
+  padding: 0;
+}
+
+.acp-user-menu-panel__header {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--acp-skin-border, var(--mat-sys-outline-variant));
+
+  .acp-user-menu__avatar {
+    width: 56px;
+    height: 56px;
+    font-size: 20px;
+    color: #fff;
+    background: $_primary;
+  }
+}
+
+.acp-user-menu-panel__info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.acp-user-menu-panel__name {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+  margin: 0;
+  font-size: acp-system.text-size(sm);
+  font-weight: acp-system.font-weight(semibold);
+}
+
+.acp-user-menu-panel__role {
+  padding: 2px 8px;
+  font-size: acp-system.text-size(xs);
+  font-weight: acp-system.font-weight(medium);
+  color: $_primary;
+  background: color-mix(in srgb, #{$_primary} 12%, transparent);
+  border-radius: 12px;
+}
+
+.acp-user-menu-panel__muted {
+  overflow: hidden;
+  color: var(--acp-skin-text-muted, var(--mat-sys-on-surface-variant));
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.acp-user-menu-panel__caption {
+  font-size: acp-system.text-size(xs);
+}
+
+.acp-user-menu-panel__items {
+  padding: 16px;
+
+  .mat-mdc-menu-item {
+    min-height: 36px;
+    padding: 8px;
+    font-size: acp-system.text-size(sm);
+    font-weight: acp-system.font-weight(semibold);
+    border-radius: 6px;
+    transition: color 0.2s;
+
+    &:hover,
+    &:focus-visible {
+      color: $_primary;
+      background: transparent;
+    }
+
+    &:hover .mat-mdc-menu-item-text,
+    &:focus-visible .mat-mdc-menu-item-text {
+      color: inherit;
+    }
+  }
+
+  .acp-user-menu-panel__item--danger.mat-mdc-menu-item {
+    --mat-menu-item-label-text-color: var(--mat-sys-error);
+    --mat-menu-item-icon-color: var(--mat-sys-error);
+  }
+}

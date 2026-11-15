@@ -1,0 +1,93 @@
+<div
+  class="acp-layout"
+  [class.acp-layout--collapsed]="collapsed()"
+  [class.acp-layout--navbar-side]="!navTop()"
+  [class.acp-layout--navbar-top]="navTop()"
+  [class.acp-layout--header-above]="headerAbove()"
+  [class.acp-layout--header-fixed]="options().headerPos === 'fixed'"
+  [dir]="options().dir"
+>
+  @if (headerAbove()) {
+  <ng-container [ngTemplateOutlet]="headerTpl" [ngTemplateOutletContext]="{ above: true }" />
+  }
+
+  <mat-sidenav-container class="acp-layout__container" autosize autoFocus>
+    <mat-sidenav
+      #sidenav
+      class="acp-layout__sidenav"
+      [mode]="isMobile() ? 'over' : 'side'"
+      [opened]="sidenavOpened()"
+      (openedChange)="onSidenavOpenedChange($event)"
+    >
+      @if (!headerAbove()) {
+      <mat-toolbar class="acp-layout-sidebar__header">
+        <acp-branding [showName]="!collapsed()" />
+        <span class="acp-layout__spacer"></span>
+        @if (isMobile()) {
+        <button type="button" matIconButton aria-label="Close menu" (click)="sidenav.close()">
+          <mat-icon>close</mat-icon>
+        </button>
+        } @else {
+        <mat-slide-toggle
+          hideIcon
+          aria-label="Collapse menu"
+          [checked]="options().sidenavCollapsed"
+          (change)="toggleCollapsed()"
+        />
+        }
+      </mat-toolbar>
+      }
+
+      <div class="acp-layout-sidebar__main">
+        @if (options().showUserPanel) {
+        <div class="acp-layout-sidebar__user">
+          <ng-content select="[acpSidebarUser]" />
+        </div>
+        }
+        <acp-sidemenu [items]="menu()" />
+        <ng-content select="[acpSidebarFooter]" />
+      </div>
+    </mat-sidenav>
+
+    <mat-sidenav-content #content class="acp-layout__content">
+      @if (headerInContent()) {
+      <ng-container [ngTemplateOutlet]="headerTpl" [ngTemplateOutletContext]="{ above: false }" />
+      } @if (navTop()) {
+      <acp-topmenu [items]="menu()" />
+      }
+
+      <main class="acp-layout__page">
+        <ng-content />
+      </main>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>
+
+<!-- Rendered once: above the container or inside the content, depending on headerPos. -->
+<ng-template #headerTpl let-above="above">
+  <header class="acp-layout-header">
+    <mat-toolbar>
+      @if (above || (!collapsed() && !navTop())) {
+      <button type="button" matIconButton aria-label="Toggle menu" (click)="sidenav.toggle()">
+        <mat-icon>menu</mat-icon>
+      </button>
+      } @if (above || navTop()) {
+      <acp-branding />
+      }
+      <ng-content select="[acpHeaderStart]" />
+      <span class="acp-layout__spacer"></span>
+      @if (fullscreenButton) {
+      <button
+        type="button"
+        matIconButton
+        class="acp-layout-header__fullscreen"
+        aria-label="Fullscreen"
+        (click)="toggleFullscreen()"
+      >
+        <mat-icon>fullscreen</mat-icon>
+      </button>
+      }
+      <ng-content select="[acpHeaderEnd]" />
+    </mat-toolbar>
+  </header>
+</ng-template>

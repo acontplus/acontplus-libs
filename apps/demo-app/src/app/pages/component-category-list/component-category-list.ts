@@ -1,13 +1,7 @@
-import { Component, OnDestroy, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
-import { ActivatedRoute, Params, RouterLink } from '@angular/router';
-import { Observable, Subscription, combineLatest } from 'rxjs';
-import { COMPONENTS_MENU, ComponentCategory } from '../component-nav/component-nav';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { COMPONENT_GROUPS } from '../component-nav/component-nav';
 import { ComponentPageTitleService } from '../../shared/services/page-title';
-
-interface ComponentGroup {
-  category: string;
-  components: ComponentCategory[];
-}
 
 @Component({
   selector: 'app-component-category-list',
@@ -16,52 +10,12 @@ interface ComponentGroup {
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterLink],
 })
-export class ComponentCategoryList implements OnInit, OnDestroy {
-  _componentPageTitle = inject(ComponentPageTitleService);
-  private readonly _route = inject(ActivatedRoute);
+export class ComponentCategoryList implements OnInit {
+  private readonly _componentPageTitle = inject(ComponentPageTitleService);
 
-  params!: Observable<Params>;
-  routeParamSubscription!: Subscription;
-  _categoryListSummary: string | undefined;
-
-  list = COMPONENTS_MENU;
-  groupedComponents: ComponentGroup[] = [];
+  readonly groups = COMPONENT_GROUPS;
 
   ngOnInit() {
-    // Combine params from all of the path into a single object.
-    this.params = combineLatest(
-      this._route.pathFromRoot.map(route => route.params),
-      Object.assign,
-    );
-
-    this.routeParamSubscription = this.params.subscribe(() => {
-      this._componentPageTitle.title = 'components';
-    });
-
-    // Group components by category
-    this.groupComponents();
-  }
-
-  ngOnDestroy() {
-    if (this.routeParamSubscription) {
-      this.routeParamSubscription.unsubscribe();
-    }
-  }
-
-  private groupComponents() {
-    const groups = new Map<string, ComponentCategory[]>();
-
-    this.list.forEach(component => {
-      const category = component.category || 'Other';
-      if (!groups.has(category)) {
-        groups.set(category, []);
-      }
-      groups.get(category)!.push(component);
-    });
-
-    this.groupedComponents = Array.from(groups.entries()).map(([category, components]) => ({
-      category,
-      components,
-    }));
+    this._componentPageTitle.title = 'components';
   }
 }

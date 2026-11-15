@@ -1,0 +1,29 @@
+<mat-menu class="acp-topmenu-panel">
+  @for (item of items(); track $index) { @switch (item.type) { @case ('link') {
+  <a mat-menu-item [routerLink]="route(item)" routerLinkActive="active">{{ item.name }}</a>
+  } @case ('sub') {
+  <button
+    type="button"
+    mat-menu-item
+    [matMenuTriggerFor]="submenu.menuPanel()"
+    [class.active]="isActive(item)"
+  >
+    {{ item.name }}
+    <acp-topmenu-panel
+      #submenu
+      [items]="item.children ?? []"
+      [parentRoute]="parentRoute().concat([item.route])"
+    />
+  </button>
+  } @default {
+  <a
+    mat-menu-item
+    [href]="item.route"
+    [attr.target]="item.type === 'extTabLink' ? '_blank' : null"
+    [attr.rel]="item.type === 'extTabLink' ? 'noopener' : null"
+  >
+    <span class="menu-name">{{ item.name }}</span>
+    <mat-icon>launch</mat-icon>
+  </a>
+  } } }
+</mat-menu>

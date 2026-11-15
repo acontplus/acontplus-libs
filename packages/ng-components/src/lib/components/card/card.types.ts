@@ -5,11 +5,6 @@
 export type AcpCardAppearance = 'elevated' | 'outlined' | 'filled';
 
 /**
- * Card elevation levels, mapped to `--mat-sys-level{n}`. Only applies to `elevated` cards.
- */
-export type AcpCardElevation = 0 | 1 | 2 | 3 | 4 | 5;
-
-/**
  * Content padding options.
  */
 export type AcpCardPadding = 'none' | 'small' | 'medium' | 'large';
@@ -33,8 +28,7 @@ export type AcpCardColor =
   | 'surface-container'
   | 'surface-container-low'
   | 'surface-container-lowest'
-  | 'inverse-surface'
-  | 'disabled-bg';
+  | 'inverse-surface';
 
 /**
  * Media aspect ratio.
@@ -46,6 +40,9 @@ export type AcpCardImageRatio = '1:1' | '4:3' | '16:9' | '21:9' | '3:2' | '3:4';
  */
 export type AcpCardActionsAlign = 'start' | 'end';
 
+/** Heading level of the title. Without it the title is not a heading. */
+export type AcpCardHeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
+
 /**
  * Application-wide or subtree defaults for `acp-card`.
  * Provide them with `provideAcpCardDefaults()` or the `ACP_CARD_DEFAULT_OPTIONS` token.
@@ -53,8 +50,6 @@ export type AcpCardActionsAlign = 'start' | 'end';
  */
 export interface AcpCardConfig {
   appearance?: AcpCardAppearance;
-  elevation?: AcpCardElevation;
-  rounded?: boolean | number;
   padding?: AcpCardPadding;
   color?: AcpCardColor;
   hoverable?: boolean;
@@ -68,7 +63,6 @@ export interface AcpCardConfig {
 export interface AcpCardPassThroughSection {
   class?: string | string[] | Record<string, boolean>;
   style?: Record<string, string>;
-  [key: string]: any;
 }
 
 export interface AcpCardPassThroughOptions {

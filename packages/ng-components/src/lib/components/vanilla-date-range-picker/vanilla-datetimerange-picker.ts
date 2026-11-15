@@ -1820,7 +1820,7 @@ let DateRangePicker: any;
         delete this._outsideClickProxy;
       }
       if (this.moveProxy) {
-        window.addEventListener('resize', this.moveProxy);
+        window.removeEventListener('resize', this.moveProxy);
         delete this.moveProxy;
       }
       if (this.clickRangeProxy) {
@@ -1888,8 +1888,10 @@ let DateRangePicker: any;
         );
         delete this.timeChangedProxy;
       }
+      // Detach the container from the DOM, not only the reference.
+      this.container.remove();
+      this.isShowing = false;
       delete this.container;
-      delete this.element.dataset;
     },
 
     updateRanges: function (newRanges) {

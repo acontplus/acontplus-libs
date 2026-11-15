@@ -13,7 +13,7 @@
   </div>
   }
 
-  <a mat-button class="docs-button" routerLink="/" aria-label="Angular Material">
+  <a mat-button class="docs-button docs-brand" routerLink="/" aria-label="AcontPlus Libs home">
     <span>AcontPlus Libs</span>
   </a>
 
@@ -26,29 +26,26 @@
     Components
   </a>
 
-  <a
-    mat-button
-    class="docs-navbar-hide-small docs-button"
-    routerLink="modules"
-    routerLinkActive="docs-navbar-header-item-selected"
-  >
-    Módulos
-  </a>
-
   <div class="flex-spacer"></div>
 
-  <!-- Theme Toggle -->
-  <acp-theme-toggle />
-
-  <!-- Theme Customizer -->
   <button
     mat-icon-button
     class="docs-button"
-    [matTooltip]="'Theme Settings'"
-    (click)="openCustomizer()"
-    aria-label="Theme Settings"
+    [matTooltip]="isDark() ? 'Light mode' : 'Dark mode'"
+    [attr.aria-label]="isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
+    (click)="toggleDarkMode()"
   >
-    <mat-icon>palette</mat-icon>
+    <mat-icon>{{ isDark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+  </button>
+
+  <button
+    mat-icon-button
+    class="docs-button"
+    matTooltip="Settings"
+    aria-label="Open settings"
+    (click)="openCustomizer()"
+  >
+    <mat-icon>settings</mat-icon>
   </button>
 
   <a

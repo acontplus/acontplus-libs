@@ -65,12 +65,12 @@ const appScss = `.example-card {
     .result-display {
       margin: 30px 0;
       padding: 20px;
-      background: linear-gradient(135deg, #e8f5e9 0%, #e3f2fd 100%);
-      border-radius: 12px;
+      background: var(--mat-sys-surface-container-low);
+      border-radius: var(--mat-sys-corner-small);
 
       h4 {
         margin-bottom: 16px;
-        color: #2e7d32;
+        color: var(--mat-sys-primary);
       }
 
       .result-grid {
@@ -80,19 +80,19 @@ const appScss = `.example-card {
 
         .result-item {
           padding: 12px;
-          background-color: rgba(255, 255, 255, 0.9);
-          border-radius: 8px;
-          border-left: 4px solid #2e7d32;
+          background-color: var(--mat-sys-surface);
+          border-radius: var(--mat-sys-corner-small);
+          border-inline-start: 4px solid var(--mat-sys-primary);
 
           strong {
             display: block;
-            color: #1b5e20;
+            color: var(--mat-sys-on-surface);
             margin-bottom: 4px;
           }
 
           span {
-            color: #424242;
-            font-size: 14px;
+            color: var(--mat-sys-on-surface-variant);
+            font: var(--mat-sys-body-medium);
           }
         }
       }

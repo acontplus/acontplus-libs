@@ -83,24 +83,9 @@ interface ApiProperty {
         max-width: 1200px;
       }
 
-      h2 {
-        font-size: 24px;
-        font-weight: 500;
-        margin: 32px 0 16px;
-        color: var(--mat-sys-on-surface);
-      }
-
       .api-table {
         width: 100%;
         margin-bottom: 32px;
-      }
-
-      code {
-        background-color: var(--mat-sys-surface-container);
-        padding: 2px 6px;
-        border-radius: 4px;
-        font-family: 'Roboto Mono', monospace;
-        font-size: 13px;
       }
 
       th {

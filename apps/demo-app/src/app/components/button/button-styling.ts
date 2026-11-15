@@ -51,20 +51,6 @@ import { CodeExample } from '../../shared/code-example/code-example';
       }
 
       .docs-component-description,
-      .section-description {
-        font-size: 16px;
-        line-height: 1.6;
-        margin-bottom: 24px;
-        color: var(--mat-sys-on-surface-variant);
-      }
-
-      h2 {
-        font-size: 24px;
-        font-weight: 500;
-        margin: 32px 0 16px;
-        color: var(--mat-sys-on-surface);
-      }
-
       .docs-example-card {
         margin-bottom: 16px;
       }
@@ -74,27 +60,14 @@ import { CodeExample } from '../../shared/code-example/code-example';
         padding: 0;
         margin: 16px 0;
       }
-
-      .features-list li {
-        padding: 8px 0;
-        font-size: 14px;
-      }
-
-      code {
-        background-color: var(--mat-sys-surface-container);
-        padding: 2px 6px;
-        border-radius: 4px;
-        font-family: 'Roboto Mono', monospace;
-        font-size: 13px;
-      }
     `,
   ],
 })
 export class ButtonStyling {
   customColorCode = `// Custom button color using CSS variables
 .custom-button {
-  --mat-filled-button-container-color: #6200ee;
-  --mat-filled-button-label-text-color: #ffffff;
+  --mat-filled-button-container-color: var(--mat-sys-tertiary);
+  --mat-filled-button-label-text-color: var(--mat-sys-on-tertiary);
 }
 
 // Or override specific variant
@@ -111,13 +84,13 @@ export class ButtonStyling {
 .button-small {
   height: 32px;
   padding: 0 12px;
-  font-size: 13px;
+  font-size: var(--mat-sys-label-medium-size);
 }
 
 .button-large {
   height: 56px;
   padding: 0 32px;
-  font-size: 16px;
+  font-size: var(--mat-sys-label-large-size);
 }
 
 // Full-width button
@@ -129,13 +102,13 @@ export class ButtonStyling {
 
   customVariantCode = `// Create a custom gradient button
 .button-gradient {
-  background: linear-gradient(45deg, #fe6b8b 30%, #ff8e53 90%);
+  background: linear-gradient(45deg, var(--mat-sys-primary) 30%, var(--mat-sys-tertiary) 90%);
   border: 0;
-  color: white;
-  box-shadow: 0 3px 5px 2px rgba(255, 105, 135, .3);
+  color: var(--mat-sys-on-primary);
+  box-shadow: var(--acp-sys-shadow-2);
 
   &:hover {
-    background: linear-gradient(45deg, #fe8ba0 30%, #ffa070 90%);
+    filter: brightness(1.08);
   }
 }
 

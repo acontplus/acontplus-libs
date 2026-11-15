@@ -1,0 +1,167 @@
+@use '../../../../core/tokens/acp-system';
+
+.acp-notifications-button.mat-mdc-icon-button {
+  position: relative;
+}
+
+.acp-notify {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  pointer-events: none;
+
+  &__ring {
+    position: absolute;
+    top: -7px;
+    right: -7px;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #ffc107;
+    border-radius: 50%;
+    animation: acp-heartbit 1s ease-out infinite;
+  }
+
+  &__point {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 5px;
+    height: 5px;
+    background-color: #ffc107;
+    border-radius: 50%;
+  }
+}
+
+@keyframes acp-heartbit {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(0.5);
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .acp-notify__ring {
+    animation: none;
+    opacity: 0.6;
+  }
+}
+
+.acp-notifications-menu.mat-mdc-menu-panel {
+  width: 360px;
+  max-width: calc(100vw - 32px);
+}
+
+.acp-notifications-menu .mat-mdc-menu-content {
+  padding: 0;
+}
+
+.acp-notifications-menu__header {
+  padding: 16px 24px;
+  color: #fff;
+  background: var(--acp-theme-primary-color, var(--mat-sys-primary));
+}
+
+.acp-notifications-menu__heading {
+  margin: 0;
+  font-size: acp-system.text-size(lg);
+  font-weight: acp-system.font-weight(medium);
+}
+
+.acp-notifications-menu__summary {
+  margin: 2px 0 0;
+  font-size: acp-system.text-size(xs);
+}
+
+.acp-notifications-menu .acp-notifications-menu__item.mat-mdc-menu-item {
+  min-height: 0;
+  padding: 14px 24px;
+  margin: 0;
+  border-radius: 0;
+  border-bottom: 1px solid var(--acp-skin-border, var(--mat-sys-outline-variant));
+
+  .mat-mdc-menu-item-text {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+  }
+
+  &:hover .acp-notifications-menu__title {
+    color: var(--acp-theme-primary-color, var(--mat-sys-primary));
+  }
+}
+
+.acp-notifications-menu__icon {
+  --acp-notification-tone: var(--acp-theme-primary-color, var(--mat-sys-primary));
+
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  color: var(--acp-notification-tone);
+  background: color-mix(in srgb, var(--acp-notification-tone) 15%, transparent);
+  border-radius: 50%;
+
+  &--success {
+    --acp-notification-tone: var(--acp-notification-success-color, #13deb9);
+  }
+
+  &--warning {
+    --acp-notification-tone: var(--acp-notification-warning-color, #e0a800);
+  }
+
+  &--error {
+    --acp-notification-tone: var(--acp-notification-error-color, var(--mat-sys-error));
+  }
+}
+
+// Anchored to the panel to beat Material's `.mat-mdc-menu-item .mat-icon` (margin-right: 16px),
+// which loads later when the menu opens and would push the icon off center.
+.acp-notifications-menu .acp-notifications-menu__icon .mat-icon {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  font-size: 20px;
+  line-height: 1;
+  color: inherit;
+}
+
+.acp-notifications-menu__text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.acp-notifications-menu__title {
+  font-size: acp-system.text-size(sm);
+  font-weight: acp-system.font-weight(semibold);
+  transition: color 0.2s;
+}
+
+.acp-notifications-menu__subtitle {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: acp-system.text-size(xs);
+  line-height: 1.1rem;
+  color: var(--acp-skin-text-muted, var(--mat-sys-on-surface-variant));
+  white-space: normal;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.acp-notifications-menu__footer {
+  padding: 12px 24px 16px;
+
+  .mat-mdc-button-base {
+    width: 100%;
+  }
+}

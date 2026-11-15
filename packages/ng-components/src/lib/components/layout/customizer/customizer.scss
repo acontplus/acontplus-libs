@@ -1,0 +1,173 @@
+@use '../../../../core/tokens/acp-system';
+
+// Customizer as in MaterialPro: primary FAB, drawer with a bordered header and option cards.
+
+$_primary: var(--acp-theme-primary-color, var(--mat-sys-primary));
+$_border: var(--acp-skin-border, var(--mat-sys-outline-variant));
+
+.acp-customizer-handle {
+  --mat-fab-container-color: #{$_primary};
+  --mat-fab-foreground-color: #fff;
+  --mat-fab-container-elevation-shadow: none;
+  --mat-fab-hover-container-elevation-shadow: none;
+  --mat-fab-focus-container-elevation-shadow: none;
+  --mat-fab-pressed-container-elevation-shadow: none;
+
+  position: fixed;
+  right: 1.75rem;
+  bottom: 1.75rem;
+  z-index: 10;
+
+  [dir='rtl'] & {
+    right: auto;
+    left: 1.75rem;
+  }
+}
+
+// The panel lays out its own header and body; drop the drawer padding.
+.acp-customizer-pane .acp-drawer-container {
+  padding: 0;
+  overflow: hidden;
+}
+
+.acp-customizer {
+  --acp-customizer-primary: #{$_primary};
+
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  &__header {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 16px;
+    border-bottom: 1px solid $_border;
+  }
+
+  &__heading {
+    margin: 0;
+    font-size: acp-system.text-size(xl);
+    font-weight: acp-system.font-weight(semibold);
+  }
+
+  &__body {
+    flex: 1;
+    padding: 24px;
+    overflow: auto;
+  }
+
+  &__title {
+    margin: 24px 0 16px;
+    padding-top: 16px;
+    font-size: acp-system.text-size(base);
+    font-weight: acp-system.font-weight(semibold);
+
+    &:first-child {
+      margin-top: 0;
+      padding-top: 0;
+    }
+  }
+
+  &__subtitle {
+    margin: 16px 0 12px;
+    font-size: acp-system.text-size(sm);
+    font-weight: acp-system.font-weight(semibold);
+    color: var(--acp-skin-text-muted, var(--mat-sys-on-surface-variant));
+  }
+}
+
+// Option cards
+.acp-customizer-group.mat-button-toggle-group {
+  // Material draws a divider between toggles; the cards have their own border.
+  --mat-button-toggle-divider-color: #{$_border};
+
+  flex-wrap: wrap;
+  gap: 16px;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+
+  .mat-button-toggle {
+    padding: 9px;
+    border: 1px solid $_border;
+    border-radius: var(--acp-skin-radius, 10px);
+    transition:
+      transform 0.1s ease-in,
+      background-color 0.15s;
+
+    &:hover:not(.mat-button-toggle-disabled) {
+      transform: scale(1.05);
+    }
+
+    &.mat-button-toggle-checked {
+      color: var(--acp-customizer-primary);
+      background-color: color-mix(in srgb, var(--acp-customizer-primary) 15%, transparent);
+    }
+
+    &.mat-button-toggle-disabled {
+      opacity: 0.5;
+    }
+  }
+
+  .mat-button-toggle-label-content {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    padding: 0 12px;
+    font-weight: acp-system.font-weight(medium);
+  }
+
+  .mat-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+  }
+
+  .mat-button-toggle-checked .mat-icon {
+    color: var(--acp-customizer-primary);
+  }
+}
+
+// Theme colors: 3 per row, 80x65 cards with a 25px swatch
+.acp-customizer-group--colors.mat-button-toggle-group {
+  display: grid;
+  grid-template-columns: repeat(3, 80px);
+
+  .mat-button-toggle {
+    height: 65px;
+    padding: 0;
+  }
+
+  .mat-button-toggle-button,
+  .mat-button-toggle-label-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 0;
+  }
+
+  .acp-customizer-color {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 25px;
+    height: 25px;
+    color: #fff;
+    border-radius: 50%;
+
+    .mat-icon {
+      display: none;
+      width: 16px;
+      height: 16px;
+      font-size: 16px;
+    }
+  }
+
+  .mat-button-toggle-checked .acp-customizer-color .mat-icon {
+    display: block;
+    color: #fff;
+  }
+}

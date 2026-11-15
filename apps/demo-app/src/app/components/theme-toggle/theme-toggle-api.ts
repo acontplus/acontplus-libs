@@ -109,24 +109,9 @@ import { MatCardModule } from '@angular/material/card';
         max-width: 1200px;
       }
 
-      h2 {
-        font-size: 24px;
-        font-weight: 500;
-        margin: 32px 0 16px;
-        color: var(--mat-sys-on-surface);
-      }
-
       p {
         margin-bottom: 16px;
         line-height: 1.6;
-      }
-
-      code {
-        background: var(--mat-sys-surface-container);
-        padding: 2px 8px;
-        border-radius: 4px;
-        font-family: 'Roboto Mono', monospace;
-        font-size: 14px;
       }
 
       .api-card {

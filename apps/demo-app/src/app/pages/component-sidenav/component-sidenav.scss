@@ -15,47 +15,61 @@ app-component-sidenav {
   overflow: auto;
 }
 
-.mat-drawer {
-  &::-webkit-scrollbar {
-    height: 4px;
-    width: 4px;
-  }
-}
-
 .docs-component-viewer-nav {
   position: sticky;
   top: 0;
 
   .docs-component-viewer-nav-content {
-    border-right: 1px solid var(--mat-sys-outline-variant);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
     width: constants.$sidenav-width;
-    padding: 16px 8px;
     height: calc(100vh - 56px);
+    padding: 16px 12px 32px;
     overflow: auto;
     box-sizing: border-box;
+    border-right: 1px solid var(--mat-sys-outline-variant);
+    scrollbar-width: thin;
+  }
+}
 
-    &::-webkit-scrollbar {
-      height: 4px;
-      width: 4px;
-    }
+.docs-nav-group {
+  margin: 20px 12px 6px;
+  color: var(--mat-sys-on-surface-variant);
+  font: var(--mat-sys-label-small);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
 
-    &::-webkit-scrollbar-thumb {
-      background: rgba(0, 0, 0, 0.26);
-    }
+.docs-nav-item {
+  display: flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 0 14px;
+  border-radius: var(--mat-sys-corner-full);
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-medium);
+  text-decoration: none;
+  transition:
+    color 0.2s,
+    background-color 0.2s;
 
-    ul {
-      list-style-type: none;
-      margin: 0 0 5px;
-      padding: 0;
-      overflow: hidden;
-    }
+  &:hover,
+  &:focus-visible {
+    color: var(--mat-sys-primary);
+    background-color: color-mix(in srgb, var(--mat-sys-primary) 6%, transparent);
+  }
 
-    li {
-      font-size: 13px;
-      line-height: 16px;
-      margin: 0;
-      padding: 5px 15px 5px 20px;
-    }
+  &:focus-visible {
+    outline: 2px solid var(--mat-sys-primary);
+    outline-offset: -2px;
+  }
+
+  &--active,
+  &--active:hover {
+    color: var(--mat-sys-primary);
+    background-color: color-mix(in srgb, var(--mat-sys-primary) 12%, transparent);
+    font-weight: 500;
   }
 }
 
@@ -74,16 +88,6 @@ app-component-sidenav {
 .docs-component-sidenav-body-content {
   display: flex;
   flex: 1 1 auto;
-}
-
-div .mat-mdc-list-base {
-  padding-top: 0;
-}
-
-/* TODO(mdc-migration): The following rule targets internal classes of list that may no longer
- * apply for the MDC version. */
-div.docs-component-viewer-nav-content .mat-nav-list .mat-mdc-list-item .mat-list-item-content {
-  padding-left: 25px;
 }
 
 @media (max-width: constants.$small-breakpoint-width) {

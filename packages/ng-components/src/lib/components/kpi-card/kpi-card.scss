@@ -1,7 +1,10 @@
 @use 'sass:list';
-@use 'sass:string';
 @use '../../../core/tokens/token-utils';
 @use './m3-kpi-card';
+
+// Public hooks: the `kpi-card-*` theme tokens (`--acp-kpi-card-<token>`, e.g.
+// `--acp-kpi-card-custom-bg` / `-fg` / `-accent` for `color="custom"`).
+// Internal state uses the private `--_acp-kpi-*` namespace so it never collides with tokens.
 
 $fallbacks: m3-kpi-card.get-tokens();
 
@@ -9,116 +12,137 @@ $fallbacks: m3-kpi-card.get-tokens();
   @return token-utils.slot(kpi-card-#{$name}, $fallbacks);
 }
 
-$colors: (
-  primary,
-  secondary,
-  success,
-  success-light,
-  warning,
-  warning-light,
-  error,
-  error-light,
-  info,
-  info-light,
-  neutral,
-  surface
+$colors: (primary, secondary, success, warning, error, info, neutral, custom);
+
+// Spacing per size: padding, gap, icon, tile/avatar. Text comes from the theme typescale
+// (acontpluspro): title, subtitle, value, meta.
+$sizes: (
+  xs-small: (
+    12px 8px 18px 32px,
+    body-small label-small title-medium label-small,
+  ),
+  small: (
+    16px 10px 20px 40px,
+    body-small label-small title-large label-small,
+  ),
+  medium: (
+    24px 16px 24px 48px,
+    body-medium body-small headline-small body-small,
+  ),
+  large: (
+    30px 20px 28px 56px,
+    body-large body-medium headline-medium body-medium,
+  ),
 );
 
-// Size scale: padding, gap, icon, avatar, title, subtitle, value, meta
-$sizes: (
-  xs: 8px 6px 16px 28px 12px 10px 18px 11px,
-  sm: 12px 8px 20px 32px 13px 11px 22px 12px,
-  md: 16px 12px 24px 40px 14px 12px 28px 13px,
-  lg: 20px 16px 32px 48px 16px 13px 36px 14px,
-);
+$easing: var(--acp-sys-easing-standard, ease);
+$surface: var(--acp-sys-surface-raised, var(--mat-sys-surface-container-lowest));
+$shadow: var(--acp-sys-shadow-1, var(--mat-sys-level1));
+$shadow-raised: var(--acp-sys-shadow-2, var(--mat-sys-level3));
 
 .acp-kpi-card {
-  // Public hooks: --acp-kpi-card-bg, --acp-kpi-card-fg, --acp-kpi-card-accent
-  // (the `custom` color reads --acp-kpi-card-custom-bg / -fg / -accent).
   display: block;
   width: 100%;
   container: acp-kpi-card / inline-size;
 
   & &__card {
-    --acp-kpi-card-emphasis: var(--acp-kpi-card-fg);
-    --acp-kpi-card-muted: color-mix(in srgb, currentColor 72%, transparent);
+    --_acp-kpi-muted: color-mix(in srgb, currentColor 72%, transparent);
+    --_acp-kpi-divider: var(--mat-sys-outline-variant);
+    --_acp-kpi-tile-bg: color-mix(in srgb, var(--_acp-kpi-accent) 15%, transparent);
+    --_acp-kpi-tile-fg: var(--_acp-kpi-accent);
 
+    position: relative;
     display: flex;
     flex-direction: column;
     width: 100%;
     overflow: hidden;
-    border-radius: #{tok(container-shape)};
     border: 1px solid transparent;
-    background: var(--acp-kpi-card-bg);
-    color: var(--acp-kpi-card-fg);
+    border-radius: #{tok(container-shape)};
+    background: #{$surface};
+    color: var(--mat-sys-on-surface);
+    box-shadow: none;
     transition:
-      box-shadow 200ms cubic-bezier(0.2, 0, 0, 1),
-      transform 200ms cubic-bezier(0.2, 0, 0, 1);
+      box-shadow 300ms $easing,
+      transform 200ms $easing;
   }
 
-  &__header .mat-mdc-card-header-text {
-    display: none;
+  // Interactive area: a native <a> or <button> stretched over the card. Menu and footer are
+  // raised above it so they stay clickable.
+  &__hit {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: inherit;
+    background: transparent;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid var(--mat-sys-primary);
+      outline-offset: -2px;
+    }
+
+    &:disabled {
+      cursor: progress;
+    }
   }
 
-  & &__card &__header {
+  &__raised {
+    position: relative;
+    z-index: 1;
+  }
+
+  &__header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--acp-kpi-card-gap);
-    padding: var(--acp-kpi-card-padding) var(--acp-kpi-card-padding) 0;
+    gap: var(--_acp-kpi-gap);
+    padding: var(--_acp-kpi-padding) var(--_acp-kpi-padding) 0;
   }
 
   &__header-content {
     display: flex;
     flex: 1;
     align-items: center;
-    justify-content: var(--acp-kpi-card-justify);
-    gap: var(--acp-kpi-card-gap);
+    justify-content: var(--_acp-kpi-justify);
+    gap: var(--_acp-kpi-gap);
     min-width: 0;
   }
 
-  &__icon-container {
+  &__tile,
+  &__avatar {
     display: flex;
     flex-shrink: 0;
     align-items: center;
     justify-content: center;
-    color: var(--acp-kpi-card-emphasis);
+    width: var(--_acp-kpi-tile-size);
+    height: var(--_acp-kpi-tile-size);
+  }
 
-    &:empty {
-      display: none;
-    }
+  &__tile {
+    border-radius: var(--mat-sys-corner-small);
+    background: var(--_acp-kpi-tile-bg);
+    color: var(--_acp-kpi-tile-fg);
   }
 
   &__icon {
-    width: var(--acp-kpi-card-icon-size);
-    height: var(--acp-kpi-card-icon-size);
-    font-size: var(--acp-kpi-card-icon-size);
+    width: var(--_acp-kpi-icon-size);
+    height: var(--_acp-kpi-icon-size);
+    font-size: var(--_acp-kpi-icon-size);
   }
 
-  &__avatar,
-  &__avatar-image,
-  &__avatar-initials {
-    display: flex;
-    flex-shrink: 0;
-    align-items: center;
-    justify-content: center;
-    width: var(--acp-kpi-card-avatar-size);
-    height: var(--acp-kpi-card-avatar-size);
-    border-radius: 50%;
-    font-size: var(--acp-kpi-card-meta-size);
-    font-weight: 500;
-  }
-
-  &__avatar,
-  &__avatar-initials {
-    background: color-mix(in srgb, var(--acp-kpi-card-emphasis) 16%, transparent);
-  }
-
-  &__avatar-image {
+  &__avatar {
+    overflow: hidden;
+    border-radius: var(--mat-sys-corner-full);
+    background: var(--_acp-kpi-tile-bg);
+    color: var(--_acp-kpi-tile-fg);
+    font: var(--mat-sys-label-large);
     object-fit: cover;
   }
 
-  &__title-container {
+  &__titles {
     min-width: 0;
   }
 
@@ -131,15 +155,17 @@ $sizes: (
 
   &__title {
     margin: 0;
+    color: var(--_acp-kpi-muted);
     font: var(--mat-sys-title-small);
-    font-size: var(--acp-kpi-card-title-size);
+    font-size: var(--_acp-kpi-title-size);
+    font-weight: 500;
   }
 
   &__subtitle {
     margin: 2px 0 0;
+    color: var(--_acp-kpi-muted);
     font: var(--mat-sys-body-small);
-    font-size: var(--acp-kpi-card-subtitle-size);
-    color: var(--acp-kpi-card-muted);
+    font-size: var(--_acp-kpi-subtitle-size);
   }
 
   &__menu-button {
@@ -147,30 +173,32 @@ $sizes: (
     color: inherit;
   }
 
-  & &__card &__content {
+  &__content {
     display: flex;
     flex: 1;
     flex-direction: column;
-    gap: var(--acp-kpi-card-gap);
-    padding: var(--acp-kpi-card-padding);
+    gap: var(--_acp-kpi-gap);
+    padding: var(--_acp-kpi-padding);
+  }
+
+  &__header + &__content {
+    padding-top: var(--_acp-kpi-gap);
   }
 
   &__value-section {
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
-    justify-content: var(--acp-kpi-card-justify);
+    justify-content: var(--_acp-kpi-justify);
     gap: 4px 8px;
   }
 
   &__value {
     font-family: var(--mat-sys-headline-small-font);
-    font-size: min(var(--acp-kpi-card-value-size), 14cqi);
+    font-size: min(var(--_acp-kpi-value-size), 14cqi);
     font-weight: 600;
     font-variant-numeric: tabular-nums;
     line-height: 1.2;
-    letter-spacing: -0.5px;
-    color: var(--acp-kpi-card-emphasis);
   }
 
   &__affix {
@@ -183,62 +211,50 @@ $sizes: (
     align-items: center;
     gap: 2px;
     padding: 2px 8px;
-    border-radius: 999px;
+    border-radius: var(--mat-sys-corner-full);
     font: var(--mat-sys-label-medium);
-    font-size: var(--acp-kpi-card-meta-size);
+    font-size: var(--_acp-kpi-meta-size);
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
 
-    &--positive {
-      background: #{tok(delta-positive-bg)};
-      color: #{tok(delta-positive-color)};
-    }
-
-    &--negative {
-      background: #{tok(delta-negative-bg)};
-      color: #{tok(delta-negative-color)};
-    }
-
-    &--neutral {
-      background: #{tok(delta-neutral-bg)};
-      color: #{tok(delta-neutral-color)};
+    @each $sentiment in (positive, negative, neutral) {
+      &--#{$sentiment} {
+        background: #{tok(delta-#{$sentiment}-bg)};
+        color: #{tok(delta-#{$sentiment}-fg)};
+      }
     }
   }
 
   &__trend-icon {
-    width: 16px;
-    height: 16px;
-    font-size: 16px;
+    width: 1.2em;
+    height: 1.2em;
+    font-size: 1.2em;
   }
 
-  &__trend-label {
-    font-size: var(--acp-kpi-card-meta-size);
-    color: var(--acp-kpi-card-muted);
+  &__trend-label,
+  &__description {
+    color: var(--_acp-kpi-muted);
+    font-size: var(--_acp-kpi-meta-size);
   }
 
   &__description {
     margin: 0;
     font: var(--mat-sys-body-small);
-    font-size: var(--acp-kpi-card-meta-size);
-    color: var(--acp-kpi-card-muted);
+    font-size: var(--_acp-kpi-meta-size);
   }
 
   &__progress {
-    --mat-progress-bar-active-indicator-color: var(--acp-kpi-card-emphasis);
+    --mat-progress-bar-active-indicator-color: var(--_acp-kpi-accent);
     --mat-progress-bar-track-color: color-mix(in srgb, currentColor 16%, transparent);
-    --mat-progress-bar-track-shape: 2px;
-
-    &[class*='acp-kpi-card__progress--'] {
-      --mat-progress-bar-active-indicator-color: var(--acp-kpi-card-accent);
-    }
+    --mat-progress-bar-track-shape: var(--mat-sys-corner-full);
   }
 
   &__footer {
-    padding: calc(var(--acp-kpi-card-padding) * 0.75) var(--acp-kpi-card-padding);
-    border-top: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+    padding: calc(var(--_acp-kpi-padding) * 0.75) var(--_acp-kpi-padding);
+    border-top: 1px solid var(--_acp-kpi-divider);
+    color: var(--_acp-kpi-muted);
     font: var(--mat-sys-body-small);
-    font-size: var(--acp-kpi-card-meta-size);
-    color: var(--acp-kpi-card-muted);
+    font-size: var(--_acp-kpi-meta-size);
   }
 
   &__footer-text {
@@ -248,13 +264,13 @@ $sizes: (
   &__skeleton {
     display: flex;
     flex-direction: column;
-    gap: var(--acp-kpi-card-gap);
-    padding: var(--acp-kpi-card-padding);
+    gap: var(--_acp-kpi-gap);
+    padding: var(--_acp-kpi-padding);
 
     > span {
       display: block;
-      height: 12px;
-      border-radius: 4px;
+      height: var(--_acp-kpi-meta-size);
+      border-radius: var(--mat-sys-corner-extra-small);
       background: linear-gradient(
         90deg,
         color-mix(in srgb, currentColor 14%, transparent) 25%,
@@ -267,12 +283,12 @@ $sizes: (
 
     > span:nth-child(1) {
       width: 60%;
-      height: 16px;
+      height: var(--_acp-kpi-title-size);
     }
 
     > span:nth-child(2) {
       width: 40%;
-      height: var(--acp-kpi-card-value-size);
+      height: var(--_acp-kpi-value-size);
     }
 
     > span:nth-child(3) {
@@ -282,122 +298,105 @@ $sizes: (
 
   // Sizes
   @each $size, $v in $sizes {
+    $space: list.nth($v, 1);
+    $type: list.nth($v, 2);
+
     &--#{$size} {
-      --acp-kpi-card-padding: #{list.nth($v, 1)};
-      --acp-kpi-card-gap: #{list.nth($v, 2)};
-      --acp-kpi-card-icon-size: #{list.nth($v, 3)};
-      --acp-kpi-card-avatar-size: #{list.nth($v, 4)};
-      --acp-kpi-card-title-size: #{list.nth($v, 5)};
-      --acp-kpi-card-subtitle-size: #{list.nth($v, 6)};
-      --acp-kpi-card-value-size: #{list.nth($v, 7)};
-      --acp-kpi-card-meta-size: #{list.nth($v, 8)};
+      --_acp-kpi-padding: #{list.nth($space, 1)};
+      --_acp-kpi-gap: #{list.nth($space, 2)};
+      --_acp-kpi-icon-size: #{list.nth($space, 3)};
+      --_acp-kpi-tile-size: #{list.nth($space, 4)};
+      --_acp-kpi-title-size: var(--mat-sys-#{list.nth($type, 1)}-size);
+      --_acp-kpi-subtitle-size: var(--mat-sys-#{list.nth($type, 2)}-size);
+      --_acp-kpi-value-size: var(--mat-sys-#{list.nth($type, 3)}-size);
+      --_acp-kpi-meta-size: var(--mat-sys-#{list.nth($type, 4)}-size);
     }
   }
 
   // Alignment
   &--align-start {
-    --acp-kpi-card-justify: flex-start;
+    --_acp-kpi-justify: flex-start;
   }
 
   &--align-center {
-    --acp-kpi-card-justify: center;
+    --_acp-kpi-justify: center;
 
     text-align: center;
   }
 
   &--align-end {
-    --acp-kpi-card-justify: flex-end;
+    --_acp-kpi-justify: flex-end;
 
     text-align: end;
   }
 
-  // Colors
+  // Colors (also applied to the progress bar through `progressColor`)
   @each $color in $colors {
-    $base: $color;
-    @if string.index($color, '-light') {
-      $base: string.slice($color, 1, -7);
-    }
-
-    &--#{$color},
-    &__progress--#{$color} {
-      --acp-kpi-card-bg: #{tok(#{$color}-bg)};
-      --acp-kpi-card-fg: #{tok(#{$color}-color)};
-      --acp-kpi-card-accent: #{tok(#{$base}-accent)};
+    &--#{$color} {
+      --_acp-kpi-bg: #{tok(#{$color}-bg)};
+      --_acp-kpi-fg: #{tok(#{$color}-fg)};
+      --_acp-kpi-accent: #{tok(#{$color}-accent)};
     }
   }
 
-  &--custom {
-    --acp-kpi-card-bg: var(--acp-kpi-card-custom-bg, #{tok(custom-bg)});
-    --acp-kpi-card-fg: var(--acp-kpi-card-custom-fg, #{tok(custom-color)});
-    --acp-kpi-card-accent: var(--acp-kpi-card-custom-accent, #{tok(custom-accent)});
-  }
-
-  // Variants: default/elevated/filled use the solid container; outlined/tonal sit on a surface
+  // Variants (MaterialPro)
   &--default &__card {
-    box-shadow: var(--mat-sys-level1);
+    box-shadow: $shadow;
   }
 
   &--elevated &__card {
-    box-shadow: var(--mat-sys-level2);
-  }
-
-  &--filled &__card {
-    box-shadow: none;
-  }
-
-  &--outlined &__card,
-  &--tonal &__card {
-    --acp-kpi-card-emphasis: var(--acp-kpi-card-accent);
-
-    box-shadow: none;
-    color: var(--mat-sys-on-surface);
+    box-shadow: $shadow-raised;
   }
 
   &--outlined &__card {
-    background: var(--mat-sys-surface);
-    border-color: color-mix(in srgb, var(--acp-kpi-card-accent) 40%, transparent);
+    border-color: var(--acp-skin-border, var(--mat-sys-outline-variant));
   }
 
   &--tonal &__card {
-    background: color-mix(in srgb, var(--acp-kpi-card-accent) 12%, var(--mat-sys-surface));
+    --_acp-kpi-tile-bg: #{$surface};
+
+    background: color-mix(in srgb, var(--_acp-kpi-accent) 15%, #{$surface});
+  }
+
+  &--filled &__card {
+    --_acp-kpi-divider: color-mix(in srgb, currentColor 18%, transparent);
+    --_acp-kpi-tile-bg: color-mix(in srgb, currentColor 18%, transparent);
+    --_acp-kpi-tile-fg: currentColor;
+
+    background: var(--_acp-kpi-bg);
+    color: var(--_acp-kpi-fg);
   }
 
   // States
-  &--clickable &__card {
-    cursor: pointer;
-
-    &:hover {
-      box-shadow: var(--mat-sys-level3);
-      transform: translateY(-1px);
-    }
-
-    &:active {
-      box-shadow: var(--mat-sys-level1);
-      transform: none;
-    }
+  &--interactive:not(&--disabled) &__card:hover {
+    box-shadow: $shadow-raised;
+    transform: translateY(-2px);
   }
 
-  &__card:focus-visible {
-    outline: 2px solid var(--mat-sys-primary);
-    outline-offset: 2px;
+  &--interactive:not(&--disabled) &__card:active {
+    box-shadow: $shadow;
+    transform: none;
   }
 
   &--selected &__card {
-    border-color: var(--acp-kpi-card-emphasis);
-    box-shadow: inset 0 0 0 1px var(--acp-kpi-card-emphasis);
+    border-color: var(--_acp-kpi-accent);
+    box-shadow: inset 0 0 0 1px var(--_acp-kpi-accent);
   }
 
   &--disabled &__card {
     opacity: 0.6;
-    pointer-events: none;
+  }
+
+  &--loading &__card {
+    cursor: progress;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    &__card {
+    & &__card {
       transition: none;
     }
 
-    &--clickable &__card:hover {
+    &--interactive &__card:hover {
       transform: none;
     }
 

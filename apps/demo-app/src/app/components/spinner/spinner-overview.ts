@@ -60,20 +60,6 @@ import { CodeExample } from '../../shared/code-example/code-example';
         max-width: 1200px;
       }
 
-      .docs-component-description {
-        font-size: 16px;
-        line-height: 1.6;
-        margin-bottom: 32px;
-        color: var(--mat-sys-on-surface-variant);
-      }
-
-      h2 {
-        font-size: 24px;
-        font-weight: 500;
-        margin: 32px 0 16px;
-        color: var(--mat-sys-on-surface);
-      }
-
       .docs-example-card {
         margin-bottom: 16px;
       }
@@ -100,7 +86,7 @@ import { CodeExample } from '../../shared/code-example/code-example';
       }
 
       .spinner-size-item span {
-        font-size: 12px;
+        font-size: var(--mat-sys-body-small-size);
         color: var(--mat-sys-on-surface-variant);
       }
 
@@ -145,7 +131,7 @@ import { CodeExample } from '../../shared/code-example/code-example';
         display: flex;
         align-items: center;
         justify-content: center;
-        background-color: rgba(0, 0, 0, 0.5);
+        background-color: color-mix(in srgb, var(--mat-sys-scrim) 50%, transparent);
         z-index: 10;
         border-radius: 8px;
       }

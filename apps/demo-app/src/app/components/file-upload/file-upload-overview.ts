@@ -118,7 +118,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
     .event-log {
       margin: 12px 0 0;
       color: var(--mat-sys-on-surface-variant);
-      font-size: 0.875rem;
+      font-size: var(--mat-sys-body-medium-size);
     }
     .custom-empty {
       margin: 32px 0;

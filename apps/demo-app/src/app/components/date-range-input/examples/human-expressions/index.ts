@@ -100,12 +100,12 @@ const appScss = `.example-card {
     .result-display {
       margin: 30px 0;
       padding: 20px;
-      background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
-      border-radius: 12px;
+      background: var(--mat-sys-surface-container-low);
+      border-radius: var(--mat-sys-corner-small);
 
       h4 {
         margin-bottom: 16px;
-        color: #1976d2;
+        color: var(--mat-sys-primary);
       }
 
       .result-grid {
@@ -115,19 +115,19 @@ const appScss = `.example-card {
 
         .result-item {
           padding: 12px;
-          background-color: rgba(255, 255, 255, 0.9);
-          border-radius: 8px;
-          border-left: 4px solid #1976d2;
+          background-color: var(--mat-sys-surface);
+          border-radius: var(--mat-sys-corner-small);
+          border-inline-start: 4px solid var(--mat-sys-primary);
 
           strong {
             display: block;
-            color: #1565c0;
+            color: var(--mat-sys-on-surface);
             margin-bottom: 4px;
           }
 
           span {
-            color: #424242;
-            font-size: 14px;
+            color: var(--mat-sys-on-surface-variant);
+            font: var(--mat-sys-body-medium);
           }
         }
       }
@@ -136,17 +136,17 @@ const appScss = `.example-card {
     .info-box {
       margin: 30px 0;
       padding: 20px;
-      background-color: #e8f5e9;
-      border-radius: 8px;
+      background-color: var(--mat-sys-secondary-container);
+      border-radius: var(--mat-sys-corner-small);
 
       h4 {
         margin-bottom: 16px;
-        color: #2e7d32;
+        color: var(--mat-sys-primary);
       }
 
       p {
         margin-bottom: 12px;
-        color: #424242;
+        color: var(--mat-sys-on-surface-variant);
       }
 
       ul {
@@ -155,14 +155,13 @@ const appScss = `.example-card {
 
         li {
           margin-bottom: 8px;
-          color: #424242;
+          color: var(--mat-sys-on-surface-variant);
 
           code {
-            background-color: #f5f5f5;
+            background-color: var(--mat-sys-surface-container-high);
             padding: 2px 6px;
-            border-radius: 4px;
-            font-family: monospace;
-            color: #d32f2f;
+            border-radius: var(--mat-sys-corner-extra-small);
+            color: var(--mat-sys-error);
           }
         }
       }

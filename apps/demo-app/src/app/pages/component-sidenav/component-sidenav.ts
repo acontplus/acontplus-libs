@@ -10,8 +10,8 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { MatDrawerToggleResult, MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
-import { ActivatedRoute, Params, RouterOutlet } from '@angular/router';
-import { Observable, Subscription, combineLatest } from 'rxjs';
+import { ActivatedRoute, RouterOutlet } from '@angular/router';
+import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { NavigationFocusService } from '../../shared/services/navigation-focus.service';
 import { ComponentNav } from '../component-nav/component-nav';
@@ -41,7 +41,6 @@ export class ComponentSidenav implements OnInit, OnDestroy {
   private readonly _navigationFocusService = inject(NavigationFocusService);
 
   @ViewChild(MatSidenav) sidenav!: MatSidenav;
-  params: Observable<Params> | undefined;
   isExtraScreenSmall: Observable<boolean>;
   isScreenSmall: Observable<boolean>;
 
@@ -60,12 +59,6 @@ export class ComponentSidenav implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    // Combine params from all of the path into a single object.
-    this.params = combineLatest(
-      this._route.pathFromRoot.map(route => route.params),
-      Object.assign,
-    );
-
     this.subscriptions.add(
       this._navigationFocusService.navigationEndEvents
         .pipe(map(() => this.isScreenSmall))

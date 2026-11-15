@@ -1,7 +1,5 @@
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
-import { MatListModule } from '@angular/material/list';
-import { Params, RouterLink, RouterLinkActive } from '@angular/router';
-import { Observable } from 'rxjs';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
 export interface ComponentCategory {
   id: string;
@@ -169,30 +167,59 @@ export const COMPONENTS_MENU: ComponentCategory[] = [
   },
 ];
 
+export const COMPONENT_CATEGORIES = [
+  'Form Controls',
+  'Buttons & Indicators',
+  'Layout',
+  'Data Tables',
+  'Notifications & Alerts',
+  'Theming',
+] as const;
+
+export interface ComponentGroup {
+  category: string;
+  components: ComponentCategory[];
+}
+
+/** Components grouped by category, in `COMPONENT_CATEGORIES` order and sorted by name. */
+export const COMPONENT_GROUPS: ComponentGroup[] = COMPONENT_CATEGORIES.map(category => ({
+  category,
+  components: COMPONENTS_MENU.filter(c => c.category === category).sort((a, b) =>
+    a.name.localeCompare(b.name),
+  ),
+})).filter(group => group.components.length > 0);
+
 @Component({
   selector: 'app-component-nav',
-  template: `<div class="docs-component-viewer-nav">
-    <div class="docs-component-viewer-nav-content">
-      <mat-nav-list>
-        @for (component of menus; track component) {
-          <a
-            mat-list-item
-            #link="routerLinkActive"
-            [activated]="link.isActive"
-            routerLinkActive="docs-component-viewer-sidenav-item-selected"
-            [routerLink]="['/components/' + component.id]"
-          >
-            {{ component.name }}
-          </a>
+  template: `
+    <nav class="docs-component-viewer-nav" aria-label="Components">
+      <div class="docs-component-viewer-nav-content">
+        <a
+          class="docs-nav-item"
+          routerLink="/components/categories"
+          routerLinkActive="docs-nav-item--active"
+        >
+          Overview
+        </a>
+        @for (group of groups; track group.category) {
+          <h3 class="docs-nav-group">{{ group.category }}</h3>
+          @for (component of group.components; track component.id) {
+            <a
+              class="docs-nav-item"
+              [routerLink]="['/components', component.id]"
+              routerLinkActive="docs-nav-item--active"
+              ariaCurrentWhenActive="page"
+            >
+              {{ component.name }}
+            </a>
+          }
         }
-      </mat-nav-list>
-    </div>
-  </div>`,
+      </div>
+    </nav>
+  `,
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [MatListModule, RouterLinkActive, RouterLink],
+  imports: [RouterLinkActive, RouterLink],
 })
 export class ComponentNav {
-  @Input() params: Observable<Params> | undefined;
-  menus = COMPONENTS_MENU;
-  constructor() {}
+  readonly groups = COMPONENT_GROUPS;
 }

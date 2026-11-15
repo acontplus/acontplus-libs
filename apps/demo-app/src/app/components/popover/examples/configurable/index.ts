@@ -337,7 +337,7 @@ const appScss = `.demo-popover {
   ul {
     margin: 0.5rem 0;
     padding-left: 1.5rem;
-    font-size: 0.9rem;
+    font-size: var(--mat-sys-body-medium-size);
   }
 
   li {

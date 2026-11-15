@@ -61,20 +61,6 @@ import { CodeExample } from '../../shared/code-example/code-example';
       }
 
       .docs-component-description,
-      .section-description {
-        font-size: 16px;
-        line-height: 1.6;
-        margin-bottom: 24px;
-        color: var(--mat-sys-on-surface-variant);
-      }
-
-      h2 {
-        font-size: 24px;
-        font-weight: 500;
-        margin: 32px 0 16px;
-        color: var(--mat-sys-on-surface);
-      }
-
       .docs-example-card {
         margin-bottom: 16px;
       }
@@ -85,22 +71,8 @@ import { CodeExample } from '../../shared/code-example/code-example';
         margin: 0;
       }
 
-      .features-list li {
-        padding: 12px 0;
-        border-bottom: 1px solid var(--mat-sys-outline-variant);
-        font-size: 16px;
-      }
-
       .features-list li:last-child {
         border-bottom: none;
-      }
-
-      code {
-        background-color: var(--mat-sys-surface-container);
-        padding: 2px 6px;
-        border-radius: 4px;
-        font-family: 'Roboto Mono', monospace;
-        font-size: 13px;
       }
     `,
   ],

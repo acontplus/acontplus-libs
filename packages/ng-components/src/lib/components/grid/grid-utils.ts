@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { DataGridColumn } from '../../types';
+import { AcpDataGridColumn } from '../../types';
 
 @Injectable({ providedIn: 'root' })
 export class DataGridUtils {
@@ -9,7 +9,7 @@ export class DataGridUtils {
    * @param colDef Column definition
    * @returns
    */
-  getCellValue(rowData: Record<string, any>, colDef: DataGridColumn): string {
+  getCellValue(rowData: Record<string, any>, colDef: AcpDataGridColumn): string {
     const keyArr = colDef.field ? colDef.field.split('.') : [];
     let tmp: any = '';
     keyArr.forEach((key: string, i: number) => {
@@ -28,7 +28,7 @@ export class DataGridUtils {
    * @param colDef Column definition
    * @returns
    */
-  getColData(data: any[], colDef: DataGridColumn): any[] {
+  getColData(data: any[], colDef: AcpDataGridColumn): any[] {
     return data.map(rowData => this.getCellValue(rowData, colDef));
   }
 

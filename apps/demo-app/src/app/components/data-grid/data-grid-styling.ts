@@ -86,18 +86,7 @@ import { CodeExample } from '../../shared/code-example/code-example';
         max-width: 1200px;
       }
 
-      h2 {
-        margin-top: 32px;
-        margin-bottom: 16px;
-      }
-
       .docs-component-description,
-      .section-description {
-        color: var(--mat-sys-on-surface-variant);
-        margin-bottom: 16px;
-        line-height: 1.6;
-      }
-
       .docs-example-card {
         margin-bottom: 16px;
       }
@@ -108,12 +97,6 @@ import { CodeExample } from '../../shared/code-example/code-example';
 
         li {
           margin-bottom: 8px;
-        }
-
-        code {
-          background: var(--mat-sys-surface-container);
-          padding: 2px 6px;
-          border-radius: 4px;
         }
       }
     `,
@@ -135,9 +118,9 @@ rowClassFormatter: DataGridRowClassFormatter = {
 />
 
 // In your styles
-::ng-deep .row-success { background-color: #e8f5e9; }
-::ng-deep .row-warning { background-color: #fff3e0; }
-::ng-deep .row-danger { background-color: #ffebee; }`;
+::ng-deep .row-success { background-color: var(--mat-sys-secondary-container); }
+::ng-deep .row-warning { background-color: var(--mat-sys-tertiary-container); }
+::ng-deep .row-danger { background-color: var(--mat-sys-error-container); }`;
 
   rowSelectionFormatterCode = `// Control which rows can be selected
 rowSelectionFormatter: DataGridRowSelectionFormatter = {

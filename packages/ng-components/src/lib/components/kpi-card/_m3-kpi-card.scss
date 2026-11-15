@@ -4,9 +4,9 @@
 @use '../../../core/tokens/m3';
 
 // Token model per color:
-//   kpi-card-<color>-bg      solid container (default, elevated, filled variants)
-//   kpi-card-<color>-color   content on the solid container
-//   kpi-card-<color>-accent  emphasis color on a surface (outlined, tonal variants, progress)
+//   kpi-card-<color>-bg      solid container (`filled` variant)
+//   kpi-card-<color>-fg      content on the solid container
+//   kpi-card-<color>-accent  icon tile, tonal tint and progress on a surface
 // Delta badge tokens are independent from the card color, so a trend stays readable on any card.
 @function get-tokens($theme: m3.$sys-theme) {
   $system: m3-utils.get-system($theme);
@@ -25,53 +25,54 @@
       $color-tokens,
       (
         kpi-card-#{$name}-bg: light-dark(map.get($palette, 50), map.get($palette, 70)),
-        kpi-card-#{$name}-color: light-dark(#ffffff, map.get($palette, 20)),
-        kpi-card-#{$name}-accent: $accent,
-        kpi-card-#{$name}-light-bg: light-dark(map.get($palette, 95), map.get($palette, 25)),
-        kpi-card-#{$name}-light-color: map.get($system, on-surface)
+        kpi-card-#{$name}-fg: light-dark(map.get($palette, 100), map.get($palette, 20)),
+        kpi-card-#{$name}-accent: $accent
       )
     );
   }
 
-  $red: mat.$red-palette;
   $green: mat.$green-palette;
 
   $tokens: (
     base: (
-      kpi-card-container-shape: map.get($system, corner-medium),
+      kpi-card-container-shape: map.get($system, corner-small),
     ),
     color: map.merge(
         (
           kpi-card-primary-bg: map.get($system, primary),
-          kpi-card-primary-color: map.get($system, on-primary),
+          kpi-card-primary-fg: map.get($system, on-primary),
           kpi-card-primary-accent: map.get($system, primary),
           kpi-card-secondary-bg: map.get($system, secondary),
-          kpi-card-secondary-color: map.get($system, on-secondary),
+          kpi-card-secondary-fg: map.get($system, on-secondary),
           kpi-card-secondary-accent: map.get($system, secondary),
           kpi-card-error-bg: map.get($system, error),
-          kpi-card-error-color: map.get($system, on-error),
+          kpi-card-error-fg: map.get($system, on-error),
           kpi-card-error-accent: map.get($system, error),
-          kpi-card-error-light-bg: light-dark(map.get($red, 95), map.get($red, 25)),
-          kpi-card-error-light-color: map.get($system, on-surface),
           kpi-card-neutral-bg: map.get($system, surface-variant),
-          kpi-card-neutral-color: map.get($system, on-surface-variant),
+          kpi-card-neutral-fg: map.get($system, on-surface-variant),
           kpi-card-neutral-accent: map.get($system, on-surface-variant),
-          kpi-card-surface-bg: map.get($system, surface-container-lowest),
-          kpi-card-surface-color: map.get($system, on-surface),
-          kpi-card-surface-accent: map.get($system, primary),
           kpi-card-custom-bg: map.get($system, surface-container),
-          kpi-card-custom-color: map.get($system, on-surface),
+          kpi-card-custom-fg: map.get($system, on-surface),
           kpi-card-custom-accent: map.get($system, primary),
+          // Light tinted pills, as in MaterialPro: 15% of the trend color on any surface
           kpi-card-delta-positive-bg: color-mix(
               in srgb,
-              light-dark(map.get($green, 40), map.get($green, 80)) 16%,
-              var(#{map.get($system, surface-container-lowest)})
+              light-dark(map.get($green, 40), map.get($green, 80)) 15%,
+              transparent
             ),
-          kpi-card-delta-positive-color: light-dark(map.get($green, 30), map.get($green, 90)),
-          kpi-card-delta-negative-bg: map.get($system, error-container),
-          kpi-card-delta-negative-color: map.get($system, on-error-container),
-          kpi-card-delta-neutral-bg: map.get($system, surface-container-highest),
-          kpi-card-delta-neutral-color: map.get($system, on-surface-variant),
+          kpi-card-delta-positive-fg: light-dark(map.get($green, 30), map.get($green, 80)),
+          kpi-card-delta-negative-bg: color-mix(
+              in srgb,
+              var(#{map.get($system, error)}) 15%,
+              transparent
+            ),
+          kpi-card-delta-negative-fg: map.get($system, error),
+          kpi-card-delta-neutral-bg: color-mix(
+              in srgb,
+              var(#{map.get($system, on-surface-variant)}) 12%,
+              transparent
+            ),
+          kpi-card-delta-neutral-fg: map.get($system, on-surface-variant),
         ),
         $color-tokens
       ),

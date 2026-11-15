@@ -1,0 +1,155 @@
+<input
+  #fileInput
+  type="file"
+  class="acp-file-upload__input"
+  tabindex="-1"
+  aria-hidden="true"
+  [attr.accept]="accept() || null"
+  [multiple]="multiple()"
+  [disabled]="isDisabled()"
+  (change)="onInputChange($event)"
+/>
+
+@if (mode() === 'basic') {
+<div class="acp-file-upload__basic">
+  <button
+    matButton="filled"
+    type="button"
+    class="acp-file-upload__choose"
+    [disabled]="!canChoose()"
+    (click)="choose()"
+  >
+    <mat-icon>upload_file</mat-icon>
+    <span class="acp-file-upload__basic-label">{{ basicLabel() }}</span>
+  </button>
+  @if (hasFiles() && !auto() && showUploadButton()) {
+  <button
+    matButton="outlined"
+    type="button"
+    [disabled]="uploading() || isDisabled()"
+    (click)="upload()"
+  >
+    <mat-icon>cloud_upload</mat-icon>
+    {{ uploadLabel() }}
+  </button>
+  }
+</div>
+@if (uploading()) {
+<mat-progress-bar class="acp-file-upload__progress" mode="determinate" [value]="progress()" />
+}
+<ng-container [ngTemplateOutlet]="messageList" />
+} @else {
+<div class="acp-file-upload__toolbar">
+  <button matButton="filled" type="button" [disabled]="!canChoose()" (click)="choose()">
+    <mat-icon>add</mat-icon>
+    {{ chooseLabel() }}
+  </button>
+  @if (showUploadButton() && !auto()) {
+  <button
+    matButton="outlined"
+    type="button"
+    [disabled]="!hasFiles() || uploading() || isDisabled()"
+    (click)="upload()"
+  >
+    <mat-icon>cloud_upload</mat-icon>
+    {{ uploadLabel() }}
+  </button>
+  } @if (showCancelButton()) {
+  <button
+    matButton="outlined"
+    type="button"
+    [disabled]="(!hasFiles() && !uploading()) || isDisabled()"
+    (click)="clear()"
+  >
+    <mat-icon>close</mat-icon>
+    {{ cancelLabel() }}
+  </button>
+  } @if (toolbarTemplate(); as toolbar) {
+  <ng-container [ngTemplateOutlet]="toolbar" />
+  }
+</div>
+
+<div
+  class="acp-file-upload__content"
+  [class.acp-file-upload__content--dragover]="dragOver()"
+  (dragenter)="onDragOver($event)"
+  (dragover)="onDragOver($event)"
+  (dragleave)="onDragLeave($event)"
+  (drop)="onDrop($event)"
+>
+  @if (uploading()) {
+  <mat-progress-bar class="acp-file-upload__progress" mode="determinate" [value]="progress()" />
+  }
+  <ng-container [ngTemplateOutlet]="messageList" />
+
+  @if (items().length) {
+  <ul class="acp-file-upload__files">
+    @for (item of items(); track item.file) {
+    <li
+      class="acp-file-upload__file"
+      [class.acp-file-upload__file--uploaded]="item.status === 'uploaded'"
+    >
+      @if (fileTemplate(); as tpl) {
+      <ng-container [ngTemplateOutlet]="tpl" [ngTemplateOutletContext]="item.context" />
+      } @else {
+      <div class="acp-file-upload__thumb" [style.width.px]="previewWidth()">
+        @if (item.context.preview; as preview) {
+        <img [src]="preview" [alt]="item.file.name" [width]="previewWidth()" />
+        } @else {
+        <mat-icon aria-hidden="true">description</mat-icon>
+        }
+      </div>
+      <div class="acp-file-upload__info">
+        <span class="acp-file-upload__name" [title]="item.file.name">{{ item.file.name }}</span>
+        <span class="acp-file-upload__size">{{ item.context.size }}</span>
+      </div>
+      <span
+        class="acp-file-upload__status"
+        [class.acp-file-upload__status--uploaded]="item.status === 'uploaded'"
+        >{{ item.status === 'uploaded' ? uploadedLabel() : pendingLabel() }}</span
+      >
+      <button
+        matIconButton
+        type="button"
+        class="acp-file-upload__remove"
+        [attr.aria-label]="removeLabel() + ' ' + item.file.name"
+        [disabled]="uploading() || isDisabled()"
+        (click)="item.context.remove()"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+      }
+    </li>
+    }
+  </ul>
+  } @else { @if (emptyTemplate(); as empty) {
+  <ng-container [ngTemplateOutlet]="empty" />
+  } @else {
+  <div class="acp-file-upload__empty">
+    <mat-icon aria-hidden="true">cloud_upload</mat-icon>
+    <p>{{ emptyText() }}</p>
+  </div>
+  } }
+</div>
+}
+
+<ng-template #messageList>
+  @if (messages().length) {
+  <ul class="acp-file-upload__messages" role="alert">
+    @for (message of messages(); track message; let i = $index) {
+    <li class="acp-file-upload__message">
+      <mat-icon aria-hidden="true">error_outline</mat-icon>
+      <span>{{ message }}</span>
+      <button
+        matIconButton
+        type="button"
+        [attr.aria-label]="dismissLabel()"
+        (click)="dismissMessage(i)"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    </li>
+    }
+  </ul>
+  }
+</ng-template>

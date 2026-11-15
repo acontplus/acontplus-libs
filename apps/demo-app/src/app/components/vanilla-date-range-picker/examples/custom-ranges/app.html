@@ -1,0 +1,40 @@
+<mat-card class="example-card">
+  <mat-card-header>
+    <mat-card-title>Vanilla Date Range Picker - Con Checkbox</mat-card-title>
+    <mat-card-subtitle>Ejemplo con checkbox y opción requiredDate</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="example-container">
+      <acp-vanilla-date-range-picker
+        label="Selecciona un rango de fechas"
+        [from]="from"
+        [to]="to"
+        [options]="{ timePicker: false, format: 'YYYY-MM-DD' }"
+        [showMatPrefix]="true"
+        [(checkbox)]="checkbox"
+        [requiredDate]="true"
+        (dateRangeChange)="onDateRangeChanged($event)"
+        (checkboxToggled)="onCheckboxToggled()"
+      ></acp-vanilla-date-range-picker>
+
+      <div class="result-display">
+        <h4>Resultado de la selección:</h4>
+        <div class="result-grid">
+          <div class="result-item">
+            <strong>Fecha inicio:</strong>
+            <span>{{ from || 'No seleccionada' }}</span>
+          </div>
+          <div class="result-item">
+            <strong>Fecha fin:</strong>
+            <span>{{ to || 'No seleccionada' }}</span>
+          </div>
+          <div class="result-item">
+            <strong>Checkbox:</strong>
+            <span>{{ checkbox }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

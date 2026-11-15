@@ -1,60 +1,73 @@
 <mat-card
   class="acp-kpi-card__card"
-  [routerLink]="routerLink()"
-  [attr.role]="clickable() ? 'button' : null"
-  [attr.tabindex]="interactive() ? 0 : null"
-  [attr.aria-label]="ariaLabel() ?? null"
-  [attr.aria-pressed]="clickable() && selected() ? 'true' : null"
-  [attr.aria-disabled]="disabled() ? 'true' : null"
   [matTooltip]="tooltip() ?? ''"
   [matTooltipDisabled]="!tooltip()"
-  (click)="onCardClick()"
-  (keydown.enter)="onCardKey($event)"
-  (keydown.space)="onCardKey($event)"
 >
-  @if (loading()) {
+  @if (!disabled()) { @switch (interaction()) { @case ('link') {
+  <a
+    class="acp-kpi-card__hit"
+    [routerLink]="routerLink()"
+    [attr.aria-label]="accessibleName()"
+    [attr.aria-describedby]="contentId"
+  ></a>
+  } @case ('button') {
+  <button
+    type="button"
+    class="acp-kpi-card__hit"
+    [disabled]="loading()"
+    [attr.aria-label]="accessibleName()"
+    [attr.aria-describedby]="contentId"
+    [attr.aria-pressed]="selected() ?? null"
+    (click)="onActivate()"
+  ></button>
+  } } } @if (loading()) {
   <div class="acp-kpi-card__skeleton" aria-hidden="true">
     <span></span>
     <span></span>
     <span></span>
   </div>
   } @else { @if (hasHeader()) {
-  <mat-card-header class="acp-kpi-card__header">
+  <div class="acp-kpi-card__header">
     <div class="acp-kpi-card__header-content">
-      <div class="acp-kpi-card__icon-container">
+      @if (hasIconTile()) {
+      <div class="acp-kpi-card__tile" aria-hidden="true">
         @if (iconTemplate(); as tpl) {
         <ng-container [ngTemplateOutlet]="tpl" />
         } @else if (svgIcon()) {
-        <mat-icon class="acp-kpi-card__icon" [svgIcon]="svgIcon()!" aria-hidden="true" />
-        } @else if (icon()) {
-        <mat-icon class="acp-kpi-card__icon" aria-hidden="true">{{ icon() }}</mat-icon>
-        } @else if (avatarTemplate(); as tpl) {
-        <div class="acp-kpi-card__avatar">
-          <ng-container [ngTemplateOutlet]="tpl" />
-        </div>
-        } @else if (avatar()) {
-        <img class="acp-kpi-card__avatar-image" [src]="avatar()" alt="" />
-        } @else if (avatarInitials()) {
-        <div class="acp-kpi-card__avatar-initials" aria-hidden="true">{{ avatarInitials() }}</div>
+        <mat-icon class="acp-kpi-card__icon" [svgIcon]="svgIcon()!" />
+        } @else {
+        <mat-icon class="acp-kpi-card__icon">{{ icon() }}</mat-icon>
         }
       </div>
-
-      <div class="acp-kpi-card__title-container">
-        @if (title()) {
-        <h3 class="acp-kpi-card__title">{{ title() }}</h3>
-        } @if (subtitle()) {
+      } @else if (avatarTemplate(); as tpl) {
+      <div class="acp-kpi-card__avatar">
+        <ng-container [ngTemplateOutlet]="tpl" />
+      </div>
+      } @else if (avatar()) {
+      <img class="acp-kpi-card__avatar" [src]="avatar()" alt="" />
+      } @else if (avatarInitials()) {
+      <div class="acp-kpi-card__avatar" aria-hidden="true">{{ avatarInitials() }}</div>
+      } @if (title() || subtitle()) {
+      <div class="acp-kpi-card__titles">
+        @if (title()) { @if (headingLevel(); as level) {
+        <div class="acp-kpi-card__title" role="heading" [attr.aria-level]="level">
+          {{ title() }}
+        </div>
+        } @else {
+        <p class="acp-kpi-card__title">{{ title() }}</p>
+        } } @if (subtitle()) {
         <p class="acp-kpi-card__subtitle">{{ subtitle() }}</p>
         }
       </div>
+      }
     </div>
 
     @if (actionsTemplate(); as actions) {
     <button
       mat-icon-button
-      class="acp-kpi-card__menu-button"
+      class="acp-kpi-card__menu-button acp-kpi-card__raised"
       [matMenuTriggerFor]="menu"
-      [attr.aria-label]="menuAriaLabel()"
-      (click)="$event.stopPropagation()"
+      [attr.aria-label]="menuAriaLabel() ?? labels().moreOptions"
     >
       <mat-icon>more_vert</mat-icon>
     </button>
@@ -62,10 +75,10 @@
       <ng-container [ngTemplateOutlet]="actions" />
     </mat-menu>
     }
-  </mat-card-header>
+  </div>
   }
 
-  <mat-card-content class="acp-kpi-card__content">
+  <div class="acp-kpi-card__content" [id]="contentId">
     @if (formattedValue() !== null || formattedDelta() !== null) {
     <div class="acp-kpi-card__value-section">
       @if (formattedValue() !== null) {
@@ -77,13 +90,11 @@
         }
       </span>
       } @if (formattedDelta() !== null) {
-      <span class="acp-kpi-card__delta" [class]="'acp-kpi-card__delta--' + sentiment()">
-        @if (showTrendIcon() && trendConfig().icon) {
-        <mat-icon class="acp-kpi-card__trend-icon" aria-hidden="true">
-          {{ trendConfig().icon }}
-        </mat-icon>
-        } @if (trendConfig().ariaLabel) {
-        <span class="cdk-visually-hidden">{{ trendConfig().ariaLabel }}</span>
+      <span class="acp-kpi-card__delta acp-kpi-card__delta--{{ sentiment() }}">
+        @if (resolvedShowTrendIcon() && trendIcon()) {
+        <mat-icon class="acp-kpi-card__trend-icon" aria-hidden="true"> {{ trendIcon() }} </mat-icon>
+        } @if (trendAriaLabel()) {
+        <span class="cdk-visually-hidden">{{ trendAriaLabel() }}</span>
         } {{ formattedDelta() }}
       </span>
       @if (trendLabel()) {
@@ -95,16 +106,16 @@
     } @if (progress() !== undefined) {
     <mat-progress-bar
       class="acp-kpi-card__progress"
-      [class]="progressColor() ? 'acp-kpi-card__progress--' + progressColor() : ''"
+      [class]="progressColor() ? 'acp-kpi-card--' + progressColor() : ''"
       mode="determinate"
       [value]="progress()"
       [attr.aria-label]="title() ?? null"
     />
     }
-  </mat-card-content>
+  </div>
 
   @if (hasFooter()) {
-  <div class="acp-kpi-card__footer">
+  <div class="acp-kpi-card__footer acp-kpi-card__raised">
     @if (footerTemplate(); as tpl) {
     <ng-container [ngTemplateOutlet]="tpl" />
     } @else {

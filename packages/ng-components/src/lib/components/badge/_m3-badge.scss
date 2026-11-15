@@ -3,49 +3,62 @@
 @use '../../../core/tokens/m3-utils';
 @use '../../../core/tokens/m3';
 
+// Token model per color (same as `acp-kpi-card`):
+//   badge-<color>-bg      solid container (`filled`)
+//   badge-<color>-fg      content on the solid container
+//   badge-<color>-accent  text, border and tint on a surface (`tonal`, `outlined`, `text`)
 @function get-tokens($theme: m3.$sys-theme) {
   $system: m3-utils.get-system($theme);
 
   $semantic-palettes: (
     success: mat.$green-palette,
     warning: mat.$orange-palette,
-    danger: mat.$red-palette,
     info: mat.$azure-palette,
   );
 
   $color-tokens: ();
   @each $name, $palette in $semantic-palettes {
+    // Material's semantic palettes are very saturated at tone 80; soften them in dark mode
+    // (same treatment as `acp-alert`)
+    $accent: light-dark(
+      map.get($palette, 40),
+      color-mix(in oklab, #{map.get($palette, 80)} 70%, white)
+    );
     $color-tokens: map.merge(
       $color-tokens,
       (
-        badge-#{$name}-fg: light-dark(map.get($palette, 95), map.get($palette, 20)),
-        // Material's semantic palettes are very saturated at tone 80; soften them in dark mode
-        // (same treatment as `acp-alert`)
-        badge-#{$name}-bg: light-dark(
-            map.get($palette, 40),
-            color-mix(in oklab, #{map.get($palette, 80)} 70%, white)
-          )
+        badge-#{$name}-bg: $accent,
+        badge-#{$name}-fg: light-dark(map.get($palette, 100), map.get($palette, 20)),
+        badge-#{$name}-accent: $accent
       )
     );
   }
 
   $tokens: (
     base: (
-      badge-container-shape: map.get($system, corner-small),
+      badge-container-shape: map.get($system, corner-extra-small),
       badge-pill-shape: map.get($system, corner-full),
     ),
     color: map.merge(
         (
-          badge-primary-color: map.get($system, on-primary),
           badge-primary-bg: map.get($system, primary),
-          badge-secondary-color: map.get($system, on-secondary),
+          badge-primary-fg: map.get($system, on-primary),
+          badge-primary-accent: map.get($system, primary),
           badge-secondary-bg: map.get($system, secondary),
-          badge-tertiary-color: map.get($system, on-tertiary),
+          badge-secondary-fg: map.get($system, on-secondary),
+          badge-secondary-accent: map.get($system, secondary),
           badge-tertiary-bg: map.get($system, tertiary),
-          badge-neutral-color: map.get($system, on-surface-variant),
+          badge-tertiary-fg: map.get($system, on-tertiary),
+          badge-tertiary-accent: map.get($system, tertiary),
+          badge-error-bg: map.get($system, error),
+          badge-error-fg: map.get($system, on-error),
+          badge-error-accent: map.get($system, error),
           badge-neutral-bg: map.get($system, surface-variant),
-          badge-custom-color: map.get($system, on-surface),
-          badge-custom-bg: map.get($system, surface-container),
+          badge-neutral-fg: map.get($system, on-surface-variant),
+          badge-neutral-accent: map.get($system, on-surface-variant),
+          badge-custom-bg: map.get($system, primary),
+          badge-custom-fg: map.get($system, on-primary),
+          badge-custom-accent: map.get($system, primary),
         ),
         $color-tokens
       ),

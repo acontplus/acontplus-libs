@@ -1,0 +1,76 @@
+@use 'sass:map';
+@use '../../tokens/system';
+@use '../palettes';
+@use '../all-theme';
+
+// Prebuilt color themes. Names are quoted: unquoted `aqua`/`cyan`, `blue`... are CSS colors.
+// Single source of truth for every `.theme-<name>` class: the M3 palette and
+// the brand color (`--acp-theme-primary-color`, the exact hex used by checkboxes, radios, FABs and
+// the acontpluspro accent). Themes provide colors only; the look comes from acontpluspro.
+$themes: (
+  'blue': (
+    palette: palettes.$custom-blue-palette,
+    brand: #1b84ff,
+  ),
+  'aqua': (
+    palette: palettes.$custom-aqua-palette,
+    brand: #0074ba,
+  ),
+  'purple': (
+    palette: palettes.$custom-purple-palette,
+    brand: #763ebd,
+  ),
+  'green': (
+    palette: palettes.$custom-green-palette,
+    brand: #0a7ea4,
+  ),
+  'cyan': (
+    palette: palettes.$custom-cyan-palette,
+    brand: #01c0c8,
+  ),
+  'orange': (
+    palette: palettes.$custom-orange-palette,
+    brand: #fa896b,
+  ),
+  'pink': (
+    palette: palettes.$magenta-palette,
+    brand: #d200d2,
+  ),
+  'rose': (
+    palette: palettes.$rose-palette,
+    brand: #e80074,
+  ),
+);
+
+/// Emits the `.theme-<name>` class of a prebuilt theme, e.g. `theme('blue')`.
+@mixin theme($name) {
+  @if not map.has-key($themes, $name) {
+    @error 'Unknown prebuilt theme `#{$name}`. Known: #{map.keys($themes)}';
+  }
+  $theme: map.get($themes, $name);
+  $palette: map.get($theme, palette);
+
+  .theme-#{$name} {
+    --acp-theme-primary-color: #{map.get($theme, brand)};
+
+    @include system.theme(
+      (
+        color: (
+          primary: $palette,
+          tertiary: $palette,
+        ),
+        typography: Roboto,
+        density: 0,
+      )
+    );
+
+    @include all-theme.custom-component-overrides;
+  }
+}
+
+/// Emits the classes of every prebuilt theme.
+@mixin all-themes() {
+  @each $name, $theme in $themes {
+    @include theme($name);
+  }
+}

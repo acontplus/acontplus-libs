@@ -89,9 +89,7 @@
             <div class="button-grid">
               <button mat-raised-button color="primary" (click)="showSuccess()">✅ Success</button>
               <button mat-raised-button color="warn" (click)="showError()">❌ Error</button>
-              <button mat-raised-button class="warning-button" (click)="showWarning()">
-                ⚠️ Warning
-              </button>
+              <acp-button color="warning" (click)="showWarning()">⚠️ Warning</acp-button>
               <button mat-raised-button color="accent" (click)="showInfo()">ℹ️ Info</button>
             </div>
 
@@ -166,13 +164,11 @@
 
             <h3>Warning Messages</h3>
             <div class="button-grid">
-              <button
-                mat-raised-button
-                class="warning-button"
+              <acp-button
+                color="warning"
                 (click)="showPredefinedMessage('warning', 'WARNING.SESSION_EXPIRING')"
+                >⏰ Session Warning</acp-button
               >
-                ⏰ Session Warning
-              </button>
             </div>
 
             <!-- Predefined Messages Reference -->
@@ -221,9 +217,9 @@
               <button mat-raised-button color="warn" (click)="showNetworkError()">
                 🌐❌ Network Error
               </button>
-              <button mat-raised-button class="warning-button" (click)="showSessionWarning()">
-                ⏰ Session Warning
-              </button>
+              <acp-button color="warning" (click)="showSessionWarning()"
+                >⏰ Session Warning</acp-button
+              >
             </div>
           </div>
         </mat-tab>

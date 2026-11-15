@@ -146,20 +146,6 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
         max-width: 1200px;
       }
 
-      .docs-component-description {
-        font-size: 16px;
-        line-height: 1.6;
-        margin-bottom: 32px;
-        color: var(--mat-sys-on-surface-variant);
-      }
-
-      h2 {
-        font-size: 24px;
-        font-weight: 500;
-        margin: 32px 0 16px;
-        color: var(--mat-sys-on-surface);
-      }
-
       .docs-example-card {
         margin-bottom: 16px;
       }
@@ -170,7 +156,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
         border-radius: 8px;
         cursor: pointer;
         display: inline-block;
-        font-size: 14px;
+        font-size: var(--mat-sys-body-medium-size);
         color: var(--mat-sys-on-surface);
         border: 1px solid var(--mat-sys-outline);
         transition: background-color 0.2s ease;
@@ -186,7 +172,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
         background-color: var(--mat-sys-primary-container);
         color: var(--mat-sys-on-primary-container);
         border-radius: 8px;
-        font-size: 14px;
+        font-size: var(--mat-sys-body-medium-size);
       }
     `,
   ],

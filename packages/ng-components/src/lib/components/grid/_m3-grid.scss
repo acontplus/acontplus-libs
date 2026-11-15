@@ -20,6 +20,8 @@
       grid-table-row-selected-background-color: map.get($system, secondary-container),
       grid-table-row-selected-hover-background-color: map.get($system, primary-container),
       grid-table-cell-selected-outline-color: map.get($system, primary),
+      grid-table-row-group-header-background-color: map.get($system, surface-container-high),
+      grid-table-row-group-footer-background-color: map.get($system, surface-container-low),
       grid-resizable-handle-active-background-color: map.get($system, primary),
       grid-resizable-handle-hover-background-color: map.get($system, primary),
       grid-resizable-handle-disabled-background-color: map.get($system, outline-variant),

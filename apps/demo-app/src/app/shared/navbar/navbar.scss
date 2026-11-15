@@ -1,6 +1,7 @@
 :host {
-  color: var(--mat-sys-primary);
-  background: var(--mat-sys-primary-container);
+  color: var(--mat-sys-on-surface);
+  background: var(--acp-sys-surface-raised, var(--mat-sys-surface));
+  box-shadow: var(--acp-sys-shadow-1, var(--mat-sys-level1));
 }
 
 .docs-navbar-header {
@@ -16,6 +17,7 @@
   }
 
   .docs-navbar-header-item-selected {
+    color: var(--mat-sys-primary);
     background: color-mix(in srgb, var(--mat-sys-primary) 10%, transparent);
   }
 }
@@ -82,4 +84,8 @@ theme-picker {
   @media (width >= 328px) {
     display: block;
   }
+}
+
+.docs-brand {
+  font-weight: 600;
 }

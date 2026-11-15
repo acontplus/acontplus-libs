@@ -1,7 +1,7 @@
 import { Injectable, inject, computed, signal } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import type { AppSettings, AppTheme, AppThemeColor } from './settings';
-import { defaults } from './settings';
+import { THEME_COLORS, defaults } from './settings';
 
 const STORAGE_KEY = 'demo-app-settings';
 
@@ -37,7 +37,7 @@ export class SettingsService {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
-        return JSON.parse(stored) as AppSettings;
+        return { ...defaults, ...(JSON.parse(stored) as Partial<AppSettings>) };
       }
     } catch {
       // Silently fail and return defaults
@@ -55,20 +55,13 @@ export class SettingsService {
 
   private applyTheme() {
     const html = this.document.documentElement;
-    const { theme, themeColor } = this.options();
+    const { theme, themeColor, dir, container, cardStyle } = this.options();
 
-    // Apply theme color class
-    html.classList.remove(
-      'theme-blue',
-      'theme-aqua',
-      'theme-purple',
-      'theme-green',
-      'theme-cyan',
-      'theme-orange',
-      'theme-pink',
-      'theme-rose',
-    );
+    html.classList.remove(...THEME_COLORS.map(color => `theme-${color}`));
     html.classList.add(`theme-${themeColor}`);
+    html.dir = dir;
+    html.classList.toggle('acp-boxed', container === 'boxed');
+    html.classList.toggle('acp-card-border', cardStyle === 'border');
 
     // Apply dark mode
     if (theme === 'auto') {

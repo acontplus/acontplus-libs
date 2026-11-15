@@ -1,0 +1,44 @@
+.example-card {
+  max-width: 800px;
+  margin: 20px auto;
+
+  .example-container {
+    padding: 16px 0;
+
+    .result-display {
+      margin: 30px 0;
+      padding: 20px;
+      background: var(--mat-sys-surface-container-low);
+      border-radius: var(--mat-sys-corner-small);
+
+      h4 {
+        margin-bottom: 16px;
+        color: var(--mat-sys-primary);
+      }
+
+      .result-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 12px;
+
+        .result-item {
+          padding: 12px;
+          background-color: var(--mat-sys-surface);
+          border-radius: var(--mat-sys-corner-small);
+          border-inline-start: 4px solid var(--mat-sys-primary);
+
+          strong {
+            display: block;
+            color: var(--mat-sys-on-surface);
+            margin-bottom: 4px;
+          }
+
+          span {
+            color: var(--mat-sys-on-surface-variant);
+            font: var(--mat-sys-body-medium);
+          }
+        }
+      }
+    }
+  }
+}

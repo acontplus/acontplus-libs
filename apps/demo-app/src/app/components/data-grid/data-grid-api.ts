@@ -81,7 +81,7 @@ interface ApiProperty {
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
 
-      <h2>DataGridColumn Interface</h2>
+      <h2>AcpDataGridColumn Interface</h2>
       <table mat-table [dataSource]="columnProperties" class="api-table">
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef>Property</th>
@@ -122,11 +122,6 @@ interface ApiProperty {
         max-width: 1400px;
       }
 
-      h2 {
-        margin-top: 32px;
-        margin-bottom: 16px;
-      }
-
       .api-table {
         width: 100%;
         margin-bottom: 24px;
@@ -134,13 +129,6 @@ interface ApiProperty {
         th,
         td {
           padding: 12px 16px;
-        }
-
-        code {
-          background: var(--mat-sys-surface-container);
-          padding: 2px 6px;
-          border-radius: 4px;
-          font-size: 13px;
         }
       }
     `,
@@ -159,7 +147,7 @@ export class DataGridApi {
     },
     {
       name: 'columns',
-      type: 'DataGridColumn<T>[]',
+      type: 'AcpDataGridColumn<T>[]',
       description: 'Column definitions',
       default: '[]',
     },
@@ -300,7 +288,7 @@ export class DataGridApi {
     { name: 'rowSelected', type: 'T[]', description: 'Pre-selected rows', default: '[]' },
     {
       name: 'rowSelectionFormatter',
-      type: 'DataGridRowSelectionFormatter',
+      type: 'AcpDataGridRowSelectionFormatter',
       description: 'Formatter for row selection',
       default: '{}',
     },
@@ -315,7 +303,7 @@ export class DataGridApi {
     },
     {
       name: 'rowClassFormatter',
-      type: 'DataGridRowClassFormatter',
+      type: 'AcpDataGridRowClassFormatter',
       description: 'Dynamic row CSS classes',
       default: '-',
     },
@@ -348,6 +336,50 @@ export class DataGridApi {
       description: 'Close other rows when expanding',
       default: 'false',
     },
+    {
+      name: 'dataKey',
+      type: 'string | ((row: T) => unknown) | null',
+      description:
+        'Identifies each row so its expanded state survives sorting, paging and data reloads. Defaults to the row object reference',
+      default: 'null',
+    },
+    {
+      name: 'rowGroupMode',
+      type: "'subheader' | 'rowspan' | null",
+      description:
+        "'subheader' renders a header row before each group; 'rowspan' keeps groups together and merges the groupRowsBy column",
+      default: 'null',
+    },
+    {
+      name: 'groupRowsBy',
+      type: 'string | ((row: T) => unknown) | null',
+      description: 'Field or function whose value groups the rows',
+      default: 'null',
+    },
+    {
+      name: 'expandableRowGroups',
+      type: 'boolean',
+      description: 'Adds a toggle to each group header to collapse its rows',
+      default: 'false',
+    },
+    {
+      name: 'collapsedRowGroups',
+      type: 'unknown[]',
+      description: 'Keys of the collapsed groups (two-way binding)',
+      default: '[]',
+    },
+    {
+      name: 'showRowGroupFooter',
+      type: 'boolean',
+      description: "Footer row per group with each column's summary over the group rows",
+      default: 'false',
+    },
+    {
+      name: 'rowGroupHeaderTemplate',
+      type: 'TemplateRef<AcpDataGridRowGroupContext> | null',
+      description: 'Custom content of the group header',
+      default: 'null',
+    },
 
     // Infinite Scroll
     {
@@ -375,7 +407,7 @@ export class DataGridApi {
       type: 'boolean',
       description:
         'Row keyboard navigation: arrows, Home/End, PageUp/PageDown, Enter (row click), Space (toggle selection), Ctrl+A (select all)',
-      default: 'true',
+      default: 'false',
     },
 
     // Templates
@@ -413,9 +445,46 @@ export class DataGridApi {
     // Size
     {
       name: 'size',
-      type: "'small' | 'medium' | 'large'",
+      type: "'xs-small' | 'small' | 'medium' | 'large'",
       description: "Table density ('normal' is deprecated, alias of 'medium')",
       default: "'medium'",
+    },
+    {
+      name: 'treeChildren',
+      type: 'string | ((row: T) => T[] | null | undefined) | null',
+      description: 'Enables tree mode: field or function returning the children of a row',
+      default: 'null',
+    },
+    {
+      name: 'treeHasChildren',
+      type: 'string | ((row: T) => boolean) | null',
+      description: 'Whether a row has children not loaded yet (lazy loading)',
+      default: 'null',
+    },
+    {
+      name: 'expandedTreeKeys',
+      type: 'unknown[]',
+      description: 'Keys of the expanded tree nodes (two-way binding)',
+      default: '[]',
+    },
+    {
+      name: 'treePropagateSelection',
+      type: 'boolean',
+      description: 'Selecting a node selects its descendants and updates its ancestors',
+      default: 'true',
+    },
+    {
+      name: 'showGridlines',
+      type: 'boolean',
+      description: 'Vertical borders between cells; color via --acp-grid-gridline-color',
+      default: 'false',
+    },
+    {
+      name: 'scrollHeight',
+      type: "string | 'flex' | null",
+      description:
+        "Max height of the rows area before scrolling (e.g. '400px'). 'flex' fills the parent's height",
+      default: 'null',
     },
 
     // Summary
@@ -446,7 +515,7 @@ export class DataGridApi {
     },
     {
       name: 'cellClick',
-      type: 'EventEmitter<{row: T, column: DataGridColumn}>',
+      type: 'EventEmitter<{row: T, column: AcpDataGridColumn}>',
       description: 'Emits when cell is clicked',
     },
     {
@@ -458,6 +527,21 @@ export class DataGridApi {
       name: 'expansionChange',
       type: 'EventEmitter<any>',
       description: 'Emits when expansion state changes',
+    },
+    {
+      name: 'treeNodeExpand',
+      type: 'EventEmitter<{ row: T; key: unknown }>',
+      description: 'Emits when a tree node is expanded (load lazy children here)',
+    },
+    {
+      name: 'treeNodeCollapse',
+      type: 'EventEmitter<{ row: T; key: unknown }>',
+      description: 'Emits when a tree node is collapsed',
+    },
+    {
+      name: 'rowGroupToggle',
+      type: 'EventEmitter<{ key: unknown; expanded: boolean }>',
+      description: 'Emits when a group is collapsed or expanded',
     },
     {
       name: 'rowContextMenu',
@@ -499,8 +583,40 @@ export class DataGridApi {
     { name: 'class', type: 'string', description: 'CSS class for the column' },
     {
       name: 'formatter',
-      type: '(row: T, column: DataGridColumn) => string',
+      type: '(row: T, column: AcpDataGridColumn) => string',
       description: 'Custom cell value formatter',
+    },
+    {
+      name: 'summary',
+      type: 'string | ((values: any[], column: AcpDataGridColumn<T>, rows: T[]) => any)',
+      description:
+        'Footer value: fixed text, or computed from the column values or the summarized rows',
+    },
+    {
+      name: 'treeToggle',
+      type: 'boolean',
+      description: 'Tree mode: column with the indentation and toggle (first column by default)',
+      default: 'false',
+    },
+    {
+      name: 'groupColor',
+      type: 'string | ((group, columns) => string | undefined)',
+      description:
+        'CSS color of the column group: header accent and a light tint over its columns (no ::ng-deep)',
+    },
+    {
+      name: 'summaryColspan',
+      type: 'number',
+      description:
+        'Columns the summary (footer) cell spans, like colspan; stops where the pinning changes',
+      default: '1',
+    },
+    {
+      name: 'mergeRows',
+      type: 'boolean | ((previous: T, current: T) => boolean)',
+      description:
+        'Merges consecutive equal cells into one (rowspan), nested inside merged columns to its left',
+      default: 'false',
     },
   ];
 }

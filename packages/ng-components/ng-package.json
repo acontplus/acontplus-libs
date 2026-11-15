@@ -1,7 +1,13 @@
 {
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
   "allowedNonPeerDependencies": ["."],
-  "assets": ["**/*.scss", "src/assets/**/*.svg", "src/assets/**/*.png", "src/assets/**/*.json"],
+  "assets": [
+    "**/*.scss",
+    "src/assets/**/*.svg",
+    "src/assets/**/*.png",
+    "src/assets/**/*.json",
+    "src/assets/**/*.js"
+  ],
   "dest": "../../dist/packages/ng-components",
   "lib": {
     "entryFile": "src/index.ts"

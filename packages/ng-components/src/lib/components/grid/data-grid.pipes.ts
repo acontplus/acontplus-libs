@@ -1,12 +1,16 @@
 import { KeyValueChangeRecord, Pipe, PipeTransform, inject } from '@angular/core';
 import { isObservable } from 'rxjs';
-import { DataGridColumn, DataGridColumnButton, DataGridRowClassFormatter } from '../../types';
+import {
+  AcpDataGridColumn,
+  AcpDataGridColumnButton,
+  AcpDataGridRowClassFormatter,
+} from '../../types';
 import { DataGridUtils } from './grid-utils';
 
 @Pipe({ name: 'colClass' })
 export class AcpGridColClassPipe implements PipeTransform {
   transform(
-    colDef: DataGridColumn,
+    colDef: AcpDataGridColumn,
     rowData?: Record<string, any>,
     rowChangeRecord?: KeyValueChangeRecord<string, any>,
     currentValue?: any,
@@ -32,7 +36,7 @@ export class AcpGridRowClassPipe implements PipeTransform {
     rowData: Record<string, any>,
     index: number | undefined,
     dataIndex: number,
-    rowClassFormatter?: DataGridRowClassFormatter,
+    rowClassFormatter?: AcpDataGridRowClassFormatter,
   ) {
     const rowIndex = index ?? dataIndex;
     const classList: string[] = rowIndex % 2 === 1 ? ['mat-row-odd'] : [];
@@ -50,7 +54,7 @@ export class AcpGridRowClassPipe implements PipeTransform {
 @Pipe({ name: 'cellActions' })
 export class AcpGridCellActionsPipe implements PipeTransform {
   transform(
-    btns?: DataGridColumnButton[] | ((rowData: any) => DataGridColumnButton[]),
+    btns?: AcpDataGridColumnButton[] | ((rowData: any) => AcpDataGridColumnButton[]),
     rowData?: Record<string, any>,
     rowChangeRecord?: KeyValueChangeRecord<string, any>,
     currentValue?: any,
@@ -72,7 +76,7 @@ export class AcpGridCellActionsPipe implements PipeTransform {
 
 @Pipe({ name: 'cellActionTooltip' })
 export class AcpGridCellActionTooltipPipe implements PipeTransform {
-  transform(btn: DataGridColumnButton) {
+  transform(btn: AcpDataGridColumnButton) {
     if (typeof btn.tooltip === 'string' || isObservable(btn.tooltip)) {
       return { message: btn.tooltip };
     } else {
@@ -83,7 +87,7 @@ export class AcpGridCellActionTooltipPipe implements PipeTransform {
 
 @Pipe({ name: 'cellActionBadge' })
 export class AcpGridCellActionBadgePipe implements PipeTransform {
-  transform(btn: DataGridColumnButton) {
+  transform(btn: AcpDataGridColumnButton) {
     if (typeof btn.badge === 'number' || typeof btn.badge === 'string' || isObservable(btn.badge)) {
       return { content: btn.badge };
     } else {
@@ -95,7 +99,7 @@ export class AcpGridCellActionBadgePipe implements PipeTransform {
 @Pipe({ name: 'cellActionDisable' })
 export class AcpGridCellActionDisablePipe implements PipeTransform {
   transform(
-    btn: DataGridColumnButton,
+    btn: AcpDataGridColumnButton,
     rowData: Record<string, any>,
     rowChangeRecord?: KeyValueChangeRecord<string, any>,
     currentValue?: any,
@@ -120,14 +124,11 @@ export class AcpGridCellActionDisablePipe implements PipeTransform {
 export class AcpGridCellSummaryPipe implements PipeTransform {
   private readonly utils = inject(DataGridUtils);
 
-  transform(data: any[], colDef: DataGridColumn) {
+  transform(data: any[], colDef: AcpDataGridColumn) {
     if (typeof colDef.summary === 'string') {
       return colDef.summary;
     } else if (typeof colDef.summary === 'function') {
-      return (colDef.summary as (data: any[], colDef?: DataGridColumn) => any)(
-        this.utils.getColData(data, colDef),
-        colDef,
-      );
+      return colDef.summary(this.utils.getColData(data, colDef), colDef, data);
     }
   }
 }

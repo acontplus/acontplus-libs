@@ -38,7 +38,7 @@ import { MatIconModule } from '@angular/material/icon';
       }
 
       .code-language {
-        font-size: 12px;
+        font-size: var(--mat-sys-label-small-size);
         font-weight: 500;
         text-transform: uppercase;
         color: var(--mat-sys-primary);
@@ -54,7 +54,7 @@ import { MatIconModule } from '@angular/material/icon';
 
       code {
         font-family: 'Roboto Mono', monospace;
-        font-size: 14px;
+        font-size: var(--mat-sys-body-medium-size);
         line-height: 1.6;
         color: var(--mat-sys-on-surface);
       }

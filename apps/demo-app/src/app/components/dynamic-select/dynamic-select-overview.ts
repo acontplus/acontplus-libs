@@ -40,20 +40,6 @@ import { CodeExample } from '../../shared/code-example/code-example';
         max-width: 1200px;
       }
 
-      .docs-component-description {
-        font-size: 16px;
-        line-height: 1.6;
-        margin-bottom: 32px;
-        color: var(--mat-sys-on-surface-variant);
-      }
-
-      h2 {
-        font-size: 24px;
-        font-weight: 500;
-        margin: 32px 0 16px;
-        color: var(--mat-sys-on-surface);
-      }
-
       .docs-example-card {
         margin-bottom: 16px;
       }

@@ -1,8 +1,8 @@
 import { Directive, TemplateRef, inject } from '@angular/core';
 
 /**
- * Typed slot directives for `acp-card`. Preferred over `#title`-style template refs:
- * they are type-checked, discoverable and never collide with refs of nested components.
+ * Typed slot directives for `acp-card`: type-checked, discoverable and never colliding with
+ * template refs of nested components.
  *
  * @example
  * ```html
@@ -13,6 +13,7 @@ import { Directive, TemplateRef, inject } from '@angular/core';
  * </acp-card>
  * ```
  */
+/** Replaces the whole title group (avatar, title, subtitle) with custom header content. */
 @Directive({ selector: 'ng-template[acpCardHeader]' })
 export class AcpCardHeader {
   readonly templateRef = inject(TemplateRef);

@@ -1,10 +1,12 @@
-import { Component, signal, computed, ChangeDetectionStrategy } from '@angular/core';
+import { Component, signal, computed, viewChild, ChangeDetectionStrategy } from '@angular/core';
+import { CdkConnectedOverlay, CdkOverlayOrigin } from '@angular/cdk/overlay';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { PageEvent } from '@angular/material/paginator';
@@ -20,9 +22,34 @@ import {
   DataGridRowClassFormatter,
   DataGridRowSelectionFormatter,
   DataGridSize,
+  AcpDataGridScrollHeight,
 } from '@acontplus/ng-components';
 import { DocHeading } from '../../../shared/doc-heading/doc-heading';
 import { CodeExample } from '../../../shared/code-example/code-example';
+
+interface BranchStockRow {
+  establishment: string;
+  warehouse: string;
+  product: string;
+  quantity: number;
+}
+
+interface Account {
+  code: string;
+  name: string;
+  balance: number;
+  children?: Account[];
+  /** Children are loaded on demand. */
+  lazy?: boolean;
+}
+
+interface StockRow {
+  sku: string;
+  product: string;
+  warehouse: string;
+  quantity: number;
+  cost: number;
+}
 
 interface DemoData {
   id: number;
@@ -66,9 +93,12 @@ interface PivotRow {
     MatChipsModule,
     MatIconModule,
     MatButtonToggleModule,
+    MatSlideToggleModule,
     MatFormFieldModule,
     MatInputModule,
     AcpGridNavigationFor,
+    CdkConnectedOverlay,
+    CdkOverlayOrigin,
     DataGrid,
     AcpContextMenu,
     DocHeading,
@@ -93,8 +123,9 @@ interface PivotRow {
         Consecutive columns that share the same <code>group</code> path are merged under group
         headers, one row per level. Each level accepts a string, an
         <code>Observable&lt;string&gt;</code> or a function <code>(data) =&gt; label</code> for
-        dynamic titles. <code>groupClass</code> styles each group header and propagates to its
-        member columns' headers and cells.
+        dynamic titles. <code>groupColor</code> colors each group (header accent and a light tint
+        over its columns) without <code>::ng-deep</code>; <code>groupClass</code> remains for full
+        control. <code>showGridlines</code> adds vertical borders.
       </p>
       <mat-card class="example-card">
         <mat-card-content>
@@ -108,11 +139,18 @@ interface PivotRow {
               <mat-button-toggle [value]="option">{{ option }}</mat-button-toggle>
             }
           </mat-button-toggle-group>
+          <mat-slide-toggle
+            class="gridlines-toggle"
+            [checked]="kardexGridlines()"
+            (change)="kardexGridlines.set($event.checked)"
+            >showGridlines</mat-slide-toggle
+          >
           <acp-data-grid
             [data]="kardexData"
             [columns]="kardexColumns"
             [size]="gridSize()"
             [showSummary]="true"
+            [showGridlines]="kardexGridlines()"
           />
         </mat-card-content>
       </mat-card>
@@ -233,11 +271,16 @@ interface PivotRow {
       <mat-card class="example-card">
         <mat-card-content>
           <acp-data-grid
-            [data]="demoData.slice(0, 5)"
-            [columns]="basicColumns"
+            class="expandable-demo-grid"
+            [data]="demoData"
+            [columns]="expandableColumns"
             [expandable]="true"
             [expansionTemplate]="expansionTpl"
             [closeOthersOnExpand]="true"
+            dataKey="id"
+            [showPaginator]="true"
+            [pageSize]="3"
+            [pageSizeOptions]="[3, 5, 10]"
           />
 
           <ng-template #expansionTpl let-row>
@@ -251,6 +294,103 @@ interface PivotRow {
         </mat-card-content>
       </mat-card>
       <app-code-example [code]="expandableCode" [language]="'typescript'" />
+
+      <!-- Row Groups -->
+      <h2>Row Groups</h2>
+      <p>
+        Rows are grouped by <code>groupRowsBy</code> under a header row. Rows of a group stay
+        together even when sorting by another column; group footers show subtotals computed with
+        each column's <code>summary</code>.
+      </p>
+      <mat-card class="example-card">
+        <mat-card-content>
+          <acp-data-grid
+            class="row-group-demo-grid"
+            [data]="stockData"
+            [columns]="stockColumns"
+            rowGroupMode="subheader"
+            groupRowsBy="warehouse"
+            [expandableRowGroups]="true"
+            [(collapsedRowGroups)]="collapsedWarehouses"
+            [showRowGroupFooter]="true"
+            keyboardNavigation="true"
+            [showPaginator]="true"
+            [pageSize]="10"
+            [pageSizeOptions]="[5, 10, 20]"
+            size="small"
+            [rowHover]="true"
+          />
+          <p class="row-group-state">Collapsed: {{ collapsedWarehouses().join(', ') || 'none' }}</p>
+        </mat-card-content>
+      </mat-card>
+      <app-code-example [code]="rowGroupsCode" [language]="'typescript'" />
+
+      <!-- Merged Cells -->
+      <h2>Merged Cells (rowspan)</h2>
+      <p>
+        <code>rowGroupMode="rowspan"</code> keeps the rows of each establishment together and merges
+        its cells; <code>mergeRows</code> on the warehouse column merges equal warehouses inside
+        each establishment. Sort by Qty: rows are sorted inside each block.
+      </p>
+      <mat-card class="example-card">
+        <mat-card-content>
+          <acp-data-grid
+            class="rowspan-demo-grid"
+            [data]="branchStockData"
+            [columns]="branchStockColumns"
+            rowGroupMode="rowspan"
+            groupRowsBy="establishment"
+            [showPaginator]="true"
+            [pageSize]="10"
+            [pageSizeOptions]="[5, 10, 20]"
+            size="small"
+          />
+        </mat-card-content>
+      </mat-card>
+      <app-code-example [code]="mergedCellsCode" [language]="'typescript'" />
+
+      <!-- Tree Table -->
+      <h2>Tree Table</h2>
+      <p>
+        <code>treeChildren</code> renders nested rows. Paging counts root accounts, sorting sorts
+        siblings on each level, and selecting an account selects its sub-accounts. "Gastos" loads
+        its children on expand. Keyboard: ← → collapse and expand.
+      </p>
+      <mat-card class="example-card">
+        <mat-card-content>
+          <div class="tree-actions">
+            <button matButton="outlined" type="button" (click)="accountsGrid.expandAll()">
+              Expand all
+            </button>
+            <button matButton="outlined" type="button" (click)="accountsGrid.collapseAll()">
+              Collapse all
+            </button>
+            <span>Selected: {{ selectedAccounts().length }}</span>
+          </div>
+          <acp-data-grid
+            #accountsGrid
+            class="tree-demo-grid"
+            [data]="accounts"
+            [columns]="accountColumns"
+            treeChildren="children"
+            [treeHasChildren]="hasAccountChildren"
+            [(expandedTreeKeys)]="expandedAccounts"
+            dataKey="code"
+            (treeNodeExpand)="loadAccountChildren($event.row, accountsGrid)"
+            [rowSelectable]="true"
+            [multiSelectable]="true"
+            [multiSelectionWithClick]="true"
+            (rowSelectedChange)="selectedAccounts.set($event)"
+            keyboardNavigation="true"
+            [showPaginator]="true"
+            [pageSize]="3"
+            [pageSizeOptions]="[3, 5, 10]"
+            size="small"
+            showGridlines
+          />
+        </mat-card-content>
+      </mat-card>
+      <app-code-example [code]="treeTableCode" [language]="'typescript'" />
 
       <!-- Custom Cell Templates -->
       <h2>Custom Cell Templates</h2>
@@ -329,6 +469,43 @@ interface PivotRow {
         </mat-card-content>
       </mat-card>
       <app-code-example [code]="sizeCode" [language]="'html'" />
+
+      <!-- Scroll Height -->
+      <h2>Scroll Height</h2>
+      <p>
+        Limit the height of the rows area; the header stays fixed while the rows scroll. In
+        <code>flex</code> mode the grid fills its parent: drag the bottom-right corner of the
+        container to resize it.
+      </p>
+      <mat-card class="example-card">
+        <mat-card-content>
+          <mat-button-toggle-group
+            class="size-toggle"
+            aria-label="Scroll mode"
+            [value]="scrollMode()"
+            (change)="scrollMode.set($event.value)"
+          >
+            <mat-button-toggle value="fixed">scrollHeight="300px"</mat-button-toggle>
+            <mat-button-toggle value="flex">scrollHeight="flex"</mat-button-toggle>
+            <mat-button-toggle value="css">CSS variable</mat-button-toggle>
+            <mat-button-toggle value="none">No limit</mat-button-toggle>
+          </mat-button-toggle-group>
+          <div
+            [class.scroll-flex-container]="scrollMode() === 'flex'"
+            [class.scroll-css-var]="scrollMode() === 'css'"
+          >
+            <acp-data-grid
+              [data]="scrollData"
+              [columns]="basicColumns"
+              [scrollHeight]="scrollHeight()"
+              size="small"
+              [rowHover]="true"
+              [rowStriped]="true"
+            />
+          </div>
+        </mat-card-content>
+      </mat-card>
+      <app-code-example [code]="scrollHeightCode" [language]="'html'" />
 
       <!-- Row Context Menu -->
       <h2>Row Context Menu</h2>
@@ -428,6 +605,129 @@ interface PivotRow {
         </mat-card-content>
       </mat-card>
       <app-code-example [code]="searchNavCode" [language]="'html'" />
+
+      <!-- Autocomplete: Overlay + Grid -->
+      <h2>Autocomplete (Overlay + Grid)</h2>
+      <mat-card class="example-card">
+        <mat-card-content>
+          <p class="instruction">
+            The grid lives in a <code>cdkConnectedOverlay</code> <code>ng-template</code> and is
+            only rendered while the panel is open. Focus or type to open, ↑/↓ to move (wraps
+            around), PageUp/PageDown to change page, Enter or click to pick, Escape or Tab to close.
+            With the panel closed, ↓ opens it.
+          </p>
+          <mat-form-field
+            appearance="outline"
+            class="search-field"
+            subscriptSizing="dynamic"
+            cdkOverlayOrigin
+            #acOrigin="cdkOverlayOrigin"
+          >
+            <mat-label>Product</mat-label>
+            <input
+              matInput
+              role="combobox"
+              aria-autocomplete="list"
+              autocomplete="off"
+              [attr.aria-expanded]="acOpen()"
+              [attr.aria-controls]="acGrid()?.gridId ?? null"
+              [acpGridNavigationFor]="acGrid()"
+              [value]="acText()"
+              (input)="onAcInput($any($event.target).value)"
+              (focus)="acOpen.set(true)"
+              (click)="acOpen.set(true)"
+              (keydown)="onAcKeydown($event)"
+            />
+          </mat-form-field>
+          <ng-template
+            cdkConnectedOverlay
+            [cdkConnectedOverlayOrigin]="acOrigin"
+            [cdkConnectedOverlayOpen]="acOpen()"
+            (overlayOutsideClick)="onAcOutsideClick($event, acOrigin)"
+            (detach)="acOpen.set(false)"
+          >
+            <div class="ac-panel" (mousedown)="$event.preventDefault()">
+              <acp-data-grid
+                #acGrid
+                size="small"
+                [data]="acResults()"
+                [columns]="basicColumns"
+                [pageSize]="5"
+                [hidePageSize]="true"
+                (rowClick)="pickAc($event.rowData)"
+              />
+            </div>
+          </ng-template>
+          @if (acPicked()) {
+            <p class="cell-info">Picked: {{ acPicked() }}</p>
+          }
+        </mat-card-content>
+      </mat-card>
+      <app-code-example [code]="acNavCode" [language]="'typescript'" />
+
+      <!-- Editable Cells -->
+      <h2>Editable Cells</h2>
+      <p class="instruction">
+        Mark a column with <code>editable: true</code> to enable inline editing. Click a cell to
+        start editing, press <code>Enter</code> to confirm or <code>Escape</code> to cancel.
+      </p>
+      <mat-card class="example-card">
+        <mat-card-content>
+          <div class="selection-info">
+            <span>Last edit: {{ lastEdit() ?? 'None' }}</span>
+          </div>
+          <acp-data-grid
+            [data]="editableData"
+            [columns]="editableColumns"
+            (cellEditChange)="onCellEditChange($event)"
+          />
+        </mat-card-content>
+      </mat-card>
+      <app-code-example [code]="editableCode" [language]="'typescript'" />
+
+      <!-- Editable Cells with Select -->
+      <h2>Editable Cells with Select</h2>
+      <p class="instruction">
+        Add <code>editOptions</code> to a column to render a dropdown select instead of a text
+        input. Options can be simple values or objects with <code>value</code> and
+        <code>label</code>.
+      </p>
+      <mat-card class="example-card">
+        <mat-card-content>
+          <div class="selection-info">
+            <span>Last edit: {{ lastEdit() ?? 'None' }}</span>
+          </div>
+          <acp-data-grid
+            [data]="editableData"
+            [columns]="editableWithSelectColumns"
+            (cellEditChange)="onCellEditChange($event)"
+          />
+        </mat-card-content>
+      </mat-card>
+      <app-code-example [code]="editableSelectCode" [language]="'typescript'" />
+
+      <!-- Editable Cells with Validation -->
+      <h2>Editable Cells with Validation</h2>
+      <p class="instruction">
+        Use <code>editValidator</code> to reject invalid values: return <code>true</code> to accept
+        or a <code>string</code> with the error message to reject. When validation fails, the
+        message is shown under the editor and the grid blocks editing other cells until the value is
+        fixed or cancelled with <code>Escape</code>. Try entering a negative price or a non-integer
+        quantity.
+      </p>
+      <mat-card class="example-card">
+        <mat-card-content>
+          <div class="selection-info">
+            <span>Last edit: {{ lastEdit() ?? 'None' }}</span>
+          </div>
+          <acp-data-grid
+            [data]="editableValidationData"
+            [columns]="editableValidationColumns"
+            (cellEditChange)="onCellEditChange($event)"
+          />
+        </mat-card-content>
+      </mat-card>
+      <app-code-example [code]="editableValidationCode" [language]="'typescript'" />
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -436,11 +736,6 @@ interface PivotRow {
       .docs-component-viewer-content {
         padding: 24px;
         max-width: 1400px;
-      }
-
-      h2 {
-        margin-top: 32px;
-        margin-bottom: 16px;
       }
 
       .example-card {
@@ -460,6 +755,39 @@ interface PivotRow {
       .search-field {
         width: 100%;
         max-width: 360px;
+      }
+
+      .ac-panel {
+        width: min(560px, calc(100vw - 32px));
+        margin-top: 4px;
+        overflow: hidden;
+        border-radius: 4px;
+        background: var(--mat-sys-surface-container);
+        box-shadow: var(--mat-sys-level2);
+      }
+
+      .scroll-flex-container {
+        display: flex;
+        flex-direction: column;
+        height: 360px;
+        min-height: 160px;
+        overflow: hidden;
+        resize: vertical;
+      }
+
+      .scroll-css-var acp-data-grid {
+        --acp-grid-scroll-height: 240px;
+      }
+
+      .tree-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      .gridlines-toggle {
+        margin: 0 0 12px 16px;
       }
 
       .size-toggle {
@@ -512,72 +840,6 @@ interface PivotRow {
         background-color: var(--mat-sys-error-container);
       }
 
-      ::ng-deep
-        .mat-mdc-table
-        :is(.mat-mdc-header-cell, .mat-mdc-cell, .mat-mdc-footer-cell).kardex-group-matriz {
-        background-color: color-mix(in srgb, var(--mat-sys-primary) 6%, transparent);
-      }
-      ::ng-deep
-        .mat-mdc-table
-        :is(.mat-mdc-header-cell, .mat-mdc-cell, .mat-mdc-footer-cell).kardex-group-entradas {
-        background-color: color-mix(in srgb, var(--mat-sys-tertiary) 10%, transparent);
-      }
-      ::ng-deep
-        .mat-mdc-table
-        :is(.mat-mdc-header-cell, .mat-mdc-cell, .mat-mdc-footer-cell).kardex-group-salidas {
-        background-color: color-mix(in srgb, var(--mat-sys-error) 10%, transparent);
-      }
-      ::ng-deep
-        .mat-mdc-table
-        :is(.mat-mdc-header-cell, .mat-mdc-cell, .mat-mdc-footer-cell).kardex-group-saldo {
-        background-color: color-mix(in srgb, var(--mat-sys-primary) 10%, transparent);
-      }
-      ::ng-deep .mat-mdc-table .acp-grid-header-group-cell.kardex-group-matriz {
-        border-top: 2px solid var(--mat-sys-primary);
-      }
-      ::ng-deep .mat-mdc-table .acp-grid-header-group-cell.kardex-group-entradas {
-        border-top: 2px solid var(--mat-sys-tertiary);
-      }
-      ::ng-deep .mat-mdc-table .acp-grid-header-group-cell.kardex-group-salidas {
-        border-top: 2px solid var(--mat-sys-error);
-      }
-      ::ng-deep .mat-mdc-table .acp-grid-header-group-cell.kardex-group-saldo {
-        border-top: 2px solid var(--mat-sys-primary);
-      }
-
-      ::ng-deep
-        .mat-mdc-table
-        :is(.mat-mdc-header-cell, .mat-mdc-cell, .mat-mdc-footer-cell).pivot-group-ecuador {
-        background-color: color-mix(in srgb, var(--mat-sys-primary) 6%, transparent);
-      }
-      ::ng-deep
-        .mat-mdc-table
-        :is(.mat-mdc-header-cell, .mat-mdc-cell, .mat-mdc-footer-cell).pivot-group-peru {
-        background-color: color-mix(in srgb, var(--mat-sys-secondary) 8%, transparent);
-      }
-      ::ng-deep
-        .mat-mdc-table
-        :is(.mat-mdc-header-cell, .mat-mdc-cell, .mat-mdc-footer-cell).pivot-group-bodega-norte {
-        background-color: color-mix(in srgb, var(--mat-sys-tertiary) 10%, transparent);
-      }
-      ::ng-deep
-        .mat-mdc-table
-        :is(.mat-mdc-header-cell, .mat-mdc-cell, .mat-mdc-footer-cell).pivot-group-bodega-sur {
-        background-color: color-mix(in srgb, var(--mat-sys-error) 8%, transparent);
-      }
-      ::ng-deep .mat-mdc-table .acp-grid-header-group-cell.pivot-group-ecuador {
-        border-top: 2px solid var(--mat-sys-primary);
-      }
-      ::ng-deep .mat-mdc-table .acp-grid-header-group-cell.pivot-group-peru {
-        border-top: 2px solid var(--mat-sys-secondary);
-      }
-      ::ng-deep .mat-mdc-table .acp-grid-header-group-cell.pivot-group-bodega-norte {
-        border-top: 2px solid var(--mat-sys-tertiary);
-      }
-      ::ng-deep .mat-mdc-table .acp-grid-header-group-cell.pivot-group-bodega-sur {
-        border-top: 2px solid var(--mat-sys-error);
-      }
-
       ::ng-deep .mat-mdc-table .success {
         background-color: color-mix(in srgb, var(--mat-sys-primary) 12%, transparent);
       }
@@ -602,19 +864,33 @@ export class DataGridExamples {
   lastKeyboardAction = signal('');
   searchText = signal('');
   pickedProduct = signal('');
+  acGrid = viewChild<DataGrid>('acGrid');
+  acOpen = signal(false);
+  acText = signal('');
+  acPicked = signal('');
+  acResults = computed(() => {
+    const text = this.acText().trim().toLowerCase();
+    return this.searchData.filter(item => item.name.toLowerCase().includes(text));
+  });
   searchResults = computed(() => {
     const text = this.searchText().trim().toLowerCase();
     return this.searchData.filter(item => item.name.toLowerCase().includes(text));
   });
   gridSize = signal<DataGridSize>('small');
   lastRowAction = signal('');
+  lastEdit = signal<string | null>(null);
   rowMenuItems: AcpContextMenuItem[] = [
     { id: 'view', label: 'View', icon: 'visibility' },
     { id: 'edit', label: 'Edit', icon: 'edit' },
     { separator: true },
     { id: 'delete', label: 'Delete', icon: 'delete', danger: true },
   ];
-  sizeOptions: DataGridSize[] = ['small', 'medium', 'large'];
+  scrollMode = signal<'fixed' | 'flex' | 'css' | 'none'>('fixed');
+  scrollHeight = computed<AcpDataGridScrollHeight | null>(() => {
+    const mode = this.scrollMode();
+    return mode === 'fixed' ? '300px' : mode === 'flex' ? 'flex' : null;
+  });
+  sizeOptions: DataGridSize[] = ['xs-small', 'small', 'medium', 'large'];
 
   // Pagination signals
   currentPageIndex = signal(0);
@@ -628,8 +904,240 @@ export class DataGridExamples {
   demoData = this.generateData(10);
   styledData = this.generateData(8);
   searchData = this.generateData(25);
+  scrollData = this.generateData(40);
+  editableData = [
+    { id: 1, name: 'Laptop Pro 15', category: 'Electronics', price: 1299.99, quantity: 25 },
+    { id: 2, name: 'Wireless Mouse', category: 'Accessories', price: 49.99, quantity: 150 },
+    { id: 3, name: 'USB-C Hub', category: 'Accessories', price: 79.99, quantity: 80 },
+    { id: 4, name: 'Mechanical Keyboard', category: 'Accessories', price: 149.99, quantity: 60 },
+    { id: 5, name: 'Monitor 27" 4K', category: 'Electronics', price: 599.99, quantity: 35 },
+  ];
 
   // Columns
+  collapsedWarehouses = signal<unknown[]>([]);
+
+  expandedAccounts = signal<unknown[]>([]);
+  selectedAccounts = signal<Account[]>([]);
+  accounts: Account[] = [
+    {
+      code: '1',
+      name: 'Activo',
+      balance: 185000,
+      children: [
+        {
+          code: '1.1',
+          name: 'Activo corriente',
+          balance: 65000,
+          children: [
+            { code: '1.1.01', name: 'Caja', balance: 5000 },
+            { code: '1.1.02', name: 'Bancos', balance: 42000 },
+            { code: '1.1.03', name: 'Cuentas por cobrar', balance: 18000 },
+          ],
+        },
+        {
+          code: '1.2',
+          name: 'Activo no corriente',
+          balance: 120000,
+          children: [
+            { code: '1.2.01', name: 'Propiedad, planta y equipo', balance: 150000 },
+            { code: '1.2.02', name: 'Depreciación acumulada', balance: -30000 },
+          ],
+        },
+      ],
+    },
+    {
+      code: '2',
+      name: 'Pasivo',
+      balance: 70000,
+      children: [
+        {
+          code: '2.1',
+          name: 'Pasivo corriente',
+          balance: 25000,
+          children: [
+            { code: '2.1.01', name: 'Proveedores', balance: 17000 },
+            { code: '2.1.02', name: 'Impuestos por pagar', balance: 8000 },
+          ],
+        },
+        {
+          code: '2.2',
+          name: 'Pasivo a largo plazo',
+          balance: 45000,
+          children: [{ code: '2.2.01', name: 'Préstamos bancarios', balance: 45000 }],
+        },
+      ],
+    },
+    {
+      code: '3',
+      name: 'Patrimonio',
+      balance: 115000,
+      children: [
+        { code: '3.1', name: 'Capital social', balance: 100000 },
+        { code: '3.2', name: 'Resultados acumulados', balance: 15000 },
+      ],
+    },
+    {
+      code: '4',
+      name: 'Ingresos',
+      balance: 98000,
+      children: [
+        { code: '4.1', name: 'Ventas', balance: 95000 },
+        { code: '4.2', name: 'Otros ingresos', balance: 3000 },
+      ],
+    },
+    { code: '5', name: 'Gastos', balance: 61000, lazy: true },
+  ];
+  accountColumns: DataGridColumn<Account>[] = [
+    { field: 'code', header: 'Code', width: '180px', treeToggle: true, sortable: true },
+    { field: 'name', header: 'Account', sortable: true },
+    { field: 'balance', header: 'Balance', type: 'currency', sortable: true },
+  ];
+  readonly hasAccountChildren = (account: Account) => !!account.lazy || !!account.children?.length;
+
+  /** Simulates loading the children of a lazy account from the backend. */
+  loadAccountChildren(account: Account, grid: DataGrid): void {
+    if (!account.lazy || account.children) {
+      return;
+    }
+    setTimeout(() => {
+      account.children = [
+        { code: '5.1', name: 'Gastos administrativos', balance: 38000 },
+        { code: '5.2', name: 'Gastos de ventas', balance: 23000 },
+      ];
+      grid.refreshTree();
+    }, 800);
+  }
+  stockData: StockRow[] = [
+    {
+      sku: 'A-100',
+      product: 'Steel screws 4mm',
+      warehouse: 'Main warehouse',
+      quantity: 1200,
+      cost: 0.05,
+    },
+    {
+      sku: 'B-210',
+      product: 'Copper wire 2.5mm',
+      warehouse: 'North branch',
+      quantity: 300,
+      cost: 1.2,
+    },
+    {
+      sku: 'A-101',
+      product: 'Steel screws 6mm',
+      warehouse: 'Main warehouse',
+      quantity: 800,
+      cost: 0.07,
+    },
+    {
+      sku: 'C-310',
+      product: 'PVC pipe 1in',
+      warehouse: 'South branch',
+      quantity: 150,
+      cost: 3.4,
+    },
+    {
+      sku: 'B-211',
+      product: 'Copper wire 4mm',
+      warehouse: 'North branch',
+      quantity: 180,
+      cost: 1.9,
+    },
+    {
+      sku: 'A-102',
+      product: 'Wall anchors',
+      warehouse: 'Main warehouse',
+      quantity: 2000,
+      cost: 0.03,
+    },
+    {
+      sku: 'C-311',
+      product: 'PVC elbow 1in',
+      warehouse: 'South branch',
+      quantity: 400,
+      cost: 0.8,
+    },
+    { sku: 'B-212', product: 'Breaker 20A', warehouse: 'North branch', quantity: 60, cost: 7.5 },
+    {
+      sku: 'A-103',
+      product: 'Hex bolts 8mm',
+      warehouse: 'Main warehouse',
+      quantity: 650,
+      cost: 0.12,
+    },
+    {
+      sku: 'C-312',
+      product: 'PVC glue 250ml',
+      warehouse: 'South branch',
+      quantity: 90,
+      cost: 4.25,
+    },
+    {
+      sku: 'B-213',
+      product: 'Junction box',
+      warehouse: 'North branch',
+      quantity: 120,
+      cost: 2.1,
+    },
+    {
+      sku: 'C-313',
+      product: 'Ball valve 1in',
+      warehouse: 'South branch',
+      quantity: 45,
+      cost: 9.9,
+    },
+  ];
+  stockColumns: DataGridColumn<StockRow>[] = [
+    { field: 'sku', header: 'SKU', width: '100px', sortable: true, summary: 'Subtotal' },
+    { field: 'product', header: 'Product', sortable: true },
+    {
+      field: 'quantity',
+      header: 'Qty',
+      type: 'number',
+      sortable: true,
+      summary: (values: number[]) => values.reduce((total, value) => total + value, 0),
+    },
+    {
+      field: 'value',
+      header: 'Stock value',
+      formatter: row => `$${(row.quantity * row.cost).toFixed(2)}`,
+      // Computed column: the subtotal uses the summarized rows (3rd argument).
+      summary: (_values, _col, rows) =>
+        `$${rows.reduce((total, row) => total + row.quantity * row.cost, 0).toFixed(2)}`,
+    },
+  ];
+
+  branchStockData: BranchStockRow[] = [
+    ['Quito', 'Main', 'Steel screws 4mm', 1200],
+    ['Guayaquil', 'Port', 'Copper wire 2.5mm', 300],
+    ['Quito', 'Main', 'Wall anchors', 2000],
+    ['Quito', 'Annex', 'PVC pipe 1in', 150],
+    ['Guayaquil', 'Port', 'Breaker 20A', 60],
+    ['Cuenca', 'Center', 'Ball valve 1in', 45],
+    ['Quito', 'Annex', 'PVC elbow 1in', 400],
+    ['Guayaquil', 'Downtown', 'Junction box', 120],
+    ['Cuenca', 'Center', 'PVC glue 250ml', 90],
+    ['Guayaquil', 'Downtown', 'Hex bolts 8mm', 650],
+    ['Cuenca', 'Center', 'Copper wire 4mm', 180],
+    ['Quito', 'Main', 'Hex bolts 8mm', 500],
+  ].map(([establishment, warehouse, product, quantity]) => ({
+    establishment: establishment as string,
+    warehouse: warehouse as string,
+    product: product as string,
+    quantity: quantity as number,
+  }));
+  branchStockColumns: DataGridColumn<BranchStockRow>[] = [
+    { field: 'establishment', header: 'Establishment', width: '140px' },
+    { field: 'warehouse', header: 'Warehouse', width: '120px', mergeRows: true },
+    { field: 'product', header: 'Product', sortable: true },
+    { field: 'quantity', header: 'Qty', type: 'number', sortable: true },
+  ];
+
+  expandableColumns: DataGridColumn<DemoData>[] = [
+    { field: 'id', header: 'ID', type: 'number', width: '80px', sortable: true },
+    { field: 'name', header: 'Name', showExpand: true, sortable: true },
+    { field: 'price', header: 'Price', type: 'currency', sortable: true },
+  ];
   basicColumns: DataGridColumn<DemoData>[] = [
     { field: 'id', header: 'ID', type: 'number', width: '80px' },
     { field: 'name', header: 'Name' },
@@ -684,9 +1192,15 @@ export class DataGridExamples {
     },
   ];
 
-  private readonly kardexGroupClass = (group: string | Observable<string>): string | undefined =>
+  // groupColor: any CSS color. The first level (establishment) is dynamic, so it falls back to
+  // the primary color.
+  private readonly kardexGroupColor = (group: string | Observable<string>): string | undefined =>
     typeof group === 'string'
-      ? `kardex-group-${group.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`
+      ? ({
+          Entradas: 'var(--mat-sys-tertiary)',
+          Salidas: 'var(--mat-sys-error)',
+          Saldo: 'var(--mat-sys-secondary)',
+        }[group] ?? 'var(--mat-sys-primary)')
       : undefined;
 
   // Groups by `establecimientoId` but displays `establecimiento` in the header.
@@ -698,15 +1212,16 @@ export class DataGridExamples {
   private readonly kardexTotal = (data: any[]): number =>
     data.reduce((acc, value) => acc + (Number(value) || 0), 0);
 
+  kardexGridlines = signal(true);
   kardexColumns: DataGridColumn<KardexRow>[] = [
-    { field: 'descripcion', header: 'Descripción', summary: 'Total' },
+    { field: 'descripcion', header: 'Descripción', summary: 'Total', summaryColspan: 2 },
     { field: 'codigo', header: 'Código', width: '100px' },
     {
       field: 'entradasCantidad',
       header: 'Cantidad',
       type: 'number',
       group: [this.kardexEstablecimiento, 'Entradas'],
-      groupClass: group => (group === 'Matriz' ? 'kardex-group-matriz' : 'bg-primary'),
+      groupColor: this.kardexGroupColor,
       summary: this.kardexTotal,
     },
     {
@@ -714,7 +1229,7 @@ export class DataGridExamples {
       header: 'Precio',
       type: 'currency',
       group: [this.kardexEstablecimiento, 'Entradas'],
-      groupClass: group => (group === 'Matriz' ? 'kardex-group-matriz' : 'bg-primary'),
+      groupColor: this.kardexGroupColor,
       summary: this.kardexTotal,
       width: '120px',
     },
@@ -723,7 +1238,7 @@ export class DataGridExamples {
       header: 'Cantidad',
       type: 'number',
       group: [this.kardexEstablecimiento, 'Salidas'],
-      groupClass: this.kardexGroupClass,
+      groupColor: this.kardexGroupColor,
       summary: this.kardexTotal,
     },
     {
@@ -731,7 +1246,7 @@ export class DataGridExamples {
       header: 'Precio',
       type: 'currency',
       group: [this.kardexEstablecimiento, 'Salidas'],
-      groupClass: this.kardexGroupClass,
+      groupColor: this.kardexGroupColor,
       summary: this.kardexTotal,
       width: '120px',
     },
@@ -740,7 +1255,7 @@ export class DataGridExamples {
       header: 'Cantidad',
       type: 'number',
       group: [this.kardexEstablecimiento, 'Saldo'],
-      groupClass: this.kardexGroupClass,
+      groupColor: this.kardexGroupColor,
       summary: this.kardexTotal,
     },
   ];
@@ -782,13 +1297,14 @@ export class DataGridExamples {
     { id: 'WH02', nombre: 'Bodega Sur' },
   ];
 
-  private readonly pivotGroupClass = (group: string | Observable<string>): string | undefined =>
+  private readonly pivotGroupColor = (group: string | Observable<string>): string | undefined =>
     typeof group === 'string'
-      ? `pivot-group-${group
-          .toLowerCase()
-          .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, '')
-          .replace(/[^a-z0-9]+/g, '-')}`
+      ? {
+          Ecuador: 'var(--mat-sys-primary)',
+          Perú: 'var(--mat-sys-secondary)',
+          'Bodega Norte': 'var(--mat-sys-tertiary)',
+          'Bodega Sur': 'var(--mat-sys-error)',
+        }[group]
       : undefined;
 
   pivotColumns: DataGridColumn<PivotRow>[] = [
@@ -803,7 +1319,7 @@ export class DataGridExamples {
           { key: nation.id, label: nation.nombre },
           { key: warehouse.id, label: warehouse.nombre },
         ],
-        groupClass: this.pivotGroupClass,
+        groupColor: this.pivotGroupColor,
       })),
     ),
   ];
@@ -986,12 +1502,14 @@ columns: DataGridColumn[] = [
   columnGroupsCode = `// Column Groups (Kardex, nested): \`group\` accepts a single level or an
 // array of levels — one header row is rendered per level. Each level can be a
 // string, an Observable<string>, or (data) => string | Observable<string> for
-// dynamic titles taken from the rows. \`groupClass\` accepts a class string or a
-// formatter (group, memberColumns) => class and is applied to the group header
-// plus every member column's header and data cells.
-const kardexGroupClass = (group: string | Observable<string>) =>
+// dynamic titles taken from the rows. \`groupColor\` takes any CSS color (or a
+// function of the group value): the group header gets an accent border and the
+// member columns a light tint, with no ::ng-deep. \`groupClass\` remains
+// available for full control.
+const kardexGroupColor = (group: string | Observable<string>) =>
   typeof group === 'string'
-    ? \`kardex-group-\${group.toLowerCase().replace(/[^a-z0-9]+/g, '-')}\`
+    ? ({ Entradas: 'var(--mat-sys-tertiary)', Salidas: 'var(--mat-sys-error)',
+        Saldo: 'var(--mat-sys-secondary)' }[group] ?? 'var(--mat-sys-primary)')
     : undefined;
 
 // Dynamic first level: group by establecimientoId but show establecimiento.
@@ -1005,31 +1523,29 @@ const establecimiento = {
 const kardexTotal = (data: any[]) => data.reduce((acc, v) => acc + (Number(v) || 0), 0);
 
 columns: DataGridColumn<KardexRow>[] = [
-  { field: 'descripcion', header: 'Descripción', summary: 'Total' },
+  { field: 'descripcion', header: 'Descripción', summary: 'Total', summaryColspan: 2 },
   { field: 'codigo', header: 'Código', width: '100px' },
   { field: 'entradasCantidad', header: 'Cantidad', type: 'number',
-    group: [establecimiento, 'Entradas'], groupClass: kardexGroupClass, summary: kardexTotal },
+    group: [establecimiento, 'Entradas'], groupColor: kardexGroupColor, summary: kardexTotal },
   { field: 'entradasPrecio', header: 'Precio', type: 'currency',
-    group: [establecimiento, 'Entradas'], groupClass: kardexGroupClass },
+    group: [establecimiento, 'Entradas'], groupColor: kardexGroupColor },
   { field: 'salidasCantidad', header: 'Cantidad', type: 'number',
-    group: [establecimiento, 'Salidas'], groupClass: kardexGroupClass },
+    group: [establecimiento, 'Salidas'], groupColor: kardexGroupColor },
   { field: 'salidasPrecio', header: 'Precio', type: 'currency',
-    group: [establecimiento, 'Salidas'], groupClass: kardexGroupClass },
+    group: [establecimiento, 'Salidas'], groupColor: kardexGroupColor },
   { field: 'saldoCantidad', header: 'Cantidad', type: 'number',
-    group: [establecimiento, 'Saldo'], groupClass: kardexGroupClass },
+    group: [establecimiento, 'Saldo'], groupColor: kardexGroupColor },
 ];
 
-<acp-data-grid [data]="kardexData" [columns]="columns" />`;
+<acp-data-grid [data]="kardexData" [columns]="columns" [showSummary]="true" showGridlines />`;
 
   pivotGroupsCode = `// Column Groups (dynamic pivot): columns are generated per
 // country/warehouse. Each level uses a { key, label } descriptor — columns merge
 // by key (nationalId / warehouseId) while the header shows label (the name).
-const pivotGroupClass = (group: string | Observable<string>) =>
-  typeof group === 'string'
-    ? \`pivot-group-\${group.toLowerCase().normalize('NFD')
-        .replace(/[\\u0300-\\u036f]/g, '')
-        .replace(/[^a-z0-9]+/g, '-')}\`
-    : undefined;
+const groupColors: Record<string, string> = {
+  Ecuador: 'var(--mat-sys-primary)', Perú: 'var(--mat-sys-secondary)',
+  'Bodega Norte': 'var(--mat-sys-tertiary)', 'Bodega Sur': 'var(--mat-sys-error)',
+};
 
 const nations = [
   { id: 'EC', nombre: 'Ecuador' },
@@ -1052,7 +1568,7 @@ columns: DataGridColumn<PivotRow>[] = [
         { key: nation.id, label: nation.nombre },   // nationalId -> nombre
         { key: warehouse.id, label: warehouse.nombre }, // warehouseId -> warehouseName
       ],
-      groupClass: pivotGroupClass,
+      groupColor: group => (typeof group === 'string' ? groupColors[group] : undefined),
     })),
   ),
 ];
@@ -1155,11 +1671,22 @@ rowClassFormatter = {
   [rowStriped]="true"
 />`;
 
-  expandableCode = `// Expandable Rows
+  expandableCode = `// Expandable Rows: showExpand renders the toggle; dataKey keeps the expanded
+// state with the row when sorting, paging or reloading data.
+columns: AcpDataGridColumn[] = [
+  { field: 'id', header: 'ID', sortable: true },
+  { field: 'name', header: 'Name', showExpand: true, sortable: true },
+];
+
 <acp-data-grid
   [data]="data"
   [columns]="columns"
+  [expandable]="true"
+  [expansionTemplate]="expansionTpl"
   [closeOthersOnExpand]="true"
+  dataKey="id"
+  [showPaginator]="true"
+  [pageSize]="3"
 />
 
 <ng-template #expansionTpl let-row>
@@ -1196,7 +1723,7 @@ rowClassFormatter = {
   toolbarTitle="Products"
 />`;
 
-  sizeCode = `<!-- size: 'small' | 'medium' (default) | 'large' -->
+  sizeCode = `<!-- size: 'xs-small' | 'small' | 'medium' (default) | 'large' -->
 <acp-data-grid
   [data]="data"
   [columns]="columns"
@@ -1208,6 +1735,93 @@ rowClassFormatter = {
   [expansionTemplate]="expansionTpl"
   [showPaginator]="true"
 />`;
+
+  scrollHeightCode = `<!-- Max height of the rows area; the grid shrinks when there are fewer rows -->
+<acp-data-grid [data]="data" [columns]="columns" scrollHeight="300px" />
+
+<!-- Fill the parent's height (the parent must have a height) -->
+<div style="height: 360px">
+  <acp-data-grid [data]="data" [columns]="columns" scrollHeight="flex" />
+</div>
+
+<!-- Same limit from a component stylesheet, without ::ng-deep -->
+<!-- acp-data-grid { --acp-grid-scroll-height: 240px; } -->
+<acp-data-grid [data]="data" [columns]="columns" />`;
+
+  rowGroupsCode = `// Row Groups: rows sharing groupRowsBy are rendered under a header row.
+// Groups keep the order of \`data\` unless you sort by the grouping field.
+columns: AcpDataGridColumn<StockRow>[] = [
+  { field: 'sku', header: 'SKU', summary: 'Subtotal' },
+  { field: 'product', header: 'Product' },
+  { field: 'quantity', header: 'Qty', summary: (values: number[]) => values.reduce((a, b) => a + b, 0) },
+  {
+    field: 'value',
+    header: 'Stock value',
+    formatter: row => row.quantity * row.cost,
+    // Computed column: summary receives the summarized rows as 3rd argument
+    summary: (_values, _col, rows) => rows.reduce((t, r) => t + r.quantity * r.cost, 0),
+  },
+];
+collapsedWarehouses = signal<unknown[]>([]);
+
+<acp-data-grid
+  [data]="stock"
+  [columns]="columns"
+  rowGroupMode="subheader"
+  groupRowsBy="warehouse"
+  [expandableRowGroups]="true"
+  [(collapsedRowGroups)]="collapsedWarehouses"
+  [showRowGroupFooter]="true"
+/>
+
+<!-- Optional: custom header content (the toggle button is kept) -->
+<ng-template #groupHeader let-key="key" let-count="count">
+  {{ key }} · {{ count }} items
+</ng-template>
+<acp-data-grid ... [rowGroupHeaderTemplate]="groupHeader" />`;
+
+  mergedCellsCode = `// Merged cells: rowGroupMode="rowspan" keeps each establishment together and
+// merges its cells; mergeRows merges equal warehouses inside each establishment.
+columns: AcpDataGridColumn<BranchStockRow>[] = [
+  { field: 'establishment', header: 'Establishment' },
+  { field: 'warehouse', header: 'Warehouse', mergeRows: true },
+  { field: 'product', header: 'Product', sortable: true },
+  { field: 'quantity', header: 'Qty', type: 'number', sortable: true },
+];
+
+<acp-data-grid
+  [data]="stock"
+  [columns]="columns"
+  rowGroupMode="rowspan"
+  groupRowsBy="establishment"
+/>
+
+// mergeRows also accepts a comparer: (previous, current) => boolean`;
+
+  treeTableCode = `// Tree Table: rows carry their children; data holds the root nodes.
+columns: AcpDataGridColumn<Account>[] = [
+  { field: 'code', header: 'Code', treeToggle: true, sortable: true },
+  { field: 'name', header: 'Account', sortable: true },
+  { field: 'balance', header: 'Balance', type: 'currency', sortable: true },
+];
+// Lazy nodes: report children before loading them
+hasChildren = (a: Account) => !!a.lazy || !!a.children?.length;
+
+<acp-data-grid
+  #grid
+  [data]="accounts"
+  [columns]="columns"
+  treeChildren="children"
+  [treeHasChildren]="hasChildren"
+  [(expandedTreeKeys)]="expanded"
+  dataKey="code"
+  (treeNodeExpand)="load($event.row, grid)"
+  [rowSelectable]="true"
+  [multiSelectable]="true"
+/>
+
+// Load children, then redraw: account.children = loaded; grid.refreshTree();
+// Also: grid.expandAll(), grid.collapseAll(), grid.toggleTreeNode(row)`;
 
   rowContextMenuCode = `// Row Context Menu
 <acp-data-grid
@@ -1245,16 +1859,16 @@ onCellClick(event: { row: T; column: DataGridColumn }) {
   console.log('Cell clicked:', event.column.field, event.row);
 }`;
 
-  keyboardNavCode = `<!-- No configuration needed: keyboard navigation is on by default -->
+  keyboardNavCode = `<!-- Keyboard navigation is opt-in -->
 <acp-data-grid
+  keyboardNavigation="true"
   [data]="data"
   [columns]="columns"
   (focusedRowChange)="onActiveRow($event)"
   (rowClick)="open($event.rowData)"
 />
 
-<!-- Disable it per grid with [keyboardNavigation]="false",
-     or globally with DATA_GRID_DEFAULT_OPTIONS: { keyboardNavigation: false } -->`;
+<!-- Enable it for every grid with DATA_GRID_DEFAULT_OPTIONS: { keyboardNavigation: true } -->`;
 
   searchNavCode = `<input matInput [acpGridNavigationFor]="grid" (input)="search($event)" />
 
@@ -1267,4 +1881,281 @@ onCellClick(event: { row: T; column: DataGridColumn }) {
 
 <!-- The first row becomes active when results change.
      Opt out with [acpGridNavigationActivateFirstRow]="false" -->`;
+
+  acNavCode = `// The grid is inside the overlay template: query it and pass the signal value,
+// it is undefined while the panel is closed.
+acGrid = viewChild<DataGrid>('acGrid');
+open = signal(false);
+
+// Template
+<mat-form-field cdkOverlayOrigin #origin="cdkOverlayOrigin" subscriptSizing="dynamic">
+  <input
+    matInput
+    role="combobox"
+    [attr.aria-expanded]="open()"
+    [acpGridNavigationFor]="acGrid()"
+    (input)="search($event); open.set(true)"
+    (focus)="open.set(true)"
+    (click)="open.set(true)"
+    (keydown)="onKeydown($event)"
+  />
+</mat-form-field>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="origin"
+  [cdkConnectedOverlayOpen]="open()"
+  (overlayOutsideClick)="onOutsideClick($event, origin)"
+  (detach)="open.set(false)"
+>
+  <!-- mousedown.preventDefault keeps the focus in the input when clicking rows or the paginator -->
+  <div class="panel" (mousedown)="$event.preventDefault()">
+    <acp-data-grid #acGrid [data]="results()" [columns]="columns" [pageSize]="5"
+      [hidePageSize]="true" (rowClick)="pick($event.rowData)" />
+  </div>
+</ng-template>
+
+// Escape/Tab close, ArrowDown opens. The directive ignores keys while the grid is not rendered.
+onKeydown(event: KeyboardEvent) {
+  if (event.key === 'Escape' || event.key === 'Tab') {
+    this.open.set(false);
+  } else if (event.key === 'ArrowDown' && !this.open()) {
+    this.open.set(true);
+    event.preventDefault();
+  }
+}
+
+// A click on the input itself is "outside" the overlay: ignore it.
+onOutsideClick(event: MouseEvent, origin: CdkOverlayOrigin) {
+  if (!origin.elementRef.nativeElement.contains(event.target as Node)) {
+    this.open.set(false);
+  }
+}`;
+
+  onAcInput(value: string) {
+    this.acText.set(value);
+    this.acOpen.set(true);
+  }
+
+  onAcKeydown(event: KeyboardEvent) {
+    if (event.key === 'Escape' || event.key === 'Tab') {
+      this.acOpen.set(false);
+    } else if (event.key === 'ArrowDown' && !this.acOpen()) {
+      this.acOpen.set(true);
+      event.preventDefault();
+    }
+  }
+
+  onAcOutsideClick(event: MouseEvent, origin: CdkOverlayOrigin) {
+    if (!origin.elementRef.nativeElement.contains(event.target as Node)) {
+      this.acOpen.set(false);
+    }
+  }
+
+  pickAc(row: DemoData) {
+    this.acText.set(row.name);
+    this.acPicked.set(row.name);
+    this.acOpen.set(false);
+  }
+
+  // Editable cells
+  editableColumns: DataGridColumn<DemoData>[] = [
+    { field: 'id', header: 'ID', type: 'number', width: '60px' },
+    { field: 'name', header: 'Name', editable: true },
+    { field: 'category', header: 'Category', editable: true },
+    { field: 'price', header: 'Price', type: 'currency', editable: true },
+    {
+      field: 'quantity',
+      header: 'Qty',
+      type: 'number',
+      width: '80px',
+      editable: true,
+      editValidator: value => {
+        const num = Number(value);
+        return Number.isInteger(num) && num >= 0 ? true : 'Quantity must be a non-negative integer';
+      },
+    },
+  ];
+
+  // Editable cells with validation
+  editableValidationData: DemoData[] = [
+    {
+      id: 101,
+      name: 'Laptop Pro 15',
+      description: 'High-performance laptop',
+      category: 'Electronics',
+      price: 1299.99,
+      quantity: 25,
+      status: 'completed',
+      createdAt: new Date('2024-01-15'),
+    },
+    {
+      id: 102,
+      name: 'Wireless Mouse',
+      description: 'Ergonomic wireless mouse',
+      category: 'Accessories',
+      price: 49.99,
+      quantity: 150,
+      status: 'completed',
+      createdAt: new Date('2024-02-20'),
+    },
+    {
+      id: 103,
+      name: 'USB-C Hub',
+      description: '7-in-1 USB-C hub',
+      category: 'Accessories',
+      price: 79.99,
+      quantity: 80,
+      status: 'processing',
+      createdAt: new Date('2024-03-10'),
+    },
+  ];
+
+  editableValidationColumns: DataGridColumn<DemoData>[] = [
+    { field: 'id', header: 'ID', type: 'number', width: '60px' },
+    {
+      field: 'name',
+      header: 'Name',
+      editable: true,
+      editValidator: value =>
+        value == null || String(value).trim() === '' ? 'Name is required' : true,
+    },
+    {
+      field: 'price',
+      header: 'Price',
+      type: 'currency',
+      editable: true,
+      editValidator: value => (Number(value) >= 0 ? true : 'Price must be zero or positive'),
+    },
+    {
+      field: 'quantity',
+      header: 'Qty',
+      type: 'number',
+      width: '80px',
+      editable: true,
+      editValidator: value => {
+        const num = Number(value);
+        return Number.isInteger(num) && num > 0 ? true : 'Quantity must be a positive integer';
+      },
+    },
+  ];
+
+  // Editable cells with select dropdown
+  editableWithSelectColumns: DataGridColumn<DemoData>[] = [
+    { field: 'id', header: 'ID', type: 'number', width: '60px' },
+    { field: 'name', header: 'Name', editable: true },
+    {
+      field: 'category',
+      header: 'Category',
+      editable: true,
+      editOptions: ['Electronics', 'Clothing', 'Food', 'Books', 'Toys'],
+    },
+    {
+      field: 'status',
+      header: 'Status',
+      editable: true,
+      width: '120px',
+      editOptions: [
+        { value: 'active', label: 'Active' },
+        { value: 'inactive', label: 'Inactive' },
+        { value: 'pending', label: 'Pending' },
+      ],
+    },
+    { field: 'price', header: 'Price', type: 'currency' },
+  ];
+
+  onCellEditChange(event: {
+    row: Record<string, any>;
+    field: string;
+    oldValue: any;
+    newValue: any;
+  }): void {
+    this.lastEdit.set(`${event.field}: "${event.oldValue}" → "${event.newValue}"`);
+  }
+
+  editableCode = `// Editable Cells — click to edit, Enter to confirm, Escape to cancel
+editableColumns: DataGridColumn<DemoData>[] = [
+  { field: 'id', header: 'ID', type: 'number' },
+  { field: 'name', header: 'Name', editable: true },
+  { field: 'category', header: 'Category', editable: true },
+  { field: 'price', header: 'Price', type: 'currency', editable: true },
+  { field: 'quantity', header: 'Qty', type: 'number', editable: true,
+    editValidator: (value) => Number.isInteger(value) && value >= 0 ? true : 'Must be ≥ 0' },
+];
+
+<acp-data-grid
+  [data]="data"
+  [columns]="editableColumns"
+  (cellEditChange)="onCellEditChange($event)"
+/>
+
+onCellEditChange(event: { row, field, oldValue, newValue }) {
+  console.log('Changed', event.field, event.oldValue, '→', event.newValue);
+}`;
+
+  editableSelectCode = `// Editable Cells with Select — click to open dropdown
+editableColumns: DataGridColumn<DemoData>[] = [
+  { field: 'id', header: 'ID', type: 'number' },
+  { field: 'name', header: 'Name', editable: true },
+  {
+    field: 'category',
+    header: 'Category',
+    editable: true,
+    editOptions: ['Electronics', 'Clothing', 'Food', 'Books', 'Toys'],
+  },
+  {
+    field: 'status',
+    header: 'Status',
+    editable: true,
+    editOptions: [
+      { value: 'active', label: 'Active' },
+      { value: 'inactive', label: 'Inactive' },
+      { value: 'pending', label: 'Pending' },
+    ],
+  },
+];
+
+<acp-data-grid
+  [data]="data"
+  [columns]="editableColumns"
+  (cellEditChange)="onCellEditChange($event)"
+/>`;
+
+  editableValidationCode = `// Editable Cells with Validation — editValidator returns
+// true to accept or a string error message to reject. On failure the message
+// is shown under the editor and other cells cannot be edited until the value
+// is fixed or the edit is cancelled with Escape.
+editableColumns: DataGridColumn<DemoData>[] = [
+  { field: 'id', header: 'ID', type: 'number' },
+  {
+    field: 'name',
+    header: 'Name',
+    editable: true,
+    editValidator: (value) =>
+      value == null || String(value).trim() === '' ? 'Name is required' : true,
+  },
+  {
+    field: 'price',
+    header: 'Price',
+    type: 'currency',
+    editable: true,
+    editValidator: (value) => (Number(value) >= 0 ? true : 'Price must be >= 0'),
+  },
+  {
+    field: 'quantity',
+    header: 'Qty',
+    type: 'number',
+    editable: true,
+    editValidator: (value) => {
+      const num = Number(value);
+      return Number.isInteger(num) && num > 0 ? true : 'Must be a positive integer';
+    },
+  },
+];
+
+<acp-data-grid
+  [data]="data"
+  [columns]="editableColumns"
+  (cellEditChange)="onCellEditChange($event)"
+/>`;
 }

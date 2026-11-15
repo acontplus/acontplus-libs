@@ -67,12 +67,12 @@ import { CodeExample } from '../../shared/code-example/code-example';
       <mat-card class="docs-example-card">
         <mat-card-content>
           <div class="icon-colors">
-            <acp-svg-icon name="heart" size="48px" color="#e91e63" />
-            <acp-svg-icon name="star" size="48px" color="#ffc107" />
-            <acp-svg-icon name="check" size="48px" color="#4caf50" />
-            <acp-svg-icon name="info" size="48px" color="#2196f3" />
-            <acp-svg-icon name="warning" size="48px" color="#ff9800" />
-            <acp-svg-icon name="error" size="48px" color="#f44336" />
+            <acp-svg-icon name="heart" size="48px" color="var(--mat-sys-error)" />
+            <acp-svg-icon name="star" size="48px" color="var(--mat-sys-tertiary)" />
+            <acp-svg-icon name="check" size="48px" color="var(--mat-sys-primary)" />
+            <acp-svg-icon name="info" size="48px" color="var(--mat-sys-secondary)" />
+            <acp-svg-icon name="warning" size="48px" color="var(--mat-sys-on-surface-variant)" />
+            <acp-svg-icon name="error" size="48px" color="var(--mat-sys-outline)" />
           </div>
         </mat-card-content>
       </mat-card>
@@ -110,20 +110,6 @@ import { CodeExample } from '../../shared/code-example/code-example';
       }
 
       .docs-component-description,
-      .section-description {
-        font-size: 16px;
-        line-height: 1.6;
-        margin-bottom: 24px;
-        color: var(--mat-sys-on-surface-variant);
-      }
-
-      h2 {
-        font-size: 24px;
-        font-weight: 500;
-        margin: 32px 0 16px;
-        color: var(--mat-sys-on-surface);
-      }
-
       .docs-example-card {
         margin-bottom: 16px;
       }
@@ -149,7 +135,7 @@ import { CodeExample } from '../../shared/code-example/code-example';
       }
 
       .icon-name {
-        font-size: 12px;
+        font-size: var(--mat-sys-body-small-size);
         color: var(--mat-sys-on-surface-variant);
         text-align: center;
       }
@@ -169,7 +155,7 @@ import { CodeExample } from '../../shared/code-example/code-example';
       }
 
       .icon-size-item span {
-        font-size: 12px;
+        font-size: var(--mat-sys-body-small-size);
         color: var(--mat-sys-on-surface-variant);
       }
 
@@ -219,9 +205,9 @@ export class IconsOverview implements OnInit {
 <acp-svg-icon name="home" size="32px" />
 <acp-svg-icon name="home" size="48px" />`;
 
-  colorIconCode = `<acp-svg-icon name="heart" size="48px" color="#e91e63" />
-<acp-svg-icon name="star" size="48px" color="#ffc107" />
-<acp-svg-icon name="check" size="48px" color="#4caf50" />`;
+  colorIconCode = `<acp-svg-icon name="heart" size="48px" color="var(--mat-sys-error)" />
+<acp-svg-icon name="star" size="48px" color="var(--mat-sys-tertiary)" />
+<acp-svg-icon name="check" size="48px" color="var(--mat-sys-primary)" />`;
 
   dimensionsIconCode = `<acp-svg-icon name="menu" width="20px" height="40px" />
 <acp-svg-icon name="menu" width="40px" height="20px" />`;

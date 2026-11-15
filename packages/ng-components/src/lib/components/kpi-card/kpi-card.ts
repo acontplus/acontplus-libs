@@ -8,12 +8,11 @@ import {
   input,
   LOCALE_ID,
   output,
-  TemplateRef,
   ViewEncapsulation,
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { MatCard, MatCardContent, MatCardHeader } from '@angular/material/card';
+import { MatCard } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
@@ -23,25 +22,37 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import {
   AcpKpiCardAlign,
   AcpKpiCardColor,
+  AcpKpiCardDeltaFormat,
+  AcpKpiCardHeadingLevel,
+  AcpKpiCardLabels,
   AcpKpiCardSize,
   AcpKpiCardTrend,
   AcpKpiCardTrendSentiment,
   AcpKpiCardVariant,
 } from './kpi-card.types';
-import { inferKpiTrend, KPI_CARD_TREND_CONFIGS } from './kpi-card.utils';
+import { ACP_KPI_CARD_DEFAULT_OPTIONS } from './kpi-card.tokens';
+import {
+  AcpKpiCardActions,
+  AcpKpiCardAvatar,
+  AcpKpiCardFooter,
+  AcpKpiCardIcon,
+} from './kpi-card-slots';
+import { DEFAULT_LABELS, TREND_ICONS, inferTrend } from './kpi-card.utils';
 
 const isBlank = (value: unknown): boolean => value === null || value === undefined || value === '';
+
+const optionalBoolean = (value: unknown): boolean | undefined =>
+  value == null ? undefined : booleanAttribute(value);
+
+let nextId = 0;
 
 @Component({
   selector: 'acp-kpi-card',
   exportAs: 'acpKpiCard',
-  standalone: true,
   imports: [
     NgTemplateOutlet,
     RouterLink,
     MatCard,
-    MatCardHeader,
-    MatCardContent,
     MatIconModule,
     MatButtonModule,
     MatMenuModule,
@@ -60,10 +71,16 @@ const isBlank = (value: unknown): boolean => value === null || value === undefin
 })
 export class AcpKpiCard {
   private readonly defaultLocale = inject(LOCALE_ID);
+  private readonly defaults = inject(ACP_KPI_CARD_DEFAULT_OPTIONS, { optional: true }) ?? {};
+
+  /** @internal Id of the content, used to describe the interactive area. */
+  readonly contentId = `acp-kpi-card-${nextId++}-content`;
 
   // Content
   readonly title = input<string>();
   readonly subtitle = input<string>();
+  /** Renders the title as a heading of this level. Without it the title is plain text. */
+  readonly headingLevel = input<AcpKpiCardHeadingLevel>();
   /** Numbers are formatted with `Intl.NumberFormat`; strings are shown as-is. */
   readonly value = input<string | number | null>();
   readonly valueFormat = input<Intl.NumberFormatOptions>();
@@ -74,11 +91,11 @@ export class AcpKpiCard {
   /** BCP 47 locale for number formatting. Defaults to the app `LOCALE_ID`. */
   readonly locale = input<string>();
 
-  // Styling
-  readonly variant = input<AcpKpiCardVariant>('default');
-  readonly color = input<AcpKpiCardColor>('primary');
-  readonly size = input<AcpKpiCardSize>('md');
-  readonly align = input<AcpKpiCardAlign>('start');
+  // Styling (fall back to ACP_KPI_CARD_DEFAULT_OPTIONS)
+  readonly variant = input<AcpKpiCardVariant>();
+  readonly color = input<AcpKpiCardColor>();
+  readonly size = input<AcpKpiCardSize>();
+  readonly align = input<AcpKpiCardAlign>();
 
   // Icons & avatar
   readonly icon = input<string>();
@@ -87,16 +104,17 @@ export class AcpKpiCard {
   readonly avatarInitials = input<string>();
 
   // Change vs. previous period
-  readonly percentage = input<number | string | null>();
-  readonly percentageFormat = input<'number' | 'percent'>('percent');
-  /** Direction of the change. Inferred from the sign of `percentage` when unset. */
+  /** Change vs. the previous period, e.g. `12.5` or `'+12.5'`. */
+  readonly delta = input<number | string | null>();
+  readonly deltaFormat = input<AcpKpiCardDeltaFormat>();
+  /** Direction of the change. Inferred from the sign of `delta` when unset. */
   readonly trend = input<AcpKpiCardTrend>();
   /** Invert the badge color for metrics where a decrease is good (costs, churn, errors). */
   readonly lowerIsBetter = input(false, { transform: booleanAttribute });
   /** Comparison context shown next to the change, e.g. "vs last month". */
   readonly trendLabel = input<string>();
   /** Show the trend arrow inside the change badge. */
-  readonly showTrendIcon = input(true, { transform: booleanAttribute });
+  readonly showTrendIcon = input(undefined, { transform: optionalBoolean });
 
   // Progress
   readonly progress = input<number>();
@@ -105,24 +123,44 @@ export class AcpKpiCard {
   // States
   readonly loading = input(false, { transform: booleanAttribute });
   readonly disabled = input(false, { transform: booleanAttribute });
+  /** Makes the whole card a button that emits `clicked`. */
   readonly clickable = input(false, { transform: booleanAttribute });
-  readonly selected = input(false, { transform: booleanAttribute });
+  /** Toggle state of a clickable card (`aria-pressed`). Leave unset for plain action cards. */
+  readonly selected = input(undefined, { transform: optionalBoolean });
 
-  // Navigation
-  readonly routerLink = input<string | any[] | null>(null);
+  /** Makes the whole card a link. Takes precedence over `clickable`. */
+  readonly routerLink = input<string | readonly unknown[] | null>(null);
 
   // Accessibility
+  /** Accessible name of a clickable or linked card. Defaults to `title`. */
   readonly ariaLabel = input<string>();
-  readonly menuAriaLabel = input('More options');
+  readonly menuAriaLabel = input<string>();
   readonly tooltip = input<string>();
 
-  /** Emitted on click, Enter or Space when `clickable`. */
+  /** Emitted when a `clickable` card is activated (click, Enter or Space). */
   readonly clicked = output<void>();
 
-  readonly iconTemplate = contentChild('icon', { read: TemplateRef });
-  readonly avatarTemplate = contentChild('avatar', { read: TemplateRef });
-  readonly footerTemplate = contentChild('footer', { read: TemplateRef });
-  readonly actionsTemplate = contentChild('actions', { read: TemplateRef });
+  private readonly iconSlot = contentChild(AcpKpiCardIcon, { descendants: false });
+  private readonly avatarSlot = contentChild(AcpKpiCardAvatar, { descendants: false });
+  private readonly footerSlot = contentChild(AcpKpiCardFooter, { descendants: false });
+  private readonly actionsSlot = contentChild(AcpKpiCardActions, { descendants: false });
+
+  readonly iconTemplate = computed(() => this.iconSlot()?.templateRef);
+  readonly avatarTemplate = computed(() => this.avatarSlot()?.templateRef);
+  readonly footerTemplate = computed(() => this.footerSlot()?.templateRef);
+  readonly actionsTemplate = computed(() => this.actionsSlot()?.templateRef);
+
+  readonly resolvedVariant = computed(() => this.variant() ?? this.defaults.variant ?? 'default');
+  readonly resolvedColor = computed(() => this.color() ?? this.defaults.color ?? 'primary');
+  readonly resolvedSize = computed(() => this.size() ?? this.defaults.size ?? 'medium');
+  readonly resolvedAlign = computed(() => this.align() ?? this.defaults.align ?? 'start');
+  readonly resolvedShowTrendIcon = computed(
+    () => this.showTrendIcon() ?? this.defaults.showTrendIcon ?? true,
+  );
+  readonly labels = computed<AcpKpiCardLabels>(() => ({
+    ...DEFAULT_LABELS,
+    ...this.defaults.labels,
+  }));
 
   private readonly resolvedLocale = computed(() => this.locale() ?? this.defaultLocale);
 
@@ -134,9 +172,9 @@ export class AcpKpiCard {
   });
 
   readonly formattedDelta = computed(() => {
-    const delta = this.percentage();
+    const delta = this.delta();
     if (isBlank(delta)) return null;
-    const isPercent = this.percentageFormat() === 'percent';
+    const isPercent = (this.deltaFormat() ?? this.defaults.deltaFormat ?? 'percent') === 'percent';
     if (typeof delta !== 'number') {
       const text = String(delta);
       return isPercent && !text.endsWith('%') ? `${text}%` : text;
@@ -148,9 +186,21 @@ export class AcpKpiCard {
     }).format(isPercent ? delta / 100 : delta);
   });
 
-  readonly resolvedTrend = computed(() => this.trend() ?? inferKpiTrend(this.percentage()));
+  readonly resolvedTrend = computed(() => this.trend() ?? inferTrend(this.delta()));
 
-  readonly trendConfig = computed(() => KPI_CARD_TREND_CONFIGS[this.resolvedTrend()]);
+  readonly trendIcon = computed(() => TREND_ICONS[this.resolvedTrend()]);
+
+  readonly trendAriaLabel = computed(() => {
+    const labels = this.labels();
+    const trend = this.resolvedTrend();
+    return trend === 'up'
+      ? labels.increase
+      : trend === 'down'
+        ? labels.decrease
+        : trend === 'neutral'
+          ? labels.noChange
+          : '';
+  });
 
   readonly sentiment = computed<AcpKpiCardTrendSentiment>(() => {
     const trend = this.resolvedTrend();
@@ -158,14 +208,14 @@ export class AcpKpiCard {
     return (trend === 'up') !== this.lowerIsBetter() ? 'positive' : 'negative';
   });
 
+  readonly hasIconTile = computed(() => !!(this.iconTemplate() || this.svgIcon() || this.icon()));
+
   readonly hasHeader = computed(
     () =>
       !!(
         this.title() ||
         this.subtitle() ||
-        this.icon() ||
-        this.svgIcon() ||
-        this.iconTemplate() ||
+        this.hasIconTile() ||
         this.avatar() ||
         this.avatarInitials() ||
         this.avatarTemplate() ||
@@ -175,30 +225,29 @@ export class AcpKpiCard {
 
   readonly hasFooter = computed(() => !!(this.footer() || this.footerTemplate()));
 
-  readonly interactive = computed(() => this.clickable() && !this.disabled() && !this.loading());
+  /** `link`, `button` or `null`: the native element that makes the whole card interactive. */
+  readonly interaction = computed<'link' | 'button' | null>(() =>
+    this.routerLink() != null ? 'link' : this.clickable() ? 'button' : null,
+  );
+
+  readonly accessibleName = computed(() => this.ariaLabel() ?? this.title() ?? null);
 
   readonly hostClasses = computed(() => {
     const classes = [
       'acp-kpi-card',
-      `acp-kpi-card--${this.variant()}`,
-      `acp-kpi-card--${this.color()}`,
-      `acp-kpi-card--${this.size()}`,
-      `acp-kpi-card--align-${this.align()}`,
+      `acp-kpi-card--${this.resolvedVariant()}`,
+      `acp-kpi-card--${this.resolvedColor()}`,
+      `acp-kpi-card--${this.resolvedSize()}`,
+      `acp-kpi-card--align-${this.resolvedAlign()}`,
     ];
-    if (this.clickable()) classes.push('acp-kpi-card--clickable');
+    if (this.interaction()) classes.push('acp-kpi-card--interactive');
     if (this.disabled()) classes.push('acp-kpi-card--disabled');
     if (this.loading()) classes.push('acp-kpi-card--loading');
     if (this.selected()) classes.push('acp-kpi-card--selected');
     return classes.join(' ');
   });
 
-  onCardClick(): void {
-    if (this.interactive()) this.clicked.emit();
-  }
-
-  onCardKey(event: Event): void {
-    if (!this.interactive() || event.target !== event.currentTarget) return;
-    event.preventDefault();
-    this.clicked.emit();
+  onActivate(): void {
+    if (!this.disabled() && !this.loading()) this.clicked.emit();
   }
 }

@@ -1,0 +1,20 @@
+<mat-form-field [floatLabel]="'always'">
+  <mat-label>{{ label() }}</mat-label>
+  @if (showMatPrefix()) {
+  <mat-checkbox
+    matPrefix
+    [(ngModel)]="checkbox"
+    (click)="onCheckboxClick($event)"
+    (change)="checkboxToggled.emit()"
+  />
+  }
+  <input matInput placeholder="Placeholder" [id]="uniqueId" #dateRangeInput />
+  @if (showMatSuffix()) {
+  <mat-checkbox
+    matSuffix
+    [(ngModel)]="checkbox"
+    (click)="onCheckboxClick($event)"
+    (change)="checkboxToggled.emit()"
+  />
+  }
+</mat-form-field>

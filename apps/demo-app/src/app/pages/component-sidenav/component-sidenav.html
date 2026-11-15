@@ -9,20 +9,19 @@
     [fixedInViewport]="isScreenSmall | async"
     [fixedTopGap]="(isExtraScreenSmall | async) ? 92 : 56"
   >
-    <app-component-nav [params]="params"></app-component-nav>
+    <app-component-nav />
   </mat-sidenav>
   }
 
   <mat-sidenav-content class="docs-component-sidenav-content" cdkScrollable>
     <app-component-page-header (toggleSidenav)="toggleSidenav(sidenav)" />
     <div class="docs-component-sidenav-inner-content">
-      <main class="docs-component-sidenav-body-content">
+      <main class="docs-component-sidenav-body-content acontplus-page-content">
         @if ((isScreenSmall | async) === false) {
-        <app-component-nav [params]="params" />
+        <app-component-nav />
         }
         <router-outlet></router-outlet>
       </main>
     </div>
   </mat-sidenav-content>
-  <!-- Cierre cambiado a mat-sidenav-content -->
 </mat-sidenav-container>

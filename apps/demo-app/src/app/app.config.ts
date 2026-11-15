@@ -19,7 +19,6 @@ import {
 } from '@acontplus/ng-infrastructure';
 import { authProviders, csrfInterceptor } from '@acontplus/ng-auth';
 import { provideNotifications } from '@acontplus/ng-notifications';
-import { companyCustomerProvider } from './modules/company-customer/company-customer-provider';
 import { SettingsService } from './core/settings.service';
 
 import {
@@ -52,8 +51,6 @@ export const appConfig: ApplicationConfig = {
     }),
 
     ...authProviders,
-
-    ...companyCustomerProvider,
 
     provideTransloco({
       config: {

@@ -26,7 +26,7 @@ $_semantic-palettes: (
     alert-solid-text-color: map.get($system, inverse-on-surface),
     // `outlined` variant container, shared by every type
     alert-outlined-background-color: map.get($system, surface),
-    alert-outlined-text-color: map.get($system, on-surface)
+    alert-outlined-text-color: map.get($system, on-surface),
   );
 
   // System values are custom property names; wrap them to use inside `color-mix()`

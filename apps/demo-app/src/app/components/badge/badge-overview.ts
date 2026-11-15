@@ -24,9 +24,9 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
           <mat-card-subtitle>Automatic color and icon based on trend</mat-card-subtitle>
         </mat-card-header>
         <mat-card-content class="badge-row">
-          <acp-badge label="Revenue" value="9.3%" trend="up" variant="soft" />
-          <acp-badge label="Churn" value="1.9%" trend="down" variant="soft" />
-          <acp-badge label="Conversion" value="0.6%" trend="neutral" variant="soft" />
+          <acp-badge label="Revenue" value="9.3%" trend="up" />
+          <acp-badge label="Churn" value="1.9%" trend="down" lowerIsBetter />
+          <acp-badge label="Conversion" value="0.6%" trend="neutral" />
         </mat-card-content>
       </mat-card>
 
@@ -41,10 +41,10 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
           <acp-badge label="Active" color="success" />
           <acp-badge label="Pending" color="warning" />
           <acp-badge label="Connected" color="info" />
-          <acp-badge label="Live" color="danger" />
+          <acp-badge label="Live" color="error" />
           <acp-badge label="Production" color="primary" />
           <acp-badge label="Closed" color="neutral" />
-          <acp-badge label="Cancelled" color="danger" variant="outlined" />
+          <acp-badge label="Cancelled" color="error" variant="outlined" />
         </mat-card-content>
       </mat-card>
 
@@ -124,7 +124,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
           <acp-badge icon="schedule" label="Duration" value="1h 30m" color="secondary" />
           <acp-badge icon="place" label="New York" color="tertiary" />
           <acp-badge icon="videocam" label="Zoom" color="info" variant="outlined" />
-          <acp-badge icon="people" label="12 participants" color="success" variant="tonal" />
+          <acp-badge icon="people" label="12 participants" color="success" />
           <acp-badge icon="repeat" label="Weekly" color="neutral" variant="text" />
         </mat-card-content>
       </mat-card>
@@ -141,7 +141,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
           <acp-badge label="User" color="secondary" />
           <acp-badge label="Guest" color="tertiary" />
           <acp-badge label="Beta" color="warning" variant="outlined" />
-          <acp-badge label="New" color="success" variant="soft" />
+          <acp-badge label="New" color="success" />
         </mat-card-content>
       </mat-card>
 
@@ -158,7 +158,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
           <acp-badge label="Tertiary" color="tertiary" variant="filled" />
           <acp-badge label="Success" color="success" variant="filled" />
           <acp-badge label="Warning" color="warning" variant="filled" />
-          <acp-badge label="Danger" color="danger" variant="filled" />
+          <acp-badge label="Danger" color="error" variant="filled" />
           <acp-badge label="Info" color="info" variant="filled" />
           <acp-badge label="Neutral" color="neutral" variant="filled" />
         </mat-card-content>
@@ -173,7 +173,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
         </mat-card-header>
         <mat-card-content>
           <div class="variant-section">
-            <h3>Filled (Default)</h3>
+            <h3>Filled</h3>
             <div class="badge-row">
               <acp-badge label="Filled" variant="filled" color="primary" />
               <acp-badge label="Filled" variant="filled" color="success" />
@@ -189,19 +189,11 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
             </div>
           </div>
           <div class="variant-section">
-            <h3>Soft</h3>
+            <h3>Tonal (Default)</h3>
             <div class="badge-row">
-              <acp-badge label="Soft" variant="soft" color="primary" />
-              <acp-badge label="Soft" variant="soft" color="success" />
-              <acp-badge label="Soft" variant="soft" color="warning" />
-            </div>
-          </div>
-          <div class="variant-section">
-            <h3>Tonal</h3>
-            <div class="badge-row">
-              <acp-badge label="Tonal" variant="tonal" color="primary" />
-              <acp-badge label="Tonal" variant="tonal" color="success" />
-              <acp-badge label="Tonal" variant="tonal" color="warning" />
+              <acp-badge label="Tonal" color="primary" />
+              <acp-badge label="Tonal" color="success" />
+              <acp-badge label="Tonal" color="warning" />
             </div>
           </div>
           <div class="variant-section">
@@ -223,10 +215,10 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
           <mat-card-subtitle>Extra small to large</mat-card-subtitle>
         </mat-card-header>
         <mat-card-content class="badge-row align-center">
-          <acp-badge label="xs" size="xs" color="success" />
-          <acp-badge label="sm" size="sm" color="success" />
-          <acp-badge label="md" size="md" color="success" />
-          <acp-badge label="lg" size="lg" color="success" />
+          <acp-badge label="xs" size="xs-small" color="success" />
+          <acp-badge label="sm" size="small" color="success" />
+          <acp-badge label="md" size="medium" color="success" />
+          <acp-badge label="lg" size="large" color="success" />
         </mat-card-content>
       </mat-card>
 
@@ -276,12 +268,6 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
               <acp-badge label="Selected" color="primary" [selected]="true" [clickable]="true" />
             </div>
           </div>
-          <div class="state-section">
-            <h3>Highlighted</h3>
-            <div class="badge-row">
-              <acp-badge label="Highlighted" color="primary" [highlighted]="true" />
-            </div>
-          </div>
         </mat-card-content>
       </mat-card>
 
@@ -298,7 +284,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
             <div class="badge-row">
               <acp-badge icon="star" label="Favorite" color="warning" />
               <acp-badge icon="check_circle" label="Verified" color="success" />
-              <acp-badge icon="error" label="Error" color="danger" />
+              <acp-badge icon="error" label="Error" color="error" />
             </div>
           </div>
           <div class="variant-section">
@@ -348,7 +334,7 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
           <div class="variant-section">
             <h3>Priority Levels</h3>
             <div class="badge-row">
-              <acp-badge icon="flag" label="Critical" color="danger" variant="filled" />
+              <acp-badge icon="flag" label="Critical" color="error" variant="filled" />
               <acp-badge icon="flag" label="High" color="warning" variant="filled" />
               <acp-badge icon="flag" label="Medium" color="info" variant="filled" />
               <acp-badge icon="flag" label="Low" color="success" variant="filled" />
@@ -359,17 +345,17 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
             <div class="badge-row">
               <acp-badge label="v1.0.0" color="primary" variant="outlined" shape="pill" />
               <acp-badge label="v2.0.0" color="success" variant="outlined" shape="pill" />
-              <acp-badge label="beta" color="warning" variant="soft" shape="pill" />
-              <acp-badge label="alpha" color="danger" variant="soft" shape="pill" />
+              <acp-badge label="beta" color="warning" shape="pill" />
+              <acp-badge label="alpha" color="error" shape="pill" />
             </div>
           </div>
           <div class="variant-section">
             <h3>Department Tags</h3>
             <div class="badge-row">
-              <acp-badge icon="engineering" label="Engineering" color="primary" size="lg" />
-              <acp-badge icon="business" label="Business" color="secondary" size="lg" />
-              <acp-badge icon="design_services" label="Design" color="tertiary" size="lg" />
-              <acp-badge icon="marketing" label="Marketing" color="info" size="lg" />
+              <acp-badge icon="engineering" label="Engineering" color="primary" size="large" />
+              <acp-badge icon="business" label="Business" color="secondary" size="large" />
+              <acp-badge icon="design_services" label="Design" color="tertiary" size="large" />
+              <acp-badge icon="marketing" label="Marketing" color="info" size="large" />
             </div>
           </div>
         </mat-card-content>
@@ -397,9 +383,9 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
 
       h3 {
         margin: 0 0 12px 0;
-        font-size: 14px;
+        font-size: var(--mat-sys-title-small-size);
         font-weight: 500;
-        color: rgba(0, 0, 0, 0.6);
+        color: var(--mat-sys-on-surface-variant);
       }
     }
 
@@ -408,17 +394,10 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
 
       h3 {
         margin: 0 0 12px 0;
-        font-size: 14px;
+        font-size: var(--mat-sys-title-small-size);
         font-weight: 500;
-        color: rgba(0, 0, 0, 0.6);
+        color: var(--mat-sys-on-surface-variant);
       }
-    }
-
-    h2 {
-      margin-top: 32px;
-      margin-bottom: 12px;
-      font-size: 20px;
-      font-weight: 500;
     }
 
     mat-card {
@@ -430,13 +409,13 @@ import { DocHeading } from '../../shared/doc-heading/doc-heading';
     }
 
     mat-card-title {
-      font-size: 16px;
+      font-size: var(--mat-sys-title-small-size);
       font-weight: 500;
     }
 
     mat-card-subtitle {
-      font-size: 12px;
-      color: rgba(0, 0, 0, 0.54);
+      font-size: var(--mat-sys-body-small-size);
+      color: var(--mat-sys-on-surface-variant);
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,

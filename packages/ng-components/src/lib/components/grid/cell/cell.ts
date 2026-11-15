@@ -38,7 +38,7 @@ import {
   AcpGridCellSummaryPipe,
 } from '../data-grid.pipes';
 import { DataGridUtils } from '../grid-utils';
-import { DataGridColumn, DataGridColumnButton } from '../interfaces';
+import { AcpDataGridColumn, AcpDataGridColumnButton } from '../interfaces';
 import { AcpGridMenu } from '../grid-menu';
 
 @Component({
@@ -81,7 +81,7 @@ export class AcpGridCell implements OnInit, DoCheck {
   @Input() rowData: Record<string, any> = {};
 
   /** Column definition */
-  @Input() colDef!: DataGridColumn;
+  @Input() colDef!: AcpDataGridColumn;
 
   /** Table data */
   @Input() data: any[] = [];
@@ -121,6 +121,11 @@ export class AcpGridCell implements OnInit, DoCheck {
     });
   }
 
+  /** Marks the cell view for check; used by the grid after committing an inline edit. */
+  markForCheck(): void {
+    this._changeDetectorRef.markForCheck();
+  }
+
   _getText(value: any) {
     if (value === undefined) {
       return '';
@@ -137,7 +142,7 @@ export class AcpGridCell implements OnInit, DoCheck {
     return this._utils.isContainHTML(value) || this._utils.isEmpty(value) ? '' : value;
   }
 
-  _onActionClick(event: MouseEvent, btn: DataGridColumnButton, rowData: Record<string, any>) {
+  _onActionClick(event: MouseEvent, btn: AcpDataGridColumnButton, rowData: Record<string, any>) {
     event.preventDefault();
     event.stopPropagation();
 

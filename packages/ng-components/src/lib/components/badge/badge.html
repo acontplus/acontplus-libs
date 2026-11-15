@@ -1,68 +1,69 @@
-<mat-chip-set
-  class="acp-badge__set"
-  [attr.aria-label]="ariaLabel()"
-  [attr.aria-disabled]="isDisabled() || null"
+@switch (element()) { @case ('router-link') {
+<a class="acp-badge__body" [routerLink]="routerLink()" [attr.aria-label]="ariaLabel() ?? null">
+  <ng-container [ngTemplateOutlet]="content" />
+</a>
+} @case ('link') {
+<a class="acp-badge__body" [href]="href()" [attr.aria-label]="ariaLabel() ?? null">
+  <ng-container [ngTemplateOutlet]="content" />
+</a>
+} @case ('button') {
+<button
+  type="button"
+  class="acp-badge__body"
+  [disabled]="isDisabled()"
+  [attr.aria-pressed]="selected() ?? null"
+  [attr.aria-label]="ariaLabel() ?? null"
+  (click)="onClick($event)"
 >
-  <mat-chip
-    class="acp-badge__chip"
-    [ngClass]="chipClasses()"
-    [disabled]="isDisabled()"
-    [removable]="removable()"
-    [highlighted]="isHighlighted()"
-    [value]="value()"
-    [routerLink]="routerLink()"
-    [attr.href]="href()"
-    (removed)="onRemove($event)"
-    (click)="onChipClick($event)"
-  >
-    @if (loading()) {
-    <span class="acp-badge__loader" aria-hidden="true"></span>
-    } @if (iconTemplate()) {
-    <span matChipAvatar class="acp-badge__avatar">
-      <ng-container [ngTemplateOutlet]="iconTemplate()!"></ng-container>
-    </span>
-    } @else if (effectiveSvgIcon()) {
-    <mat-icon
-      matChipAvatar
-      class="acp-badge__icon"
-      [svgIcon]="effectiveSvgIcon()!"
-      aria-hidden="true"
-    ></mat-icon>
-    } @else if (effectiveIcon()) {
-    <mat-icon matChipAvatar class="acp-badge__icon" aria-hidden="true"
-      >{{ effectiveIcon() }}</mat-icon
-    >
-    } @if (label()) {
-    <span class="acp-badge__label">{{ label() }}</span>
-    } @if (label() && effectiveValue()) {
-    <span class="acp-badge__separator" aria-hidden="true">|</span>
-    } @if (effectiveValue()) {
-    <span class="acp-badge__value">{{ effectiveValue() }}</span>
-    } @if (trailingIconTemplate()) {
-    <span matChipTrailingIcon class="acp-badge__trailing-icon">
-      <ng-container [ngTemplateOutlet]="trailingIconTemplate()!"></ng-container>
-    </span>
-    } @else if (effectiveTrailingSvgIcon()) {
-    <mat-icon
-      matChipTrailingIcon
-      class="acp-badge__trailing-icon"
-      [svgIcon]="effectiveTrailingSvgIcon()!"
-      aria-hidden="true"
-    ></mat-icon>
-    } @else if (effectiveTrailingIcon()) {
-    <mat-icon matChipTrailingIcon class="acp-badge__trailing-icon" aria-hidden="true"
-      >{{ effectiveTrailingIcon() }}</mat-icon
-    >
-    } @if (removable()) {
-    <button
-      matChipRemove
-      type="button"
-      class="acp-badge__remove"
-      aria-label="Remove"
-      (click)="onRemove($event)"
-    >
-      <mat-icon aria-hidden="true">cancel</mat-icon>
-    </button>
-    }
-  </mat-chip>
-</mat-chip-set>
+  <ng-container [ngTemplateOutlet]="content" />
+</button>
+} @default {
+<span class="acp-badge__body" [attr.aria-disabled]="disabled() ? 'true' : null">
+  @if (ariaLabel()) {
+  <span class="cdk-visually-hidden">{{ ariaLabel() }}</span>
+  <span class="acp-badge__visual" aria-hidden="true">
+    <ng-container [ngTemplateOutlet]="content" />
+  </span>
+  } @else {
+  <ng-container [ngTemplateOutlet]="content" />
+  }
+</span>
+} } @if (removable()) {
+<button
+  type="button"
+  class="acp-badge__remove"
+  [disabled]="isDisabled()"
+  [attr.aria-label]="removeLabel()"
+  (click)="onRemove($event)"
+>
+  <mat-icon aria-hidden="true">close</mat-icon>
+</button>
+}
+
+<ng-template #content>
+  @if (loading()) {
+  <span class="acp-badge__spinner" aria-hidden="true"></span>
+  } @else if (iconTemplate(); as tpl) {
+  <span class="acp-badge__icon" aria-hidden="true">
+    <ng-container [ngTemplateOutlet]="tpl" />
+  </span>
+  } @else if (svgIcon() && !trend()) {
+  <mat-icon class="acp-badge__icon" [svgIcon]="svgIcon()!" aria-hidden="true" />
+  } @else if (leadingIcon()) {
+  <mat-icon class="acp-badge__icon" aria-hidden="true">{{ leadingIcon() }}</mat-icon>
+  } @if (trendText()) {
+  <span class="cdk-visually-hidden">{{ trendText() }}</span>
+  } @if (label()) {
+  <span class="acp-badge__label">{{ label() }}</span>
+  } @if (value() !== undefined && value() !== null && value() !== '') {
+  <span class="acp-badge__value">{{ value() }}</span>
+  } @if (trailingIconTemplate(); as tpl) {
+  <span class="acp-badge__icon" aria-hidden="true">
+    <ng-container [ngTemplateOutlet]="tpl" />
+  </span>
+  } @else if (trailingSvgIcon()) {
+  <mat-icon class="acp-badge__icon" [svgIcon]="trailingSvgIcon()!" aria-hidden="true" />
+  } @else if (trailingIcon()) {
+  <mat-icon class="acp-badge__icon" aria-hidden="true">{{ trailingIcon() }}</mat-icon>
+  }
+</ng-template>

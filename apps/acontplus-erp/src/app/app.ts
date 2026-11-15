@@ -1,22 +1,15 @@
-import { Component, OnInit, AfterViewInit, inject, ChangeDetectionStrategy } from '@angular/core';
-import { PreloaderService, SettingsService } from '@core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { PreloaderService } from '@core';
 
 @Component({
   selector: 'app-root',
-  template: ` <router-outlet /> `,
-  changeDetection: ChangeDetectionStrategy.Eager,
+  template: `<router-outlet />`,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterOutlet],
 })
-export class App implements OnInit, AfterViewInit {
+export class App implements AfterViewInit {
   private readonly preloader = inject(PreloaderService);
-  private readonly settings = inject(SettingsService);
-
-  ngOnInit() {
-    this.settings.setDirection();
-    this.settings.setTheme();
-    this.settings.setThemeColor();
-  }
 
   ngAfterViewInit() {
     this.preloader.hide();

@@ -13,6 +13,7 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { interceptors } from '@core/interceptors';
 import { StartupService } from '@core';
 import { NgxPermissionsModule } from 'ngx-permissions';
+import { provideAcpLayout } from '@acontplus/ng-components';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -26,5 +27,9 @@ export const appConfig: ApplicationConfig = {
     provideAppInitializer(() => inject(StartupService).load()),
     provideHttpClient(withInterceptors(interceptors)),
     importProvidersFrom(NgxPermissionsModule.forRoot()),
+    provideAcpLayout({
+      storageKey: 'ng-acontplus-settings',
+      branding: { name: 'ACONTPLUS', logo: 'images/acontplus.png' },
+    }),
   ],
 };

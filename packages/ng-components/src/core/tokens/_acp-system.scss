@@ -1,0 +1,103 @@
+@use 'sass:list';
+@use 'sass:map';
+
+// Acontplus design language (inspired by MaterialPro). Single source of truth for the values that
+// every component shares: font family, raised surface, shadows, section heading, motion and the
+// layout sizes. Emitted as CSS variables only by acontpluspro; the prebuilt themes provide colors
+// only. Components read them with a fallback, never with literal values.
+
+$font-family: (Poppins, Roboto, 'Helvetica Neue', sans-serif) !default;
+
+$tokens: (
+  // Raised surface (cards, panels): white in light mode, a lifted surface in dark mode
+  surface-raised: light-dark(
+      var(--mat-sys-surface-container-lowest),
+      var(--mat-sys-surface-container)
+    ),
+  // Soft, diffuse shadows tinted with slate in light mode; a tight halo in dark mode
+  shadow-1: 0 1px 16px light-dark(rgb(145 158 171 / 0.12), rgb(0 0 0 / 0.2)),
+  shadow-2: 0 12px 24px -4px light-dark(rgb(145 158 171 / 0.3), rgb(0 0 0 / 0.4)),
+  // Section heading (card, panel and dialog titles)
+  heading-size: 1.125rem,
+  heading-line-height: 1.6rem,
+  heading-weight: 600,
+  // Motion
+  easing-standard: cubic-bezier(0.4, 0, 0.2, 1),
+) !default;
+
+/// Emits the `--acp-sys-*` variables in the current selector.
+/// @param {Map} $overrides Values to replace, e.g. `(heading-weight: 500)`.
+@mixin tokens($overrides: ()) {
+  @each $name, $value in map.merge($tokens, $overrides) {
+    --acp-sys-#{$name}: #{$value};
+  }
+}
+
+// Layout sizes, emitted as `--acp-<name>` (e.g. `--acp-sidenav-width`) by acontpluspro.
+$layout: (
+  gutter: 1rem,
+  spacing: 0.25rem,
+  sidenav-width: 15rem,
+  sidenav-collapsed-width: 4rem,
+) !default;
+
+/// `var(--acp-<name>, <default>)` for a layout size, so components work without acontpluspro.
+@function layout($name) {
+  @if not map.has-key($layout, $name) {
+    @error 'Unknown layout token `#{$name}`. Known: #{map.keys($layout)}';
+  }
+  @return var(--acp-#{$name}, #{map.get($layout, $name)});
+}
+
+/// Emits the `--acp-<name>` layout variables in the current selector.
+@mixin layout-tokens($overrides: ()) {
+  @each $name, $value in map.merge($layout, $overrides) {
+    --acp-#{$name}: #{$value};
+  }
+}
+
+// Text scale used by MaterialPro (Tailwind sizes): font size and line height. Emitted as
+// `--acp-sys-text-<name>-size` / `-line-height` by acontpluspro.
+$text-scale: (
+  xs: 0.75rem 1rem,
+  sm: 0.875rem 1.25rem,
+  base: 1rem 1.5rem,
+  lg: 1.125rem 1.75rem,
+  xl: 1.25rem 1.75rem,
+  2xl: 1.5rem 2rem,
+  3xl: 1.875rem 2.25rem,
+) !default;
+
+// Font weights, emitted as `--acp-sys-font-weight-<name>` by acontpluspro.
+$font-weights: (
+  normal: 400,
+  medium: 500,
+  semibold: 600,
+  bold: 700,
+) !default;
+
+/// `var(--acp-sys-text-<name>-size, <default>)`.
+@function text-size($name) {
+  @return var(--acp-sys-text-#{$name}-size, #{list.nth(map.get($text-scale, $name), 1)});
+}
+
+/// `var(--acp-sys-text-<name>-line-height, <default>)`.
+@function text-line-height($name) {
+  @return var(--acp-sys-text-#{$name}-line-height, #{list.nth(map.get($text-scale, $name), 2)});
+}
+
+/// `var(--acp-sys-font-weight-<name>, <default>)`.
+@function font-weight($name) {
+  @return var(--acp-sys-font-weight-#{$name}, #{map.get($font-weights, $name)});
+}
+
+/// Emits the text scale and font weight variables in the current selector.
+@mixin text-tokens() {
+  @each $name, $value in $text-scale {
+    --acp-sys-text-#{$name}-size: #{list.nth($value, 1)};
+    --acp-sys-text-#{$name}-line-height: #{list.nth($value, 2)};
+  }
+  @each $name, $weight in $font-weights {
+    --acp-sys-font-weight-#{$name}: #{$weight};
+  }
+}

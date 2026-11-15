@@ -1,12 +1,13 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { ThemeToggle, ThemeSwitcher, AcpDrawer, AcpDrawerRef } from '@acontplus/ng-components';
+import { AcpDrawer } from '@acontplus/ng-components';
 import { Customizer } from '../../components/customizer/customizer';
+import { SettingsService } from '../../core/settings.service';
 
 @Component({
   selector: 'app-navbar',
@@ -21,31 +22,27 @@ import { Customizer } from '../../components/customizer/customizer';
     MatIconModule,
     MatMenuModule,
     NgTemplateOutlet,
-    ThemeToggle,
-    Customizer,
   ],
 })
 export class Navbar {
-  private readonly themeSwitcher = inject(ThemeSwitcher);
   private readonly drawer = inject(AcpDrawer);
+  private readonly settings = inject(SettingsService);
 
   skipLinkHref: string | null | undefined;
   skipLinkHidden = true;
 
-  isDarkMode$ = this.themeSwitcher.isDarkMode$;
-  drawerRef: AcpDrawerRef<Customizer> | null = null;
+  readonly isDark = computed(() => {
+    const theme = this.settings.options().theme;
+    return theme === 'auto'
+      ? globalThis.matchMedia?.('(prefers-color-scheme: dark)').matches === true
+      : theme === 'dark';
+  });
 
-  openCustomizer() {
-    this.drawerRef = this.drawer.open(Customizer, {
-      position: 'right',
-      width: '320px',
-    });
+  toggleDarkMode() {
+    this.settings.setTheme(this.isDark() ? 'light' : 'dark');
   }
 
-  closeCustomizer() {
-    if (this.drawerRef) {
-      this.drawerRef.dismiss();
-      this.drawerRef = null;
-    }
+  openCustomizer() {
+    this.drawer.open(Customizer, { position: 'right', width: '340px' });
   }
 }

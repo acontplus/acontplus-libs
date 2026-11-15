@@ -21,8 +21,16 @@
   system-level-elevation, system-level-shape, system-level-motion, system-level-state, theme,
   theme-overrides, m2-theme;
 
-@forward './core/tokens/global-variables';
+@forward './core/theming/acontpluspro/acontpluspro' as acontpluspro-* show acontpluspro-apply,
+  acontpluspro-tokens, acontpluspro-structural, acontpluspro-utilities, $acontpluspro-palette,
+  $acontpluspro-boxed-max-width, $acontpluspro-utility-prefix;
+@forward './core/tokens/acp-system' as acp-system-* show acp-system-tokens, acp-system-layout,
+  acp-system-layout-tokens, acp-system-text-tokens, acp-system-text-size,
+  acp-system-text-line-height, acp-system-font-weight, $acp-system-font-family, $acp-system-tokens,
+  $acp-system-layout, $acp-system-text-scale, $acp-system-font-weights;
 @forward './core/style/breakpoints';
+@forward './core/theming/prebuilt/themes' as prebuilt-* show prebuilt-theme, prebuilt-all-themes,
+  $prebuilt-themes;
 @forward './core/theming/all-theme' show all-component-themes, all-component-bases;
 @forward './core/color/all-color' show all-component-colors;
 @forward './core/typography/all-typography' show all-component-typographies;

@@ -4,29 +4,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import {
-  AcpHeader,
-  AcpHeaderStart,
-  AcpHeaderBranding,
-  AcpHeaderCenter,
-  AcpHeaderEnd,
-} from '@acontplus/ng-components';
 
 @Component({
   selector: 'app-toolbar',
   standalone: true,
-  imports: [
-    AcpHeader,
-    AcpHeaderStart,
-    AcpHeaderBranding,
-    AcpHeaderCenter,
-    AcpHeaderEnd,
-    MatToolbarModule,
-    MatButtonModule,
-    MatIconModule,
-    MatMenuModule,
-    MatTooltipModule,
-  ],
+  imports: [MatToolbarModule, MatButtonModule, MatIconModule, MatMenuModule, MatTooltipModule],
   templateUrl: './toolbar.html',
   styleUrl: './toolbar.scss',
 })

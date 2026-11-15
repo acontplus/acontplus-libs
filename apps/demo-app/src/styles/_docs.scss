@@ -1,0 +1,34 @@
+// Typography shared by every documentation page. Values come from the theme typescale
+// (acontpluspro), so pages must not redefine headings, descriptions or code styles.
+
+app-component-viewer {
+  h2 {
+    margin: 40px 0 16px;
+    color: var(--mat-sys-on-surface);
+    font: var(--mat-sys-headline-small);
+    font-weight: 600;
+  }
+
+  h3 {
+    margin: 24px 0 12px;
+    color: var(--mat-sys-on-surface);
+    font: var(--mat-sys-title-medium);
+    font-weight: 600;
+  }
+
+  .docs-component-description,
+  .section-description,
+  .example-description {
+    max-width: 760px;
+    margin: 0 0 24px;
+    color: var(--mat-sys-on-surface-variant);
+    font: var(--mat-sys-body-large);
+  }
+
+  .features-list li {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+    color: var(--mat-sys-on-surface-variant);
+    font: var(--mat-sys-body-medium);
+  }
+}

@@ -1,0 +1,93 @@
+@use '../../../../core/tokens/acp-system';
+
+.acp-apps-menu.mat-mdc-menu-panel {
+  width: 560px;
+  max-width: calc(100vw - 32px);
+}
+
+.acp-apps-menu .mat-mdc-menu-content {
+  padding: 0;
+}
+
+.acp-apps-menu__body {
+  padding: 24px;
+}
+
+.acp-apps-menu__heading {
+  margin: 0;
+  font-size: acp-system.text-size(lg);
+  font-weight: acp-system.font-weight(semibold);
+}
+
+.acp-apps-menu__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 16px;
+  margin-top: 16px;
+
+  @media (max-width: 599.98px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.acp-apps-menu .acp-apps-menu__item.mat-mdc-menu-item {
+  min-height: 0;
+  padding: 8px;
+  border-radius: var(--acp-skin-radius, var(--mat-sys-corner-medium));
+
+  .mat-mdc-menu-item-text {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+
+  &:hover .acp-apps-menu__title,
+  &:focus-visible .acp-apps-menu__title {
+    color: var(--acp-theme-primary-color, var(--mat-sys-primary));
+  }
+}
+
+.acp-apps-menu__icon {
+  --acp-app-tone: var(--acp-app-color, var(--acp-theme-primary-color, var(--mat-sys-primary)));
+
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  color: var(--acp-app-tone);
+  background-color: color-mix(in srgb, var(--acp-app-tone) 15%, transparent);
+  border-radius: 50%;
+}
+
+// Anchored to the panel to beat Material's `.mat-mdc-menu-item .mat-icon` (margin-right: 16px),
+// which loads later when the menu opens and would push the icon off center.
+.acp-apps-menu .acp-apps-menu__icon .mat-icon {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  font-size: 20px;
+  line-height: 1;
+  color: inherit;
+}
+
+.acp-apps-menu__text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.acp-apps-menu__title {
+  font-size: acp-system.text-size(sm);
+  font-weight: acp-system.font-weight(semibold);
+  transition: color 0.2s;
+}
+
+.acp-apps-menu__subtitle {
+  overflow: hidden;
+  font-size: acp-system.text-size(xs);
+  color: var(--acp-skin-text-muted, var(--mat-sys-on-surface-variant));
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

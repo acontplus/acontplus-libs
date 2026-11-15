@@ -2,30 +2,30 @@
 @use '@angular/material' as mat;
 
 // Public CSS custom properties (set them on `acp-card` or any ancestor):
-//   --acp-card-shape, --acp-card-elevation, --acp-card-padding,
-//   --acp-card-container-color, --acp-card-on-color, --acp-card-subtitle-color,
+//   --acp-card-shape, --acp-card-elevation, --acp-card-hover-elevation, --acp-card-padding,
+//   --acp-card-gap, --acp-card-container-color, --acp-card-on-color, --acp-card-subtitle-color,
 //   --acp-card-outline-color
 $shape: var(--acp-card-shape, var(--mat-sys-corner-small));
+$padding: var(--acp-card-padding);
+$gap: var(--acp-card-gap);
+// Shared look comes from the `--acp-sys-*` design tokens (core/tokens/acp-system), with M3 fallbacks
+$shadow: var(--acp-sys-shadow-1, var(--mat-sys-level1));
+$hover-shadow: var(--acp-sys-shadow-2, var(--mat-sys-level3));
+$surface: var(--acp-sys-surface-raised, var(--mat-sys-surface-container-low));
+$easing: var(--acp-sys-easing-standard, ease);
 
 :host {
-  --acp-card-padding: 16px;
+  --acp-card-padding: 24px;
+  --acp-card-gap: 16px;
   display: block;
   border-radius: $shape;
-
-  &:focus-visible {
-    outline: 2px solid var(--mat-sys-primary);
-    outline-offset: 2px;
-  }
 }
 
 .acp-card {
   @include mat.card-overrides(
     (
-      elevated-container-color: var(
-          --acp-card-container-color,
-          var(--mat-sys-surface-container-low)
-        ),
-      outlined-container-color: var(--acp-card-container-color, var(--mat-sys-surface)),
+      elevated-container-color: var(--acp-card-container-color, #{$surface}),
+      outlined-container-color: var(--acp-card-container-color, #{$surface}),
       filled-container-color: var(
           --acp-card-container-color,
           var(--mat-sys-surface-container-highest)
@@ -33,31 +33,94 @@ $shape: var(--acp-card-shape, var(--mat-sys-corner-small));
       elevated-container-shape: $shape,
       outlined-container-shape: $shape,
       filled-container-shape: $shape,
-      elevated-container-elevation: var(--acp-card-elevation, var(--mat-sys-level1)),
+      elevated-container-elevation: var(--acp-card-elevation, #{$shadow}),
       outlined-outline-color: var(--acp-card-outline-color, var(--mat-sys-outline-variant)),
-      title-text-size: var(--mat-sys-title-large-size),
-      title-text-line-height: var(--mat-sys-title-large-line-height),
-      title-text-weight: 500,
+      title-text-size: var(--acp-sys-heading-size, var(--mat-sys-title-large-size)),
+      title-text-line-height: var(
+          --acp-sys-heading-line-height,
+          var(--mat-sys-title-large-line-height)
+        ),
+      title-text-weight: var(--acp-sys-heading-weight, var(--mat-sys-title-large-weight)),
+      title-text-tracking: 0,
       subtitle-text-size: var(--mat-sys-body-medium-size),
+      subtitle-text-line-height: var(--mat-sys-body-medium-line-height),
       subtitle-text-weight: 400,
+      subtitle-text-tracking: 0,
       subtitle-text-color: var(--acp-card-subtitle-color, var(--mat-sys-on-surface-variant)),
     )
   );
 
+  position: relative;
   color: var(--acp-card-on-color, var(--mat-sys-on-surface));
-  transition: box-shadow 200ms ease-in-out;
+  transition:
+    box-shadow 300ms $easing,
+    transform 200ms $easing;
+
+  .mat-mdc-card-header {
+    gap: $gap;
+    padding: $padding $padding 0;
+  }
+
+  .mat-mdc-card-avatar {
+    margin: 0;
+  }
+
+  .mat-mdc-card-title {
+    color: var(--acp-card-on-color, var(--mat-sys-on-surface));
+  }
+
+  .mat-mdc-card-subtitle {
+    margin-top: 4px;
+  }
 
   .mat-mdc-card-content {
-    padding: var(--acp-card-padding);
+    padding: $padding;
+  }
+
+  .mat-mdc-card-header + .mat-mdc-card-content {
+    padding-top: $gap;
   }
 
   .mat-mdc-card-actions {
     gap: 8px;
+    min-height: 0;
+    padding: 0 $padding $padding;
   }
 
   .mat-mdc-card-footer {
-    padding: 16px;
+    padding: 12px $padding;
+    border-top: 1px solid var(--mat-sys-outline-variant);
+    color: var(--acp-card-subtitle-color, var(--mat-sys-on-surface-variant));
+    font: var(--mat-sys-body-small);
   }
+}
+
+// Interactive area: a native <a> or <button> stretched over the card. Actions and footer are
+// raised above it so they stay clickable.
+.acp-card__hit {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid var(--mat-sys-primary);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    cursor: progress;
+  }
+}
+
+.acp-card__raised {
+  position: relative;
+  z-index: 1;
 }
 
 .acp-card__progress {
@@ -72,7 +135,8 @@ $shape: var(--acp-card-shape, var(--mat-sys-corner-small));
 .acp-card__media {
   overflow: hidden;
 
-  &:first-child {
+  &:first-child,
+  .acp-card__hit:first-child + & {
     border-top-left-radius: inherit;
     border-top-right-radius: inherit;
   }
@@ -91,28 +155,41 @@ $shape: var(--acp-card-shape, var(--mat-sys-corner-small));
 }
 
 :host(.acp-card--padding-small) {
-  --acp-card-padding: 12px;
+  --acp-card-padding: 16px;
+  --acp-card-gap: 12px;
 }
 
 :host(.acp-card--padding-large) {
-  --acp-card-padding: 24px;
+  --acp-card-padding: 30px;
+  --acp-card-gap: 20px;
 }
 
-// Interaction states
-:host(.acp-card--hover) .acp-card:hover {
-  box-shadow: var(--mat-sys-level3);
-}
-
-:host(.acp-card--clickable) {
-  cursor: pointer;
-  user-select: none;
-
+// Interaction states: lift on hover, settle on press
+:host(.acp-card--hover),
+:host(.acp-card--interactive) {
   .acp-card:hover {
-    box-shadow: var(--mat-sys-level2);
+    box-shadow: var(--acp-card-hover-elevation, #{$hover-shadow});
+    transform: translateY(-2px);
+  }
+}
+
+:host(.acp-card--interactive) {
+  .acp-card:active {
+    box-shadow: var(--acp-card-elevation, #{$shadow});
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .acp-card {
+    transition: none;
   }
 
-  .acp-card:active {
-    box-shadow: var(--mat-sys-level1);
+  :host(.acp-card--hover),
+  :host(.acp-card--interactive) {
+    .acp-card:hover {
+      transform: none;
+    }
   }
 }
 
@@ -229,10 +306,4 @@ $colors: (
     --acp-card-subtitle-color: var(--mat-sys-#{list.nth($roles, 3)});
     --acp-card-outline-color: transparent;
   }
-}
-
-:host(.acp-card--disabled-bg) {
-  --acp-card-container-color: color-mix(in srgb, var(--mat-sys-on-surface) 12%, transparent);
-  --acp-card-on-color: color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent);
-  --acp-card-subtitle-color: var(--acp-card-on-color);
 }

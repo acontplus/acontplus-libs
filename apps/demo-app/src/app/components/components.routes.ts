@@ -15,6 +15,10 @@ export const routes = [
         loadChildren: () => import('./input-chip/input-chip.routes').then(m => m.routes),
       },
       {
+        path: 'file-upload',
+        loadChildren: () => import('./file-upload/file-upload.routes').then(m => m.routes),
+      },
+      {
         path: 'search-select',
         loadChildren: () => import('./search-select/search-select.routes').then(m => m.routes),
       },
@@ -23,12 +27,13 @@ export const routes = [
         loadChildren: () => import('./dynamic-select/dynamic-select.routes').then(m => m.routes),
       },
       {
-        path: 'date-range-picker',
-        loadChildren: () => import('./date-range-picker/date-range-picker').then(m => m.routes),
-      },
-      {
         path: 'date-range-input',
         loadChildren: () => import('./date-range-input/date-range-input').then(m => m.routes),
+      },
+      {
+        path: 'vanilla-date-range-picker',
+        loadChildren: () =>
+          import('./vanilla-date-range-picker/vanilla-date-range-picker').then(m => m.routes),
       },
 
       // Buttons & Indicators

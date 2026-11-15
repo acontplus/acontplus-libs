@@ -57,8 +57,9 @@ export class AcpLayoutSettings {
 
   /** Merges `changes` into the options and persists them. */
   set(changes: Partial<AcpLayoutOptions>): void {
-    this.#options.update(options => ({ ...options, ...changes }));
-    this.#write(this.#options());
+    const next: AcpLayoutOptions = { ...this.#options(), ...changes };
+    this.#options.set(next);
+    this.#write(next);
   }
 
   /** Restores the configured defaults and clears the stored options. */

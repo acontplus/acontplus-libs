@@ -1377,8 +1377,6 @@ let DateRangePicker: any;
       // if the page is clicked anywhere except within the daterangerpicker/button
       // itself then call this.hide()
       if (
-        // ie modal dialog fix
-        e.type == 'focusin' ||
         target.closest(jq.getSelectorFromElement(this.element)) ||
         target.closest(jq.getSelectorFromElement(this.container)) ||
         target.closest('.acp-calendar-table')
@@ -1467,7 +1465,7 @@ let DateRangePicker: any;
         let tdElList = this.container.querySelectorAll('.acp-drp-calendar tbody td');
         for (let i = 0; i < tdElList.length; ++i) {
           //skip week numbers, only look at dates
-          if (tdElList[i].classList.contains('week')) return;
+          if (tdElList[i].classList.contains('week')) continue;
 
           var title = tdElList[i].dataset.title;
           var row = title.substr(1, 1);
@@ -1897,7 +1895,7 @@ let DateRangePicker: any;
     updateRanges: function (newRanges) {
       if (typeof newRanges === 'object') {
         jq.off(this.container.querySelector('.acp-ranges'), 'click', 'li', this.clickRangeProxy);
-        this.ranges = [];
+        this.ranges = {};
         let rangesKeys = Object.keys(newRanges);
         for (let i = 0; i < rangesKeys.length; ++i) {
           let range = rangesKeys[i];
@@ -1992,7 +1990,7 @@ let DateRangePicker: any;
       // no original jquery, tiny implements for closest() function.
       if (!el || !(el instanceof Element)) return null;
       let selector = el.nodeName.toLowerCase();
-      if (el.id) return selector + '#' + el.id;
+      if (el.id) return '#' + el.id;
       for (let i = 0; i < el.classList.length; ++i) {
         selector += '.' + el.classList[i];
       }

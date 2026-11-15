@@ -1,3 +1,312 @@
+# 8.0.0 (2026-11-15)
+
+### 🚀 Features
+
+- Centralized the prebuilt color themes. ([#156](https://github.com/acontplus/acontplus-libs/pull/156))
+
+  - One map (`$prebuilt-themes` in `core/theming/prebuilt/_themes.scss`) holds the palette and
+    brand color of every theme; each `prebuilt-themes/<name>` file is generated from it with the
+    same CSS output as before.
+  - New `@acontplus/ng-components/prebuilt-themes/all` entry loads the 8 themes at once.
+  - New Sass API: `prebuilt-theme($name)`, `prebuilt-all-themes()` and `$prebuilt-themes`.
+
+- Added shared design tokens (inspired by MaterialPro) in `core/tokens/_acp-system.scss`. ([#156](https://github.com/acontplus/acontplus-libs/pull/156))
+
+  - Single source for `--acp-sys-surface-raised`, `--acp-sys-shadow-1`, `--acp-sys-shadow-2`,
+    `--acp-sys-heading-*`, `--acp-sys-easing-standard` and the layout sizes (`$layout`,
+    `acp-system-layout()`), emitted only by acontpluspro.
+  - Components read them with Material fallbacks, so the prebuilt themes alone keep the Material
+    look (Roboto, M3 elevations and corners). The prebuilt themes provide colors only.
+
+- Added `AcpFileUpload` (`acp-file-upload`), a file picker and uploader similar to PrimeNG's ([#156](https://github.com/acontplus/acontplus-libs/pull/156))
+  FileUpload.
+
+  - `advanced` mode with toolbar, drag-and-drop zone, image previews and progress; `basic` mode with
+    a single button; `auto` upload.
+  - Uploads with `HttpClient` (`multipart/form-data`) to `url`, with `beforeUpload`,
+    `uploadProgress`, `uploadSuccess` and `uploadError`; or `customUpload` with `uploadHandler` and
+    `completeUpload()`.
+  - Validation of `accept`, `maxFileSize` and `fileLimit` with configurable Spanish messages.
+  - Works with `ngModel` and reactive forms (value: `File[]` or `null`).
+  - `#file`, `#empty` and `#toolbar` templates.
+
+- Added inline cell editing to `DataGrid` (`acp-data-grid`). ([#156](https://github.com/acontplus/acontplus-libs/pull/156))
+
+  - New `DataGridColumn` options: `editable`, `editValidator` and `editOptions`.
+  - New `cellEditChange` output emitted when an editable cell value is confirmed.
+  - Editable cells render with a pointer cursor. When `editValidator` rejects a
+    value, the editor stays open, the returned error message is displayed under
+    the field, and other cells cannot be edited until the value is fixed or the
+    edit is cancelled with `Escape`.
+
+- Column groups in `DataGrid` (`acp-data-grid`) now render like PrimeNG column groups. ([#156](https://github.com/acontplus/acontplus-libs/pull/156))
+
+  - The header of an ungrouped column (or of a column with fewer group levels) spans the remaining
+    header rows (`rowspan`) instead of showing empty cells above it. Sorting, pinning and the
+    selection checkbox keep working from that cell. Grids with `columnResizable` keep the previous
+    layout, since the resize handles live on the column header row.
+  - New `summaryColspan` column option: the summary (footer) cell spans several columns (e.g. a
+    `'Total'` label), in the grid footer and in row-group footers. The span stops where the
+    pinning changes.
+
+- Added `groupColor` and `showGridlines` to `DataGrid` (`acp-data-grid`). ([#156](https://github.com/acontplus/acontplus-libs/pull/156))
+
+  - New `groupColor` column option (CSS color or `(group, columns) => color`): the group header
+    gets an accent border and the member columns a light tint (`--acp-grid-group-tint`), without
+    `::ng-deep` or global CSS. Nested groups use their own level's color on headers and the
+    innermost color on cells. `groupClass` is unchanged.
+  - New `showGridlines` input (and `DATA_GRID_DEFAULT_OPTIONS.showGridlines`): vertical borders
+    between cells, colored with `--acp-grid-gridline-color`.
+  - Both are opt-in; grids without them render as before.
+
+- Added merged cells (`rowspan`) to `DataGrid` (`acp-data-grid`). ([#156](https://github.com/acontplus/acontplus-libs/pull/156))
+
+  - New `mergeRows` column option (`boolean` or `(previous, current) => boolean`) merges
+    consecutive equal cells into one. Merging is nested: a column only merges inside the merged
+    blocks of the merged columns to its left. Blocks are computed per rendered page and never cross
+    row-group headers or footers.
+  - New `rowGroupMode="rowspan"`: keeps the rows of each `groupRowsBy` group together and merges
+    that column.
+  - `mergeRows` is ignored when the grid is `expandable`.
+  - Opt-in: columns without `mergeRows` render as before.
+
+- `DataGrid` (`acp-data-grid`) now tracks the expanded state of each row by the row itself instead ([#156](https://github.com/acontplus/acontplus-libs/pull/156))
+  of its position.
+
+  - Fixed: with `pageOnFront` or `sortOnFront`, expanding a row also showed the row at the same
+    position on other pages, or a different row after sorting, as expanded.
+  - Fixed: changing an unrelated input (for example `loading`) no longer collapses every row; the
+    state is only cleared for rows that leave `data`.
+  - New `dataKey` input (field name or function) keeps the expanded state across data reloads.
+  - New `isRowExpanded(row)` and `toggleRowExpansion(row, expanded?)` methods.
+  - `toggleExpansion(index)` and `expansionRowStates` are deprecated but keep working with the
+    position in `data`.
+  - Internal: the cell, footer and expansion bodies are shared by both table variants (with and
+    without column resize) instead of being duplicated.
+
+- Added row groups to `DataGrid` (`acp-data-grid`). ([#156](https://github.com/acontplus/acontplus-libs/pull/156))
+
+  - `rowGroupMode="subheader"` with `groupRowsBy` (field or function) renders a header row before
+    each group. Rows of a group stay together; groups keep the order of `data` unless sorted by the
+    grouping field, and sorting by another column sorts rows inside each group.
+  - `expandableRowGroups`, `collapsedRowGroups` (two-way binding), `rowGroupToggle`,
+    `isRowGroupExpanded(key)` and `toggleRowGroup(key, expanded?)` collapse and expand groups.
+  - `showRowGroupFooter` renders per-group subtotals with each column's `summary`.
+    `summaryTemplate` now also receives `group` in its context.
+  - `rowGroupHeaderTemplate` customizes the header content (`AcpDataGridRowGroupContext`).
+  - New theme tokens: `grid-table-row-group-header-background-color` and
+    `grid-table-row-group-footer-background-color`.
+  - Opt-in: grids without `rowGroupMode` render as before.
+
+  `summary` improvements (backward compatible):
+
+  - `summary(values, colDef, rows)` now also receives the summarized rows (all rows in the grid
+    footer, the group rows in a row-group footer), so computed columns can total other fields.
+  - Fixed the `summary` type: its first argument is the column values (`any[]`), not the rows, so
+    functions such as `(values: number[]) => ...` now type-check.
+  - The per-column `summaryTemplate` context now also includes `data` (the summarized rows).
+
+  Docs: `keyboardNavigation` is opt-in (default `false` since 6.0.0); README and examples said it
+  was on by default.
+
+- Added the `scrollHeight` input to `DataGrid` (`acp-data-grid`). ([#156](https://github.com/acontplus/acontplus-libs/pull/156))
+
+  - A CSS length (`'400px'`, `'60vh'`) limits the height of the rows area; header and footer rows
+    stay fixed while the rows scroll.
+  - `'flex'` makes the grid fill the height of its parent container.
+  - The `--acp-grid-scroll-height` CSS custom property sets the same limit from a stylesheet without
+    `::ng-deep`, and `AcpDataGridDefaultOptions.scrollHeight` sets it globally.
+  - Opt-in: without `scrollHeight` the grid keeps its current behavior.
+
+  Renamed the public `DataGrid*` types to use the `Acp` prefix (`AcpDataGridColumn`,
+  `AcpDataGridDefaultOptions`, `AcpDataGridSize`, ...). The previous names remain exported as
+  deprecated aliases, so existing code keeps compiling.
+
+- Added tree mode to `DataGrid` (`acp-data-grid`), similar to PrimeNG's TreeTable. ([#156](https://github.com/acontplus/acontplus-libs/pull/156))
+
+  - `treeChildren` (field or function) renders nested rows; `data` holds the root nodes.
+    The `treeToggle` column option chooses the column with the indentation and toggle.
+  - Expanded state in `expandedTreeKeys` (two-way binding), with `isTreeNodeExpanded`,
+    `toggleTreeNode`, `expandAll`, `collapseAll` and the `treeNodeExpand`/`treeNodeCollapse` outputs.
+  - Paging counts root nodes; sorting sorts siblings on each level.
+  - Multiple selection propagates to descendants and ancestors, with indeterminate parents
+    (`treePropagateSelection`).
+  - Lazy loading with `treeHasChildren`, a loading spinner and `refreshTree()`.
+  - `role="treegrid"`, `aria-level`, `aria-expanded`, and ←/→ keys with `keyboardNavigation`.
+
+  Fixed: the row selection is no longer reset when an unrelated input changes (for example
+  `loading`); it is rebuilt only when `rowSelected`, `rowSelectable`, `multiSelectable` or `data`
+  change.
+
+- Added `acontpluspro`, the global look inspired by MaterialPro: ([#156](https://github.com/acontplus/acontplus-libs/pull/156))
+  `@use '@acontplus/ng-components/acontpluspro';` after the prebuilt themes.
+
+  - Typography (Poppins, 14px body, 400-weight buttons), elevations (`--mat-sys-level1/2` as soft
+    shadows), 10px corners, borders and white surfaces on a blue-gray background, applied through
+    tokens to Material components (card, dialog, menu, select, autocomplete, datepicker, form field,
+    expansion, table, paginator, sidenav, list, FAB, tooltip, button toggle) and to acontplus
+    components (card, grid, KPI card, popover, drawer, dialog, side menu, top menu, sidebar header,
+    user panel). The top menu becomes a white bar with pill items aligned with the header to the
+    boxed width.
+  - Compact menus and select options: menu items 36px high with 13px text, 12px sides and 18px icons
+    (Material menu tokens), menu panels 160-320px wide, select options 33px high with ~14px text.
+    The panels of the acontplus widgets keep their own sizes.
+  - Configurable with `acontpluspro-apply($overrides)` and `$acontpluspro-palette`; exposes
+    `--acp-skin-*` variables and the `acp-card-border`, `acp-boxed` and `acp-page-boxed` classes.
+  - Removed `global-variables` (`@acontplus/ng-components/global-variables` and its `_index`
+    forward): acontpluspro is the single global style layer and emits every variable it defined
+    (layout sizes, body, code, link, header, top menu, side menu, user panel). Remove the
+    `@use '@acontplus/ng-components/global-variables'` import. Layout components read the sizes
+    with defaults from `acp-system.$layout` (`acp-system-layout()`), and colors with Material
+    fallbacks, so they work without acontpluspro. Dropped the unused `--acp-topmenu-background-color`
+    and the toolbar height overrides (they equal Material's defaults).
+  - Text scale from MaterialPro: `--acp-sys-text-<xs|sm|base|lg|xl|2xl|3xl>-size` / `-line-height`
+    and `--acp-sys-font-weight-<normal|medium|semibold|bold>`, with the `.acp-text-*` and
+    `.acp-font-*` utility classes (`acontpluspro-utilities($prefix)` generates them with another
+    prefix, e.g. `''` for Tailwind names).
+
+
+### 🩹 Fixes
+
+- Fixed `AcpVanillaDateRangePicker` leaving its dropdown in the page after the component is destroyed ([#156](https://github.com/acontplus/acontplus-libs/pull/156))
+  (closing a dialog or leaving the page showed the ranges list at the bottom of the page).
+
+  - The component now removes the picker on destroy. The picker container is appended to `<body>`,
+    outside the component, and its styles are removed with the component.
+  - `DateRangePicker.remove()` now detaches the container from the DOM (it only dropped the
+    reference) and removes the window `resize` listener (it added it again).
+
+- Fixed `acpGridNavigationFor` keyboard navigation from a search input. ([#156](https://github.com/acontplus/acontplus-libs/pull/156))
+
+  - It no longer requires `keyboardNavigation` on the grid; the directive alone enables it.
+  - ArrowDown/ArrowUp wrap around within the page (last row to first and vice versa).
+  - PageDown on the last page activates the last row; PageUp on the first page activates the first
+    row (also with the grid's own keyboard navigation).
+  - When the results change, the grid goes back to the first page.
+  - Ignores keys with Ctrl/Meta and during IME composition.
+  - Accepts a grid that is not rendered yet (`null`/`undefined`), so the grid can live in an overlay
+    `ng-template` for an autocomplete; the first row becomes active when the grid appears.
+
+### ⚠️  Breaking Changes
+
+- Rebuilt `AcpBadge` on native elements with the MaterialPro look and a consistent API. ([#156](https://github.com/acontplus/acontplus-libs/pull/156))
+
+  - Renders a `<span>`, a native `<a>` (`routerLink` / `href`) or a native `<button>`
+    (`clickable`) instead of `mat-chip`. Fixes `removed` being emitted twice, the remove click also
+    emitting `clicked`, `href` not navigating and the ignored accessible name.
+  - Look: `tonal` (15% tint, pill, 500 weight) is the new default variant; text sizes follow the
+    theme typescale.
+  - Renamed `danger` to `error`, `ariaLabelOverride` to `ariaLabel`; sizes are now `xs-small`,
+    `small`, `medium` and `large`; removed the `soft` variant (use `tonal`), the `highlighted` input
+    (use `selected`) and the `none` trend (leave `trend` unset).
+  - `trend` no longer adds arrow characters to the value; it announces the change to screen readers
+    and supports `lowerIsBetter`. `selected` only sets `aria-pressed` when bound. `clicked` emits a
+    `MouseEvent`.
+  - Slots are typed directives (`ACP_BADGE_SLOTS`: `acpBadgeIcon`, `acpBadgeTrailingIcon`) instead
+    of `#icon` / `#trailingIcon` template references.
+  - New `ACP_BADGE_DEFAULT_OPTIONS` / `provideAcpBadgeDefaults()` for app-wide defaults and screen
+    reader labels. `ACP_BADGE_*` value lists now define the types (`as const`).
+  - Theme tokens use `<color>-bg` / `-fg` / `-accent`; `TREND_CONFIGS` and `AcpBadgeTrendConfig` are
+    no longer exported.
+
+- Redesigned `AcpKpiCard` (MaterialPro look) and cleaned up its API. ([#156](https://github.com/acontplus/acontplus-libs/pull/156))
+
+  - Look: `variant="default"` is a raised surface with a soft shadow, a dark value and the icon in a
+    15% tinted tile of `color`; `elevated`, `outlined` (neutral border) and `tonal` (15% tint) sit on
+    a surface; `filled` is the solid `color` container. Text sizes follow the theme typescale,
+    corners use `corner-small` and the delta badge is a light tinted pill.
+  - Renamed `percentage` / `percentageFormat` to `delta` / `deltaFormat`.
+  - Sizes are now `xs-small`, `small`, `medium` and `large` (same scale as `acp-data-grid`).
+  - Removed the `success-light`, `warning-light`, `error-light`, `info-light` and `surface` colors:
+    use `variant="tonal"` with the base color, or the default variant.
+  - `routerLink` renders a native link and `clickable` a native button stretched over the card, so
+    keyboard activation, Ctrl+click and screen readers work; the menu and footer stay clickable.
+    `selected` only sets `aria-pressed` when bound.
+  - Title is plain text by default; `headingLevel` renders it as a heading.
+  - Slots are now typed directives (`ACP_KPI_CARD_SLOTS`: `acpKpiCardIcon`, `acpKpiCardAvatar`,
+    `acpKpiCardFooter`, `acpKpiCardActions`) instead of `#icon`-style template references.
+  - New `ACP_KPI_CARD_DEFAULT_OPTIONS` / `provideAcpKpiCardDefaults()` for app-wide defaults and
+    screen reader labels (`increase`, `decrease`, `noChange`, `moreOptions`).
+  - Theme tokens use `-fg` for content colors (`<color>-fg`, `delta-*-fg`); `KPI_CARD_TREND_CONFIGS`
+    and `inferKpiTrend` are no longer exported.
+
+- Redesigned `AcpCard` (MaterialPro look) and cleaned up its API. ([#156](https://github.com/acontplus/acontplus-libs/pull/156))
+
+  - Look: elevated and outlined cards use the raised surface (white in light mode) and the soft
+    `--acp-sys-*` shadows; title uses the heading scale and subtitle 14px; `padding` is 16, 24
+    (default) or 30px and is shared by header, content, actions and footer; the footer has a top
+    divider; hoverable and interactive cards lift 2px.
+  - Removed the `elevation` and `rounded` inputs (and their `AcpCardConfig` keys and the
+    `AcpCardElevation` type): shape and shadows come from the theme. Override a single card with
+    `--acp-card-shape` / `--acp-card-elevation`.
+  - Removed the `disabled-bg` color and the `[key: string]: any` index signature of
+    `AcpCardPassThroughSection`.
+  - Removed the legacy `#title`-style template references; use the `ACP_CARD_SLOTS` directives.
+    `acpCardHeader` now replaces the avatar/title/subtitle group instead of rendering next to it.
+  - `clickable` renders a native button and the new `routerLink` input a native link stretched
+    over the card, so keyboard activation, Ctrl+click and screen readers work and actions stay
+    clickable. The host no longer gets `role="button"`, `role="article"` or `tabindex`. `clicked`
+    emits a `MouseEvent`.
+  - New `headingLevel` input renders the title as a heading.
+  - New styling hooks: `--acp-card-hover-elevation` and `--acp-card-gap`.
+
+- Removed `DateRangePicker` and its `ngx-datex` dependency. ([#156](https://github.com/acontplus/acontplus-libs/pull/156))
+
+  - Deleted the `date-range-picker` component (`DateRangePicker`,
+    `DateRangePickerOptions`, `DateRangeValue`) and its re-exports of
+    `ngx-datex` symbols (`NgxDatex`, `SPANISH_LOCALE`, `MATERIAL_LIGHT_THEME`
+    and related types).
+  - Removed the `ngx-datex` and `@formkit/tempo` peer dependencies.
+  - Apps that need date-range selection should use `AcpDateRangeInput`
+    (`date-range-input`) instead.
+
+- Replaced the shell components with `acp-layout`, the admin layout of acontplus-frontend. ([#156](https://github.com/acontplus/acontplus-libs/pull/156))
+
+  - New `acp-layout`: header, collapsible sidebar with `acp-sidemenu`, `acp-topmenu` (`navPos:
+  'top'`) and the page. Handles mobile (overlay sidenav closed after navigating), the collapsed
+    rail, header positions (`fixed`, `static`, `above`) and scrolling to the top. Apps project their
+    widgets with the `acpHeaderStart`, `acpHeaderEnd`, `acpSidebarUser` and `acpSidebarFooter`
+    attributes and the page as default content.
+  - New `AcpLayoutSettings` (signals, persisted in `localStorage`) and `provideAcpLayout({ defaults,
+  storageKey, branding, mobileQuery, fullscreenButton })`. It applies `color-scheme`,
+    `theme-dark`, `theme-<color>`, `dir`, `acp-card-border` and `acp-boxed` on `<html>`.
+  - New `acp-customizer`: draggable settings button with a drawer to edit the layout options
+    (Spanish labels by default, `[labels]` to override).
+  - New header and sidebar widgets from acontplus-frontend: `acp-apps-button` (`AcpAppShortcut`),
+    `acp-notifications-button` (`AcpNotificationItem`, pulsing dot, Spanish labels by default) and
+    `acp-user-panel` (`AcpUserPanel`, replaces `UserPanel`: inputs `title`, `subtitle`, `avatar`,
+    `link` and `details` instead of `name`, `email` and `profileLink`; avatar and link are
+    optional).
+  - Rebuilt the user menu as `AcpUserMenu` (replaces `UserMenu`) with the acontplus-frontend profile
+    menu: avatar or initials, header with name, role chip, subtitle and caption, and plain items.
+    `AcpUserMenuUser` (`name`, `subtitle`, `caption`, `role`, `avatar`) replaces `UserProfile`
+    (`email` and `plan`); `AcpUserMenuItem` takes `route` instead of `routerLink`, items without
+    route emit the new `selected` output instead of a `click` callback, and `badge` was removed.
+    `UserMenuSelectedEvent` was removed.
+  - New `AcpMenuItem`, `buildMenuRoute`, `menuPath` and `isMenuItemActive`.
+  - Removed `AcpShellLayout` and its slot directives, the `AcpSidebar*` components and the
+    `AcpHeader*` components (`AcpHeaderActions`, `AcpHeaderNotifications`, `AcpHeaderWorkspace`,
+    `AcpHeaderLanguage`, `AcpHeaderTheme`...). Use `acp-layout` with projected widgets.
+  - Renamed `SidemenuComponent` to `AcpSidemenu` (input `menuItems` → `items`), `Branding` to
+    `AcpBranding`, and the accordion directives to `AcpNavAccordion`, `AcpNavAccordionItem` and
+    `AcpNavAccordionToggle`. Removed `MenuItem`, `MenuTag`, `MenuPermissions` and the
+    `AcpTopmenu*Item` types (use `AcpMenuItem`) and the `buildRoute` input of `acp-topmenu`.
+  - `acp-sidemenu` and `acp-topmenu` no longer filter by `permissions` (they imported
+    `ngx-permissions`, which was not a declared dependency); filter the items before passing them.
+    The top menu marks a dropdown as active from the current URL instead of the `active` signal.
+  - CSS classes: `acp-layout*`, `acp-layout-header`, `acp-layout-sidebar__*` and
+    `acp-topmenu-panel` replace `acontplus-container*`, `acontplus-header`, `acontplus-sidenav`,
+    `acontplus-sidebar-*`, `acontplus-page-content` and `acontplus-topmenu-panel`; acontpluspro
+    targets the new classes.
+  - Docs: `AcpDrawerConfig.panelClass` goes on the overlay pane (`.cdk-overlay-pane`), not on the
+    drawer container; the comment said otherwise.
+
+### ❤️ Thank You
+
+- Claude Opus 5.5
+- Emilio Senguana @senguanasoft
+- emiliosw-dev
+
 # 7.0.0 (2026-11-11)
 
 ### 🚀 Features

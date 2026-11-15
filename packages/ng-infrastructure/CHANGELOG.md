@@ -1,3 +1,20 @@
+## 4.0.1 (2026-11-15)
+
+### 🩹 Fixes
+
+- No functional changes. This release carries a formatting fix in the generated ([#156](https://github.com/acontplus/acontplus-libs/pull/156))
+  changelog so the project no longer fails the release version-plan check.
+
+### 🧱 Updated Dependencies
+
+- Updated ng-components to 8.0.0
+
+### ❤️ Thank You
+
+- Claude Opus 5.5
+- Emilio Senguana @senguanasoft
+- emiliosw-dev
+
 # 4.0.0 (2026-11-11)
 
 ### ⚠️ Breaking Changes

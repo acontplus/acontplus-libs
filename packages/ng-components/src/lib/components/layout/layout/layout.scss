@@ -7,7 +7,7 @@ $_collapsed-width: acp-system.layout(sidenav-collapsed-width);
 $_toolbar-height: var(--mat-toolbar-standard-height, 64px);
 $_toolbar-mobile-height: var(--mat-toolbar-mobile-height, 56px);
 // Text of the sidebar that fades out in the collapsed rail.
-$_collapsible: '.menu-name, .menu-label, .menu-badge, .menu-caret, .acp-layout-sidebar__user';
+$_collapsible: '.menu-name, .menu-label, .menu-badge, .menu-caret, .acp-user-panel__info';
 
 .acp-layout-host {
   display: block;
@@ -128,6 +128,16 @@ $_collapsible: '.menu-name, .menu-label, .menu-badge, .menu-caret, .acp-layout-s
       opacity: 1;
     }
 
+    // As in ng-matero: the user panel keeps only its avatar, at half size.
+    .acp-user-panel__avatar {
+      transform: scale(0.5);
+    }
+
+    // The rail shows the logo; the toggle to expand it appears with the hover (or keyboard focus).
+    &:not(:hover):not(:has(:focus-visible)) .acp-layout-sidebar__header .mat-mdc-slide-toggle {
+      display: none;
+    }
+
     &:hover {
       width: $_sidenav-width;
 
@@ -137,6 +147,10 @@ $_collapsible: '.menu-name, .menu-label, .menu-badge, .menu-caret, .acp-layout-s
 
       .menu-icon.submenu-icon {
         opacity: 0;
+      }
+
+      .acp-user-panel__avatar {
+        transform: scale(1);
       }
     }
   }

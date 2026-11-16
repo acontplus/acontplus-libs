@@ -102,6 +102,11 @@
               "type": "link"
             },
             {
+              "route": "logo",
+              "name": "Logo",
+              "type": "link"
+            },
+            {
               "route": "divider",
               "name": "Divisor",
               "type": "link"

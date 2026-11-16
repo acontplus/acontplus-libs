@@ -1,0 +1,78 @@
+<div class="acp-logo-page">
+  <h1>Logo</h1>
+
+  <section>
+    <h3>Origen de la imagen</h3>
+    <div class="acp-logo-page__grid">
+      <acp-card title="SVG en línea" subtitle="Toma --acp-logo-color">
+        <acp-logo [src]="svg" />
+      </acp-card>
+      <acp-card title="PNG" subtitle="Se muestra como img">
+        <acp-logo [src]="png" />
+      </acp-card>
+      <acp-card title="Solo texto" subtitle="Usa branding.name">
+        <acp-logo />
+      </acp-card>
+      <acp-card title="Texto con label" subtitle="label sin src">
+        <acp-logo label="Mi Empresa" />
+      </acp-card>
+      <acp-card title="SVG inexistente" subtitle="Cae al texto">
+        <acp-logo src="images/logo/no-existe.svg" label="Sin logo" />
+      </acp-card>
+    </div>
+  </section>
+
+  <section>
+    <h3>Color</h3>
+    <div class="acp-logo-page__grid">
+      <acp-card title="Primario del tema">
+        <acp-logo [src]="svg" style="--acp-logo-color: var(--mat-sys-primary)" />
+      </acp-card>
+      <acp-card title="Personalizado">
+        <acp-logo [src]="svg" style="--acp-logo-color: #0a7ea4" />
+      </acp-card>
+      <acp-card title="Fondo oscuro">
+        <div class="acp-logo-page__dark">
+          <acp-logo [src]="svg" style="--acp-logo-color: #ffffff" />
+        </div>
+      </acp-card>
+    </div>
+  </section>
+
+  <section>
+    <h3>Branding del layout</h3>
+    <div class="acp-logo-page__grid">
+      <acp-card title="Círculo (defecto)" subtitle="display: logo-name">
+        <acp-branding />
+      </acp-card>
+      <acp-card title="Solo logo en círculo" subtitle="display: logo">
+        <acp-branding display="logo" />
+      </acp-card>
+      <acp-card title="Solo nombre" subtitle="display: name">
+        <acp-branding display="name" />
+      </acp-card>
+      <acp-card title="Rectángulo" subtitle="logoShape: rectangle">
+        <acp-branding logoShape="rectangle" [logo]="svg" />
+      </acp-card>
+      <acp-card title="Rectángulo solo logo" subtitle="display: logo">
+        <acp-branding display="logo" logoShape="rectangle" [logo]="svg" />
+      </acp-card>
+      <acp-card title="Rectángulo en 100px" subtitle="Se reduce">
+        <div class="acp-logo-page__narrow">
+          <acp-branding display="logo" logoShape="rectangle" [logo]="svg" />
+        </div>
+      </acp-card>
+    </div>
+  </section>
+
+  <section>
+    <h3>Tamaños</h3>
+    <acp-card>
+      <div class="acp-logo-page__sizes">
+        @for (size of sizes; track size) {
+          <acp-logo [src]="svg" [style.height.px]="size" />
+        }
+      </div>
+    </acp-card>
+  </section>
+</div>

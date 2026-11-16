@@ -13,7 +13,7 @@ export interface AcpUserPanelDetail {
 
 /**
  * Session summary for the `acpSidebarUser` slot of `acp-layout`: avatar, title (user or company),
- * subtitle and optional details with icon. Fades out in the collapsed sidebar.
+ * subtitle and optional details with icon. In the collapsed sidebar only the avatar stays, at half size.
  */
 @Component({
   selector: 'acp-user-panel',

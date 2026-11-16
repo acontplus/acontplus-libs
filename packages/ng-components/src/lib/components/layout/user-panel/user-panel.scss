@@ -10,6 +10,7 @@
   outline: none;
   background-color: var(--acp-user-panel-background-color, var(--mat-sys-surface-container));
   border-radius: 0.75rem;
+  transition: background-color 200ms;
 
   &--link {
     cursor: pointer;
@@ -31,11 +32,18 @@
   margin-inline-end: 0.75rem;
   object-fit: cover;
   border-radius: 50%;
+  transform-origin: left center;
+  transition: transform 200ms;
+
+  [dir='rtl'] & {
+    transform-origin: right center;
+  }
 }
 
 .acp-user-panel__info {
   flex: 1;
   min-width: 0;
+  transition: opacity 200ms;
 }
 
 .acp-user-panel__title,

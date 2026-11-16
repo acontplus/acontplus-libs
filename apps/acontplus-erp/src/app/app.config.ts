@@ -29,7 +29,7 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(NgxPermissionsModule.forRoot()),
     provideAcpLayout({
       storageKey: 'ng-acontplus-settings',
-      branding: { name: 'ACONTPLUS', logo: 'images/acontplus.png' },
+      branding: { name: 'ACONTPLUS', logo: 'images/logo/acontplus.png', display: 'name' },
     }),
   ],
 };

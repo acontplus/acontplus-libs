@@ -326,6 +326,25 @@ Chip input components integrated with Angular Material for tag/chip selection.
 import { InputChip } from '@acontplus/ng-components';
 ```
 
+### AcpLogo
+
+App logo loaded from an image URL, so changing it only means replacing the file. SVG files are
+inlined: fills with `currentColor` or `var(--acp-logo-color, <default>)` follow the theme. PNG, JPG
+and WebP render as `<img>`. Without an image, or when it fails to load, it shows the name as text: `label`,
+`provideAcpLogo({ label })` or `provideAcpLayout({ branding: { name } })`. Size it with `height`
+(default `44px`); the width follows the image.
+
+```typescript
+import { AcpLogo, provideAcpLogo } from '@acontplus/ng-components';
+
+// app.config.ts
+provideAcpLogo({ src: '/images/logo/logo.svg', label: 'AcontPlus' });
+```
+
+```html
+<acp-logo style="height: 32px; --acp-logo-color: #ffffff" src="/images/logo/other.svg" />
+```
+
 ### Spinner
 
 Loading spinner components for async operations.
@@ -767,6 +786,23 @@ provideAcpLayout({
   defaults: { themeColor: 'pink', headerPos: 'fixed' },
 });
 ```
+
+`branding` controls `acp-branding` in the sidebar and the header:
+
+| Option      | Description                                                                                                                                    |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`      | App name, shown as text and used as the link's accessible name                                                                                 |
+| `logo`      | Logo URL                                                                                                                                       |
+| `display`   | `'logo-name'` (default), `'logo'` or `'name'`                                                                                                  |
+| `logoShape` | `'circle'` (default, `2rem` round, as ng-matero) or `'rectangle'` (`2rem` high, up to `10rem` wide, keeps the aspect ratio and shrinks to fit) |
+| `link`      | Route of the link (default `'/'`)                                                                                                              |
+
+```typescript
+// Only a wide logo, without the name
+branding: { name: 'AcontPlus', logo: 'images/logo/acontplus.svg', display: 'logo', logoShape: 'rectangle' },
+```
+
+`--acp-branding-logo-height` and `--acp-branding-logo-max-width` change the rectangle size.
 
 ```html
 <!-- admin-layout.html -->

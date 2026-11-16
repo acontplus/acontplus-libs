@@ -20,3 +20,4 @@ export * from './checkbox-group';
 export * from './card';
 export * from './kpi-card';
 export * from './layout';
+export * from './logo';

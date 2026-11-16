@@ -171,3 +171,26 @@ $_border: var(--acp-skin-border, var(--mat-sys-outline-variant));
     color: #fff;
   }
 }
+
+// Theme border radius: slider with the current value (MaterialPro).
+.acp-customizer-radius {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+
+  .mat-mdc-slider {
+    --mat-slider-active-track-color: var(--acp-customizer-primary);
+    --mat-slider-handle-color: var(--acp-customizer-primary);
+    --mat-slider-focus-handle-color: var(--acp-customizer-primary);
+    --mat-slider-hover-handle-color: var(--acp-customizer-primary);
+
+    flex: 1;
+    margin: 0;
+  }
+
+  &__value {
+    min-width: 40px;
+    font-weight: acp-system.font-weight(semibold);
+    text-align: end;
+  }
+}

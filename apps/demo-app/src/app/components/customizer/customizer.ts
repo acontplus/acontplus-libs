@@ -2,8 +2,9 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSliderModule } from '@angular/material/slider';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { AcpDrawerRef } from '@acontplus/ng-components';
+import { ACP_LAYOUT_RADIUS_RANGE, AcpDrawerRef } from '@acontplus/ng-components';
 import { AppSettings, THEME_COLORS } from '../../core/settings';
 import { SettingsService } from '../../core/settings.service';
 
@@ -16,7 +17,13 @@ interface ToggleOption<T> {
 /** Theme settings panel, opened in a drawer from the navbar (like MaterialPro's customizer). */
 @Component({
   selector: 'app-customizer',
-  imports: [MatButtonModule, MatButtonToggleModule, MatIconModule, MatTooltipModule],
+  imports: [
+    MatButtonModule,
+    MatButtonToggleModule,
+    MatIconModule,
+    MatSliderModule,
+    MatTooltipModule,
+  ],
   template: `
     <header class="customizer__header">
       <h2>Settings</h2>
@@ -113,6 +120,21 @@ interface ToggleOption<T> {
           }
         </mat-button-toggle-group>
       </section>
+
+      <section>
+        <h3>Theme Border Radius</h3>
+        <div class="customizer__radius">
+          <mat-slider [min]="radiusRange.min" [max]="radiusRange.max" step="1" discrete>
+            <input
+              matSliderThumb
+              aria-label="Theme Border Radius"
+              [value]="options().radius"
+              (valueChange)="set('radius', $event)"
+            />
+          </mat-slider>
+          <span>{{ options().radius }}px</span>
+        </div>
+      </section>
     </div>
   `,
   styles: `
@@ -160,6 +182,23 @@ interface ToggleOption<T> {
       vertical-align: middle;
     }
 
+    .customizer__radius {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+
+      mat-slider {
+        flex: 1;
+        margin: 0;
+      }
+
+      span {
+        min-width: 40px;
+        font: var(--mat-sys-label-large);
+        text-align: end;
+      }
+    }
+
     .customizer__colors {
       display: grid;
       grid-template-columns: repeat(4, 48px);
@@ -199,6 +238,7 @@ export class Customizer {
 
   readonly options = this.settings.options;
   readonly themeColors = THEME_COLORS;
+  readonly radiusRange = ACP_LAYOUT_RADIUS_RANGE;
 
   readonly themeOptions: ToggleOption<AppSettings['theme']>[] = [
     { value: 'light', label: 'Light', icon: 'light_mode' },

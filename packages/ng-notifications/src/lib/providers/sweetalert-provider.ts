@@ -26,7 +26,9 @@ export class SweetalertProvider extends NotificationProviderBase {
       // Auto-detect theme based on CSS classes
       const isDark =
         document?.body?.classList?.contains('dark-theme') ||
-        document?.documentElement?.classList?.contains('dark-theme');
+        document?.body?.classList?.contains('theme-dark') ||
+        document?.documentElement?.classList?.contains('dark-theme') ||
+        document?.documentElement?.classList?.contains('theme-dark');
       return isDark ? 'material-ui-dark' : 'material-ui-light';
     }
 

@@ -22,7 +22,9 @@ export class ThemeDetector {
 
     const isDark =
       document.body.classList.contains('dark-theme') ||
-      document.documentElement.classList.contains('dark-theme');
+      document.body.classList.contains('theme-dark') ||
+      document.documentElement.classList.contains('dark-theme') ||
+      document.documentElement.classList.contains('theme-dark');
     this.themeSubject.next(isDark ? 'material-ui-dark' : 'material-ui-light');
   }
 

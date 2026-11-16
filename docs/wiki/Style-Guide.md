@@ -16,7 +16,7 @@ Design principles, Angular Material theming, component guidelines, and accessibi
 
 ## Color System
 
-Built on Angular Material's theming. All components adapt automatically to light/dark mode via the `ThemeSwitcher` service.
+Built on Angular Material's theming. All components adapt automatically to light/dark mode via `AcpLayoutSettings` (`acp-theme-toggle` and `acp-customizer` change it).
 
 | Palette | SCSS variable                      | Use                           |
 | ------- | ---------------------------------- | ----------------------------- |
@@ -26,13 +26,13 @@ Built on Angular Material's theming. All components adapt automatically to light
 
 ### Dark mode detection
 
-Components and `ThemeSwitcher` detect dark mode via the `.dark-theme` CSS class on `<html>`. Toggle it with:
+`AcpLayoutSettings` sets `color-scheme` and the `.theme-dark` class on `<html>`. Read or change it with:
 
 ```typescript
-import { ThemeSwitcher } from '@acontplus/ng-components';
+import { AcpLayoutSettings } from '@acontplus/ng-components';
 
-themeSwitcher.toggle(); // toggles and persists to localStorage
-themeSwitcher.isDarkMode(); // Signal<boolean>
+settings.isDark(); // Signal<boolean>
+settings.set({ theme: 'dark' }); // 'light' | 'dark' | 'auto', persisted to localStorage
 ```
 
 ---

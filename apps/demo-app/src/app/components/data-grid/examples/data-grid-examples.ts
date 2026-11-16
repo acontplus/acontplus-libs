@@ -668,8 +668,9 @@ interface PivotRow {
       <!-- Editable Cells -->
       <h2>Editable Cells</h2>
       <p class="instruction">
-        Mark a column with <code>editable: true</code> to enable inline editing. Click a cell to
-        start editing, press <code>Enter</code> to confirm or <code>Escape</code> to cancel.
+        Mark a column with <code>editable: true</code> to enable inline editing, or pass
+        <code>editable: (row) =&gt; boolean</code> to decide per row. Click a cell to start editing,
+        press <code>Enter</code> to confirm or <code>Escape</code> to cancel.
       </p>
       <mat-card class="example-card">
         <mat-card-content>

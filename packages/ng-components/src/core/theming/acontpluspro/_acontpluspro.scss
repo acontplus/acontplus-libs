@@ -16,8 +16,8 @@ $palette: (
   surface-muted: light-dark(#f6f9fc, #19212a),
   text: light-dark(#3a4752, rgb(255 255 255 / 0.9)),
   text-muted: light-dark(#768b9e, rgb(255 255 255 / 0.67)),
-  border: light-dark(#ebf1f6, #2e3f50),
-  field-border: light-dark(#dfe5ef, #465670),
+  border: light-dark(#d6dfe8, #3b4e62),
+  field-border: light-dark(#c9d3df, #55667f),
   field-background: light-dark(#fbfbfb, transparent),
   radius: 10px,
   shadow-card: 0 1px 16px light-dark(rgb(145 158 171 / 0.12), rgb(0 0 0 / 0.2)),
@@ -47,7 +47,6 @@ $boxed-max-width: 1300px !default;
   --mat-sys-surface: #{_skin(surface)};
   --mat-sys-on-background: #{_skin(text)};
   --mat-sys-outline-variant: #{_skin(border)};
-  --mat-sys-corner-small: #{_skin(radius)};
   --mat-sys-level1: #{_skin(shadow-popup)};
   --mat-sys-level2: #{_skin(shadow-card)};
 
@@ -78,9 +77,9 @@ $boxed-max-width: 1300px !default;
   --acp-topmenu-dropdown-item-active-text-color: var(--mat-sys-primary);
   --acp-body-background-color: #{_skin(background)};
   --acp-color-border: #{_skin(border)};
-  --acp-user-panel-background-color: #{_skin(surface-muted)};
+  --acp-user-panel-background-color: #{_skin(background)};
   --acp-user-panel-hover-background-color: #{_skin(border)};
-  --acp-sidemenu-expanded-background-color: transparent;
+  --acp-sidemenu-expanded-background-color: #{_skin(background)};
   --acp-sidemenu-heading-hover-background-color: transparent;
   --acp-sidemenu-active-heading-text-color: #{_skin(accent)};
   --acp-sidemenu-active-heading-background-color: color-mix(
@@ -124,6 +123,8 @@ $boxed-max-width: 1300px !default;
   --mat-form-field-container-text-tracking: normal;
   --mat-dialog-subhead-tracking: normal;
   --mat-dialog-supporting-text-tracking: normal;
+  // After `mat.theme`, which emits the default shape scale (`corner-small: 8px`).
+  --mat-sys-corner-small: #{_skin(radius)};
 
   @include mat.button-overrides(
     (

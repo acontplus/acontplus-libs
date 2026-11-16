@@ -49,8 +49,11 @@ export interface AcpDataGridColumn<T = any> {
    * Whether the cell value can be edited inline. When true, double-clicking a cell
    * enters edit mode with an input field. The grid emits `cellEditChange` when the
    * user confirms the change (Enter) or cancels it (Escape).
+   *
+   * A function decides per row (e.g. only the rows the user may change); rows for which it
+   * returns `false` render as read-only cells.
    */
-  editable?: boolean;
+  editable?: boolean | ((rowData: T) => boolean);
   /**
    * In tree mode (`treeChildren`), renders the indentation and the expand/collapse toggle of
    * each node in this column. Defaults to the first displayed column when no column sets it.

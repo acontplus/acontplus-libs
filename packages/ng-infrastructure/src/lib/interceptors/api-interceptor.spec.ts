@@ -112,15 +112,16 @@ describe('apiInterceptor', () => {
       expect(received).toEqual({ plain: 'object' });
     });
 
-    it('handles null body gracefully', () => {
-      const { interceptor } = setup();
-      const response = new HttpResponse({ body: null });
-      let received: unknown;
-      interceptor(makeRequest('POST', '/api/test'), () => of(response)).subscribe((event) => {
+    it('returns null without notifying on 204 No Content', () => {
+      const { interceptor, notificationSpy } = setup(Language.Spanish);
+      const response = new HttpResponse({ body: null, status: 204 });
+      let received: unknown = 'unset';
+      interceptor(makeRequest('DELETE', '/api/test/1'), () => of(response)).subscribe((event) => {
         if (event instanceof HttpResponse) received = event.body;
       });
-      expect(received).toHaveProperty('status', 'success');
-      expect(received).toHaveProperty('code', '200');
+      expect(received).toBeNull();
+      expect(notificationSpy.show).not.toHaveBeenCalled();
+      expect(notificationSpy.success).not.toHaveBeenCalled();
     });
   });
 

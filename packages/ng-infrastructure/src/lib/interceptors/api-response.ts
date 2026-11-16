@@ -10,13 +10,7 @@ export function standardizeApiResponse(
   body: unknown,
   languageInfo: LanguageInfo,
 ): ApiResponse<unknown> {
-  if (isValidApiResponse(body)) return body;
-
-  if (body !== null && body !== undefined) {
-    return wrapSuccess(body, languageInfo);
-  }
-
-  return wrapSuccess(undefined, languageInfo);
+  return isValidApiResponse(body) ? body : wrapSuccess(body, languageInfo);
 }
 
 function wrapSuccess(data: unknown, languageInfo: LanguageInfo): ApiResponse<unknown> {

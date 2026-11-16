@@ -50,7 +50,7 @@ interface NotificationProviderConfig {
 
 ### SweetAlert2 Theme Options
 
-- `'auto'` - Auto-detects based on `.dark-theme` CSS class (default)
+- `'auto'` - Auto-detects based on the `.dark-theme` or `.theme-dark` CSS class (default)
 - `'material-ui'` - Follows system preference
 - `'material-ui-light'` - Always light theme
 - `'material-ui-dark'` - Always dark theme

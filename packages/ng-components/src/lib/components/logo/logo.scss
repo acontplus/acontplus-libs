@@ -1,0 +1,22 @@
+.acp-logo {
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  color: var(--acp-logo-color, var(--acp-theme-primary-color, inherit));
+}
+
+.acp-logo__svg,
+.acp-logo__img,
+.acp-logo__svg > svg {
+  display: block;
+  width: auto;
+  height: 100%;
+}
+
+.acp-logo__text {
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}

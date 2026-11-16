@@ -32,7 +32,7 @@ describe('AcpLayoutSettings', () => {
 
   it('persists the changes and reflects them on <html>', () => {
     const settings = create();
-    settings.set({ theme: 'dark', themeColor: 'green', boxed: true, dir: 'rtl' });
+    settings.set({ theme: 'dark', themeColor: 'green', boxed: true, dir: 'rtl', radius: 16 });
     TestBed.tick();
 
     expect(JSON.parse(localStorage.getItem(key)!).themeColor).toBe('green');
@@ -42,6 +42,7 @@ describe('AcpLayoutSettings', () => {
     expect(html.classList.contains('acp-boxed')).toBe(true);
     expect(html.style.colorScheme).toBe('dark');
     expect(html.dir).toBe('rtl');
+    expect(html.style.getPropertyValue('--acp-skin-radius')).toBe('16px');
   });
 
   it('reset restores the defaults and clears the storage', () => {

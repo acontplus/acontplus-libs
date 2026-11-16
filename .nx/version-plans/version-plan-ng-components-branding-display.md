@@ -15,4 +15,5 @@ logo, and appears when the rail expands on hover (or with keyboard focus) so it 
 
 On the collapsed rail `acp-user-panel` keeps its avatar at half size and hides only the title,
 subtitle and details (as ng-matero); the hover restores it. In acontpluspro the panel
-background is now the skin `background` (was `surface-muted`), so it stands out from the sidebar.
+background is now the skin `background` (was `surface-muted`), so it stands out from the sidebar. The expanded side menu item
+also takes that background (was transparent), as in ng-matero.

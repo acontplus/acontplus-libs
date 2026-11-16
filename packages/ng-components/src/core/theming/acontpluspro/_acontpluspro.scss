@@ -79,7 +79,7 @@ $boxed-max-width: 1300px !default;
   --acp-color-border: #{_skin(border)};
   --acp-user-panel-background-color: #{_skin(background)};
   --acp-user-panel-hover-background-color: #{_skin(border)};
-  --acp-sidemenu-expanded-background-color: transparent;
+  --acp-sidemenu-expanded-background-color: #{_skin(background)};
   --acp-sidemenu-heading-hover-background-color: transparent;
   --acp-sidemenu-active-heading-text-color: #{_skin(accent)};
   --acp-sidemenu-active-heading-background-color: color-mix(

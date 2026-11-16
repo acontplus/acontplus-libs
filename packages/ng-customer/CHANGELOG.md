@@ -1,3 +1,10 @@
+## 3.0.10 (2026-11-16)
+
+### 🧱 Updated Dependencies
+
+- Updated ng-notifications to 3.0.4
+- Updated ng-components to 9.0.0
+
 ## 3.0.9 (2026-11-15)
 
 ### 🧱 Updated Dependencies

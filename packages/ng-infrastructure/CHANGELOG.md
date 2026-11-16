@@ -1,3 +1,22 @@
+## 4.0.2 (2026-11-16)
+
+### 🩹 Fixes
+
+- `apiInterceptor` no longer shows the generic "Operation completed successfully" toast for responses ([#157](https://github.com/acontplus/acontplus-libs/pull/157))
+  without a body (for example `204 No Content`). The consumer now receives `null` as the body instead
+  of a synthesized `ApiResponse` envelope.
+
+### 🧱 Updated Dependencies
+
+- Updated ng-notifications to 3.0.4
+- Updated ng-components to 9.0.0
+
+### ❤️ Thank You
+
+- Claude Opus 5.5
+- Emilio Senguana @senguanasoft
+- emiliosw-dev
+
 ## 4.0.1 (2026-11-15)
 
 ### 🩹 Fixes

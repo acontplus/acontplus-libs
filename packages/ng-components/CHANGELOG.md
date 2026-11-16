@@ -1,3 +1,67 @@
+# 9.0.0 (2026-11-16)
+
+### 🚀 Features
+
+- New `AcpLogo` (`acp-logo`): app logo loaded from an image URL, set per instance with `src` or ([#157](https://github.com/acontplus/acontplus-libs/pull/157))
+  app-wide with `provideAcpLogo({ src, label })`, so replacing the logo does not need a new library
+  release. SVG files are inlined (scripts and event handlers removed) so `currentColor` and
+  `var(--acp-logo-color)` fills follow the theme; other formats render as `<img>`. Without an image, or when it fails to load, it shows the name as text (`label`,
+  `provideAcpLogo` or `provideAcpLayout({ branding: { name } })`). Size it with
+  `height` (default `44px`).
+
+- `provideAcpLayout({ branding })` (and the `acp-branding` inputs) can show the logo and the name, ([#157](https://github.com/acontplus/acontplus-libs/pull/157))
+  only the logo or only the name with `display: 'logo-name' | 'logo' | 'name'`, and choose the logo
+  shape with `logoShape`: `'circle'` (default, the `2rem` round logo as before) or `'rectangle'`
+  (`2rem` high, up to `10rem` wide, keeps the aspect ratio and shrinks to fit the sidebar or the
+  header). `--acp-branding-logo-height` and `--acp-branding-logo-max-width` change the rectangle size.
+  The name is cut with an ellipsis instead of overflowing, and the link takes the app name as
+  accessible name.
+
+  The collapse slide toggle of `acp-layout` is hidden on the collapsed rail, which shows only the
+  logo, and appears when the rail expands on hover (or with keyboard focus) so it can be turned off.
+
+  On the collapsed rail `acp-user-panel` keeps its avatar at half size and hides only the title,
+  subtitle and details (as ng-matero); the hover restores it. In acontpluspro the panel
+  background is now the skin `background` (was `surface-muted`), so it stands out from the sidebar. The expanded side menu item
+  also takes that background (was transparent), as in ng-matero.
+
+### ⚠️  Breaking Changes
+
+- **Breaking:** `ThemeSwitcher` is removed from `@acontplus/ng-components`. `ThemeToggle` ([#157](https://github.com/acontplus/acontplus-libs/pull/157))
+  (`acp-theme-toggle`) now reads and changes the theme through `AcpLayoutSettings`, so it stays in
+  sync with `acp-layout` and `acp-customizer`: the mode is persisted with the layout options and
+  applied as `color-scheme` and `theme-dark` on `<html>` (no longer `dark-theme` /
+  `localStorage.theme`). From `auto` it switches to the opposite of the effective mode. Its default
+  labels are now Spanish (`Modo claro` / `Modo oscuro`). Migrate `ThemeSwitcher` calls to
+  `inject(AcpLayoutSettings)`: `isDark()` and `set({ theme: 'light' | 'dark' | 'auto' })`.
+
+  `acp-customizer` has a theme border radius slider (4-24px, as in MaterialPro). The value is the new
+  `radius` layout option (default `10`), persisted by `AcpLayoutSettings` and applied as
+  `--acp-skin-radius` on `<html>`, so it changes the acontpluspro corners of cards, menus, fields,
+  grids and dialogs. Fix: acontpluspro's `--mat-sys-corner-small` was overwritten by `mat.theme`
+  (8px), so `acp-card` and `acp-alert` ignored the skin radius.
+
+  `AcpDataGridColumn.editable` of `DataGrid` (`acp-data-grid`) also accepts a function
+  `(rowData) => boolean` that decides per row whether the cell can be edited. Rows for which it
+  returns `false` render as read-only cells (no edit on click, no `acp-grid-cell-editable` class).
+  `editable: true` keeps its current behavior.
+
+  The acontpluspro `border` and `field-border` colors are darker, so card borders (`acp-card-border`),
+  grid lines, dividers, dialogs and outlined inputs are easier to see. Button color tokens also apply
+  under `theme-dark`.
+
+  In `acp-vanilla-date-range-picker`, the days of the previous and next month and the week number
+  column (`W`) are faded so the current month stands out.
+
+  ng-notifications: the `auto` SweetAlert2 theme also detects the `theme-dark` class set by
+  `AcpLayoutSettings`.
+
+### ❤️ Thank You
+
+- Claude Opus 5.5
+- Emilio Senguana @senguanasoft
+- emiliosw-dev
+
 # 8.0.0 (2026-11-15)
 
 ### 🚀 Features

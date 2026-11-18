@@ -1,0 +1,119 @@
+<div class="button-page">
+  <h1>Botones</h1>
+
+  <section>
+    <h3>Apariencias</h3>
+    <div class="grid">
+      <acp-button text="Texto" appearance="text" />
+      <acp-button text="Relleno" appearance="filled" />
+      <acp-button text="Elevado" appearance="elevated" />
+      <acp-button text="Bordeado" appearance="outlined" />
+      <acp-button text="Tonal" appearance="tonal" />
+    </div>
+  </section>
+
+  <section>
+    <h3>Colores</h3>
+    <div class="grid">
+      <acp-button text="Primario" color="primary" />
+      <acp-button text="Secundario" color="secondary" />
+      <acp-button text="Acento" color="accent" />
+      <acp-button text="Éxito" color="success" />
+      <acp-button text="Advertencia" color="warning" />
+      <acp-button text="Peligro" color="danger" />
+      <acp-button text="Info" color="info" />
+    </div>
+  </section>
+
+  <section>
+    <h3>Con icono</h3>
+    <div class="grid">
+      <acp-button text="Agregar" icon="add" />
+      <acp-button text="Descargar" icon="download" appearance="outlined" />
+      <acp-button text="Compartir" icon="share" appearance="tonal" />
+      <acp-button text="Eliminar" icon="delete" color="danger" />
+      <acp-button text="Guardar" icon="save" suffix-icon="arrow_forward" />
+    </div>
+  </section>
+
+  <section>
+    <h3>Icon button</h3>
+    <div class="grid">
+      <acp-button variant="icon" icon="menu" ariaLabel="Menú" />
+      <acp-button variant="icon" icon="search" ariaLabel="Buscar" />
+      <acp-button variant="icon" icon="favorite" ariaLabel="Favorito" color="danger" />
+      <acp-button variant="icon" icon="settings" ariaLabel="Configuración" />
+      <acp-button variant="icon" icon="more_vert" ariaLabel="Más" />
+    </div>
+  </section>
+
+  <section>
+    <h3>Icon button con apariencia</h3>
+    <div class="grid">
+      <acp-button variant="icon" icon="home" ariaLabel="Std" />
+      <acp-button variant="icon" icon="home" ariaLabel="Filled" appearance="filled" />
+      <acp-button variant="icon" icon="home" ariaLabel="Tonal" appearance="tonal" />
+      <acp-button variant="icon" icon="home" ariaLabel="Outlined" appearance="outlined" />
+    </div>
+  </section>
+
+  <section>
+    <h3>FAB (Floating Action Button)</h3>
+    <div class="grid">
+      <acp-button variant="fab" icon="add" ariaLabel="Crear" />
+      <acp-button variant="fab" icon="save" ariaLabel="Guardar" color="success" />
+      <acp-button variant="fab" icon="send" text="Enviar" extended />
+      <acp-button variant="fab" icon="add" text="Nuevo" extended color="accent" />
+    </div>
+  </section>
+
+  <section>
+    <h3>Mini FAB</h3>
+    <div class="grid">
+      <acp-button variant="mini-fab" icon="add" ariaLabel="Agregar" />
+      <acp-button variant="mini-fab" icon="edit" ariaLabel="Editar" />
+      <acp-button variant="mini-fab" icon="delete" ariaLabel="Eliminar" color="danger" />
+      <acp-button variant="mini-fab" icon="check" ariaLabel="Confirmar" color="success" />
+    </div>
+  </section>
+
+  <section>
+    <h3>Tamaños</h3>
+    <div class="grid">
+      <acp-button text="Pequeño" size="small" />
+      <acp-button text="Mediano" size="medium" />
+      <acp-button text="Grande" size="large" />
+    </div>
+  </section>
+
+  <section>
+    <h3>Estados</h3>
+    <div class="grid">
+      <acp-button text="Deshabilitado" disabled />
+      <acp-button text="Cargando" loading />
+      <acp-button text="Con progreso" showProgress progressType="text" progressText="Enviando..." />
+      <acp-button text="Spinner" showProgress progressType="spinner" />
+    </div>
+  </section>
+
+  <section>
+    <h3>Block button</h3>
+    <div class="grid">
+      <acp-button text="Ocupar todo el ancho" block />
+    </div>
+  </section>
+
+  <section>
+    <h3>Con tooltip</h3>
+    <div class="grid">
+      <acp-button text="Nuevo" icon="add" matTooltip="Crear un nuevo registro" />
+      <acp-button variant="icon" icon="search" ariaLabel="Buscar" matTooltip="Buscar" />
+      <acp-button
+        variant="fab"
+        icon="play_arrow"
+        ariaLabel="Acción"
+        matTooltip="Acción principal"
+      />
+    </div>
+  </section>
+</div>

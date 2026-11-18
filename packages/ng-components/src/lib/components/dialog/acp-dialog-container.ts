@@ -134,6 +134,52 @@ export class AcpDialogContainer implements AfterViewInit {
   /** Whether the current content is a plain string. */
   protected readonly isStringContent = signal(false);
 
+  /** Whether the dialog is currently maximized (toggled by the maximize button). */
+  protected readonly maximized = signal(false);
+
+  /** Whether the dialog should render in full-screen mode (config or maximized). */
+  protected readonly isFullScreen = computed(() => {
+    if (this.maximized()) {
+      return true;
+    }
+    const fullScreen =
+      this.config.size === 'full' ||
+      (this.config.fullScreenOnMobile === true &&
+        typeof window !== 'undefined' &&
+        window.matchMedia('(max-width: 599px)').matches);
+    return fullScreen;
+  });
+
+  /** CSS classes for the dialog panel. */
+  protected readonly panelClasses = computed(() => {
+    const classes: string[] = [];
+    if (this.isFullScreen()) {
+      classes.push('acp-dialog-full-screen');
+    }
+    return classes.join(' ');
+  });
+
+  /** Toggles the maximized state and applies/removes full-screen styles. */
+  protected toggleMaximized(isMaximized: boolean): void {
+    this.maximized.set(isMaximized);
+    const pane = document.querySelector('.cdk-overlay-pane:last-child') as HTMLElement | null;
+    if (pane) {
+      if (isMaximized) {
+        pane.style.width = '100vw';
+        pane.style.height = '100dvh';
+        pane.style.maxWidth = '100vw';
+        pane.style.maxHeight = '100dvh';
+        pane.classList.add('acp-dialog-full-screen');
+      } else {
+        pane.style.width = '';
+        pane.style.height = '';
+        pane.style.maxWidth = '';
+        pane.style.maxHeight = '';
+        pane.classList.remove('acp-dialog-full-screen');
+      }
+    }
+  }
+
   get config() {
     return this.containerData.config;
   }

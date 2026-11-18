@@ -245,9 +245,9 @@ export class AcpDialogService {
 
     if (fullScreen) {
       matConfig.width = '100vw';
-      matConfig.height = '100vh';
+      matConfig.height = '100dvh';
       matConfig.maxWidth = '100vw';
-      matConfig.maxHeight = '100vh';
+      matConfig.maxHeight = '100dvh';
     } else {
       matConfig.width = this.toMatSize(config.width) ?? SIZES[config.size ?? 'md'];
       matConfig.height = this.toMatSize(config.height);

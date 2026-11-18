@@ -1,0 +1,31 @@
+.radio-card-page {
+  padding: 20px;
+}
+
+section {
+  margin-bottom: 40px;
+
+  h3 {
+    margin-bottom: 8px;
+    font: var(--mat-sys-title-medium);
+  }
+
+  .description {
+    margin-bottom: 16px;
+    color: var(--mat-sys-on-surface-variant, #6c757d);
+    font-size: 0.875rem;
+  }
+}
+
+.selection {
+  margin-top: 12px;
+  font-size: 0.875rem;
+  color: var(--mat-sys-on-surface-variant, #6c757d);
+}
+
+.price {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.75rem;
+  color: var(--mat-sys-on-surface-variant, #6c757d);
+}

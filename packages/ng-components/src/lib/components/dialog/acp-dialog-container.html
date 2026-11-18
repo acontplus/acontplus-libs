@@ -9,6 +9,9 @@
   [color]="header.color"
   [colorClass]="header.colorClass"
   [closeColor]="header.closeColor"
+  [maximizable]="header.maximizable ?? false"
+  [maximized]="maximized()"
+  (maximizedChange)="toggleMaximized($event)"
 />
 } }
 

@@ -1,0 +1,343 @@
+<div class="radio-card-page">
+  <h1>Radio Card</h1>
+
+  <section>
+    <h3>Métodos de pago</h3>
+    <p class="description">Selecciona un método de pago (similar a PrimeNG RadioButton Card).</p>
+    <acp-radio-card-group [formControl]="paymentMethod" aria-label="Método de pago">
+      <acp-radio-card [value]="'cash'" label="Efectivo" icon="attach_money" />
+      <acp-radio-card [value]="'card'" label="Tarjeta" icon="credit_card" />
+      <acp-radio-card [value]="'transfer'" label="Transferencia" icon="account_balance" />
+      <acp-radio-card [value]="'qr'" label="Código QR" icon="qr_code" />
+    </acp-radio-card-group>
+    <p class="selection">
+      Seleccionado: <strong>{{ paymentMethod.value }}</strong>
+    </p>
+  </section>
+
+  <section>
+    <h3>Plan de suscripción</h3>
+    <acp-radio-card-group [formControl]="plan" aria-label="Plan de suscripción">
+      <acp-radio-card [value]="'monthly'" label="Mensual" icon="calendar_today">
+        <span class="price">$9.99/mes</span>
+      </acp-radio-card>
+      <acp-radio-card [value]="'quarterly'" label="Trimestral" icon="date_range">
+        <span class="price">$24.99/trimestre</span>
+      </acp-radio-card>
+      <acp-radio-card [value]="'yearly'" label="Anual" icon="event">
+        <span class="price">$79.99/año</span>
+      </acp-radio-card>
+    </acp-radio-card-group>
+    <p class="selection">
+      Seleccionado: <strong>{{ plan.value }}</strong>
+    </p>
+  </section>
+
+  <section>
+    <h3>Tamaño</h3>
+    <acp-radio-card-group [formControl]="size" aria-label="Tamaño">
+      <acp-radio-card [value]="'small'" label="Pequeño" icon="straighten" />
+      <acp-radio-card [value]="'medium'" label="Mediano" icon="straighten" />
+      <acp-radio-card [value]="'large'" label="Grande" icon="straighten" />
+    </acp-radio-card-group>
+    <p class="selection">
+      Seleccionado: <strong>{{ size.value }}</strong>
+    </p>
+  </section>
+
+  <section>
+    <h3>Con opción deshabilitada</h3>
+    <acp-radio-card-group [formControl]="disabledOption" aria-label="Opción deshabilitada">
+      <acp-radio-card [value]="'option-1'" label="Opción 1" icon="check_circle" />
+      <acp-radio-card
+        [value]="'option-2'"
+        label="Opción 2 (deshabilitada)"
+        icon="block"
+        [disabled]="true"
+      />
+      <acp-radio-card [value]="'option-3'" label="Opción 3" icon="settings" />
+    </acp-radio-card-group>
+    <p class="selection">
+      Seleccionado: <strong>{{ disabledOption.value }}</strong>
+    </p>
+  </section>
+
+  <section>
+    <h3>Sin icono</h3>
+    <acp-radio-card-group [formControl]="noIcon" aria-label="Sin icono">
+      <acp-radio-card [value]="'a'" label="Opción A" />
+      <acp-radio-card [value]="'b'" label="Opción B" />
+      <acp-radio-card [value]="'c'" label="Opción C" />
+    </acp-radio-card-group>
+    <p class="selection">
+      Seleccionado: <strong>{{ noIcon.value }}</strong>
+    </p>
+  </section>
+
+  <!-- ==================== TAMAÑOS ==================== -->
+
+  <section>
+    <h3>Tamaños de tarjeta</h3>
+    <p class="description">
+      El input <code>size</code> controla el tamaño visual: x-small, small, medium (por defecto),
+      large. Se puede definir en el grupo o en cada tarjeta.
+    </p>
+
+    <h4>X-Small</h4>
+    <acp-radio-card-group [formControl]="cardSize" size="x-small" aria-label="Tamaño x-small">
+      <acp-radio-card [value]="'xs-1'" label="Opción 1" icon="check" />
+      <acp-radio-card [value]="'xs-2'" label="Opción 2" icon="check" />
+      <acp-radio-card [value]="'xs-3'" label="Opción 3" icon="check" />
+    </acp-radio-card-group>
+
+    <h4>Small</h4>
+    <acp-radio-card-group [formControl]="cardSize" size="small" aria-label="Tamaño small">
+      <acp-radio-card [value]="'s-1'" label="Opción 1" icon="check" />
+      <acp-radio-card [value]="'s-2'" label="Opción 2" icon="check" />
+      <acp-radio-card [value]="'s-3'" label="Opción 3" icon="check" />
+    </acp-radio-card-group>
+
+    <h4>Medium (por defecto)</h4>
+    <acp-radio-card-group [formControl]="cardSize" aria-label="Tamaño medium">
+      <acp-radio-card [value]="'m-1'" label="Opción 1" icon="check" />
+      <acp-radio-card [value]="'m-2'" label="Opción 2" icon="check" />
+      <acp-radio-card [value]="'m-3'" label="Opción 3" icon="check" />
+    </acp-radio-card-group>
+
+    <h4>Large</h4>
+    <acp-radio-card-group [formControl]="cardSize" size="large" aria-label="Tamaño large">
+      <acp-radio-card [value]="'l-1'" label="Opción 1" icon="check" />
+      <acp-radio-card [value]="'l-2'" label="Opción 2" icon="check" />
+      <acp-radio-card [value]="'l-3'" label="Opción 3" icon="check" />
+    </acp-radio-card-group>
+
+    <h4>Mixto (tamaño por tarjeta)</h4>
+    <acp-radio-card-group [formControl]="cardSize" aria-label="Tamaño mixto">
+      <acp-radio-card [value]="'mix-xs'" label="X-Small" icon="check" size="x-small" />
+      <acp-radio-card [value]="'mix-s'" label="Small" icon="check" size="small" />
+      <acp-radio-card [value]="'mix-m'" label="Medium" icon="check" />
+      <acp-radio-card [value]="'mix-l'" label="Large" icon="check" size="large" />
+    </acp-radio-card-group>
+
+    <p class="selection">
+      Seleccionado: <strong>{{ cardSize.value }}</strong>
+    </p>
+  </section>
+
+  <!-- ==================== COLORES ==================== -->
+
+  <section>
+    <h3>Colores del tema</h3>
+    <p class="description">
+      El input <code>color</code> cambia el color del borde, icono y radio button: primary,
+      secondary, tertiary, error.
+    </p>
+
+    <h4>Primary (por defecto)</h4>
+    <acp-radio-card-group [formControl]="cardColor" aria-label="Color primary">
+      <acp-radio-card [value]="'primary'" label="Opción 1" icon="check" />
+      <acp-radio-card [value]="'primary-2'" label="Opción 2" icon="check" />
+      <acp-radio-card [value]="'primary-3'" label="Opción 3" icon="check" />
+    </acp-radio-card-group>
+
+    <h4>Secondary</h4>
+    <acp-radio-card-group [formControl]="cardColor" color="secondary" aria-label="Color secondary">
+      <acp-radio-card [value]="'secondary'" label="Opción 1" icon="check" />
+      <acp-radio-card [value]="'secondary-2'" label="Opción 2" icon="check" />
+      <acp-radio-card [value]="'secondary-3'" label="Opción 3" icon="check" />
+    </acp-radio-card-group>
+
+    <h4>Tertiary</h4>
+    <acp-radio-card-group [formControl]="cardColor" color="tertiary" aria-label="Color tertiary">
+      <acp-radio-card [value]="'tertiary'" label="Opción 1" icon="check" />
+      <acp-radio-card [value]="'tertiary-2'" label="Opción 2" icon="check" />
+      <acp-radio-card [value]="'tertiary-3'" label="Opción 3" icon="check" />
+    </acp-radio-card-group>
+
+    <h4>Error</h4>
+    <acp-radio-card-group [formControl]="cardColor" color="error" aria-label="Color error">
+      <acp-radio-card [value]="'error'" label="Opción 1" icon="check" />
+      <acp-radio-card [value]="'error-2'" label="Opción 2" icon="check" />
+      <acp-radio-card [value]="'error-3'" label="Opción 3" icon="check" />
+    </acp-radio-card-group>
+
+    <p class="selection">
+      Seleccionado: <strong>{{ cardColor.value }}</strong>
+    </p>
+  </section>
+
+  <section>
+    <h3>Modo tonal (fondo container)</h3>
+    <p class="description">
+      El input <code>tonal</code> rellena la tarjeta seleccionada con el color container del tema.
+    </p>
+    <acp-radio-card-group [formControl]="cardTonal" tonal aria-label="Modo tonal">
+      <acp-radio-card [value]="'email'" label="Correo electrónico" icon="email">
+        <span class="detail">Notificaciones a tu bandeja de entrada</span>
+      </acp-radio-card>
+      <acp-radio-card [value]="'sms'" label="SMS" icon="sms">
+        <span class="detail">Mensajes de texto cortos</span>
+      </acp-radio-card>
+      <acp-radio-card [value]="'push'" label="Push" icon="notifications">
+        <span class="detail">Notificaciones en tiempo real</span>
+      </acp-radio-card>
+    </acp-radio-card-group>
+    <p class="selection">
+      Seleccionado: <strong>{{ cardTonal.value }}</strong>
+    </p>
+  </section>
+
+  <section>
+    <h3>Fondo y texto personalizados</h3>
+    <p class="description">
+      Los inputs <code>background</code>, <code>checkedBackground</code> y <code>textColor</code>
+      permiten cualquier color CSS.
+    </p>
+    <acp-radio-card-group
+      [formControl]="cardCustomBg"
+      background="#1e293b"
+      checkedBackground="#334155"
+      text-color="#f8fafc"
+      aria-label="Fondo personalizado"
+    >
+      <acp-radio-card [value]="'dark'" label="Modo oscuro" icon="dark_mode">
+        <span class="detail">Fondo slate-800 con texto claro</span>
+      </acp-radio-card>
+      <acp-radio-card [value]="'dark-2'" label="Opción 2" icon="palette">
+        <span class="detail">Mismo fondo, borde primary</span>
+      </acp-radio-card>
+      <acp-radio-card [value]="'dark-3'" label="Opción 3" icon="style">
+        <span class="detail">Personalizable por tarjeta o grupo</span>
+      </acp-radio-card>
+    </acp-radio-card-group>
+    <p class="selection">
+      Seleccionado: <strong>{{ cardCustomBg.value }}</strong>
+    </p>
+  </section>
+
+  <section>
+    <h3>Colores mixtos (por tarjeta)</h3>
+    <p class="description">
+      Cada tarjeta puede sobrescribir el color del grupo con su propio <code>color</code>.
+    </p>
+    <acp-radio-card-group [formControl]="cardColor" aria-label="Colores mixtos">
+      <acp-radio-card [value]="'mix-primary'" label="Primary" icon="check" />
+      <acp-radio-card [value]="'mix-secondary'" label="Secondary" icon="check" color="secondary" />
+      <acp-radio-card [value]="'mix-tertiary'" label="Tertiary" icon="check" color="tertiary" />
+      <acp-radio-card [value]="'mix-error'" label="Error" icon="check" color="error" />
+    </acp-radio-card-group>
+    <p class="selection">
+      Seleccionado: <strong>{{ cardColor.value }}</strong>
+    </p>
+  </section>
+
+  <!-- ==================== BACKGROUND PRESETS ==================== -->
+
+  <section>
+    <h3>Fondos predefinidos</h3>
+    <p class="description">
+      El input <code>backgroundPreset</code> aplica fondo, fondo seleccionado y texto predefinidos:
+      success, warning, info, light, dark.
+    </p>
+
+    <h4>Success (verde)</h4>
+    <acp-radio-card-group
+      [formControl]="cardBgSuccess"
+      backgroundPreset="success"
+      aria-label="Fondo success"
+    >
+      <acp-radio-card [value]="'active'" label="Activo" icon="check_circle">
+        <span class="detail">Estado activo y funcionando</span>
+      </acp-radio-card>
+      <acp-radio-card [value]="'completed'" label="Completado" icon="done_all">
+        <span class="detail">Proceso finalizado correctamente</span>
+      </acp-radio-card>
+      <acp-radio-card [value]="'approved'" label="Aprobado" icon="verified">
+        <span class="detail">Revisión aprobada</span>
+      </acp-radio-card>
+    </acp-radio-card-group>
+    <p class="selection">
+      Seleccionado: <strong>{{ cardBgSuccess.value }}</strong>
+    </p>
+
+    <h4>Warning (amarillo)</h4>
+    <acp-radio-card-group
+      [formControl]="cardBgWarning"
+      backgroundPreset="warning"
+      aria-label="Fondo warning"
+    >
+      <acp-radio-card [value]="'pending'" label="Pendiente" icon="schedule">
+        <span class="detail">Esperando aprobación</span>
+      </acp-radio-card>
+      <acp-radio-card [value]="'review'" label="En revisión" icon="visibility">
+        <span class="detail">Requiere atención</span>
+      </acp-radio-card>
+      <acp-radio-card [value]="'expired'" label="Expirado" icon="warning_amber">
+        <span class="detail">Venció recientemente</span>
+      </acp-radio-card>
+    </acp-radio-card-group>
+    <p class="selection">
+      Seleccionado: <strong>{{ cardBgWarning.value }}</strong>
+    </p>
+
+    <h4>Info (azul)</h4>
+    <acp-radio-card-group
+      [formControl]="cardBgInfo"
+      backgroundPreset="info"
+      aria-label="Fondo info"
+    >
+      <acp-radio-card [value]="'draft'" label="Borrador" icon="edit_note">
+        <span class="detail">Aún no publicado</span>
+      </acp-radio-card>
+      <acp-radio-card [value]="'scheduled'" label="Programado" icon="event_available">
+        <span class="detail">Programado para más tarde</span>
+      </acp-radio-card>
+      <acp-radio-card [value]="'archived'" label="Archivado" icon="archive">
+        <span class="detail">Guardado en archivos</span>
+      </acp-radio-card>
+    </acp-radio-card-group>
+    <p class="selection">
+      Seleccionado: <strong>{{ cardBgInfo.value }}</strong>
+    </p>
+
+    <h4>Light (gris claro)</h4>
+    <acp-radio-card-group
+      [formControl]="cardBgLight"
+      backgroundPreset="light"
+      aria-label="Fondo light"
+    >
+      <acp-radio-card [value]="'option-1'" label="Opción 1" icon="radio_button_unchecked">
+        <span class="detail">Fondo sutil para interfaces limpias</span>
+      </acp-radio-card>
+      <acp-radio-card [value]="'option-2'" label="Opción 2" icon="radio_button_unchecked">
+        <span class="detail">Ideal para formularios</span>
+      </acp-radio-card>
+      <acp-radio-card [value]="'option-3'" label="Opción 3" icon="radio_button_unchecked">
+        <span class="detail">Mínimo contraste visual</span>
+      </acp-radio-card>
+    </acp-radio-card-group>
+    <p class="selection">
+      Seleccionado: <strong>{{ cardBgLight.value }}</strong>
+    </p>
+
+    <h4>Dark (oscuro)</h4>
+    <acp-radio-card-group
+      [formControl]="cardBgDark"
+      backgroundPreset="dark"
+      aria-label="Fondo dark"
+    >
+      <acp-radio-card [value]="'night'" label="Modo nocturno" icon="nightlight">
+        <span class="detail">Interfaz oscura para descanso visual</span>
+      </acp-radio-card>
+      <acp-radio-card [value]="'midnight'" label="Medianoche" icon="bedtime">
+        <span class="detail">Tema oscuro profundo</span>
+      </acp-radio-card>
+      <acp-radio-card [value]="'slate'" label="Pizarra" icon="palette">
+        <span class="detail">Tonos slate elegantes</span>
+      </acp-radio-card>
+    </acp-radio-card-group>
+    <p class="selection">
+      Seleccionado: <strong>{{ cardBgDark.value }}</strong>
+    </p>
+  </section>
+</div>

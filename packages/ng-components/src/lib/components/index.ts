@@ -18,6 +18,7 @@ export * from './date-range-input';
 export * from './vanilla-date-range-picker';
 export * from './checkbox-group';
 export * from './card';
+export * from './radio-card';
 export * from './kpi-card';
 export * from './layout';
 export * from './logo';

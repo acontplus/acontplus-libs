@@ -1,0 +1,87 @@
+<div class="tooltip-page">
+  <h1>Tooltip</h1>
+
+  <section>
+    <h3>Posiciones</h3>
+    <div class="grid">
+      <button matButton matTooltip="Tooltip arriba" matTooltipPosition="above">Arriba</button>
+      <button matButton matTooltip="Tooltip abajo" matTooltipPosition="below">Abajo</button>
+      <button matButton matTooltip="Tooltip a la izquierda" matTooltipPosition="left">
+        Izquierda
+      </button>
+      <button matButton matTooltip="Tooltip a la derecha" matTooltipPosition="right">
+        Derecha
+      </button>
+      <button
+        matButton
+        matTooltip="Tooltip en cualquier lado"
+        matTooltipPosition="below"
+        matTooltipPositionTarget="body"
+      >
+        Automático
+      </button>
+    </div>
+  </section>
+
+  <section>
+    <h3>Con iconos</h3>
+    <div class="grid">
+      <button matIconButton matTooltip="Guardar" aria-label="Guardar">
+        <mat-icon>save</mat-icon>
+      </button>
+      <button matIconButton matTooltip="Eliminar" aria-label="Eliminar">
+        <mat-icon>delete</mat-icon>
+      </button>
+      <button matIconButton matTooltip="Editar" aria-label="Editar">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button matIconButton matTooltip="Compartir" aria-label="Compartir">
+        <mat-icon>share</mat-icon>
+      </button>
+      <button matIconButton matTooltip="Más opciones" aria-label="Más opciones">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+    </div>
+  </section>
+
+  <section>
+    <h3>Retraso y cierre</h3>
+    <div class="grid">
+      <button
+        matButton
+        matTooltip="Aparece al instante"
+        matTooltipShowDelay="0"
+        matTooltipHideDelay="0"
+      >
+        Sin retraso
+      </button>
+      <button matButton matTooltip="Aparece después de 1 segundo" matTooltipShowDelay="1000">
+        Retraso 1s
+      </button>
+      <button matButton matTooltip="Se cierra después de 5 segundos" matTooltipHideDelay="5000">
+        Cierra a los 5s
+      </button>
+    </div>
+  </section>
+
+  <section>
+    <h3>Texto largo</h3>
+    <div class="grid">
+      <button
+        matButton
+        matTooltip="Este es un tooltip con texto más largo que demuestra cómo se muestra el contenido extendido respetando el border-radius del customizer."
+      >
+        Tooltip largo
+      </button>
+    </div>
+  </section>
+
+  <section>
+    <h3>Clase personalizada</h3>
+    <div class="grid">
+      <button matButton matTooltip="Tooltip personalizado" matTooltipClass="tooltip-custom">
+        Con clase custom
+      </button>
+    </div>
+  </section>
+</div>

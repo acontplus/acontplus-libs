@@ -50,6 +50,8 @@ export interface AcpDialogHeaderConfig {
 
   /** Color of the close icon. Defaults to a contrasting value based on `color`. */
   closeColor?: 'dark' | 'light';
+  /** Whether the header shows a maximize/restore button. @default false */
+  maximizable?: boolean;
 }
 
 /**

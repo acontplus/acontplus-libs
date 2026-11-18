@@ -125,7 +125,7 @@ export class AcpRadioCardGroup implements ControlValueAccessor {
   private readonly formDisabled = signal(false);
   readonly isDisabled = computed(() => this.disabled() || this.formDisabled());
 
-  // Default no-ops until FormControl registers callbacks
+  // Default no-ops until FormControl registers callbacks via registerOnChange/registerOnTouched
   private onChange: (value: unknown) => void = () => {
     /* no-op */
   };

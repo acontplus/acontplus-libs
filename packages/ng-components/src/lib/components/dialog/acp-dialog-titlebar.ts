@@ -160,10 +160,27 @@ export class AcpDialogTitlebar implements AfterViewInit {
   /** Explicit close icon color. If omitted, it is chosen from the header `color`. */
   closeColor = input<'dark' | 'light'>();
 
+  /**
+   * Optional guard function called before the dialog closes from the header close button.
+   * If it returns `false`, the close is cancelled. If omitted or returning `true`/`undefined`,
+   * the dialog closes normally.
+   *
+   * This allows the content component (e.g. an invoice form) to validate before closing:
+   * if a calculation doesn't match, it can prevent the close and show a warning.
+   */
+  beforeClose = input<() => boolean | void>();
+
   /** Emitted when the close button is clicked and no `MatDialogRef` is available. */
   closed = output<void>();
 
   close(): void {
+    const guardFn = this.beforeClose();
+    if (guardFn !== undefined) {
+      const result = guardFn();
+      if (result === false) {
+        return;
+      }
+    }
     if (this.matDialogRef) {
       this.matDialogRef.close();
     } else {

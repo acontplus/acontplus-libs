@@ -62,6 +62,12 @@
         <ng-template acpCardSubtitle>xs, sm, md, lg, xl, xxl</ng-template>
         Diferentes tamaños predefinidos para adaptarse al contenido.
       </acp-card>
+
+      <acp-card hoverable clickable (clicked)="openInvoiceForm()">
+        <ng-template acpCardTitle>Validación antes de cerrar</ng-template>
+        <ng-template acpCardSubtitle>beforeClose en titlebar</ng-template>
+        El contenido valida antes de permitir cerrar con el botón X del header.
+      </acp-card>
     </div>
   </section>
 </div>

@@ -1,7 +1,15 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { AcpDialogService, AcpDialogRef, ACP_DIALOG_DATA, AcpCard } from '@acontplus/ng-components';
+import {
+  AcpDialogService,
+  AcpDialogRef,
+  ACP_DIALOG_DATA,
+  AcpCard,
+  AcpDialogActions,
+  AcpDialogTitlebar,
+  AcpButton,
+} from '@acontplus/ng-components';
 
 @Component({
   selector: 'app-dialog-page',
@@ -134,6 +142,14 @@ export class DialogPage {
       },
       size: 'lg',
       actions: [{ text: 'Cerrar' }],
+    });
+  }
+
+  openInvoiceForm() {
+    this.dialogs.open(DialogInvoiceFormContent, {
+      size: 'md',
+      showHeader: false,
+      showActions: false,
     });
   }
 }
@@ -292,6 +308,162 @@ export class DialogSizesContent {
         icon: 'tune',
       },
       size: size as any,
+    });
+  }
+}
+
+/**
+ * Ejemplo de formulario de factura con `beforeClose` en el titlebar.
+ * El botón X del header no cierra si el precio calculado no coincide.
+ * El botón "Guardar" cierra manualmente sin pasar por el guard.
+ */
+@Component({
+  selector: 'app-dialog-invoice-form',
+  standalone: true,
+  imports: [AcpDialogTitlebar, AcpDialogActions, AcpButton],
+  template: `
+    <acp-dialog-titlebar title="Factura" icon="receipt" [beforeClose]="canClose" />
+
+    <div class="invoice-form">
+      <p>
+        Este formulario demuestra <code>beforeClose</code> en el titlebar. El botón X no cierra si
+        el precio total no coincide.
+      </p>
+
+      <div class="form-field">
+        <label for="quantity">Cantidad:</label>
+        <input
+          id="quantity"
+          type="number"
+          [value]="quantity()"
+          (input)="quantity.set(+$any($event.target).value)"
+          min="0"
+        />
+      </div>
+
+      <div class="form-field">
+        <label for="unitPrice">Precio unitario:</label>
+        <input
+          id="unitPrice"
+          type="number"
+          [value]="unitPrice()"
+          (input)="unitPrice.set(+$any($event.target).value)"
+          min="0"
+        />
+      </div>
+
+      <div class="form-field">
+        <label for="totalPrice">Precio total (calculado):</label>
+        <input
+          id="totalPrice"
+          type="number"
+          [value]="totalPrice()"
+          (input)="totalPrice.set(+$any($event.target).value)"
+          min="0"
+        />
+      </div>
+
+      @if (priceMismatch()) {
+        <div class="warning">⚠️ El precio total no coincide con cantidad × precio unitario.</div>
+      } @else if (quantity() > 0 || unitPrice() > 0 || totalPrice() > 0) {
+        <div class="success">✓ El precio total coincide.</div>
+      }
+
+      <p class="hint">
+        Intenta cerrar con el botón X cuando el precio no coincide: no se cerrará. El botón
+        "Guardar" cierra manualmente sin validación.
+      </p>
+    </div>
+
+    <acp-dialog-actions align="end">
+      <acp-button text="Cancelar" appearance="text" (clicked)="closeDialog()" />
+      <acp-button text="Guardar" color="success" (clicked)="save()" />
+    </acp-dialog-actions>
+  `,
+  styles: `
+    .invoice-form {
+      padding: 16px;
+    }
+    .form-field {
+      margin: 12px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .form-field label {
+      font-weight: 500;
+      font-size: 0.875rem;
+    }
+    .form-field input {
+      padding: 8px 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+    .warning {
+      background: #fff3e0;
+      color: #e65100;
+      padding: 10px 14px;
+      border-radius: 4px;
+      margin: 12px 0;
+      font-size: 0.875rem;
+    }
+    .success {
+      background: #e8f5e9;
+      color: #2e7d32;
+      padding: 10px 14px;
+      border-radius: 4px;
+      margin: 12px 0;
+      font-size: 0.875rem;
+    }
+    .hint {
+      font-size: 0.8rem;
+      color: #666;
+      margin-top: 16px;
+      line-height: 1.5;
+    }
+    code {
+      background: #f5f5f5;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 0.85rem;
+    }
+  `,
+})
+export class DialogInvoiceFormContent {
+  protected ref = inject(AcpDialogRef);
+
+  protected quantity = signal(0);
+  protected unitPrice = signal(0);
+  protected totalPrice = signal(0);
+
+  protected priceMismatch = signal(false);
+
+  /**
+   * Guard que se ejecuta cuando el usuario hace clic en el botón X del header.
+   * Si el precio no coincide, muestra la advertencia y no cierra.
+   */
+  canClose(): boolean | void {
+    console.log(true, 'eeueueu');
+    return true;
+  }
+
+  /** Cierra el diálogo directamente sin pasar por el guard del header. */
+  closeDialog(): void {
+    this.ref.close();
+  }
+
+  /**
+   * El botón "Guardar" cierra manualmente sin pasar por el guard.
+   * Aquí el componente tiene control total: puede guardar los datos
+   * y luego cerrar, o hacer su propia validación.
+   */
+  save(): void {
+    // El componente decide: guarda y cierra sin pasar por beforeClose.
+    this.ref.close({
+      quantity: this.quantity(),
+      unitPrice: this.unitPrice(),
+      totalPrice: this.totalPrice(),
     });
   }
 }

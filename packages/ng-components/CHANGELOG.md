@@ -1,3 +1,14 @@
+## 9.1.0 (2026-11-18)
+
+### 🚀 Features
+
+- Add RadioCard component (`AcpRadioCardGroup` + `AcpRadioCard`) with group-based single selection, 4 sizes, theme colors, tonal mode, background presets with dark mode support, and adaptive border radius. ([#158](https://github.com/acontplus/acontplus-libs/pull/158))
+
+### ❤️ Thank You
+
+- Emilio Senguana @senguanasoft
+- emiliosw-dev
+
 # 9.0.0 (2026-11-16)
 
 ### 🚀 Features

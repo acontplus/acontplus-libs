@@ -89,8 +89,8 @@ export class AcpRadioCardGroup implements ControlValueAccessor {
   readonly disabled = input(false, { transform: booleanAttribute });
   /** Tamaño por defecto de todas las tarjetas del grupo. */
   readonly size = input<AcpRadioCardSize>('medium');
-  /** Color del tema para borde, icono y radio. */
-  readonly color = input<AcpRadioCardColor>('primary');
+  /** Color del tema para borde, icono y radio. Default: undefined (preset accent takes precedence). */
+  readonly color = input<AcpRadioCardColor>();
   /** Si es true, la tarjeta seleccionada se rellena con el color *container* del tema. */
   readonly tonal = input(false, { transform: booleanAttribute });
   /** Preset de fondo predefinido: success, warning, info, light, dark. */

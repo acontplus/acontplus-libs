@@ -162,7 +162,7 @@ export class AcpDialogContainer implements AfterViewInit {
   /** Toggles the maximized state and applies/removes full-screen styles. */
   protected toggleMaximized(isMaximized: boolean): void {
     this.maximized.set(isMaximized);
-    const pane = document.querySelector('.cdk-overlay-pane:last-of-type') as HTMLElement | null;
+    const pane = document.querySelector('.cdk-overlay-pane:last-child') as HTMLElement | null;
     if (pane) {
       if (isMaximized) {
         pane.style.width = '100vw';

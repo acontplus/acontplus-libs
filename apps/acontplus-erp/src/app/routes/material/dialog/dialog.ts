@@ -152,6 +152,18 @@ export class DialogPage {
       showActions: false,
     });
   }
+
+  openMaximizable() {
+    this.dialogs.open(DialogMaximizableContent, {
+      header: {
+        title: 'Diálogo maximizable',
+        icon: 'open_in_full',
+        maximizable: true,
+      },
+      size: 'md',
+      actions: [{ text: 'Cerrar' }],
+    });
+  }
 }
 
 /* ------------------------------------------------------------------ */
@@ -466,4 +478,77 @@ export class DialogInvoiceFormContent {
       totalPrice: this.totalPrice(),
     });
   }
+}
+
+/**
+ * Ejemplo de diálogo con botón de maximizar/restaurar en el header.
+ * El usuario puede alternar entre tamaño normal y pantalla completa sin cerrar el diálogo.
+ */
+@Component({
+  selector: 'app-dialog-maximizable-content',
+  standalone: true,
+  imports: [AcpCard],
+  template: `
+    <div class="maximizable-content">
+      <p>
+        Este diálogo tiene un botón de maximizar en el header. Haz clic en él para alternar entre
+        tamaño normal y pantalla completa.
+      </p>
+      <p>
+        El botón se muestra como <code>open_in_full</code> cuando el diálogo está en tamaño normal y
+        como <code>compress</code> cuando está maximizado.
+      </p>
+      <h4>Contenido de ejemplo</h4>
+      @for (i of [1, 2, 3, 4, 5]; track i) {
+        <acp-card [title]="'Elemento ' + i" [subtitle]="'Descripción del elemento ' + i">
+          Este es un elemento de ejemplo para demostrar el contenido del diálogo.
+        </acp-card>
+      }
+      <h4>Uso</h4>
+      <pre class="code-block">{{ codeExample }}</pre>
+    </div>
+  `,
+  styles: `
+    .maximizable-content {
+      padding: 16px;
+    }
+    h4 {
+      margin: 16px 0 8px;
+    }
+    p {
+      margin: 8px 0;
+      line-height: 1.6;
+    }
+    acp-card {
+      margin: 12px 0;
+    }
+    .code-block {
+      background: #f5f5f5;
+      padding: 12px 16px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 0.85rem;
+      overflow-x: auto;
+      white-space: pre;
+      margin: 12px 0;
+    }
+    code {
+      background: #f5f5f5;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 0.85rem;
+    }
+  `,
+})
+export class DialogMaximizableContent {
+  protected codeExample =
+    '// Abrir diálogo con botón de maximizar\n' +
+    'this.dialogs.open(MyComponent, {\n' +
+    '  header: {\n' +
+    "    title: 'Mi diálogo',\n" +
+    '    maximizable: true,\n' +
+    '  },\n' +
+    "  size: 'md',\n" +
+    "  actions: [{ text: 'Cerrar' }],\n" +
+    '});';
 }

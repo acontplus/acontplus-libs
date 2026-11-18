@@ -62,6 +62,16 @@ import { AcpButtonColor } from './dialog.interfaces';
               <ng-content />
             }
           </span>
+          @if (maximizable()) {
+            <acp-button
+              class="acp-dialog-maximize-btn"
+              variant="icon"
+              [icon]="maximized() ? 'compress' : 'open_in_full'"
+              [color]="resolvedCloseColor()"
+              [ariaLabel]="maximized() ? 'Restore down' : 'Maximize'"
+              (clicked)="toggleMaximized()"
+            />
+          }
           @if (closable() !== false) {
             <acp-button
               class="acp-dialog-close-btn"
@@ -170,6 +180,15 @@ export class AcpDialogTitlebar implements AfterViewInit {
    */
   beforeClose = input<() => boolean | void>();
 
+  /** Whether the maximize/restore button is shown. @default false */
+  maximizable = input<boolean>(false);
+
+  /** Whether the dialog is currently maximized. @default false */
+  maximized = input<boolean>(false);
+
+  /** Emitted when the maximize/restore button is clicked. */
+  maximizedChange = output<boolean>();
+
   /** Emitted when the close button is clicked and no `MatDialogRef` is available. */
   closed = output<void>();
 
@@ -186,6 +205,10 @@ export class AcpDialogTitlebar implements AfterViewInit {
     } else {
       this.closed.emit();
     }
+  }
+
+  toggleMaximized(): void {
+    this.maximizedChange.emit(!this.maximized());
   }
 
   bringToFront(): void {

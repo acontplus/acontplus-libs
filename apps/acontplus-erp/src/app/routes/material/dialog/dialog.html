@@ -68,6 +68,12 @@
         <ng-template acpCardSubtitle>beforeClose en titlebar</ng-template>
         El contenido valida antes de permitir cerrar con el botón X del header.
       </acp-card>
+
+      <acp-card hoverable clickable (clicked)="openMaximizable()">
+        <ng-template acpCardTitle>Maximizable</ng-template>
+        <ng-template acpCardSubtitle>Botón maximizar/restaurar</ng-template>
+        Diálogo con botón para alternar entre tamaño normal y pantalla completa sin cerrar.
+      </acp-card>
     </div>
   </section>
 </div>

@@ -92,6 +92,12 @@ h6[mat-dialog-title].acp-dialog-title span {
   right: 16px;
 }
 
+.acp-dialog-maximize-btn {
+  position: absolute;
+  top: 8px;
+  right: 48px;
+}
+
 .acp-dialog-subtitle {
   margin: 0;
   padding: 0 var(--acp-dialog-subtitle-padding, 24px) var(--acp-dialog-subtitle-padding, 16px);

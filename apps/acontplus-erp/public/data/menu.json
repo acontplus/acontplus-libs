@@ -53,6 +53,11 @@
               "type": "link"
             },
             {
+              "route": "radio-card",
+              "name": "Radio Card",
+              "type": "link"
+            },
+            {
               "route": "select",
               "name": "Seleccionar",
               "type": "link"

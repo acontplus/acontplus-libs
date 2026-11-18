@@ -1,0 +1,67 @@
+<div class="dialog-page">
+  <h1>Diálogos</h1>
+
+  <section>
+    <h3>Diálogos básicos</h3>
+    <div class="grid">
+      <acp-card hoverable clickable (clicked)="openSimple()">
+        <ng-template acpCardTitle>Diálogo simple</ng-template>
+        <ng-template acpCardSubtitle>Contenido básico</ng-template>
+        Un diálogo con contenido de texto y un header con icono.
+      </acp-card>
+
+      <acp-card hoverable clickable (clicked)="openWithActions()">
+        <ng-template acpCardTitle>Con acciones</ng-template>
+        <ng-template acpCardSubtitle>Botones en el footer</ng-template>
+        Diálogo con botones de acción configurados en la parte inferior.
+      </acp-card>
+
+      <acp-card hoverable clickable (clicked)="openConfirmation()">
+        <ng-template acpCardTitle>Confirmación</ng-template>
+        <ng-template acpCardSubtitle>Dialogo de confirmación</ng-template>
+        Diálogo para confirmar acciones críticas con header de advertencia.
+      </acp-card>
+    </div>
+  </section>
+
+  <section>
+    <h3>Variantes de header</h3>
+    <div class="grid">
+      <acp-card hoverable clickable (clicked)="openWithHeaderColor()">
+        <ng-template acpCardTitle>Header con color</ng-template>
+        <ng-template acpCardSubtitle>Colores personalizados</ng-template>
+        El header puede tener diferentes colores: primary, secondary, accent, error, success,
+        warning, info, dark.
+      </acp-card>
+
+      <acp-card hoverable clickable (clicked)="openWithCustomData()">
+        <ng-template acpCardTitle>Datos personalizados</ng-template>
+        <ng-template acpCardSubtitle>Injectar datos</ng-template>
+        Los diálogos pueden recibir datos personalizados que se inyectan en el contenido.
+      </acp-card>
+    </div>
+  </section>
+
+  <section>
+    <h3>Comportamiento</h3>
+    <div class="grid">
+      <acp-card hoverable clickable (clicked)="openDisabledClose()">
+        <ng-template acpCardTitle>Cierre deshabilitado</ng-template>
+        <ng-template acpCardSubtitle>No se puede cerrar</ng-template>
+        Diálogo que no se puede cerrar haciendo clic fuera o presionando Escape.
+      </acp-card>
+
+      <acp-card hoverable clickable (clicked)="openFullScreen()">
+        <ng-template acpCardTitle>Pantalla completa</ng-template>
+        <ng-template acpCardSubtitle>Ocupa toda la pantalla</ng-template>
+        Diálogo que ocupa toda la pantalla del dispositivo.
+      </acp-card>
+
+      <acp-card hoverable clickable (clicked)="openWithSizes()">
+        <ng-template acpCardTitle>Tamaños</ng-template>
+        <ng-template acpCardSubtitle>xs, sm, md, lg, xl, xxl</ng-template>
+        Diferentes tamaños predefinidos para adaptarse al contenido.
+      </acp-card>
+    </div>
+  </section>
+</div>

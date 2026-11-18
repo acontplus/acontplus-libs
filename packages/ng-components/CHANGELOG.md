@@ -25,7 +25,7 @@
   background is now the skin `background` (was `surface-muted`), so it stands out from the sidebar. The expanded side menu item
   also takes that background (was transparent), as in ng-matero.
 
-### ⚠️  Breaking Changes
+### ⚠️ Breaking Changes
 
 - **Breaking:** `ThemeSwitcher` is removed from `@acontplus/ng-components`. `ThemeToggle` ([#157](https://github.com/acontplus/acontplus-libs/pull/157))
   (`acp-theme-toggle`) now reads and changes the theme through `AcpLayoutSettings`, so it stays in

@@ -34,6 +34,7 @@ export class App {
       {
         title: 'OJo',
         data: { message: 'Declarative titlebar and actions' },
+        size: 'full',
       },
     );
 
@@ -99,6 +100,46 @@ export class App {
             </div>
           </div>
 
+          <div class="row">
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12">
+              <mat-slide-toggle checked>Predeterminada</mat-slide-toggle>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12">
+              <mat-slide-toggle checked>Servidor</mat-slide-toggle>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12">
+              <mat-slide-toggle checked>Predeterminada</mat-slide-toggle>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12">
+              <mat-slide-toggle checked>Servidor</mat-slide-toggle>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12">
+              <mat-slide-toggle checked>Predeterminada</mat-slide-toggle>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12">
+              <mat-slide-toggle checked>Servidor</mat-slide-toggle>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12">
+              <mat-slide-toggle checked>Predeterminada</mat-slide-toggle>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12">
+              <mat-slide-toggle checked>Servidor</mat-slide-toggle>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12">
+              <mat-slide-toggle checked>Predeterminada</mat-slide-toggle>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12">
+              <mat-slide-toggle checked>Servidor</mat-slide-toggle>
+            </div>
+          </div>
           <div class="row">
             <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-12">
               <mat-slide-toggle checked>Predeterminada</mat-slide-toggle>

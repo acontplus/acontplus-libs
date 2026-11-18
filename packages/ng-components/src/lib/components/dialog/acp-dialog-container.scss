@@ -121,20 +121,30 @@ h6[mat-dialog-title].acp-dialog-title span {
 }
 
 // Full-screen dialog: pin the action footer to the bottom of the viewport.
+// Use 100dvh (dynamic viewport height) to avoid the mobile browser address bar issue.
 .acp-dialog-full-screen .mat-mdc-dialog-surface {
-  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* fallback for older browsers */
+  height: 100dvh;
 }
 
 .acp-dialog-full-screen acp-dialog-container {
-  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .acp-dialog-full-screen .acp-dialog-content.mat-mdc-dialog-content {
-  max-height: 100%;
-  height: 100%;
+  flex-grow: 1;
+  min-height: 0;
+  max-height: none;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .acp-dialog-full-screen .acp-dialog-actions,
 .acp-dialog-full-screen .mat-mdc-dialog-actions {
+  flex-shrink: 0;
   margin-top: auto;
 }

@@ -357,7 +357,7 @@ import { Spinner } from '@acontplus/ng-components';
 
 - **DataGrid**: Advanced data grid with Material table integration, signals, and modern Angular patterns
 - **AcpTabulator**: Signal-driven Tabulator table with editors, row actions and the acontpluspro look
-- **TabulatorTable**: Advanced table with Tabulator.js integration
+- **TabulatorTable** (legacy, deprecated): previous Tabulator wrapper; use `AcpTabulator` for new tables
 
 ```typescript
 import { DataGrid, AcpDataGridColumn, TabulatorTable } from '@acontplus/ng-components';
@@ -794,7 +794,10 @@ Include the Tabulator base CSS once in the global styles; colors can be overridd
 @use 'tabulator-tables/dist/css/tabulator.min.css';
 ```
 
-#### Tabulator Table Features
+#### Tabulator Table Features (legacy)
+
+> `TabulatorTable` (`acp-tabulator-table`) is legacy and deprecated: it stays for existing
+> screens. Use `AcpTabulator` for new tables.
 
 - **Row Styling**: Same rowStyle property support as Dynamic Table
 - **Advanced Filtering**: Built-in Tabulator filtering

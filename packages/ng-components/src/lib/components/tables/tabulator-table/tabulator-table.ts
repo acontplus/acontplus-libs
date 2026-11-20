@@ -1,4 +1,3 @@
-// tabulator-table.ts
 import {
   AfterViewInit,
   Component,
@@ -17,6 +16,15 @@ import { TabulatorTheme } from '../../../types';
 
 registerAcpTabulatorModules();
 
+/**
+ * Legacy Tabulator wrapper, kept for the screens that already use it. It receives the data through
+ * `ngOnChanges` and replaces it on every change (an open editor is lost), and the row actions,
+ * height and focus are left to the consumer.
+ *
+ * @deprecated Legacy: use `AcpTabulator` (`acp-tabulator`) for new tables. It syncs `data` by
+ * `index`, builds the row actions, supports `readonly`, `maxRows`, `groupBy` and `editCell`, and
+ * shares the same Tabulator modules.
+ */
 @Component({
   selector: 'acp-tabulator-table',
   standalone: true,

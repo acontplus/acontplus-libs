@@ -15,3 +15,6 @@ registers ResizeColumns, ResizeTable, Filter, FrozenColumns, FrozenRows, GroupRo
 Menu, Mutator and Accessor: resizable columns, header filters, grouping, frozen columns and keyboard
 navigation work without extra setup. Heavy modules are opt-in with
 `provideAcpTabulator({ modules })`.
+
+`TabulatorTable` (`acp-tabulator-table`) is marked legacy and `@deprecated` in favor of
+`AcpTabulator`; it keeps working for existing screens.

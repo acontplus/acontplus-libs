@@ -1,0 +1,89 @@
+<div class="tabulator-page">
+  <h1>Tabulator</h1>
+  <p class="description">
+    <code>acp-tabulator</code>: Tabulator con el estilo acontpluspro, datos por signals, acciones
+    por fila, editores y modo solo lectura.
+  </p>
+
+  <section>
+    <h3>Detalle de factura</h3>
+    <p class="description">
+      Líneas editables como en ventas. La cantidad no puede superar el stock (el monitor tiene 3);
+      un valor rechazado vuelve con <code>revert()</code>. Al agregar un producto se abre el editor
+      de la cantidad con <code>editCell()</code>.
+    </p>
+
+    <div class="tabulator-page__toolbar">
+      @for (product of products; track product.code) {
+        <button matButton="tonal" [disabled]="readonly()" (click)="addProduct(product)">
+          <mat-icon>add</mat-icon>{{ product.code }}
+        </button>
+      }
+    </div>
+    <div class="tabulator-page__toolbar">
+      <mat-slide-toggle [ngModel]="readonly()" (ngModelChange)="readonly.set($event)">
+        Solo lectura
+      </mat-slide-toggle>
+      <mat-slide-toggle [ngModel]="canSeeKardex()" (ngModelChange)="canSeeKardex.set($event)">
+        Permiso de kardex
+      </mat-slide-toggle>
+      <mat-button-toggle-group
+        hideSingleSelectionIndicator
+        [value]="appearance()"
+        (change)="appearance.set($event.value)"
+      >
+        <mat-button-toggle value="filled">Filled</mat-button-toggle>
+        <mat-button-toggle value="tonal">Tonal</mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+
+    <acp-tabulator
+      #linesTable
+      index="uuid"
+      headerAlign="center"
+      rowNumbers="#"
+      placeholder="Agrega un producto"
+      [maxRows]="6"
+      [data]="lines()"
+      [columns]="lineColumns"
+      [actions]="lineActions()"
+      [actionsAppearance]="appearance()"
+      [readonly]="readonly()"
+      (action)="onLineAction($event)"
+      (cellEdited)="onLineEdited($event)"
+    />
+
+    <div class="tabulator-page__footer">
+      <span>{{ lines().length }} líneas</span>
+      <strong>Total: {{ grandTotal() | number: '1.2-2' }}</strong>
+    </div>
+  </section>
+
+  <section>
+    <h3>Clientes</h3>
+    <p class="description">
+      Solo lectura, ordenable por encabezado, columnas redimensionables y acciones tonales.
+      "Registrar cobro" solo aparece con saldo.
+    </p>
+    <acp-tabulator
+      [sortable]="true"
+      actionsPosition="end"
+      actionsAppearance="tonal"
+      [data]="customers()"
+      [columns]="customerColumns"
+      [actions]="customerActions"
+      (action)="onCustomerAction($event)"
+    />
+  </section>
+
+  <section>
+    <h3>Eventos</h3>
+    <ul class="tabulator-page__log">
+      @for (entry of log(); track $index) {
+        <li>{{ entry }}</li>
+      } @empty {
+        <li>Edita una celda o usa una acción.</li>
+      }
+    </ul>
+  </section>
+</div>

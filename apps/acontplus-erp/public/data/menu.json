@@ -293,6 +293,11 @@
           "type": "link"
         },
         {
+          "route": "tabulator",
+          "name": "Tabulator",
+          "type": "link"
+        },
+        {
           "route": "remote-data",
           "name": "Datos Remotos",
           "type": "link"

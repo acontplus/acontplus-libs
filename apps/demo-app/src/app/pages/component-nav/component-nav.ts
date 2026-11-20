@@ -154,7 +154,8 @@ export const COMPONENTS_MENU: ComponentCategory[] = [
   {
     id: 'tabulator-table',
     name: 'Tabulator Table',
-    summary: 'Advanced table with Tabulator.js integration and virtual scrolling.',
+    summary:
+      'Signal-driven Tabulator (acp-tabulator) with editors, row actions and read-only mode.',
     category: 'Data Tables',
   },
 

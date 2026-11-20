@@ -19,6 +19,8 @@ import {
 } from '@acontplus/ng-infrastructure';
 import { authProviders, csrfInterceptor } from '@acontplus/ng-auth';
 import { provideNotifications } from '@acontplus/ng-notifications';
+import { provideAcpTabulator } from '@acontplus/ng-components';
+import { DownloadModule } from 'tabulator-tables';
 import { SettingsService } from './core/settings.service';
 
 import {
@@ -36,6 +38,7 @@ export const appConfig: ApplicationConfig = {
       runCoalescing: true,
     }),
     provideRouter(appRoutes),
+    provideAcpTabulator({ modules: [DownloadModule] }),
 
     provideHttpClient(
       withInterceptors([

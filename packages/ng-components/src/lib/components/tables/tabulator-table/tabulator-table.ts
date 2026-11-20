@@ -11,39 +11,11 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 
-import {
-  Tabulator,
-  PageModule,
-  ReactiveDataModule,
-  FormatModule,
-  EditModule,
-  ValidateModule,
-  SortModule,
-  TooltipModule,
-  ColumnCalcsModule,
-  DataTreeModule,
-  MoveRowsModule,
-  SelectRowModule,
-  PopupModule,
-  InteractionModule,
-} from 'tabulator-tables';
+import { Tabulator } from 'tabulator-tables';
+import { registerAcpTabulatorModules } from '../tabulator/tabulator-modules';
 import { TabulatorTheme } from '../../../types';
 
-Tabulator.registerModule([
-  PageModule,
-  ReactiveDataModule,
-  FormatModule,
-  EditModule,
-  ValidateModule,
-  ColumnCalcsModule,
-  SortModule,
-  TooltipModule,
-  DataTreeModule,
-  MoveRowsModule,
-  SelectRowModule,
-  PopupModule,
-  InteractionModule,
-]);
+registerAcpTabulatorModules();
 
 @Component({
   selector: 'acp-tabulator-table',

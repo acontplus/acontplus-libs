@@ -1,0 +1,41 @@
+.tabulator-page {
+  padding: 20px;
+}
+
+section {
+  margin-bottom: 40px;
+
+  h3 {
+    margin-bottom: 8px;
+    font: var(--mat-sys-title-medium);
+  }
+}
+
+.description {
+  margin-bottom: 16px;
+  color: var(--mat-sys-on-surface-variant, #6c757d);
+  font-size: 0.875rem;
+}
+
+.tabulator-page__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.tabulator-page__footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 0.875rem;
+}
+
+.tabulator-page__log {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--mat-sys-on-surface-variant);
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.8125rem;
+}

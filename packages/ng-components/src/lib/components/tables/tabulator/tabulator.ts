@@ -82,7 +82,7 @@ export class AcpTabulator<T extends object = Record<string, unknown>> {
   readonly sortable = input(false);
   readonly headerAlign = input<'left' | 'center' | 'right'>('left');
   readonly placeholder = input('');
-  /** Field or function to group the rows by; `null` ungroups */
+  /** Field or function to group the rows by; `null` or an empty field ungroups */
   readonly groupBy = input<string | ((row: T) => unknown) | null>(null);
   /** Creation only */
   readonly layout = input<AcpTabulatorLayout>('fitColumns');
@@ -103,6 +103,7 @@ export class AcpTabulator<T extends object = Record<string, unknown>> {
   readonly rowClick = output<T>();
   /** Keys typed while a cell editor is open (capture phase: can be prevented) */
   readonly editorKeydown = output<AcpTabulatorEditorKeydown>();
+  /** The Tabulator instance, once built with the first data loaded */
   readonly ready = output<Tabulator>();
 
   readonly #editing = signal<CellComponent | null>(null);
@@ -200,9 +201,10 @@ export class AcpTabulator<T extends object = Record<string, unknown>> {
 
   /** Draws the row of `data` again, dropping what the user typed in it */
   refreshRow(key: unknown): void {
+    const table = this.#table;
     const source = this.#source(key);
-    if (!source || !this.#row(key)) return;
-    this.#pending = this.#outside(() => this.#table!.updateData([{ ...source }]));
+    if (!table || !source || !this.#row(key)) return;
+    this.#pending = this.#outside(() => table.updateData([{ ...source }]));
   }
 
   redraw(force = false): void {
@@ -247,6 +249,8 @@ export class AcpTabulator<T extends object = Record<string, unknown>> {
       this.#applyGroupBy(this.groupBy());
       this.#shown = [];
       this.#sync(this.data());
+      // Built and loaded: the data APIs (getData, getRows...) answer from here on
+      this.#inside(() => this.ready.emit(table));
     });
     table.on('cellEditing', cell => this.#editing.set(cell));
     table.on('cellEditCancelled', () => this.#editing.set(null));
@@ -281,7 +285,6 @@ export class AcpTabulator<T extends object = Record<string, unknown>> {
         true,
       ),
     );
-    this.#inside(() => this.ready.emit(table));
   }
 
   /** Same rows in the same order: only the changed objects update. Otherwise a replace. */

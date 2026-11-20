@@ -467,8 +467,10 @@ export class TabulatorTableExamples {
         const row = cell.getRow().getData() as StockCount;
         if (row.counted === null) return '';
         const diff = row.counted - row.system;
-        const color = diff ? 'var(--mat-sys-error)' : 'inherit';
-        return `<span style="color:${color}">${diff > 0 ? '+' : ''}${diff}</span>`;
+        const span = document.createElement('span');
+        span.style.color = diff ? 'var(--mat-sys-error)' : 'inherit';
+        span.textContent = `${diff > 0 ? '+' : ''}${diff}`;
+        return span;
       },
     },
     AcpColumns.text<StockCount>({
@@ -630,10 +632,10 @@ export class TabulatorTableExamples {
 ];
 
 async addLine(): Promise<void> {
-  const line = newLine();
-  this.lines.update(lines => [...lines, line]);
+  const added = line('MOU-010', 'Mouse inalámbrico', 12.9);
+  this.lines.update(lines => [...lines, added]);
   // Waits for the render and for the row, scrolls to it and opens the editor
-  await this.linesTable().editCell(line.uuid, 'quantity');
+  await this.linesTable().editCell(added.uuid, 'quantity');
 }
 
 onLineEdited({ row, field, value, revert }: AcpTabulatorCellEdit<Line>): void {

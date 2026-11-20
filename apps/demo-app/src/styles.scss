@@ -11,6 +11,7 @@
 // Import prebuilt themes from ng-components
 @use '@acontplus/ng-components/prebuilt-themes/all';
 @use '@acontplus/ng-components/acontpluspro';
+@use 'tabulator-tables/dist/css/tabulator.min.css';
 
 $config: (
   color: (

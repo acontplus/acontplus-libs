@@ -1,0 +1,386 @@
+// acontpluspro skin for Tabulator (`--acp-skin-*`, the values of acp-data-grid, mat-select and the
+// outlined fields), so it follows the light / dark theme. Material tokens are the fallback.
+// Every color can be overridden with the `--acp-tabulator-*` variables.
+// `html` raises the specificity over tabulator.min.css.
+
+$surface: var(--acp-tabulator-surface, var(--acp-skin-surface, var(--mat-sys-surface)));
+$surface-muted: var(
+  --acp-tabulator-surface-muted,
+  var(--acp-skin-surface-muted, var(--mat-sys-surface-container-low))
+);
+$text: var(--acp-tabulator-text, var(--acp-skin-text, var(--mat-sys-on-surface)));
+$text-muted: var(
+  --acp-tabulator-text-muted,
+  var(--acp-skin-text-muted, var(--mat-sys-on-surface-variant))
+);
+$border: var(--acp-tabulator-border, var(--acp-skin-border, var(--mat-sys-outline-variant)));
+$field-border: var(--acp-skin-field-border, var(--mat-sys-outline));
+$field-background: var(--acp-skin-field-background, transparent);
+$radius: var(--acp-tabulator-radius, var(--acp-skin-radius, 10px));
+$shadow-popup: var(--acp-skin-shadow-popup, var(--mat-sys-level2));
+$primary: var(--acp-theme-primary-color, var(--mat-sys-primary));
+$option-radius: 6px;
+
+$action-colors: (
+  primary: $primary,
+  success: var(--acp-tabulator-success, #2e7d32),
+  warning: var(--acp-tabulator-warning, #ed6c02),
+  error: var(--acp-tabulator-error, var(--mat-sys-error, #d32f2f)),
+  info: var(--acp-tabulator-info, #0097a7),
+  neutral: var(--acp-tabulator-neutral, #616161),
+);
+
+@mixin field-box {
+  border: 1px solid $field-border;
+  border-radius: $option-radius;
+  background-color: $field-background;
+  color: $text;
+  font: inherit;
+  outline: 0;
+
+  &:focus {
+    border-color: $primary;
+    box-shadow: inset 0 0 0 1px $primary;
+  }
+}
+
+.acp-tabulator {
+  display: block;
+  width: 100%;
+}
+
+html .acp-tabulator .tabulator {
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid $border;
+  border-radius: var(--acp-grid-container-shape, #{$radius});
+  background-color: $surface;
+  color: $text;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+
+  .tabulator-header {
+    border-bottom: 1px solid $border;
+    background-color: $surface;
+    color: $text;
+    font-weight: 600;
+
+    .tabulator-col {
+      border-right-color: $border;
+      background-color: $surface;
+
+      &.tabulator-sortable.tabulator-col-sorter-element:hover {
+        background-color: $surface-muted;
+      }
+
+      .tabulator-col-content .tabulator-col-sorter .tabulator-arrow {
+        border-bottom-color: $text-muted;
+      }
+    }
+
+    .tabulator-header-filter input,
+    .tabulator-header-filter select {
+      @include field-box;
+
+      padding: 2px 6px;
+    }
+  }
+
+  // Resize handle: a primary line on hover, so the user finds where to drag
+  .tabulator-col-resize-handle {
+    position: relative;
+
+    &:hover::after {
+      position: absolute;
+      inset: 25% 2px;
+      border-radius: 1px;
+      background-color: $primary;
+      content: '';
+    }
+  }
+
+  .tabulator-tableholder {
+    background-color: $surface;
+
+    .tabulator-placeholder .tabulator-placeholder-contents {
+      color: $text-muted;
+      font-weight: 400;
+    }
+
+    &::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 4px;
+      background: $field-border;
+    }
+  }
+
+  .tabulator-footer,
+  .tabulator-calcs-holder {
+    border-color: $border;
+    background-color: var(--acp-grid-table-footer-background-color, #{$surface-muted});
+    color: $text;
+  }
+
+  .tabulator-footer .tabulator-page {
+    border-color: $border;
+    border-radius: $option-radius;
+    background-color: $surface;
+    color: $text;
+
+    &.active {
+      color: $primary;
+    }
+  }
+
+  .tabulator-row {
+    border-bottom-color: $border;
+    background-color: $surface;
+    color: $text;
+
+    &.tabulator-row-even {
+      background-color: var(--acp-grid-table-row-striped-background-color, #{$surface-muted});
+    }
+
+    &:hover,
+    &.tabulator-selectable:hover {
+      background-color: var(--acp-grid-table-row-hover-background-color, #{$surface-muted});
+    }
+
+    &.tabulator-selected {
+      background-color: color-mix(in srgb, #{$primary} 12%, transparent);
+    }
+
+    &.tabulator-group {
+      border-color: $border;
+      background-color: $surface-muted;
+      color: $text;
+      font-weight: 600;
+
+      &:hover {
+        background-color: color-mix(in srgb, #{$primary} 6%, #{$surface-muted});
+      }
+
+      .tabulator-group-toggle .tabulator-arrow {
+        border-left-color: $text-muted;
+      }
+
+      span {
+        margin-left: 6px;
+        color: $text-muted;
+        font-weight: 400;
+      }
+    }
+
+    .tabulator-cell {
+      border-right-color: $border;
+
+      &.acp-tabulator__actions-cell {
+        padding-block: 2px;
+      }
+
+      &.tabulator-frozen.tabulator-frozen-left {
+        border-right: 1px solid $border;
+        box-shadow: 4px 0 6px -4px rgb(0 0 0 / 0.12);
+      }
+
+      &.tabulator-frozen.tabulator-frozen-right {
+        border-left: 1px solid $border;
+        box-shadow: -4px 0 6px -4px rgb(0 0 0 / 0.12);
+      }
+
+      // Editable cells say so on hover: the outline of the field they turn into
+      &.tabulator-editable:not(.tabulator-editing):hover {
+        box-shadow: inset 0 0 0 1px $field-border;
+        cursor: text;
+      }
+
+      &.tabulator-editing {
+        padding: 2px;
+        border: 0;
+        background-color: $surface;
+
+        input,
+        select,
+        textarea {
+          @include field-box;
+
+          width: 100%;
+          height: 100%;
+          padding: 2px 8px;
+          border-color: $primary;
+          box-shadow: inset 0 0 0 1px $primary;
+          caret-color: $primary;
+        }
+      }
+    }
+  }
+}
+
+.acp-tabulator-editor {
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.acp-tabulator-number {
+  font-variant-numeric: tabular-nums;
+}
+
+.acp-tabulator-list {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  width: 100%;
+  cursor: pointer;
+
+  &__label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__arrow {
+    font-size: 18px;
+    opacity: 0.6;
+  }
+}
+
+.acp-tabulator--readonly .acp-tabulator-list {
+  cursor: default;
+
+  .acp-tabulator-list__arrow {
+    display: none;
+  }
+}
+
+// Row actions: small filled squares (tonal: soft background, colored icon)
+.acp-tabulator__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.acp-tabulator__action {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: $option-radius;
+  background-color: var(--acp-tabulator-action-color);
+  color: #fff;
+  cursor: pointer;
+  transition:
+    filter 0.15s ease,
+    background-color 0.15s ease;
+
+  @each $name, $color in $action-colors {
+    &--#{$name} {
+      --acp-tabulator-action-color: #{$color};
+    }
+  }
+
+  &:hover {
+    filter: brightness(0.9);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--acp-tabulator-action-color);
+    outline-offset: 2px;
+  }
+
+  &-icon {
+    font-size: 18px;
+    line-height: 1;
+  }
+}
+
+.acp-tabulator--tonal-actions .acp-tabulator__action {
+  background-color: color-mix(in srgb, var(--acp-tabulator-action-color) 14%, transparent);
+  color: var(--acp-tabulator-action-color);
+
+  &:hover {
+    filter: none;
+    background-color: color-mix(in srgb, var(--acp-tabulator-action-color) 24%, transparent);
+  }
+}
+
+// Editors, menus and tooltips are appended to <body>: the list panel is the acontpluspro
+// mat-select panel (surface, popup shadow, skin radius, compact rounded options)
+html {
+  .tabulator-popup-container {
+    z-index: 1000000;
+    padding: 8px;
+    border: 0;
+    border-radius: $radius;
+    background-color: $surface;
+    box-shadow: $shadow-popup;
+    color: $text;
+  }
+
+  .tabulator-edit-list {
+    max-height: 256px;
+    font-size: 0.8825rem;
+
+    .tabulator-edit-list-item {
+      display: flex;
+      align-items: center;
+      min-height: 33px;
+      padding: 0 13px;
+      border-radius: $option-radius;
+      color: $text;
+      cursor: pointer;
+
+      &:hover,
+      &.focused {
+        outline: 0;
+        background: $surface-muted;
+        color: $text;
+      }
+
+      &.active,
+      &.active:hover,
+      &.active.focused {
+        outline: 0;
+        background: color-mix(in srgb, #{$primary} 12%, transparent);
+        color: $primary;
+      }
+    }
+
+    .tabulator-edit-list-placeholder,
+    .tabulator-edit-list-notice {
+      padding: 8px 13px;
+      color: $text-muted;
+    }
+  }
+
+  .tabulator-menu {
+    .tabulator-menu-item {
+      min-height: 36px;
+      padding: 8px 13px;
+      border-radius: $option-radius;
+      color: $text;
+
+      &:hover {
+        background-color: $surface-muted;
+      }
+    }
+
+    .tabulator-menu-separator {
+      border-top-color: $border;
+    }
+  }
+
+  .tabulator-tooltip {
+    border-radius: var(--mat-sys-corner-full, 999px);
+    background-color: var(--mat-sys-inverse-surface);
+    color: var(--mat-sys-inverse-on-surface);
+  }
+}

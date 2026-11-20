@@ -356,7 +356,8 @@ import { Spinner } from '@acontplus/ng-components';
 ### Tables
 
 - **DataGrid**: Advanced data grid with Material table integration, signals, and modern Angular patterns
-- **TabulatorTable**: Advanced table with Tabulator.js integration
+- **AcpTabulator**: Signal-driven Tabulator table with editors, row actions and the acontpluspro look
+- **TabulatorTable** (legacy, deprecated): previous Tabulator wrapper; use `AcpTabulator` for new tables
 
 ```typescript
 import { DataGrid, AcpDataGridColumn, TabulatorTable } from '@acontplus/ng-components';
@@ -732,7 +733,71 @@ onCellEdit(event: { row: Product; field: string; oldValue: any; newValue: any })
   option can be a `string`/`number` or an object `{ value, label }`.
 - Fields support nested paths (`'a.b.c'`), mirroring the cell value resolution.
 
-#### Tabulator Table Features
+#### AcpTabulator
+
+`acp-tabulator` (`AcpTabulator`) is the signal-driven Tabulator table:
+
+- `data` syncs by `index`: edited rows update alone (an editor open in another row survives),
+  added or removed rows replace the data. No `reactiveData` or manual sync.
+- `actions` builds the row buttons column (theme colors, `filled` or `tonal`, sized for every
+  action); `visible`, `label` and `color` can depend on the row.
+- `readonly` drops editors and actions; `rowNumbers`, `sortable`, `headerAlign`, `groupBy`.
+- `maxRows` grows the table up to N rows and then scrolls; without `maxRows` and `height` it grows
+  with every row (no vertical scroll); `height` accepts any CSS value, e.g. `calc(100vh - 300px)`.
+- `editCell(key, field)` opens an editor once the row exists, even right after a data change.
+- Outputs: `cellEdited` (`{ row, field, value, oldValue, revert() }`), `action`, `rowClick`,
+  `editorKeydown`, `ready` (the Tabulator instance).
+- `AcpColumns.text/number/money/list` and `acpTextEditor`, `acpNumberEditor`,
+  `acpMoneyFormatter` for the usual columns.
+- Tabulator runs outside the Angular zone; only the outputs come back in.
+
+```typescript
+readonly columns: AcpTabulatorColumn<Line>[] = [
+  { title: 'Code', field: 'code' },
+  AcpColumns.number<Line>({ title: 'Quantity', field: 'quantity', editor: { positive: true } }),
+  AcpColumns.list<Line>({ title: 'Tax', field: 'taxRateId', options: () => taxRates }),
+  AcpColumns.money<Line>({ title: 'Total', field: 'total' }),
+];
+readonly actions: AcpTabulatorAction<Line>[] = [
+  { id: 'delete', icon: 'delete', color: 'error', label: 'Remove line' },
+];
+```
+
+```html
+<acp-tabulator
+  index="uuid"
+  [maxRows]="7"
+  [data]="lines()"
+  [columns]="columns"
+  [actions]="actions"
+  [readonly]="readonly()"
+  (action)="onAction($event)"
+  (cellEdited)="onCellEdited($event)"
+/>
+```
+
+Both Tabulator components register the light modules by default (edit, format, sort, filter,
+group rows, frozen columns and rows, keybindings, menu, resize columns and table, column calcs,
+data tree, tooltips...). Heavy modules are opt-in:
+
+```typescript
+import { provideAcpTabulator } from '@acontplus/ng-components';
+import { DownloadModule, PrintModule } from 'tabulator-tables';
+
+providers: [provideAcpTabulator({ modules: [DownloadModule, PrintModule] })];
+```
+
+Include the Tabulator base CSS once in the global styles; colors can be overridden with the
+`--acp-tabulator-*` variables:
+
+```scss
+@use 'tabulator-tables/dist/css/tabulator.min.css';
+```
+
+#### Tabulator Table Features (legacy)
+
+> `TabulatorTable` (`acp-tabulator-table`) is legacy and deprecated: it stays for existing
+> screens. Use `AcpTabulator` for new tables.
 
 - **Row Styling**: Same rowStyle property support as Dynamic Table
 - **Advanced Filtering**: Built-in Tabulator filtering

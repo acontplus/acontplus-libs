@@ -32,6 +32,9 @@ $palette: (
 
 $boxed-max-width: 1300px !default;
 
+// Tinte del color del tema en el hover y foco de opciones de select y de items de menu.
+$hover-tint: 12% !default;
+
 // Tamano de los controles. `field`: tokens de `mat-form-field` (alto y padding de Material con
 // densidad -4, -2 y 0). Con `fill`, Material oculta la etiqueta flotante por debajo de 52px; aqui
 // se mantiene y `fill-label-transform` la reduce y la sube para que quepa.
@@ -232,8 +235,9 @@ $control-sizes: (
       container-shape: _skin(radius),
       container-elevation-shadow: _skin(shadow-popup),
       // Hover and keyboard focus tinted with the theme color, as select options
-      item-hover-state-layer-color: color-mix(in srgb, #{_skin(accent)} 8%, transparent),
-      item-focus-state-layer-color: color-mix(in srgb, #{_skin(accent)} 8%, transparent),
+      item-hover-state-layer-color:
+        color-mix(in srgb, #{_skin(accent)} #{$hover-tint}, transparent),
+      item-focus-state-layer-color: color-mix(in srgb, #{_skin(accent)} #{$hover-tint}, transparent),
       item-label-text-size: 0.8125rem,
       item-label-text-tracking: 0.01em,
       item-leading-spacing: 12px,
@@ -264,8 +268,8 @@ $control-sizes: (
   // barely visible on the white panel)
   @include mat.option-overrides(
     (
-      hover-state-layer-color: color-mix(in srgb, #{_skin(accent)} 8%, transparent),
-      focus-state-layer-color: color-mix(in srgb, #{_skin(accent)} 8%, transparent),
+      hover-state-layer-color: color-mix(in srgb, #{_skin(accent)} #{$hover-tint}, transparent),
+      focus-state-layer-color: color-mix(in srgb, #{_skin(accent)} #{$hover-tint}, transparent),
       label-text-size: 0.8825rem,
     )
   );

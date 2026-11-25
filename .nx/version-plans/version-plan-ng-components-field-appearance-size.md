@@ -21,7 +21,8 @@ and control-size height as `mat-select`.
 
 Add M3 color classes (`.acp-text-red-50`, `.acp-bg-blue-90`, `.acp-border-...`), included by
 acontpluspro; `acp.color-utilities('')` emits the unprefixed legacy names.
-The sidemenu badge also gets the `acp-bg-<color>` class.
+The sidemenu badge also gets the `acp-bg-<color>` class. Add `.acp-form-field-full` (alias
+`.form-field-full`) for full-width form fields.
 
 Breaking: with `provideAcpLayout`, fields without an explicit `appearance` are now `outline` and
 40px high (`small`, Material density -4, as the Acontplus apps), instead of Material's `fill` and 56px. To keep the previous look:

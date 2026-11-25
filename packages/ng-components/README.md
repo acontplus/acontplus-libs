@@ -1294,6 +1294,8 @@ Or with your own values:
   and follow `<html>`). The values come from `$acontpluspro-control-sizes`. Unlike Material's
   density, `fill` fields keep the floating label at every size: it gets smaller and moves up
   (`--acp-control-fill-label-transform`).
+- `.acp-form-field-full` (alias `.form-field-full`): on a container, its `mat-form-field`s take
+  100% width; on a `mat-form-field`, only that field.
 - Color classes from the M3 palettes, included by acontpluspro: `.acp-text-<color>-<tone>`,
   `.acp-bg-...` and `.acp-border-...` for `red`, `green`, `blue`,
   `yellow`, `cyan`, `magenta`, `orange`, `chartreuse`, `spring-green`, `azure`, `violet` and

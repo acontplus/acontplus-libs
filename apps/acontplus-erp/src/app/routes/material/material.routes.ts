@@ -3,6 +3,7 @@ import { Routes } from '@angular/router';
 import { ButtonPage } from './button/button';
 import { CardPage } from './card/card';
 import { DialogPage } from './dialog/dialog';
+import { ExpansionPage } from './expansion/expansion';
 import { LogoPage } from './logo/logo';
 import { MenuPage } from './menu/menu';
 import { RadioCardPage } from './radio-card/radio-card';
@@ -14,6 +15,7 @@ export const routes: Routes = [
   { path: 'button', component: ButtonPage },
   { path: 'card', component: CardPage },
   { path: 'dialog', component: DialogPage },
+  { path: 'expansion', component: ExpansionPage },
   { path: 'logo', component: LogoPage },
   { path: 'menu', component: MenuPage },
   { path: 'radio-card', component: RadioCardPage },

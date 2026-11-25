@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -22,6 +23,7 @@ interface OptionGroup {
   imports: [
     FormsModule,
     ReactiveFormsModule,
+    MatAutocompleteModule,
     MatButtonModule,
     MatFormFieldModule,
     MatIconModule,
@@ -52,7 +54,11 @@ export class SelectPage {
     {
       name: 'Sierra',
       options: [
-        { value: 'uio', label: 'Quito' },
+        {
+          value: 'uio',
+          label:
+            'Quito LECrim (Ley de Enjuiciamiento Criminal). Es la norma procesal que regula cómo se investigan, tramitan y juzgan los delitos en España. (Nota: En Ecuador, el procedimiento penal se rige por el Código Orgánico Integral Penal - COIP).',
+        },
         { value: 'cue', label: 'Cuenca' },
       ],
     },
@@ -72,6 +78,13 @@ export class SelectPage {
   readonly multiple = signal<string[]>(['apple', 'mango']);
   readonly status = signal('active');
   readonly search = signal('Factura 001');
+  readonly city = signal('');
+  readonly cities = computed(() => {
+    const term = this.city().toLowerCase();
+    return this.groups
+      .flatMap((group) => group.options)
+      .filter((option) => option.label.toLowerCase().includes(term));
+  });
   readonly hidePassword = signal(true);
 
   readonly requiredControl = new FormControl<string | null>(null, Validators.required);

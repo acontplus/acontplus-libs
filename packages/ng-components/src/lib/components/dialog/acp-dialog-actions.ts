@@ -16,7 +16,12 @@ import {
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { isObservable } from 'rxjs';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogModule,
+  MatDialogRef,
+  MatDialogState,
+} from '@angular/material/dialog';
 
 import { AcpButton } from '../button';
 import { ACP_DIALOG_ACTIONS } from './dialog.tokens';
@@ -146,5 +151,10 @@ export class AcpDialogActions implements AfterViewInit {
   protected handleActionClick(event: MouseEvent, action: AcpDialogAction): void {
     const click: AcpDialogActionClick = { action, event };
     this.containerData?.actionClicks?.next(click);
+    // Subscribers run synchronously: `preventDefault()` keeps the dialog open, and a subscriber
+    // that already closed it keeps its own result.
+    if (!event.defaultPrevented && this.matDialogRef?.getState() === MatDialogState.OPEN) {
+      this.matDialogRef?.close(action.result ?? action.key);
+    }
   }
 }

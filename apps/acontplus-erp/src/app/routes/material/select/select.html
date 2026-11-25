@@ -150,6 +150,26 @@
   </section>
 
   <section>
+    <h3>Autocompletar</h3>
+    <div class="grid">
+      <mat-form-field>
+        <mat-label>Ciudad</mat-label>
+        <input
+          matInput
+          [ngModel]="city()"
+          (ngModelChange)="city.set($event)"
+          [matAutocomplete]="cityAuto"
+        />
+        <mat-autocomplete #cityAuto="matAutocomplete">
+          @for (option of cities(); track option.value) {
+            <mat-option [value]="option.label">{{ option.label }}</mat-option>
+          }
+        </mat-autocomplete>
+      </mat-form-field>
+    </div>
+  </section>
+
+  <section>
     <h3>Con iconos y botones dentro del campo</h3>
     <div class="grid">
       <mat-form-field>

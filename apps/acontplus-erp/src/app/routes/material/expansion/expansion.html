@@ -1,0 +1,210 @@
+<div class="expansion-page">
+  <h1>Expansión</h1>
+
+  <section>
+    <h3>Básico</h3>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>Datos del cliente</mat-panel-title>
+        <mat-panel-description>Nombre, identificación y contacto</mat-panel-description>
+      </mat-expansion-panel-header>
+      <p>Contenido del panel. Se abre y se cierra al pulsar el encabezado.</p>
+    </mat-expansion-panel>
+  </section>
+
+  <section>
+    <h3>Acordeón (uno abierto a la vez)</h3>
+    <button matButton (click)="multi.set(!multi())">
+      {{ multi() ? 'Permitir solo uno abierto' : 'Permitir varios abiertos' }}
+    </button>
+    <mat-accordion [multi]="multi()" #faqAccordion="matAccordion">
+      @for (faq of faqs; track faq.question) {
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>{{ faq.question }}</mat-panel-title>
+          </mat-expansion-panel-header>
+          <p>{{ faq.answer }}</p>
+        </mat-expansion-panel>
+      }
+    </mat-accordion>
+    @if (multi()) {
+      <div class="actions">
+        <button matButton="outlined" (click)="faqAccordion.openAll()">Abrir todos</button>
+        <button matButton="outlined" (click)="faqAccordion.closeAll()">Cerrar todos</button>
+      </div>
+    }
+  </section>
+
+  <section>
+    <h3>Con iconos, abierto por defecto y deshabilitado</h3>
+    <mat-accordion>
+      <mat-expansion-panel expanded>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon>receipt_long</mat-icon>
+            Facturas pendientes
+          </mat-panel-title>
+          <mat-panel-description>3 por autorizar</mat-panel-description>
+        </mat-expansion-panel-header>
+        <p>Los comprobantes pendientes se envían al SRI automáticamente cada 5 minutos.</p>
+      </mat-expansion-panel>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon>inventory_2</mat-icon>
+            Inventario
+          </mat-panel-title>
+          <mat-panel-description>12 productos con stock bajo</mat-panel-description>
+        </mat-expansion-panel-header>
+        <p>Revise el reporte de existencias para reponer stock.</p>
+      </mat-expansion-panel>
+      <mat-expansion-panel disabled>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon>lock</mat-icon>
+            Contabilidad
+          </mat-panel-title>
+          <mat-panel-description>Sin permisos</mat-panel-description>
+        </mat-expansion-panel-header>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </section>
+
+  <section>
+    <h3>Indicador a la izquierda y sin indicador</h3>
+    <mat-accordion togglePosition="before">
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>Indicador antes del título</mat-panel-title>
+        </mat-expansion-panel-header>
+        <p>Útil en listas largas donde el indicador marca el inicio de cada fila.</p>
+      </mat-expansion-panel>
+    </mat-accordion>
+    <mat-expansion-panel hideToggle>
+      <mat-expansion-panel-header>
+        <mat-panel-title>Sin indicador</mat-panel-title>
+        <mat-panel-description>
+          <mat-icon>info</mat-icon>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <p>El icono de la descripción reemplaza al indicador.</p>
+    </mat-expansion-panel>
+  </section>
+
+  <section>
+    <h3>Paso a paso con botones de acción</h3>
+    <mat-accordion>
+      <mat-expansion-panel [expanded]="step() === 0" (opened)="step.set(0)">
+        <mat-expansion-panel-header>
+          <mat-panel-title>1. Datos personales</mat-panel-title>
+          <mat-panel-description>{{
+            customer().name || 'Nombre del cliente'
+          }}</mat-panel-description>
+        </mat-expansion-panel-header>
+        <mat-form-field>
+          <mat-label>Nombre</mat-label>
+          <input matInput [ngModel]="customer().name" (ngModelChange)="update('name', $event)" />
+        </mat-form-field>
+        <mat-action-row>
+          <button matButton="filled" (click)="next()">Siguiente</button>
+        </mat-action-row>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel [expanded]="step() === 1" (opened)="step.set(1)">
+        <mat-expansion-panel-header>
+          <mat-panel-title>2. Contacto</mat-panel-title>
+          <mat-panel-description>{{
+            customer().email || 'Correo electrónico'
+          }}</mat-panel-description>
+        </mat-expansion-panel-header>
+        <mat-form-field>
+          <mat-label>Correo</mat-label>
+          <input
+            matInput
+            type="email"
+            [ngModel]="customer().email"
+            (ngModelChange)="update('email', $event)"
+          />
+        </mat-form-field>
+        <mat-action-row>
+          <button matButton (click)="prev()">Anterior</button>
+          <button matButton="filled" (click)="next()">Siguiente</button>
+        </mat-action-row>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel [expanded]="step() === 2" (opened)="step.set(2)">
+        <mat-expansion-panel-header>
+          <mat-panel-title>3. Dirección</mat-panel-title>
+          <mat-panel-description>{{ customer().address || 'Dirección' }}</mat-panel-description>
+        </mat-expansion-panel-header>
+        <mat-form-field>
+          <mat-label>Dirección</mat-label>
+          <input
+            matInput
+            [ngModel]="customer().address"
+            (ngModelChange)="update('address', $event)"
+          />
+        </mat-form-field>
+        <mat-action-row>
+          <button matButton (click)="prev()">Anterior</button>
+          <button matButton="filled" (click)="step.set(-1)">Finalizar</button>
+        </mat-action-row>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </section>
+
+  <section>
+    <h3>Dentro de un acp-card</h3>
+    <acp-card>
+      <ng-template acpCardTitle>Configuración de la empresa</ng-template>
+      <ng-template acpCardSubtitle>Paneles sobre la superficie de la tarjeta</ng-template>
+      <mat-accordion>
+        <mat-expansion-panel expanded>
+          <mat-expansion-panel-header>
+            <mat-panel-title><mat-icon>business</mat-icon> Datos tributarios</mat-panel-title>
+            <mat-panel-description>RUC y razón social</mat-panel-description>
+          </mat-expansion-panel-header>
+          <p>RUC 1790012345001 · ACONTPLUS S.A.</p>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title><mat-icon>receipt</mat-icon> Facturación electrónica</mat-panel-title>
+            <mat-panel-description>Ambiente y firma</mat-panel-description>
+          </mat-expansion-panel-header>
+          <p>Ambiente de producción con firma vigente hasta 2027.</p>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title><mat-icon>mail</mat-icon> Notificaciones</mat-panel-title>
+            <mat-panel-description>Correo de envío</mat-panel-description>
+          </mat-expansion-panel-header>
+          <p>Los comprobantes se envían desde facturacion&#64;empresa.com.</p>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </acp-card>
+  </section>
+
+  <section>
+    <h3>Dentro de un diálogo (AcpDialogService)</h3>
+    <div class="actions">
+      <button matButton="filled" (click)="openInDialog()">
+        <mat-icon>open_in_new</mat-icon>
+        Abrir diálogo
+      </button>
+      <span class="result">Resultado: {{ dialogResult() }}</span>
+    </div>
+  </section>
+
+  <section>
+    <h3>Contenido diferido</h3>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>Historial de movimientos</mat-panel-title>
+        <mat-panel-description>Se carga al abrir</mat-panel-description>
+      </mat-expansion-panel-header>
+      <ng-template matExpansionPanelContent>
+        <p>Este contenido se crea solo cuando el panel se abre por primera vez.</p>
+      </ng-template>
+    </mat-expansion-panel>
+  </section>
+</div>

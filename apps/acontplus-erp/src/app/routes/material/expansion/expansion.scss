@@ -1,0 +1,48 @@
+.expansion-page {
+  max-width: 900px;
+  padding: 20px;
+}
+
+section {
+  margin-bottom: 40px;
+
+  h3 {
+    margin-bottom: 16px;
+    font: var(--mat-sys-title-medium);
+  }
+
+  > .mat-expansion-panel + .mat-expansion-panel,
+  > .mat-accordion + .mat-expansion-panel {
+    margin-top: 16px;
+  }
+
+  > button {
+    margin-bottom: 12px;
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.result {
+  color: var(--mat-sys-on-surface-variant);
+}
+
+mat-panel-title {
+  flex: 1 0 auto;
+  gap: 8px;
+  align-items: center;
+}
+
+mat-panel-description {
+  justify-content: space-between;
+  align-items: center;
+}
+
+mat-form-field {
+  width: 100%;
+}

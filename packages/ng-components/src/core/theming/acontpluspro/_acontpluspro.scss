@@ -32,7 +32,8 @@ $palette: (
 
 $boxed-max-width: 1300px !default;
 
-// Tinte del color del tema en el hover y foco de opciones de select y de items de menu.
+// Tinte del color del tema en el hover y foco de opciones de select, items de menu y encabezados
+// de mat-expansion-panel.
 $hover-tint: 12% !default;
 
 // Tamano de los controles. `field`: tokens de `mat-form-field` (alto y padding de Material con
@@ -297,7 +298,16 @@ $control-sizes: (
     (
       container-background-color: _skin(surface),
       container-shape: _skin(radius),
-      header-hover-state-layer-color: _skin(surface-muted),
+      header-hover-state-layer-color: color-mix(
+          in srgb,
+          #{_skin(accent)} #{$hover-tint},
+          transparent
+        ),
+      header-focus-state-layer-color: color-mix(
+          in srgb,
+          #{_skin(accent)} #{$hover-tint},
+          transparent
+        ),
     )
   );
 
@@ -355,7 +365,9 @@ $control-sizes: (
       border-radius: _skin(radius);
     }
 
-    div.mat-mdc-select-panel {
+    // Paneles de mat-select y mat-autocomplete con la misma forma de opcion
+    div.mat-mdc-select-panel,
+    div.mat-mdc-autocomplete-panel {
       padding: 8px;
 
       .mat-mdc-option {

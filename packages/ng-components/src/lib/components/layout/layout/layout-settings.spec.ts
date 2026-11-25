@@ -1,6 +1,8 @@
 import { TestBed } from '@angular/core/testing';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { ACP_LAYOUT_CONFIG } from './layout.config';
 import { AcpLayoutSettings } from './layout-settings';
+import { provideAcpLayout } from './provide-layout';
 
 describe('AcpLayoutSettings', () => {
   const key = 'acp-layout-test';
@@ -19,6 +21,7 @@ describe('AcpLayoutSettings', () => {
     localStorage.removeItem(key);
     html.className = '';
     html.removeAttribute('style');
+    html.removeAttribute('dir');
   });
 
   it('merges the configured defaults with the stored options', () => {
@@ -43,6 +46,23 @@ describe('AcpLayoutSettings', () => {
     expect(html.style.colorScheme).toBe('dark');
     expect(html.dir).toBe('rtl');
     expect(html.style.getPropertyValue('--acp-skin-radius')).toBe('16px');
+  });
+
+  it('applies the form field size class and appearance', () => {
+    TestBed.configureTestingModule({ providers: [provideAcpLayout({ storageKey: key })] });
+    const settings = TestBed.inject(AcpLayoutSettings);
+    const defaults = TestBed.inject(MAT_FORM_FIELD_DEFAULT_OPTIONS);
+    TestBed.tick();
+
+    expect(html.classList.contains('acp-control-small')).toBe(true);
+    expect(defaults.appearance).toBe('outline');
+
+    settings.set({ controlSize: 'large', fieldAppearance: 'fill' });
+    TestBed.tick();
+
+    expect(html.classList.contains('acp-control-large')).toBe(true);
+    expect(html.classList.contains('acp-control-small')).toBe(false);
+    expect(defaults.appearance).toBe('fill');
   });
 
   it('reset restores the defaults and clears the storage', () => {

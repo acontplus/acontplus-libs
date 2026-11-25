@@ -1,6 +1,7 @@
 @use 'sass:map';
 @use '@angular/material' as mat;
 @use '../../tokens/acp-system';
+@use '../../style/color-utilities';
 
 // ============================================================================
 // acontpluspro: estilos globales de acontplus inspirados en MaterialPro. Define la tipografia,
@@ -30,6 +31,54 @@ $palette: (
 ) !default;
 
 $boxed-max-width: 1300px !default;
+
+// Tinte del color del tema en el hover y foco de opciones de select, items de menu y encabezados
+// de mat-expansion-panel.
+$hover-tint: 12% !default;
+
+// Tamano de los controles. `field`: tokens de `mat-form-field` (alto y padding de Material con
+// densidad -4, -2 y 0). Con `fill`, Material oculta la etiqueta flotante por debajo de 52px; aqui
+// se mantiene y `fill-label-transform` la reduce y la sube para que quepa.
+// `option-height` y `menu-item-height`: opciones de `mat-select`/`mat-autocomplete` e items de
+// `mat-menu` (Material: 48px).
+$control-sizes: (
+  small: (
+    field: (
+      container-height: 40px,
+      container-vertical-padding: 8px,
+      filled-with-label-container-padding-top: 15px,
+      filled-with-label-container-padding-bottom: 1px,
+      filled-label-display: block,
+    ),
+    fill-label-transform: translateY(-17px) scale(0.7),
+    option-height: 33px,
+    menu-item-height: 36px,
+  ),
+  medium: (
+    field: (
+      container-height: 48px,
+      container-vertical-padding: 12px,
+      filled-with-label-container-padding-top: 19px,
+      filled-with-label-container-padding-bottom: 5px,
+      filled-label-display: block,
+    ),
+    fill-label-transform: translateY(-20px) scale(0.75),
+    option-height: 40px,
+    menu-item-height: 42px,
+  ),
+  large: (
+    field: (
+      container-height: 56px,
+      container-vertical-padding: 16px,
+      filled-with-label-container-padding-top: 24px,
+      filled-with-label-container-padding-bottom: 8px,
+      filled-label-display: block,
+    ),
+    fill-label-transform: translateY(-106%) scale(0.75),
+    option-height: 48px,
+    menu-item-height: 48px,
+  ),
+) !default;
 
 @function _skin($name) {
   @return var(--acp-skin-#{$name});
@@ -186,7 +235,10 @@ $boxed-max-width: 1300px !default;
       container-color: _skin(surface),
       container-shape: _skin(radius),
       container-elevation-shadow: _skin(shadow-popup),
-      item-hover-state-layer-color: _skin(surface-muted),
+      // Hover and keyboard focus tinted with the theme color, as select options
+      item-hover-state-layer-color:
+        color-mix(in srgb, #{_skin(accent)} #{$hover-tint}, transparent),
+      item-focus-state-layer-color: color-mix(in srgb, #{_skin(accent)} #{$hover-tint}, transparent),
       item-label-text-size: 0.8125rem,
       item-label-text-tracking: 0.01em,
       item-leading-spacing: 12px,
@@ -213,11 +265,12 @@ $boxed-max-width: 1300px !default;
     )
   );
 
-  // Compact select and autocomplete options
+  // Compact select and autocomplete options; hover tinted with the theme color (surface-muted was
+  // barely visible on the white panel)
   @include mat.option-overrides(
     (
-      hover-state-layer-color: _skin(surface-muted),
-      focus-state-layer-color: _skin(surface-muted),
+      hover-state-layer-color: color-mix(in srgb, #{_skin(accent)} #{$hover-tint}, transparent),
+      focus-state-layer-color: color-mix(in srgb, #{_skin(accent)} #{$hover-tint}, transparent),
       label-text-size: 0.8825rem,
     )
   );
@@ -245,7 +298,16 @@ $boxed-max-width: 1300px !default;
     (
       container-background-color: _skin(surface),
       container-shape: _skin(radius),
-      header-hover-state-layer-color: _skin(surface-muted),
+      header-hover-state-layer-color: color-mix(
+          in srgb,
+          #{_skin(accent)} #{$hover-tint},
+          transparent
+        ),
+      header-focus-state-layer-color: color-mix(
+          in srgb,
+          #{_skin(accent)} #{$hover-tint},
+          transparent
+        ),
     )
   );
 
@@ -303,13 +365,41 @@ $boxed-max-width: 1300px !default;
       border-radius: _skin(radius);
     }
 
-    div.mat-mdc-select-panel {
+    // Paneles de mat-select y mat-autocomplete con la misma forma de opcion
+    div.mat-mdc-select-panel,
+    div.mat-mdc-autocomplete-panel {
       padding: 8px;
 
       .mat-mdc-option {
-        min-height: 33px;
+        min-height: var(--acp-control-option-height, 33px);
         padding-inline: 13px;
         border-radius: 6px;
+      }
+    }
+
+    // Material quita el color de la opcion seleccionada con hover, foco o activa (al abrir, la
+    // seleccionada es la activa) y solo queda el hover, casi blanco en acontpluspro: se conserva y
+    // esos estados lo oscurecen un poco.
+    .mat-mdc-option.mdc-list-item--selected:not(
+        .mdc-list-item--disabled,
+        .mat-mdc-option-multiple
+      ) {
+      $selected: var(--mat-option-selected-state-layer-color, var(--mat-sys-secondary-container));
+      $selected-text: var(
+        --mat-option-selected-state-label-text-color,
+        var(--mat-sys-on-secondary-container)
+      );
+
+      background-color: $selected;
+
+      .mdc-list-item__primary-text {
+        color: $selected-text;
+      }
+
+      &:hover,
+      &:focus,
+      &.mat-mdc-option-active {
+        background-color: color-mix(in srgb, #{$selected-text} 8%, #{$selected});
       }
     }
 
@@ -328,7 +418,12 @@ $boxed-max-width: 1300px !default;
     }
 
     .mat-mdc-menu-item {
-      min-height: 36px;
+      min-height: var(--acp-control-menu-item-height, 36px);
+
+      // `item-icon-size` only sets the icon box; without the font size the 24px glyph is cut.
+      .mat-icon {
+        font-size: var(--mat-menu-item-icon-size, 24px);
+      }
     }
 
     .mat-expansion-panel:not([class*='mat-elevation-z']) {
@@ -485,6 +580,27 @@ $boxed-max-width: 1300px !default;
     margin: 0 auto;
   }
 
+  // Customizer: tamano de los controles (`class="acp-control-<size>"` en <html>). En un contenedor
+  // o en un `mat-form-field` cambia solo esos campos; los paneles de select y menu salen en el
+  // overlay y siguen la clase de <html>.
+  @each $size, $config in $control-sizes {
+    html:root.acp-control-#{$size},
+    .acp-control-#{$size} {
+      @each $name, $value in map.get($config, field) {
+        --mat-form-field-#{$name}: #{$value};
+      }
+
+      --acp-control-fill-label-transform: #{map.get($config, fill-label-transform)};
+      --acp-control-option-height: #{map.get($config, option-height)};
+      --acp-control-menu-item-height: #{map.get($config, menu-item-height)};
+    }
+  }
+
+  // Etiqueta flotante de los campos `fill`, segun el tamano (Material: translateY(-106%) scale(0.75)).
+  html .mdc-text-field--filled .mdc-floating-label--float-above {
+    transform: var(--acp-control-fill-label-transform, translateY(-106%) scale(0.75));
+  }
+
   // Pantalla encajonada: `class="acp-page-boxed"` en el elemento raiz del template
   .acp-page-boxed {
     display: block;
@@ -495,7 +611,8 @@ $boxed-max-width: 1300px !default;
 
 $utility-prefix: 'acp-' !default;
 
-/// Text utility classes from MaterialPro (`.acp-text-sm`, `.acp-font-semibold`...), backed by the
+/// Text utility classes from MaterialPro (`.acp-text-sm`, `.acp-font-semibold`...) and
+/// `.acp-form-field-full` (alias `.form-field-full`), backed by the
 /// `--acp-sys-text-*` and `--acp-sys-font-weight-*` tokens.
 /// @param {String} $prefix Class prefix; pass `''` for MaterialPro/Tailwind names (`.text-sm`).
 @mixin utilities($prefix: $utility-prefix) {
@@ -511,9 +628,20 @@ $utility-prefix: 'acp-' !default;
       font-weight: acp-system.font-weight($name);
     }
   }
+
+  // Campos al 100% del ancho: en un contenedor (todos sus campos) o en el propio `mat-form-field`.
+  // `.form-field-full` es el nombre que ya usan las apps.
+  .#{$prefix}form-field-full,
+  .form-field-full {
+    &.mat-mdc-form-field,
+    .mat-mdc-form-field {
+      width: 100%;
+    }
+  }
 }
 
-/// Applies acontpluspro: tokens on `html:root`, the structural rules and the text utilities.
+/// Applies acontpluspro: tokens on `html:root`, the structural rules, the text utilities and the
+/// M3 color classes (`.acp-text-red-50`, `.acp-bg-...`, `.acp-border-...`).
 @mixin apply($overrides: ()) {
   html:root {
     @include tokens($overrides);
@@ -521,4 +649,5 @@ $utility-prefix: 'acp-' !default;
 
   @include structural;
   @include utilities;
+  @include color-utilities.color-utilities($utility-prefix);
 }

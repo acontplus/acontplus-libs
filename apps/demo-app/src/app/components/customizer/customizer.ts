@@ -4,7 +4,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ACP_LAYOUT_RADIUS_RANGE, AcpDrawerRef } from '@acontplus/ng-components';
+import { ACP_CONTROL_SIZES, ACP_LAYOUT_RADIUS_RANGE, AcpDrawerRef } from '@acontplus/ng-components';
 import { AppSettings, THEME_COLORS } from '../../core/settings';
 import { SettingsService } from '../../core/settings.service';
 
@@ -135,6 +135,35 @@ interface ToggleOption<T> {
           <span>{{ options().radius }}px</span>
         </div>
       </section>
+
+      <section>
+        <h3>Form Fields</h3>
+        <mat-button-toggle-group
+          aria-label="Form field appearance"
+          [value]="options().fieldAppearance"
+          (change)="set('fieldAppearance', $event.value)"
+        >
+          @for (option of fieldAppearanceOptions; track option.value) {
+            <mat-button-toggle [value]="option.value">
+              <mat-icon>{{ option.icon }}</mat-icon>
+              {{ option.label }}
+            </mat-button-toggle>
+          }
+        </mat-button-toggle-group>
+      </section>
+
+      <section>
+        <h3>Form Field Size</h3>
+        <mat-button-toggle-group
+          aria-label="Form field size"
+          [value]="options().controlSize"
+          (change)="set('controlSize', $event.value)"
+        >
+          @for (size of controlSizes; track size) {
+            <mat-button-toggle [value]="size">{{ size }}</mat-button-toggle>
+          }
+        </mat-button-toggle-group>
+      </section>
     </div>
   `,
   styles: `
@@ -239,6 +268,7 @@ export class Customizer {
   readonly options = this.settings.options;
   readonly themeColors = THEME_COLORS;
   readonly radiusRange = ACP_LAYOUT_RADIUS_RANGE;
+  readonly controlSizes = ACP_CONTROL_SIZES;
 
   readonly themeOptions: ToggleOption<AppSettings['theme']>[] = [
     { value: 'light', label: 'Light', icon: 'light_mode' },
@@ -252,6 +282,10 @@ export class Customizer {
   readonly containerOptions: ToggleOption<AppSettings['container']>[] = [
     { value: 'full', label: 'Full', icon: 'width_full' },
     { value: 'boxed', label: 'Boxed', icon: 'width_normal' },
+  ];
+  readonly fieldAppearanceOptions: ToggleOption<AppSettings['fieldAppearance']>[] = [
+    { value: 'outline', label: 'Outline', icon: 'check_box_outline_blank' },
+    { value: 'fill', label: 'Fill', icon: 'rectangle' },
   ];
   readonly cardOptions: ToggleOption<AppSettings['cardStyle']>[] = [
     { value: 'shadow', label: 'Shadow', icon: 'layers' },

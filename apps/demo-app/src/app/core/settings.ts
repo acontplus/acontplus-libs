@@ -1,4 +1,8 @@
-import { ACP_LAYOUT_DEFAULTS } from '@acontplus/ng-components';
+import {
+  ACP_LAYOUT_DEFAULTS,
+  type AcpFieldAppearance,
+  type AcpControlSize,
+} from '@acontplus/ng-components';
 
 export type AppTheme = 'light' | 'dark' | 'auto';
 export type AppThemeColor =
@@ -15,6 +19,10 @@ export interface AppSettings {
   cardStyle: AppCardStyle;
   /** Theme border radius in px (`--acp-skin-radius`). */
   radius: number;
+  /** Default `mat-form-field` appearance (`MAT_FORM_FIELD_DEFAULT_OPTIONS`). */
+  fieldAppearance: AcpFieldAppearance;
+  /** `mat-form-field` height (`acp-control-<size>` on `<html>`). */
+  controlSize: AcpControlSize;
 }
 
 export const THEME_COLORS: AppThemeColor[] = [
@@ -35,4 +43,6 @@ export const defaults: AppSettings = {
   container: 'full',
   cardStyle: 'shadow',
   radius: ACP_LAYOUT_DEFAULTS.radius,
+  fieldAppearance: ACP_LAYOUT_DEFAULTS.fieldAppearance,
+  controlSize: ACP_LAYOUT_DEFAULTS.controlSize,
 };

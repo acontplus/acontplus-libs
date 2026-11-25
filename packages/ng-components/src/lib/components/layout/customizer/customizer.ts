@@ -16,6 +16,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AcpDrawer, type AcpDrawerRef } from '../../drawer';
 import {
+  ACP_CONTROL_SIZES,
   ACP_LAYOUT_RADIUS_RANGE,
   ACP_THEME_COLORS,
   type AcpLayoutOptions,
@@ -53,6 +54,13 @@ export interface AcpCustomizerLabels {
   full: string;
   boxed: string;
   radius: string;
+  fieldAppearance: string;
+  outline: string;
+  fill: string;
+  controlSize: string;
+  small: string;
+  medium: string;
+  large: string;
 }
 
 export const ACP_CUSTOMIZER_LABELS: AcpCustomizerLabels = {
@@ -86,6 +94,13 @@ export const ACP_CUSTOMIZER_LABELS: AcpCustomizerLabels = {
   full: 'Completo',
   boxed: 'Encajonado',
   radius: 'Radio del borde',
+  fieldAppearance: 'Campos de formulario',
+  outline: 'Contorno',
+  fill: 'Relleno',
+  controlSize: 'Tamaño de los controles',
+  small: 'Pequeño',
+  medium: 'Mediano',
+  large: 'Grande',
 };
 
 /** Draggable settings button that opens a drawer to edit the `acp-layout` options. */
@@ -120,6 +135,7 @@ export class AcpCustomizer {
   protected readonly options = this.#settings.options;
   protected readonly themeColors = ACP_THEME_COLORS;
   protected readonly radiusRange = ACP_LAYOUT_RADIUS_RANGE;
+  protected readonly controlSizes = ACP_CONTROL_SIZES;
 
   // Combinations the layout cannot render.
   protected readonly headerAbove = computed(() => this.options().headerPos === 'above');

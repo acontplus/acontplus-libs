@@ -1,5 +1,6 @@
 import { Injectable, inject, computed, signal } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
+import { ACP_CONTROL_SIZES } from '@acontplus/ng-components';
 import type { AppSettings, AppTheme, AppThemeColor } from './settings';
 import { THEME_COLORS, defaults } from './settings';
 
@@ -55,7 +56,7 @@ export class SettingsService {
 
   private applyTheme() {
     const html = this.document.documentElement;
-    const { theme, themeColor, dir, container, cardStyle, radius } = this.options();
+    const { theme, themeColor, dir, container, cardStyle, radius, controlSize } = this.options();
 
     html.classList.remove(...THEME_COLORS.map(color => `theme-${color}`));
     html.classList.add(`theme-${themeColor}`);
@@ -63,6 +64,9 @@ export class SettingsService {
     html.classList.toggle('acp-boxed', container === 'boxed');
     html.classList.toggle('acp-card-border', cardStyle === 'border');
     html.style.setProperty('--acp-skin-radius', `${radius}px`);
+    for (const size of ACP_CONTROL_SIZES) {
+      html.classList.toggle(`acp-control-${size}`, size === controlSize);
+    }
 
     // Apply dark mode
     if (theme === 'auto') {

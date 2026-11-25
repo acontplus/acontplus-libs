@@ -4,6 +4,7 @@
   <mat-checkbox
     matPrefix
     [(ngModel)]="checkbox"
+    [ngModelOptions]="{ standalone: true }"
     (click)="onCheckboxClick($event)"
     (change)="checkboxToggled.emit()"
   />
@@ -13,6 +14,7 @@
   <mat-checkbox
     matSuffix
     [(ngModel)]="checkbox"
+    [ngModelOptions]="{ standalone: true }"
     (click)="onCheckboxClick($event)"
     (change)="checkboxToggled.emit()"
   />

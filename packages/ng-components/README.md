@@ -902,11 +902,29 @@ branding: { name: 'AcontPlus', logo: 'images/logo/acontplus.svg', display: 'logo
   permissions package.
 - Options (`AcpLayoutOptions`): `navPos` (`side` / `top`), `headerPos` (`fixed` / `static` /
   `above`), `showHeader`, `showUserPanel`, `sidenavOpened`, `sidenavCollapsed`, `dir`, `theme`
-  (`light` / `dark` / `auto`), `themeColor` (a prebuilt theme), `cardBorder`, `boxed` and `radius` (px, 4-24, default 10).
+  (`light` / `dark` / `auto`), `themeColor` (a prebuilt theme), `cardBorder`, `boxed`, `radius` (px, 4-24, default 10),
+  `fieldAppearance` (`outline` / `fill`, default `outline`) and `controlSize` (`small` / `medium` / `large`, default `small`; see acontpluspro).
 - `AcpLayoutSettings` applies them to `<html>`: `color-scheme` and `theme-dark`, `theme-<color>`,
-  `dir`, `acp-card-border`, `acp-boxed` and `--acp-skin-radius`. Read them with `settings.options()` / `isDark()` and
+  `dir`, `acp-card-border`, `acp-boxed`, `acp-control-<size>` and `--acp-skin-radius`. Read them with `settings.options()` / `isDark()` and
   change them with `settings.set({ ... })`. `provideAcpLayout` creates it on startup, so pages
   outside the layout (login) get the theme too.
+- `provideAcpLayout` also provides `MAT_FORM_FIELD_DEFAULT_OPTIONS` with `fieldAppearance`, built
+  with `acpFieldDefaults(appearance, options?)`: the fields already on screen switch live, and a
+  field with its own `appearance` keeps it. To add other defaults (e.g. `subscriptSizing`), provide
+  `MAT_FORM_FIELD_DEFAULT_OPTIONS` after `provideAcpLayout`, reusing the helper:
+
+  ```ts
+  {
+    provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+    useFactory: () => {
+      const settings = inject(AcpLayoutSettings);
+      return acpFieldDefaults(computed(() => settings.options().fieldAppearance), {
+        subscriptSizing: 'dynamic',
+      });
+    },
+  }
+  ```
+
 - `acp-customizer` labels are Spanish by default; override them with `[labels]`. The panel is
   360px wide (Material's sidenav width, as in MaterialPro); change it with `[width]`.
 - Header and sidebar widgets (data comes from the app):
@@ -1268,6 +1286,21 @@ Or with your own values:
   width (1300px).
 - Opt-in classes: `acp-card-border` on `<html>` (borders instead of card shadows), `acp-boxed` on
   `<html>` (centered page content, max 1300px) and `acp-page-boxed` on a page root.
+- Control size: `acp-control-small`, `acp-control-medium` or `acp-control-large` on `<html>` (set
+  by `controlSize`) sizes form fields (40 / 48 / 56px), `mat-select` and `mat-autocomplete`
+  options (33 / 40 / 48px) and `mat-menu` items (36 / 42 / 48px), through
+  `--acp-control-option-height` and `--acp-control-menu-item-height`. On a container or a
+  `mat-form-field` the class sizes only those fields (select and menu panels open in the overlay
+  and follow `<html>`). The values come from `$acontpluspro-control-sizes`. Unlike Material's
+  density, `fill` fields keep the floating label at every size: it gets smaller and moves up
+  (`--acp-control-fill-label-transform`).
+- `.acp-form-field-full` (alias `.form-field-full`): on a container, its `mat-form-field`s take
+  100% width; on a `mat-form-field`, only that field.
+- Color classes from the M3 palettes, included by acontpluspro: `.acp-text-<color>-<tone>`,
+  `.acp-bg-...` and `.acp-border-...` for `red`, `green`, `blue`,
+  `yellow`, `cyan`, `magenta`, `orange`, `chartreuse`, `spring-green`, `azure`, `violet` and
+  `rose` (tones 0-100), plus `white`, `black`, `light` and `dark`. For unprefixed names
+  (`.bg-red-50`) add `@include acp.color-utilities('');`. The sidemenu badge `color` (`red-50`) uses these classes.
 - Dark values use `light-dark()`, so the app must set `color-scheme: dark` in dark mode.
 - The library does not load fonts: add Poppins to the app (see Design Tokens).
 - App-specific styles (Bootstrap `.card`/`.table`/`.form-control`, global `h1`-`h6` resets,

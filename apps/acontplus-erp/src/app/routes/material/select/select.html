@@ -1,0 +1,219 @@
+<div class="select-page">
+  <h1>Seleccionar</h1>
+
+  <section>
+    <h3>Básico</h3>
+    <div class="grid">
+      <mat-form-field>
+        <mat-label>Fruta</mat-label>
+        <mat-select [(ngModel)]="basic">
+          <mat-option value="">Ninguna</mat-option>
+          @for (fruit of fruits; track fruit.value) {
+            <mat-option [value]="fruit.value" [disabled]="fruit.disabled">
+              {{ fruit.label }}
+            </mat-option>
+          }
+        </mat-select>
+        <mat-hint>Seleccionado: {{ labelOf(basic()) || '-' }}</mat-hint>
+      </mat-form-field>
+    </div>
+  </section>
+
+  <section>
+    <h3>Apariencias</h3>
+    <div class="grid">
+      <mat-form-field appearance="fill">
+        <mat-label>Fill</mat-label>
+        <mat-select>
+          @for (fruit of fruits; track fruit.value) {
+            <mat-option [value]="fruit.value">{{ fruit.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Outline</mat-label>
+        <mat-select>
+          @for (fruit of fruits; track fruit.value) {
+            <mat-option [value]="fruit.value">{{ fruit.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </section>
+
+  <section>
+    <h3>Selección múltiple</h3>
+    <div class="grid">
+      <mat-form-field>
+        <mat-label>Frutas</mat-label>
+        <mat-select [(ngModel)]="multiple" multiple>
+          <mat-select-trigger>
+            {{ labelOf(multiple()[0]) }}
+            @if (multiple().length > 1) {
+              <span class="extra">(+{{ multiple().length - 1 }} más)</span>
+            }
+          </mat-select-trigger>
+          @for (fruit of fruits; track fruit.value) {
+            <mat-option [value]="fruit.value" [disabled]="fruit.disabled">
+              {{ fruit.label }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </section>
+
+  <section>
+    <h3>Grupos de opciones</h3>
+    <div class="grid">
+      <mat-form-field>
+        <mat-label>Ciudad</mat-label>
+        <mat-select>
+          @for (group of groups; track group.name) {
+            <mat-optgroup [label]="group.name">
+              @for (option of group.options; track option.value) {
+                <mat-option [value]="option.value">{{ option.label }}</mat-option>
+              }
+            </mat-optgroup>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </section>
+
+  <section>
+    <h3>Con iconos y trigger personalizado</h3>
+    <div class="grid">
+      <mat-form-field>
+        <mat-label>Estado</mat-label>
+        <mat-icon matPrefix>{{ statusOf(status())?.icon }}</mat-icon>
+        <mat-select [(ngModel)]="status">
+          <mat-select-trigger>{{ statusOf(status())?.label }}</mat-select-trigger>
+          @for (s of statuses; track s.value) {
+            <mat-option [value]="s.value">
+              <mat-icon>{{ s.icon }}</mat-icon>
+              {{ s.label }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </section>
+
+  <section>
+    <h3>Validación (formulario reactivo)</h3>
+    <div class="grid">
+      <mat-form-field>
+        <mat-label>Fruta requerida</mat-label>
+        <mat-select [formControl]="requiredControl">
+          @for (fruit of fruits; track fruit.value) {
+            <mat-option [value]="fruit.value">{{ fruit.label }}</mat-option>
+          }
+        </mat-select>
+        @if (requiredControl.hasError('required')) {
+          <mat-error>Debe seleccionar una fruta</mat-error>
+        }
+        <mat-hint>Abra y cierre sin elegir para ver el error</mat-hint>
+      </mat-form-field>
+    </div>
+  </section>
+
+  <section>
+    <h3>Estados</h3>
+    <div class="grid">
+      <mat-form-field>
+        <mat-label>Deshabilitado</mat-label>
+        <mat-select [formControl]="disabledControl">
+          @for (fruit of fruits; track fruit.value) {
+            <mat-option [value]="fruit.value">{{ fruit.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Sin indicador</mat-label>
+        <mat-select hideSingleSelectionIndicator>
+          @for (fruit of fruits; track fruit.value) {
+            <mat-option [value]="fruit.value">{{ fruit.label }}</mat-option>
+          }
+        </mat-select>
+        <mat-hint>hideSingleSelectionIndicator</mat-hint>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Panel ancho</mat-label>
+        <mat-select panelWidth="320px">
+          @for (fruit of fruits; track fruit.value) {
+            <mat-option [value]="fruit.value">{{ fruit.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </section>
+
+  <section>
+    <h3>Autocompletar</h3>
+    <div class="grid">
+      <mat-form-field>
+        <mat-label>Ciudad</mat-label>
+        <input
+          matInput
+          [ngModel]="city()"
+          (ngModelChange)="city.set($event)"
+          [matAutocomplete]="cityAuto"
+        />
+        <mat-autocomplete #cityAuto="matAutocomplete">
+          @for (option of cities(); track option.value) {
+            <mat-option [value]="option.label">{{ option.label }}</mat-option>
+          }
+        </mat-autocomplete>
+      </mat-form-field>
+    </div>
+  </section>
+
+  <section>
+    <h3>Con iconos y botones dentro del campo</h3>
+    <div class="grid">
+      <mat-form-field>
+        <mat-label>Buscar</mat-label>
+        <mat-icon matPrefix>search</mat-icon>
+        <input matInput [(ngModel)]="search" />
+        @if (search()) {
+          <button matIconButton matSuffix aria-label="Limpiar" (click)="search.set('')">
+            <mat-icon>close</mat-icon>
+          </button>
+        }
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Contraseña</mat-label>
+        <input matInput [type]="hidePassword() ? 'password' : 'text'" value="secreto" />
+        <button
+          matIconButton
+          matSuffix
+          [attr.aria-label]="hidePassword() ? 'Mostrar' : 'Ocultar'"
+          (click)="hidePassword.set(!hidePassword())"
+        >
+          <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Monto</mat-label>
+        <span matTextPrefix>$&nbsp;</span>
+        <input matInput type="number" value="125.50" />
+        <span matTextSuffix>USD</span>
+      </mat-form-field>
+    </div>
+  </section>
+
+  <section>
+    <h3>Select nativo</h3>
+    <div class="grid">
+      <mat-form-field>
+        <mat-label>Fruta (nativo)</mat-label>
+        <select matNativeControl>
+          @for (fruit of fruits; track fruit.value) {
+            <option [value]="fruit.value" [disabled]="fruit.disabled">{{ fruit.label }}</option>
+          }
+        </select>
+      </mat-form-field>
+    </div>
+  </section>
+</div>

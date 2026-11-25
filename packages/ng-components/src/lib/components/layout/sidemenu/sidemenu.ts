@@ -84,7 +84,9 @@ import { AcpNavAccordionToggle } from './nav-accordion-toggle';
         <span class="menu-label bg-{{ item.label.color }}">{{ item.label.value }}</span>
       }
       @if (item.badge) {
-        <span class="menu-badge bg-{{ item.badge.color }}">{{ item.badge.value }}</span>
+        <span class="menu-badge bg-{{ item.badge.color }} acp-bg-{{ item.badge.color }}">{{
+          item.badge.value
+        }}</span>
       }
       @if (item.type !== 'link') {
         <mat-icon class="menu-caret">{{

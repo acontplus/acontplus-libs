@@ -1,0 +1,53 @@
+@use 'sass:meta';
+@use '@angular/material' as mat;
+
+// Paletas M3 de Material y colores fijos para las clases de color (`.acp-text-red-50`...).
+$colors: (
+  'red': mat.$red-palette,
+  'green': mat.$green-palette,
+  'blue': mat.$blue-palette,
+  'yellow': mat.$yellow-palette,
+  'cyan': mat.$cyan-palette,
+  'magenta': mat.$magenta-palette,
+  'orange': mat.$orange-palette,
+  'chartreuse': mat.$chartreuse-palette,
+  'spring-green': mat.$spring-green-palette,
+  'azure': mat.$azure-palette,
+  'violet': mat.$violet-palette,
+  'rose': mat.$rose-palette,
+  'white': white,
+  'black': black,
+  'light': rgba(white, 0.87),
+  'dark': rgba(black, 0.87),
+) !default;
+
+$properties: (
+  text: color,
+  bg: background-color,
+  border: border-color,
+) !default;
+
+/// Color classes from the M3 palettes: `.<prefix>text-<color>-<tone>`, `.<prefix>bg-...` and
+/// `.<prefix>border-...` (tones 0-100), plus `white`, `black`, `light` and `dark` without tone.
+/// @param {String} $prefix Class prefix; pass `''` for the legacy names (`.bg-red-50`).
+/// @param {Map} $colors Colors to emit; a palette map emits one class per tone.
+@mixin color-utilities($prefix: 'acp-', $colors: $colors) {
+  @each $kind, $property in $properties {
+    @each $name, $value in $colors {
+      @if meta.type-of($value) == 'map' {
+        @each $tone, $color in $value {
+          // Skips the nested secondary, neutral and error palettes.
+          @if meta.type-of($color) == 'color' {
+            .#{$prefix}#{$kind}-#{$name}-#{$tone} {
+              #{$property}: $color !important;
+            }
+          }
+        }
+      } @else {
+        .#{$prefix}#{$kind}-#{$name} {
+          #{$property}: $value !important;
+        }
+      }
+    }
+  }
+}

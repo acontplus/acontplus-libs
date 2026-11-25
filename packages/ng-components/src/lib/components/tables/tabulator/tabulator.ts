@@ -295,24 +295,15 @@ export class AcpTabulator<T extends object = Record<string, unknown>> {
     const sameRows =
       data.length === shown.length &&
       data.every((row, i) => this.#key(row) === this.#key(shown[i]));
-    let operation: Promise<unknown> | undefined;
     if (sameRows) {
       const changed = data.filter((row, i) => row !== shown[i]);
       if (changed.length) {
-        operation = this.#outside(() => table.updateData(changed.map(row => ({ ...row }))));
+        this.#pending = this.#outside(() => table.updateData(changed.map(row => ({ ...row }))));
       }
     } else {
-      operation = this.#outside(() => table.replaceData(data.map(row => ({ ...row }))));
+      this.#pending = this.#outside(() => table.replaceData(data.map(row => ({ ...row }))));
     }
-    // Updated now so quick consecutive syncs compare against the latest data. If the table rejects
-    // the latest operation, the next sync replaces everything.
     this.#shown = data;
-    if (operation) {
-      this.#pending = operation;
-      operation.catch(() => {
-        if (this.#pending === operation) this.#shown = [];
-      });
-    }
   }
 
   #applyColumns(columns: ColumnDefinition[]): void {

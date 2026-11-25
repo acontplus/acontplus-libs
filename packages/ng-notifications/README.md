@@ -161,6 +161,49 @@ export class MyComponent {
 }
 ```
 
+## AcpSwalService
+
+SweetAlert2 with buttons styled like `acp-button` (Material 3 colors, appearances and sizes) and the
+app light/dark theme (`theme-dark` on `<html>`). It does not need `provideNotifications`.
+
+```scss
+// styles.scss: SweetAlert2 CSS, then the library styles (include `_sweetalert-theme.scss`)
+@use 'sweetalert2/src/sweetalert2.scss';
+@use '@acontplus/ng-notifications/src/styles';
+```
+
+```typescript
+import { AcpSwalService, acpEscapeHtml } from '@acontplus/ng-notifications';
+
+const swal = inject(AcpSwalService);
+
+if (await swal.confirm({ title: 'Eliminar factura', danger: true })) {
+  swal.toast({ title: 'Factura eliminada' });
+}
+
+swal.error({ html: `No se pudo guardar <b>${acpEscapeHtml(name)}</b>` });
+
+swal.fire({
+  title: 'Guardar cambios',
+  buttons: {
+    confirm: { text: 'Guardar', color: 'success' },
+    deny: { text: 'Descartar' },
+    cancel: {},
+  },
+});
+```
+
+- Methods: `fire(options)` (any SweetAlert2 option plus `buttons`), `confirm()` (resolves
+  `boolean`), `success()` (closes after 2s), `error()`, `warning()`, `info()` and `toast()`.
+- Buttons: `confirm`, `cancel` and `deny` take `text`, `color` (`primary`, `secondary`, `accent`,
+  `error`/`danger`, `success`, `warning`, `info`, `dark`, `light`), `appearance` (`filled`,
+  `tonal`, `outlined`, `elevated`, `text`), `size` (`small`, `medium`, `large`) and `square`.
+  Setting `cancel` or `deny` shows that button.
+- Texts are Spanish by default; change them with `ACP_SWAL_BUTTONS` and `ACP_SWAL_CONFIRM_TEXT`.
+- CSS classes: `acp-swal-btn`, `acp-swal-btn--<appearance|size>`, `acp-swal-c-<color>`, and
+  `acp-swal-muted` / `acp-swal-table` for HTML content.
+- Escape user text with `acpEscapeHtml` before using the `html` option.
+
 ## Provider Behaviors
 
 ### SweetAlert2 (Default)

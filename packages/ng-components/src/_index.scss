@@ -14,8 +14,6 @@
   kpi-card-color, kpi-card-typography, kpi-card-density, kpi-card-base, kpi-card-overrides;
 @forward './core/theming/definition' show define-theme, define-colors, define-typography,
   define-density;
-@forward './core/theming/color-api-backwards-compatibility' show
-  color-variants-backwards-compatibility;
 
 @forward './core/tokens/system' show system-level-colors, system-level-typography,
   system-level-elevation, system-level-shape, system-level-motion, system-level-state, theme,
@@ -23,12 +21,13 @@
 
 @forward './core/theming/acontpluspro/acontpluspro' as acontpluspro-* show acontpluspro-apply,
   acontpluspro-tokens, acontpluspro-structural, acontpluspro-utilities, $acontpluspro-palette,
-  $acontpluspro-boxed-max-width, $acontpluspro-utility-prefix;
+  $acontpluspro-boxed-max-width, $acontpluspro-control-sizes, $acontpluspro-utility-prefix;
 @forward './core/tokens/acp-system' as acp-system-* show acp-system-tokens, acp-system-layout,
   acp-system-layout-tokens, acp-system-text-tokens, acp-system-text-size,
   acp-system-text-line-height, acp-system-font-weight, $acp-system-font-family, $acp-system-tokens,
   $acp-system-layout, $acp-system-text-scale, $acp-system-font-weights;
 @forward './core/style/breakpoints';
+@forward './core/style/color-utilities' show color-utilities;
 @forward './core/theming/prebuilt/themes' as prebuilt-* show prebuilt-theme, prebuilt-all-themes,
   $prebuilt-themes;
 @forward './core/theming/all-theme' show all-component-themes, all-component-bases;

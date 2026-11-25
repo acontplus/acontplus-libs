@@ -1,9 +1,13 @@
 import {
   ApplicationConfig,
+  computed,
+  inject,
   provideBrowserGlobalErrorListeners,
   provideZoneChangeDetection,
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
+import { acpFieldDefaults } from '@acontplus/ng-components';
 import { appRoutes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { environment } from '../environments/environment';
@@ -77,9 +81,12 @@ export const appConfig: ApplicationConfig = {
     { provide: WHATSAPP_MESSAGING_PORT, useClass: MetaWhatsAppAdapter },
     { provide: REPORT_PORT, useClass: ReportAdapter },
 
-    // {
-    //   provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
-    //   useValue: { appearance: 'outline', subscriptSizing: 'dynamic' },
-    // },
+    {
+      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+      useFactory: () => {
+        const settings = inject(SettingsService);
+        return acpFieldDefaults(computed(() => settings.options().fieldAppearance));
+      },
+    },
   ],
 };

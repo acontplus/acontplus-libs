@@ -1,0 +1,28 @@
+.select-page {
+  padding: 20px;
+}
+
+section {
+  margin-bottom: 40px;
+
+  h3 {
+    margin-bottom: 16px;
+    font: var(--mat-sys-title-medium);
+  }
+}
+
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+mat-form-field {
+  width: 260px;
+}
+
+.extra {
+  opacity: 0.75;
+  font-size: 0.85em;
+}

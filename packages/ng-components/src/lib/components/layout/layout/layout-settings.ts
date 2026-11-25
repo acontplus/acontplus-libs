@@ -10,6 +10,7 @@ import {
   signal,
 } from '@angular/core';
 import {
+  ACP_CONTROL_SIZES,
   ACP_LAYOUT_CONFIG,
   ACP_LAYOUT_DEFAULTS,
   ACP_THEME_COLORS,
@@ -21,7 +22,7 @@ const DEFAULT_STORAGE_KEY = 'acp-layout';
 /**
  * Layout options as a signal. Persists them in `localStorage` and reflects them on `<html>`:
  * `color-scheme` and `theme-dark` (theme), `theme-<color>`, `dir`, `acp-card-border`,
- * `acp-boxed` and `--acp-skin-radius`.
+ * `acp-boxed`, `acp-control-<size>` and `--acp-skin-radius`.
  */
 @Injectable({ providedIn: 'root' })
 export class AcpLayoutSettings {
@@ -83,6 +84,9 @@ export class AcpLayoutSettings {
     }
     html.classList.toggle('acp-card-border', options.cardBorder);
     html.classList.toggle('acp-boxed', options.boxed);
+    for (const size of ACP_CONTROL_SIZES) {
+      html.classList.toggle(`acp-control-${size}`, size === options.controlSize);
+    }
     html.style.setProperty('--acp-skin-radius', `${options.radius}px`);
     html.dir = options.dir;
   }

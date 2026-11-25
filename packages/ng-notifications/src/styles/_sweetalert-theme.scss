@@ -1,0 +1,181 @@
+// SweetAlert2: botones con la apariencia de acp-button (Material 3).
+// Las clases las asigna AcpSwalService (buttonsStyling: false).
+
+// Mismo radio que mat-dialog / acp-dialog. Los toasts conservan el suyo.
+.swal2-popup:not(.swal2-toast) {
+  --swal2-border-radius: var(--mat-dialog-container-shape, var(--mat-sys-corner-extra-large, 28px));
+}
+
+.acp-swal-actions {
+  gap: 8px;
+}
+
+.acp-swal-btn {
+  --acp-swal-c: var(--acp-theme-primary-color, var(--mat-sys-primary));
+  --acp-swal-on: #ffffff;
+  --acp-swal-fg: var(--acp-swal-c);
+  --acp-swal-h: 40px;
+  --acp-swal-px: 24px;
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--acp-swal-h);
+  min-width: 64px;
+  margin: 0;
+  padding: 0 var(--acp-swal-px);
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--mat-sys-corner-full, 9999px);
+  font: var(--mat-sys-label-large, 500 14px / 20px Roboto, sans-serif);
+  letter-spacing: var(--mat-sys-label-large-tracking, 0.1px);
+  color: var(--acp-swal-fg);
+  background: transparent;
+  cursor: pointer;
+  transition:
+    box-shadow 0.2s,
+    background-color 0.2s;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: currentColor;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+  }
+
+  &:hover::before {
+    opacity: 0.08;
+  }
+
+  &:active::before,
+  &:focus-visible::before {
+    opacity: 0.12;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--acp-swal-c);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.38;
+    cursor: default;
+  }
+
+  // Apariencias
+  &--filled {
+    color: var(--acp-swal-on);
+    background: var(--acp-swal-c);
+
+    &:hover {
+      box-shadow: var(--mat-sys-level1);
+    }
+  }
+
+  &--tonal {
+    background: color-mix(in srgb, var(--acp-swal-c) 16%, transparent);
+  }
+
+  &--outlined {
+    border: 1px solid var(--mat-sys-outline, #79747e);
+  }
+
+  &--elevated {
+    background: var(--mat-sys-surface-container-low, #f7f2fa);
+    box-shadow: var(--mat-sys-level1);
+  }
+
+  &--text {
+    --acp-swal-px: 12px;
+  }
+
+  // Tamaños (mismas densidades que acp-button)
+  &--medium {
+    --acp-swal-h: 36px;
+    --acp-swal-px: 20px;
+  }
+
+  &--small {
+    --acp-swal-h: 32px;
+    --acp-swal-px: 16px;
+  }
+
+  &--text.acp-swal-btn--medium,
+  &--text.acp-swal-btn--small {
+    --acp-swal-px: 12px;
+  }
+
+  &--square {
+    border-radius: 8px;
+  }
+}
+
+// Colores (mismos valores que acp-button)
+.acp-swal-c-secondary {
+  --acp-swal-c: var(--mat-sys-secondary);
+  --acp-swal-on: var(--mat-sys-on-secondary);
+}
+
+.acp-swal-c-accent {
+  --acp-swal-c: var(--mat-sys-tertiary);
+  --acp-swal-on: var(--mat-sys-on-tertiary);
+}
+
+.acp-swal-c-error {
+  --acp-swal-c: var(--mat-sys-error);
+  --acp-swal-on: var(--mat-sys-on-error);
+}
+
+.acp-swal-c-success {
+  --acp-swal-c: #4caf50;
+}
+
+.acp-swal-c-warning {
+  --acp-swal-c: #f59e0b;
+}
+
+.acp-swal-c-info {
+  --acp-swal-c: #3b82f6;
+}
+
+.acp-swal-c-dark {
+  --acp-swal-c: #1f2937;
+  --acp-swal-fg: light-dark(#1f2937, #ffffff);
+}
+
+.acp-swal-c-light {
+  --acp-swal-c: #ffffff;
+  --acp-swal-on: #1f2937;
+  --acp-swal-fg: light-dark(#1f2937, #ffffff);
+}
+
+// Contenido HTML dentro de las alertas, con tokens de Material (modo claro/oscuro)
+.acp-swal-muted {
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.acp-swal-table {
+  width: 100%;
+  margin-bottom: 0.5rem;
+  border-collapse: collapse;
+  text-align: start;
+  font-size: 0.9em;
+
+  th,
+  td {
+    padding: 0.375rem 0.5rem;
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+    vertical-align: top;
+  }
+
+  th {
+    width: 1%;
+    white-space: nowrap;
+    font-weight: 600;
+    color: var(--mat-sys-on-surface-variant);
+  }
+}

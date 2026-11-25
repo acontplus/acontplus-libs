@@ -1,0 +1,153 @@
+<div class="menu-page">
+  <h1>Menú</h1>
+  <p class="last-action">Última acción: {{ lastAction() }}</p>
+
+  <section>
+    <h3>Básico</h3>
+    <div class="grid">
+      <button matButton="outlined" [matMenuTriggerFor]="basic">Abrir menú</button>
+      <mat-menu #basic="matMenu">
+        <button mat-menu-item (click)="run('Nuevo')">Nuevo</button>
+        <button mat-menu-item (click)="run('Abrir')">Abrir</button>
+        <button mat-menu-item (click)="run('Guardar')">Guardar</button>
+        <button mat-menu-item disabled>Deshabilitado</button>
+      </mat-menu>
+    </div>
+  </section>
+
+  <section>
+    <h3>Con iconos y divisor</h3>
+    <div class="grid">
+      <button matIconButton [matMenuTriggerFor]="icons" aria-label="Más acciones">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #icons="matMenu">
+        <button mat-menu-item (click)="run('Editar')">
+          <mat-icon>edit</mat-icon>
+          <span>Editar</span>
+        </button>
+        <button mat-menu-item (click)="run('Duplicar')">
+          <mat-icon>content_copy</mat-icon>
+          <span>Duplicar</span>
+        </button>
+        <button mat-menu-item (click)="run('Descargar PDF')">
+          <mat-icon>picture_as_pdf</mat-icon>
+          <span>Descargar PDF</span>
+        </button>
+        <mat-divider />
+        <button mat-menu-item class="danger" (click)="run('Eliminar')">
+          <mat-icon>delete</mat-icon>
+          <span>Eliminar</span>
+        </button>
+      </mat-menu>
+    </div>
+  </section>
+
+  <section>
+    <h3>Submenús</h3>
+    <div class="grid">
+      <button matButton="tonal" [matMenuTriggerFor]="reports">
+        Reportes
+        <mat-icon iconPositionEnd>arrow_drop_down</mat-icon>
+      </button>
+      <mat-menu #reports="matMenu">
+        <button mat-menu-item [matMenuTriggerFor]="sales">
+          <mat-icon>point_of_sale</mat-icon>
+          <span>Ventas</span>
+        </button>
+        <button mat-menu-item [matMenuTriggerFor]="inventory">
+          <mat-icon>inventory_2</mat-icon>
+          <span>Inventario</span>
+        </button>
+      </mat-menu>
+      <mat-menu #sales="matMenu">
+        <button mat-menu-item (click)="run('Ventas por día')">Por día</button>
+        <button mat-menu-item (click)="run('Ventas por cliente')">Por cliente</button>
+      </mat-menu>
+      <mat-menu #inventory="matMenu">
+        <button mat-menu-item (click)="run('Kardex')">Kardex</button>
+        <button mat-menu-item (click)="run('Existencias')">Existencias</button>
+      </mat-menu>
+    </div>
+  </section>
+
+  <section>
+    <h3>Posición</h3>
+    <div class="grid">
+      <button matButton="outlined" [matMenuTriggerFor]="above">Arriba</button>
+      <mat-menu #above="matMenu" yPosition="above">
+        <button mat-menu-item>Opción 1</button>
+        <button mat-menu-item>Opción 2</button>
+      </mat-menu>
+      <button matButton="outlined" [matMenuTriggerFor]="before">Antes</button>
+      <mat-menu #before="matMenu" xPosition="before">
+        <button mat-menu-item>Opción 1</button>
+        <button mat-menu-item>Opción 2</button>
+      </mat-menu>
+      <button matButton="outlined" [matMenuTriggerFor]="overlap">Sobre el botón</button>
+      <mat-menu #overlap="matMenu" [overlapTrigger]="true">
+        <button mat-menu-item>Opción 1</button>
+        <button mat-menu-item>Opción 2</button>
+      </mat-menu>
+    </div>
+  </section>
+
+  <section>
+    <h3>Acciones por fila</h3>
+    <ul class="rows">
+      @for (row of rows; track row.id) {
+        <li>
+          <span>{{ row.name }}</span>
+          <button
+            matIconButton
+            [matMenuTriggerFor]="rowMenu"
+            [matMenuTriggerData]="{ row }"
+            aria-label="Acciones"
+          >
+            <mat-icon>more_horiz</mat-icon>
+          </button>
+        </li>
+      }
+    </ul>
+    <mat-menu #rowMenu="matMenu">
+      <ng-template matMenuContent let-row="row">
+        <button mat-menu-item (click)="run('Ver', row)">
+          <mat-icon>visibility</mat-icon>
+          <span>Ver</span>
+        </button>
+        <button mat-menu-item (click)="run('Imprimir', row)">
+          <mat-icon>print</mat-icon>
+          <span>Imprimir</span>
+        </button>
+        <button mat-menu-item (click)="run('Anular', row)">
+          <mat-icon>block</mat-icon>
+          <span>Anular</span>
+        </button>
+      </ng-template>
+    </mat-menu>
+  </section>
+
+  <section>
+    <h3>Menú contextual (clic derecho)</h3>
+    <div class="context-area" (contextmenu)="openContextMenu($event, contextTrigger)">
+      Clic derecho aquí
+    </div>
+    <div
+      class="context-anchor"
+      [style.left]="contextPosition().x"
+      [style.top]="contextPosition().y"
+      [matMenuTriggerFor]="context"
+      #contextTrigger="matMenuTrigger"
+    ></div>
+    <mat-menu #context="matMenu">
+      <button mat-menu-item (click)="run('Copiar')">
+        <mat-icon>content_copy</mat-icon>
+        <span>Copiar</span>
+      </button>
+      <button mat-menu-item (click)="run('Pegar')">
+        <mat-icon>content_paste</mat-icon>
+        <span>Pegar</span>
+      </button>
+    </mat-menu>
+  </section>
+</div>

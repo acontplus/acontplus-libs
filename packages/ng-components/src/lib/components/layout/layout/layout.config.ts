@@ -4,6 +4,13 @@ export type AcpNavPos = 'side' | 'top';
 export type AcpHeaderPos = 'fixed' | 'static' | 'above';
 export type AcpLayoutDir = 'ltr' | 'rtl';
 export type AcpThemeMode = 'light' | 'dark' | 'auto';
+/** Appearance of `mat-form-field` without an explicit `appearance`. */
+export type AcpFieldAppearance = 'outline' | 'fill';
+/**
+ * Size of form fields, select options and menu items: `small` (fields 40px), `medium` (48px) or
+ * `large` (56px, Material default).
+ */
+export type AcpControlSize = 'small' | 'medium' | 'large';
 export type AcpThemeColor =
   'blue' | 'aqua' | 'purple' | 'green' | 'cyan' | 'orange' | 'pink' | 'rose';
 
@@ -28,6 +35,13 @@ export interface AcpLayoutOptions {
    * acontpluspro).
    */
   radius: number;
+  /**
+   * Default appearance of `mat-form-field` (`MAT_FORM_FIELD_DEFAULT_OPTIONS`, set by
+   * `provideAcpLayout`); fields on screen switch live.
+   */
+  fieldAppearance: AcpFieldAppearance;
+  /** Size of fields, select options and menu items (`acp-control-<size>` on `<html>`, acontpluspro). */
+  controlSize: AcpControlSize;
 }
 
 export const ACP_LAYOUT_DEFAULTS: AcpLayoutOptions = {
@@ -43,7 +57,12 @@ export const ACP_LAYOUT_DEFAULTS: AcpLayoutOptions = {
   cardBorder: false,
   boxed: false,
   radius: 10,
+  fieldAppearance: 'outline',
+  controlSize: 'small',
 };
+
+/** Control sizes offered by the customizer, from the most compact. */
+export const ACP_CONTROL_SIZES: readonly AcpControlSize[] = ['small', 'medium', 'large'];
 
 /** Range of the theme border radius (px) offered by the customizer. */
 export const ACP_LAYOUT_RADIUS_RANGE = { min: 4, max: 24 } as const;

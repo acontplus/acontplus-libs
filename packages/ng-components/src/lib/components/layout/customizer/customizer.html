@@ -178,6 +178,33 @@
         </mat-slider>
         <span class="acp-customizer-radius__value">{{ options().radius }}px</span>
       </div>
+
+      <h6 class="acp-customizer__title">{{ text().fieldAppearance }}</h6>
+      <mat-button-toggle-group
+        class="acp-customizer-group"
+        hideSingleSelectionIndicator
+        [value]="options().fieldAppearance"
+        (change)="set('fieldAppearance', $event.value)"
+      >
+        <mat-button-toggle value="outline"
+          ><mat-icon>check_box_outline_blank</mat-icon>{{ text().outline }}</mat-button-toggle
+        >
+        <mat-button-toggle value="fill"
+          ><mat-icon>rectangle</mat-icon>{{ text().fill }}</mat-button-toggle
+        >
+      </mat-button-toggle-group>
+
+      <h6 class="acp-customizer__subtitle">{{ text().controlSize }}</h6>
+      <mat-button-toggle-group
+        class="acp-customizer-group"
+        hideSingleSelectionIndicator
+        [value]="options().controlSize"
+        (change)="set('controlSize', $event.value)"
+      >
+        @for (size of controlSizes; track size) {
+        <mat-button-toggle [value]="size">{{ text()[size] }}</mat-button-toggle>
+        }
+      </mat-button-toggle-group>
     </div>
   </div>
 </ng-template>

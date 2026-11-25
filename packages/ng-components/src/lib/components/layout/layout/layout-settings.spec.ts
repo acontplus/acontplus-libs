@@ -21,6 +21,7 @@ describe('AcpLayoutSettings', () => {
     localStorage.removeItem(key);
     html.className = '';
     html.removeAttribute('style');
+    html.removeAttribute('dir');
   });
 
   it('merges the configured defaults with the stored options', () => {

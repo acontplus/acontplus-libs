@@ -140,7 +140,10 @@ export class AcpSwalService {
     });
   }
 
-  /** Resolves `true` when the user confirms. */
+  /**
+   * Confirmation with confirm and cancel buttons, always: a confirmation needs a way to decline.
+   * Resolves `true` when the user confirms.
+   */
   async confirm({ danger, buttons, ...options }: AcpSwalConfirm): Promise<boolean> {
     const { isConfirmed } = await this.fire({
       icon: 'question',
@@ -153,6 +156,7 @@ export class AcpSwalService {
           ...(danger && { color: 'error' }),
           ...buttons?.confirm,
         },
+        // Always shown (see above); `buttons.cancel` only restyles it.
         cancel: { ...buttons?.cancel },
       },
     });

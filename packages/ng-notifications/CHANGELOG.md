@@ -1,3 +1,18 @@
+## 3.1.0 (2026-11-25)
+
+### 🚀 Features
+
+- Add `AcpSwalService`: SweetAlert2 with buttons styled like `acp-button` (color, appearance, size ([#160](https://github.com/acontplus/acontplus-libs/pull/160))
+  and `square`), the app light/dark theme, and `confirm()`, `success()`, `error()`, `warning()`,
+  `info()` and `toast()` helpers. Spanish texts by default, configurable with `ACP_SWAL_BUTTONS` and
+  `ACP_SWAL_CONFIRM_TEXT`. Add `acpEscapeHtml` and the `_sweetalert-theme.scss` styles, included in
+  `@acontplus/ng-notifications/src/styles`.
+
+### ❤️ Thank You
+
+- Emilio Senguana @senguanasoft
+- emiliosw-dev
+
 ## 3.0.4 (2026-11-16)
 
 ### 🩹 Fixes

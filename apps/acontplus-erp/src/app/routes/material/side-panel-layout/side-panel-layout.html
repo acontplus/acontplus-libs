@@ -88,8 +88,12 @@
         [(selected)]="setting"
       >
         <mat-form-field acpSidePanelHeader class="side-panel-page__search">
+          <label class="cdk-visually-hidden" for="side-panel-settings-search">
+            Buscar configuración
+          </label>
           <mat-icon matPrefix>search</mat-icon>
           <input
+            id="side-panel-settings-search"
             matInput
             placeholder="Buscar"
             [ngModel]="search()"

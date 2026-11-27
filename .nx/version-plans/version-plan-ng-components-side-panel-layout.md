@@ -16,3 +16,6 @@ the theme).
 `acp-customizer`: returning from the top navigation to the side one no longer leaves a collapsed and
 closed sidenav without a toggle to open it. The customizer keeps the sidenav state it had on load
 and sends it back with every change.
+
+The package now declares `"sideEffects": false`, so bundlers keep each component in the chunk that
+uses it instead of the initial bundle.

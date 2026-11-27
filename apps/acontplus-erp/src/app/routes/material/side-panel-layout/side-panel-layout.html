@@ -1,0 +1,164 @@
+<div class="side-panel-page">
+  <h1>Side Panel Layout</h1>
+
+  <section>
+    <h3>Básico con acciones</h3>
+    <p class="description">
+      Lista de opciones a la izquierda y el contenido de la seleccionada.
+      <code>[(selected)]</code> enlaza el id; el slot <code>acpSidePanelActions</code> pone botones
+      en la barra.
+    </p>
+    <mat-card>
+      <acp-side-panel-layout title="Reportes de inventario" [items]="reports" [(selected)]="report">
+        <ng-container acpSidePanelActions>
+          <button matButton="outlined" type="button">
+            <mat-icon>table_view</mat-icon>
+            Excel
+          </button>
+          <button matButton="filled" type="button">
+            <mat-icon>picture_as_pdf</mat-icon>
+            Ver PDF
+          </button>
+        </ng-container>
+        <p>
+          Filtros del reporte <strong>{{ label(reports, report()) }}</strong>.
+        </p>
+      </acp-side-panel-layout>
+    </mat-card>
+    <p class="selection">
+      Seleccionado: <strong>{{ report() }}</strong>
+    </p>
+  </section>
+
+  <section>
+    <h3>Mostrar y ocultar el panel</h3>
+    <p class="description">
+      Con <code>toggleable</code> aparece el botón de menú en la barra y oculta o muestra el panel
+      también en pantallas grandes. <code>[(panelOpened)]</code> enlaza si está visible. Sin
+      <code>toggleable</code> el botón no sale y el panel siempre está visible.
+    </p>
+    <mat-card>
+      <acp-side-panel-layout
+        title="Notas"
+        toggleable
+        [items]="reports"
+        [(selected)]="toggleReport"
+        [(panelOpened)]="panelOpened"
+      >
+        <button acpSidePanelActions matButton="filled" type="button">
+          <mat-icon>add</mat-icon>
+          Agregar nota
+        </button>
+        <p>
+          Nota de <strong>{{ label(reports, toggleReport()) }}</strong>.
+        </p>
+      </acp-side-panel-layout>
+    </mat-card>
+    <p class="selection">
+      Panel visible: <strong>{{ panelOpened() }}</strong>
+    </p>
+  </section>
+
+  <section>
+    <h3>Descripción, badge y opción deshabilitada</h3>
+    <p class="description">
+      Cada item acepta <code>description</code>, <code>badge</code> y <code>disabled</code>.
+    </p>
+    <mat-card>
+      <acp-side-panel-layout title="Bandeja" [items]="folders" [(selected)]="folder">
+        <p>
+          Comprobantes en <strong>{{ label(folders, folder()) }}</strong>.
+        </p>
+      </acp-side-panel-layout>
+    </mat-card>
+  </section>
+
+  <section>
+    <h3>Header y footer, panel a la derecha y ancho propio</h3>
+    <p class="description">
+      Slots <code>acpSidePanelHeader</code> (aquí un buscador) y <code>acpSidePanelFooter</code>,
+      <code>position="end"</code> y <code>panelWidth="20rem"</code>.
+    </p>
+    <mat-card>
+      <acp-side-panel-layout
+        title="Configuración"
+        position="end"
+        panelWidth="20rem"
+        [items]="filteredSettings()"
+        [(selected)]="setting"
+      >
+        <mat-form-field acpSidePanelHeader class="side-panel-page__search">
+          <label class="cdk-visually-hidden" for="side-panel-settings-search">
+            Buscar configuración
+          </label>
+          <mat-icon matPrefix>search</mat-icon>
+          <input
+            id="side-panel-settings-search"
+            matInput
+            placeholder="Buscar"
+            [ngModel]="search()"
+            (ngModelChange)="search.set($event)"
+          />
+        </mat-form-field>
+        <div acpSidePanelFooter class="side-panel-page__footer">
+          {{ filteredSettings().length }} de {{ settings.length }} opciones
+        </div>
+        <p>
+          Opciones de <strong>{{ label(settings, setting()) }}</strong>.
+        </p>
+      </acp-side-panel-layout>
+    </mat-card>
+  </section>
+
+  <section>
+    <h3>Item personalizado, sin encabezado</h3>
+    <p class="description">
+      <code>&lt;ng-template acpSidePanelItem let-item let-selected="selected"&gt;</code> reemplaza
+      el contenido de cada item; <code>showHeading="false"</code> oculta el título en la barra.
+    </p>
+    <mat-card>
+      <acp-side-panel-layout
+        title="Contactos"
+        [items]="contacts"
+        [(selected)]="contact"
+        [showHeading]="false"
+      >
+        <ng-template acpSidePanelItem let-item let-selected="selected">
+          <span class="side-panel-page__contact">
+            <span class="side-panel-page__avatar" [class.is-selected]="selected">
+              {{ initials(item.label) }}
+            </span>
+            <span>
+              <strong>{{ item.label }}</strong>
+              <small>{{ item.description }}</small>
+            </span>
+          </span>
+        </ng-template>
+        <p>
+          Conversación con <strong>{{ label(contacts, contact()) }}</strong>.
+        </p>
+      </acp-side-panel-layout>
+    </mat-card>
+  </section>
+
+  <section>
+    <h3>Siempre compacto</h3>
+    <p class="description">
+      Con <code>compactQuery="(min-width: 0px)"</code> el panel flota sobre el contenido en
+      cualquier pantalla y se abre con el botón de menú. Por defecto pasa a compacto bajo 992px.
+    </p>
+    <mat-card>
+      <acp-side-panel-layout
+        title="Ajustes"
+        compactQuery="(min-width: 0px)"
+        [items]="settings"
+        [(selected)]="compactItem"
+        [labels]="{ toggle: 'Abrir ajustes' }"
+      >
+        <p>
+          Ajustes de <strong>{{ label(settings, compactItem()) }}</strong>.
+        </p>
+      </acp-side-panel-layout>
+    </mat-card>
+  </section>
+</div>

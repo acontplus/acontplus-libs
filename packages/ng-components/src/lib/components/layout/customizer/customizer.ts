@@ -23,6 +23,8 @@ import {
 } from '../layout/layout.config';
 import { AcpLayoutSettings } from '../layout/layout-settings';
 
+type SidenavKey = 'sidenavOpened' | 'sidenavCollapsed';
+
 export interface AcpCustomizerLabels {
   open: string;
   drag: string;
@@ -141,8 +143,22 @@ export class AcpCustomizer {
   protected readonly headerAbove = computed(() => this.options().headerPos === 'above');
   protected readonly navTop = computed(() => this.options().navPos === 'top');
 
-  protected set<K extends keyof AcpLayoutOptions>(key: K, value: AcpLayoutOptions[K]): void {
-    this.#settings.set({ [key]: value } as Partial<AcpLayoutOptions>);
+  /**
+   * Sidenav state when the customizer was created (`AcpLayoutSettings` merges the stored options
+   * synchronously on creation). Every change sends it back: returning from the top menu reopens
+   * the sidenav as it was on load.
+   */
+  readonly #sidenav: Pick<AcpLayoutOptions, SidenavKey> = {
+    sidenavOpened: this.options().sidenavOpened,
+    sidenavCollapsed: this.options().sidenavCollapsed,
+  };
+
+  /** The sidenav options belong to `acp-layout`; the customizer only sends back `#sidenav`. */
+  protected set<K extends Exclude<keyof AcpLayoutOptions, SidenavKey>>(
+    key: K,
+    value: AcpLayoutOptions[K],
+  ): void {
+    this.#settings.set({ ...this.#sidenav, [key]: value });
   }
 
   protected onDragStarted(): void {

@@ -1,0 +1,65 @@
+<mat-sidenav-container class="acp-side-panel" [class.acp-side-panel--compact]="compact()">
+  <mat-sidenav
+    class="acp-side-panel__nav"
+    [mode]="compact() ? 'over' : 'side'"
+    [position]="position()"
+    [opened]="opened()"
+    [disableClose]="!compact()"
+    (closed)="onClosed()"
+  >
+    @if (title()) {
+    <h4 class="acp-side-panel__title">{{ title() }}</h4>
+    }
+    <ng-content select="[acpSidePanelHeader]" />
+
+    <mat-nav-list class="acp-side-panel__list">
+      @for (item of items(); track item.id) {
+      <mat-list-item
+        class="acp-side-panel__item"
+        [class.acp-side-panel__item--active]="item.id === selected()"
+        [activated]="item.id === selected()"
+        [disabled]="!!item.disabled"
+        [attr.aria-current]="item.id === selected() ? 'page' : null"
+        (click)="select(item)"
+      >
+        @if (itemTemplate(); as tpl) {
+        <ng-container
+          [ngTemplateOutlet]="tpl.templateRef"
+          [ngTemplateOutletContext]="{ $implicit: item, selected: item.id === selected() }"
+        />
+        } @if (!itemTemplate() && item.icon) {
+        <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+        } @if (!itemTemplate()) {
+        <span matListItemTitle>{{ item.label }}</span>
+        } @if (!itemTemplate() && item.description) {
+        <span matListItemLine>{{ item.description }}</span>
+        } @if (!itemTemplate() && (item.badge ?? '') !== '') {
+        <span matListItemMeta class="acp-side-panel__meta"
+          ><span class="acp-side-panel__badge">{{ item.badge }}</span></span
+        >
+        }
+      </mat-list-item>
+      }
+    </mat-nav-list>
+
+    <ng-content select="[acpSidePanelFooter]" />
+  </mat-sidenav>
+
+  <mat-sidenav-content class="acp-side-panel__content">
+    <div class="acp-side-panel__toolbar">
+      @if (showToggle()) {
+      <button type="button" matIconButton [attr.aria-label]="text().toggle" (click)="toggle()">
+        <mat-icon>menu</mat-icon>
+      </button>
+      } @if (showHeading() && current(); as item) {
+      <h5 class="acp-side-panel__heading">{{ item.label }}</h5>
+      }
+      <div class="acp-side-panel__actions">
+        <ng-content select="[acpSidePanelActions]" />
+      </div>
+    </div>
+    <div class="acp-side-panel__body">
+      <ng-content />
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

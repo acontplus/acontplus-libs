@@ -14,7 +14,7 @@
     "moment": "^2.29.0",
     "tabulator-tables": "^6.5.2"
   },
-  "sideEffects": true,
+  "sideEffects": false,
   "main": "fesm2022/acontplus-ng-components.mjs",
   "module": "fesm2022/acontplus-ng-components.mjs",
   "typings": "index.d.ts",

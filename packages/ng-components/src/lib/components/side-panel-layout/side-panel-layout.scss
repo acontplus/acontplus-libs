@@ -1,0 +1,126 @@
+@use '../../../core/tokens/acp-system';
+
+// Tokens (CSS variables, acontpluspro sets the MaterialPro values):
+// --acp-side-panel-width, --acp-side-panel-min-height, --acp-side-panel-border-color,
+// --acp-side-panel-item-shape, --acp-side-panel-active-item-text-color,
+// --acp-side-panel-active-item-background-color, --acp-side-panel-badge-text-color,
+// --acp-side-panel-badge-background-color.
+
+.acp-side-panel-host {
+  display: block;
+  // Inside a card, the backdrop of the compact panel keeps its rounded corners.
+  border-radius: inherit;
+}
+
+.acp-side-panel {
+  --mat-sidenav-container-background-color: transparent;
+  --mat-sidenav-content-background-color: transparent;
+  --mat-sidenav-container-divider-color: var(
+    --acp-side-panel-border-color,
+    var(--mat-sys-outline-variant)
+  );
+  --mat-sidenav-container-shape: 0;
+  --mat-sidenav-container-elevation-shadow: none;
+
+  min-height: var(--acp-side-panel-min-height, 420px);
+  border-radius: inherit;
+  background: transparent;
+}
+
+.acp-side-panel__nav {
+  --mat-sidenav-container-width: var(--acp-side-panel-width, 16rem);
+
+  scrollbar-width: thin;
+
+  .acp-side-panel--compact & {
+    --mat-sidenav-container-background-color: var(--mat-sys-surface);
+  }
+}
+
+.acp-side-panel__title {
+  margin: 0;
+  padding: acp-system.layout(gutter) acp-system.layout(gutter) 0.5rem;
+  font-size: var(--acp-sys-heading-size, 1.125rem);
+  font-weight: var(--acp-sys-heading-weight, 600);
+  line-height: var(--acp-sys-heading-line-height, 1.6rem);
+}
+
+.acp-side-panel__list {
+  --mat-list-list-item-disabled-state-layer-opacity: 0;
+
+  padding: 0 0.5rem;
+}
+
+.acp-side-panel__item.mat-mdc-list-item {
+  margin-bottom: 2px;
+  border-radius: var(--acp-side-panel-item-shape, var(--mat-sys-corner-small));
+}
+
+.acp-side-panel__item--active.mat-mdc-list-item {
+  --mat-list-active-indicator-color: var(
+    --acp-side-panel-active-item-background-color,
+    var(--mat-sys-secondary-container)
+  );
+  --mat-list-active-indicator-shape: var(--acp-side-panel-item-shape, var(--mat-sys-corner-small));
+  --mat-list-list-item-label-text-color: var(
+    --acp-side-panel-active-item-text-color,
+    var(--mat-sys-on-secondary-container)
+  );
+  --mat-list-list-item-hover-label-text-color: var(--mat-list-list-item-label-text-color);
+  --mat-list-list-item-focus-label-text-color: var(--mat-list-list-item-label-text-color);
+  --mat-list-list-item-leading-icon-color: var(--mat-list-list-item-label-text-color);
+  --mat-list-list-item-hover-leading-icon-color: var(--mat-list-list-item-label-text-color);
+
+  background-color: var(--mat-list-active-indicator-color);
+}
+
+.acp-side-panel__meta.mat-mdc-list-item-meta {
+  align-self: center;
+  margin-top: 0;
+}
+
+.acp-side-panel__badge {
+  display: inline-block;
+  box-sizing: border-box;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  padding: 0 0.5rem;
+  border-radius: var(--mat-sys-corner-full);
+  font-size: 0.75rem;
+  line-height: 1.5rem;
+  text-align: center;
+  color: var(--acp-side-panel-badge-text-color, var(--mat-sys-on-primary));
+  background-color: var(--acp-side-panel-badge-background-color, var(--mat-sys-primary));
+}
+
+.acp-side-panel__content {
+  display: flex;
+  flex-direction: column;
+}
+
+.acp-side-panel__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem acp-system.layout(gutter);
+  border-bottom: 1px solid var(--acp-side-panel-border-color, var(--mat-sys-outline-variant));
+}
+
+.acp-side-panel__heading {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: var(--acp-sys-heading-weight, 500);
+}
+
+.acp-side-panel__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+  margin-inline-start: auto;
+}
+
+.acp-side-panel__body {
+  padding: acp-system.layout(gutter);
+}

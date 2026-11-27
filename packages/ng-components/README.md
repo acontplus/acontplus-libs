@@ -854,13 +854,13 @@ provideAcpLayout({
 
 `branding` controls `acp-branding` in the sidebar and the header:
 
-| Option      | Description                                                                                                                                    |
-| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`      | App name, shown as text and used as the link's accessible name                                                                                 |
-| `logo`      | Logo URL                                                                                                                                       |
-| `display`   | `'logo-name'` (default), `'logo'` or `'name'`                                                                                                  |
-| `logoShape` | `'circle'` (default, `2rem` round, as ng-matero) or `'rectangle'` (`2rem` high, up to `10rem` wide, keeps the aspect ratio and shrinks to fit) |
-| `link`      | Route of the link (default `'/'`)                                                                                                              |
+| Option      | Description                                                                                                                      |
+| ----------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `name`      | App name, shown as text and used as the link's accessible name                                                                   |
+| `logo`      | Logo URL                                                                                                                         |
+| `display`   | `'logo-name'` (default), `'logo'` or `'name'`                                                                                    |
+| `logoShape` | `'circle'` (default, `2rem` round) or `'rectangle'` (`2rem` high, up to `10rem` wide, keeps the aspect ratio and shrinks to fit) |
+| `link`      | Route of the link (default `'/'`)                                                                                                |
 
 ```typescript
 // Only a wide logo, without the name
@@ -946,6 +946,45 @@ branding: { name: 'AcontPlus', logo: 'images/logo/acontplus.svg', display: 'logo
   `isMenuItemActive` are exported for app menus.
 - Look: structural styles only (Material fallbacks). With acontpluspro the header takes the brand
   color, the sidebar header the surface, and the menus the pill style.
+
+### AcpSidePanelLayout
+
+Page section with a list of options on the side and the content of the selected one (MaterialPro apps style: email, notes, settings). Below `compactQuery` the panel floats over the content and opens with a menu button in the toolbar.
+
+```html
+<acp-side-panel-layout title="Reportes" [items]="reports" [(selected)]="report">
+  <button acpSidePanelActions matButton>PDF</button>
+  <app-report [type]="report()" />
+</acp-side-panel-layout>
+```
+
+```ts
+readonly reports: AcpSidePanelItem<ReportType>[] = [
+  { id: 'stock', label: 'Existencias', icon: 'inventory_2', description: 'Por bodega' },
+  { id: 'kardex', label: 'Kardex', icon: 'receipt_long', badge: 3 },
+  { id: 'lots', label: 'Lotes', icon: 'qr_code', disabled: true },
+];
+readonly report = signal<ReportType | null>('stock');
+```
+
+| Input          | Description                                                                                      |
+| -------------- | ------------------------------------------------------------------------------------------------ |
+| `title`        | Title above the list                                                                             |
+| `items`        | `AcpSidePanelItem[]`: `id`, `label`, `icon?`, `description?`, `disabled?`, `badge?`              |
+| `selected`     | Id of the selected item, two-way with `[(selected)]`                                             |
+| `panelWidth`   | Panel width, any CSS length (default `16rem`)                                                    |
+| `compactQuery` | Media query for the floating panel (default `(max-width: 991.98px)`)                             |
+| `position`     | `'start'` (default) or `'end'`                                                                   |
+| `showHeading`  | Shows the selected item label in the toolbar (default `true`)                                    |
+| `toggleable`   | Menu button that hides and shows the panel also on wide screens (default `false`)                |
+| `panelOpened`  | Panel visible on wide screens with `toggleable`, two-way with `[(panelOpened)]` (default `true`) |
+| `labels`       | `{ toggle }`: accessible label of the menu button                                                |
+
+Slots: `acpSidePanelActions` (toolbar end), `acpSidePanelHeader` (above the list), `acpSidePanelFooter` (below the list) and the default content. Custom items with `<ng-template acpSidePanelItem let-item let-selected="selected">`: its content replaces icon, label, description and badge inside the list item (it is not projected into the `matListItem*` slots).
+
+App-wide defaults: `provideAcpSidePanelDefaults({ panelWidth: '18rem', labels: { toggle: 'Options' } })`.
+
+Styling tokens (set by acontpluspro): `--acp-side-panel-width`, `--acp-side-panel-min-height`, `--acp-side-panel-border-color`, `--acp-side-panel-item-shape`, `--acp-side-panel-active-item-text-color`, `--acp-side-panel-active-item-background-color`, `--acp-side-panel-badge-text-color`, `--acp-side-panel-badge-background-color`.
 
 ### Theme Toggle
 

@@ -22,3 +22,4 @@ export * from './radio-card';
 export * from './kpi-card';
 export * from './layout';
 export * from './logo';
+export * from './side-panel-layout';

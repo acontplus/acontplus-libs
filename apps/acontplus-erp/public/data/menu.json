@@ -63,6 +63,11 @@
               "type": "link"
             },
             {
+              "route": "side-panel-layout",
+              "name": "Side Panel Layout",
+              "type": "link"
+            },
+            {
               "route": "slider",
               "name": "Deslizador",
               "type": "link"

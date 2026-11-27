@@ -10,7 +10,7 @@
   `event.preventDefault()` in a `clickedResult` subscriber to keep it open; a subscriber that closes
   the dialog itself keeps its own result.
 
-### ⚠️  Breaking Changes
+### ⚠️ Breaking Changes
 
 - Add form control options to the layout: `fieldAppearance` (`outline` / `fill`) and `controlSize` ([#160](https://github.com/acontplus/acontplus-libs/pull/160))
   (`small` / `medium` / `large`: fields 40 / 48 / 56px, select options 33 / 40 / 48px and menu items

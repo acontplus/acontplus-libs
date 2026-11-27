@@ -91,9 +91,16 @@ export class AcpLayout {
   protected readonly headerInContent = computed(
     () => this.options().showHeader && this.options().headerPos !== 'above',
   );
-  /** Collapsed rail: only on desktop with the side menu. */
+  /**
+   * Collapsed rail: only on desktop with the side menu open. A closed rail would leave the page
+   * without the toggle to open it.
+   */
   protected readonly collapsed = computed(
-    () => this.options().sidenavCollapsed && !this.isMobile() && !this.navTop(),
+    () =>
+      this.options().sidenavCollapsed &&
+      this.options().sidenavOpened &&
+      !this.isMobile() &&
+      !this.navTop(),
   );
   protected readonly sidenavOpened = computed(
     () => !this.navTop() && this.options().sidenavOpened && !this.isMobile(),
@@ -122,8 +129,8 @@ export class AcpLayout {
   }
 
   protected onSidenavOpenedChange(opened: boolean): void {
-    // On mobile the sidenav is an overlay; keep the desktop preference.
-    if (!this.isMobile()) this.#settings.set({ sidenavOpened: opened });
+    // On mobile the sidenav is an overlay, and the top menu closes it: keep the desktop preference.
+    if (!this.isMobile() && !this.navTop()) this.#settings.set({ sidenavOpened: opened });
   }
 
   protected toggleFullscreen(): void {

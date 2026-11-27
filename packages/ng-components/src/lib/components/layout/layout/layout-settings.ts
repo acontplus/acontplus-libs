@@ -56,17 +56,9 @@ export class AcpLayoutSettings {
     effect(() => this.#apply(this.#options(), this.isDark()));
   }
 
-  /**
-   * Merges `changes` into the options and persists them. A new `navPos` restores the sidenav open
-   * and expanded (as ng-matero), unless `changes` sets them.
-   */
+  /** Merges `changes` into the options and persists them. */
   set(changes: Partial<AcpLayoutOptions>): void {
-    const current = this.#options();
-    const sidenavReset =
-      changes.navPos && changes.navPos !== current.navPos
-        ? { sidenavOpened: true, sidenavCollapsed: false }
-        : {};
-    const next: AcpLayoutOptions = { ...current, ...sidenavReset, ...changes };
+    const next: AcpLayoutOptions = { ...this.#options(), ...changes };
     this.#options.set(next);
     this.#write(next);
   }

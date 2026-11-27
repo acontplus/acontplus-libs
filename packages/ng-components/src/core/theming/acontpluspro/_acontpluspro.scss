@@ -150,6 +150,15 @@ $control-sizes: (
   --acp-grid-table-row-hover-background-color: #{_skin(surface-muted)};
   --acp-popover-container-shape: #{_skin(radius)};
   --acp-drawer-container-shape: #{_skin(radius)};
+  --acp-side-panel-border-color: #{_skin(border)};
+  --acp-side-panel-item-shape: #{_skin(radius)};
+  --acp-side-panel-active-item-text-color: #{_skin(accent)};
+  --acp-side-panel-active-item-background-color: color-mix(
+    in srgb,
+    #{_skin(accent)} 10%,
+    transparent
+  );
+  --acp-side-panel-badge-background-color: #{_skin(accent)};
   --acp-dialog-header-border-color: #{_skin(border)};
   --acp-dialog-actions-border-color: #{_skin(border)};
 

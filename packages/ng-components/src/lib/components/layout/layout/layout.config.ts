@@ -83,7 +83,7 @@ export const ACP_THEME_COLORS: readonly { value: AcpThemeColor; label: string; c
 export type AcpBrandingDisplay = 'logo-name' | 'logo' | 'name';
 
 /**
- * Shape of the `acp-branding` logo: a `2rem` circle (as ng-matero) or a `2rem` high rectangle that
+ * Shape of the `acp-branding` logo: a `2rem` circle or a `2rem` high rectangle that
  * keeps the image aspect ratio, up to `10rem` wide, and shrinks to fit.
  */
 export type AcpBrandingLogoShape = 'circle' | 'rectangle';

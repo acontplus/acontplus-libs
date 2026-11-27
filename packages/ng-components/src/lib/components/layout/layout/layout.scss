@@ -128,7 +128,7 @@ $_collapsible: '.menu-name, .menu-label, .menu-badge, .menu-caret, .acp-user-pan
       opacity: 1;
     }
 
-    // As in ng-matero: the user panel keeps only its avatar, at half size.
+    // The user panel keeps only its avatar, at half size.
     .acp-user-panel__avatar {
       transform: scale(0.5);
     }

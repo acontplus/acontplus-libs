@@ -142,8 +142,8 @@ export class AcpCustomizer {
   protected readonly navTop = computed(() => this.options().navPos === 'top');
 
   /**
-   * Sidenav state when the customizer was created. As in ng-matero, every change sends it back:
-   * returning from the top menu reopens the sidenav as it was on load.
+   * Sidenav state when the customizer was created. Every change sends it back: returning from the
+   * top menu reopens the sidenav as it was on load.
    */
   readonly #sidenav: Pick<AcpLayoutOptions, 'sidenavOpened' | 'sidenavCollapsed'> = {
     sidenavOpened: this.options().sidenavOpened,
